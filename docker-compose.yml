@@ -1,0 +1,73 @@
+version: '20.10'
+
+services:  
+  mysql:
+    container_name: mysql-serviceflow
+    image: mysql
+    restart: unless-stopped
+    tty: true
+    ports:
+      - '3307:3306'
+    environment:
+      MYSQL_DATABASE: serviceflow
+      MYSQL_USER: serviceflow
+      MYSQL_PASSWORD: 12345678
+      MYSQL_ROOT_PASSWORD: 12345678
+      SERVICE_TAG: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./database/db:/var/lib/mysql
+    
+  php:
+    container_name: php-serviceflow
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend:/var/www/html
+    ports:
+      - '8191:80'
+    
+  node:
+    container_name: node-serviceflow
+    image: "node:18"
+    user: "node"
+    working_dir: /var/www/html/frontend
+    environment:
+      - NODE_ENV=debug
+    volumes:
+      - ./frontend:/var/www/html/frontend
+    # expose:
+    #   - "8081"
+    ports:
+      - '8192:8080'
+    command: "npm run serve"
+
+  # composer:
+  #   image: composer:latest
+  #   container_name: composer
+  #   volumes:
+  #     - ./backend/public:/var/www/html/public
+  #   working_dir: /var/www/html
+  #   depends_on:
+  #     - mysql
+  
+  # artisan:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: artisan
+  #   volumes:
+  #     - ./backend:/var/www/html
+  #   depends_on:
+  #     - mysql
+  #   working_dir: /var/www/html
+  #   entrypoint: ['php', '/var/www/html/artisan']
+
+  # npm:
+  #   image: node:18.5
+  #   container_name: npm
+  #   volumes:
+  #     - ./backend:/var/www/html
+  #   working_dir: /var/www/html
+  #   entrypoint: ['npm']
