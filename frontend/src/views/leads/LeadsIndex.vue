@@ -32,14 +32,7 @@ export default {
       hasError: false,
       data: null,
       leads: [],
-      newLead: {
-        id: null,
-        name: null,
-        email: null,
-        cel_phone: null,
-        comments: null,
-        
-      },
+      newLead: {},
     };
   },
   methods: {
@@ -55,19 +48,8 @@ export default {
         .catch((error) => console.log(error));
     },
     addLeadCreated($event) {
-      // console.log($event);
-      this.newLead = $event;
-      this.data = $event;
-      
-      this.newLead.id = this.data.id;
-      this.newLead.name = this.data.name;
-      this.newLead.description = this.data.description;
-      this.newLead.company_id = "1";
-      this.newLead.contact_id = "2";
-      this.newLead.user_id = "3";
-      this.newLead.date_start = this.data.date_start;
-      this.newLead.date_due = this.data.date_due;
-      this.leads.push(this.newLead);
+      // this.newLead = { ...$event };
+      this.leads.push($event);
       console.log("add CONTATO adicionado");
     },
   },

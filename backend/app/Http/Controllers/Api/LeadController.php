@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Lead;
 use App\Http\Resources\LeadsResource;
+use App\Http\Requests\LeadCreateRequest;
+use App\Http\Requests\LeadUpdateRequest;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class LeadController extends Controller
 {
@@ -35,26 +38,28 @@ class LeadController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(LeadCreateRequest $request)
     {
-        $lead = new Lead;
-		$lead->account_id = 1;
-		$lead->user_id = 1;
-		$lead->name = $request->name;
-        $lead->email = $request->email;
-        $lead->cel_phone = $request->cel_phone;
-        $lead->comments = $request->comments;
-        $lead->save();
-		
-        return response()->json([
-            'message' => "Contato $request->name criado",
-			'id' => $lead->id,
-			'name' => $lead->name,
-            'email' => $lead->email,
-            'cel_phone' => $lead->cel_phone,
-			'comments' => $lead->comments,
-			
-        ]);
+        try {
+            $lead = new Lead;
+
+            $lead->fill($request->all());
+            $lead->account_id = 1;
+            $lead->user_id = 1;
+            $lead->save();
+
+            return response()->json([
+                'message' => "Contato $lead->name atualizado",
+                'lead' => $lead,
+            ]);
+        }
+        catch(ValidationException $validationException) {
+            return response()->json([
+                'message' => "Erro de validação",
+                'errors' => $validationException->errors(),
+            ], 422);
+        }
+
     }
 
     /**
@@ -86,23 +91,25 @@ class LeadController extends Controller
      * @param  \App\Models\Lead  $lead
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $leadId)
+    public function update(LeadUpdateRequest $request, $leadId)
     {
-        $lead = Lead::findOrFail($leadId);
+        try {
+            $lead = Lead::findOrFail($leadId);
 
-        $lead->name = $request->input('name');
-        $lead->email = $request->input('email');
-        $lead->cel_phone = $request->input('cel_phone');
-        $lead->save();
+            $lead->fill($request->all());
+            $lead->save();
 
-        return response()->json([
-            'message' => "Contato $request->name atualizado",
-			'id' => $lead->id,
-			'name' => $lead->name,
-            'email' => $lead->email,
-            'cel_phone' => $lead->cel_phone,
-			
-        ]);
+            return response()->json([
+                'message' => "Contato $lead->name atualizado",
+                'lead' => $lead,
+            ]);
+        }
+        catch(ValidationException $validationException) {
+            return response()->json([
+                'message' => "Erro de validação",
+                'errors' => $validationException->errors(),
+            ], 422);
+        }
     }
 
     /**

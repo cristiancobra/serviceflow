@@ -26,9 +26,9 @@ return new class extends Migration
             $table->dateTime('date_due')->nullable();
             $table->dateTime('date_conclusion')->nullable();
             $table->text('description')->nullable();
-            $table->tinyInteger('trash')->nullable();
             $table->string('status');
             $table->timestamps();
+            $table->timestamp('deleted_at')->nullable();
         });
     }
 

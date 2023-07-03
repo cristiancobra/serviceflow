@@ -32,8 +32,8 @@ return new class extends Migration
 			$table->date('date_conclusion')->nullable();
 			$table->string('status')->nullable();
 			$table->string('priority')->nullable();
-			$table->tinyInteger('trash')->nullable();
 			$table->timestamps();
+            $table->timestamp('deleted_at')->nullable();
         });
     }
 

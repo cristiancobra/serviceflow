@@ -18,11 +18,19 @@ return new class extends Migration
             $table->foreignId('account_id');
             $table->foreignId('user_id');
             $table->string('name');
-            $table->string('email')->nullable()->unique();
-            $table->string('cel_phone')->nullable()->unique();
+            $table->string('email')->nullable();
+            $table->string('cel_phone')->nullable();
+            $table->string('linkedin')->nullable();
+            $table->string('facebook')->nullable();
+            $table->string('instagram')->nullable();
+            $table->string('other_social_media')->nullable();
+            $table->date('contact_date')->nullable();
+            $table->string('source')->nullable();
+            $table->string('source_contact_channel')->nullable();
+            $table->text('reason_for_initial_contact')->nullable();
             $table->string('comments')->nullable();
-            $table->tinyInteger('trash')->nullable();
             $table->timestamps();
+            $table->timestamp('deleted_at')->nullable();
         });
     }
 
