@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LeadsIndex from '../views/leads/LeadsIndex.vue'
-import LeadShowComponent from '../components/LeadShow.vue'
+import LeadShow from '../views/leads/LeadShow.vue'
 import ProjectsIndexView from '../views/ProjectsIndexView.vue'
 import ProjectView from '../views/ProjectView.vue'
 import TasksIndexView from '../views/TasksIndexView.vue'
@@ -21,7 +21,7 @@ const routes = [
   {
     path: '/leads/:id',
     name: 'leadShow',
-    component: LeadShowComponent
+    component: LeadShow
   },
   {
     path: '/projects',

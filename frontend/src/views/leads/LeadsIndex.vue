@@ -8,7 +8,7 @@
     </div>
 
     <div class="row leads-container">
-      <LeadsList :leads="leadsData" />
+      <LeadsList :leads="leads" />
     </div>
   </div>
 </template>
@@ -47,10 +47,9 @@ export default {
         })
         .catch((error) => console.log(error));
     },
-    addLeadCreated($event) {
-      // this.newLead = { ...$event };
-      this.leads.push($event);
-      console.log("add CONTATO adicionado");
+    addLeadCreated(newLead) {
+      this.leads.push(newLead.lead);
+      console.log("Novo lead adicionado:", newLead.lead);
     },
   },
   mounted() {

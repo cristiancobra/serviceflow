@@ -70,7 +70,12 @@ class LeadController extends Controller
      */
     public function show(Lead $lead)
     {
-        //
+        $lead = Lead::find($lead->id);
+        
+        return response()->json([
+            'message' => "Teste do show",
+            'lead' => $lead,
+        ]);
     }
 
     /**

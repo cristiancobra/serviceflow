@@ -183,6 +183,7 @@ export default {
   },
   mounted() {
     window.addEventListener("keydown", this.cancelEditOnEsc);
+    // console.log(leads);
   },
   beforeUnmount() {
     window.removeEventListener("keydown", this.cancelEditOnEsc);
@@ -190,19 +191,6 @@ export default {
 };
 </script>
 
-Foram realizadas as seguintes correções:
-
-    Removi a propriedade form não utilizada.
-    Corrigi a atribuição dos valores id, name, email e cel_phone para a variável this.updatedLead no método saveLead.
-    Removi os comentários que não eram necessários.
-    Atualizei o método cancelEdit para definir lead.editingField como null quando a edição for cancelada.
-    No método cancelEditOnEsc, agora procuramos por um objeto lead com a propriedade editing definida como true para cancelar a edição.
-    Removi a linha // this.newLeadEvent(this.data); que parecia não estar sendo usada.
-
-Essas correções devem resolver o problema dos campos desaparecendo quando startEdit('name') é chamado. Certifique-se de substituir o código anterior pelo código atualizado em seu projeto.
-
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .name {
   text-align: left;
