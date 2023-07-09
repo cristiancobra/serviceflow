@@ -125,6 +125,19 @@ class LeadController extends Controller
      */
     public function destroy(Lead $lead)
     {
-        //
+        try {
+            $lead->delete();
+
+            return response()->json([
+                'message' => "Contato $lead->name deletado",
+                'lead' => $lead,
+            ]);
+        }
+        catch(ValidationException $validationException) {
+            return response()->json([
+                'message' => "Erro de validação",
+                'errors' => $validationException->errors(),
+            ], 422);
+        }
     }
 }

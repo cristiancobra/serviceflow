@@ -7,9 +7,15 @@
       <LeadCreateForm @new-lead-event="addLeadCreated($event)" />
     </div>
 
-    <div class="row leads-container">
-      <LeadsList :leads="leads" />
-    </div>
+    <template v-if="leads.length > 0">
+      <div class="row leads-container">
+        <LeadsList :leads="leads" />
+      </div>
+    </template>
+    <template v-else>
+      <NoLeadsMessage @new-lead-event="addLeadCreated($event)" />
+    </template>
+
   </div>
 </template>
 
@@ -17,6 +23,7 @@
 import axios from "axios";
 import LeadsFilter from "@/components/filters/LeadsFilter.vue";
 import LeadsList from "@/components/LeadsList.vue";
+import NoLeadsMessage from '@/components/messages/NoLeadsMessage.vue';
 import LeadCreateForm from "@/components/forms/LeadCreateForm.vue";
 
 export default {
@@ -25,6 +32,7 @@ export default {
     LeadsFilter,
     LeadCreateForm,
     LeadsList,
+    NoLeadsMessage,
   },
   data() {
     return {
@@ -50,6 +58,7 @@ export default {
     addLeadCreated(newLead) {
       this.leads.push(newLead.lead);
       console.log("Novo lead adicionado:", newLead.lead);
+      !this.toggle();
     },
   },
   mounted() {

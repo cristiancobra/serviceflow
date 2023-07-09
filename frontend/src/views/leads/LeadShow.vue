@@ -55,6 +55,16 @@
         Razão do primeiro contato: {{ lead.reason_for_initial_contact }}
       </p>
     </div>
+    <div class="row mt-5 mb-5">
+      <div>
+        <button
+          class="offset-10 col-1 myButton delete"
+          @click="deleteLead()"
+        >
+          excluir
+      </button>
+    </div>
+    </div>
   </div>
 </template>
 
@@ -82,6 +92,20 @@ export default {
     },
     setLeadId(leadId) {
       this.leadId = leadId;
+    },
+    async deleteLead() {
+      axios
+        .delete(`http://localhost:8191/api/leads/${this.leadId}`)
+        .then((response) => {
+          this.data = response.data;
+          // this.newLeadEvent(this.data);
+          const successMessage = "Lead excluído com sucesso";
+          this.$router.push({ name: "leadsIndex", query: { successMessage } });
+        })
+        .catch(error => {
+          console.error("Erro ao deletar lead:", error);
+          // Lidar com o erro, se necessário
+        });
     },
   },
   async mounted() {
@@ -151,5 +175,27 @@ a:active {
   margin-left: 200px;
   margin-right: 180px;
   margin-bottom: 60px;
+}
+
+.myButton {
+  border-width: 2px;
+  border-style: solid;
+  border-color: white;
+  border-radius: 20px 20px 20px 20px;
+  padding: 10px 15px 10px 15px;
+  /* margin: 0 4px 0 4px; */
+  color: white;
+  font-weight: 800;
+  /* width: 120px; */
+}
+.delete {
+  background-color: #ffa1a1;
+  border-color: #c82333;
+  color: #c82333;
+}
+.delete:hover {
+  background-color: #c82333;
+  border-color: #c82333;
+  color: white;
 }
 </style>
