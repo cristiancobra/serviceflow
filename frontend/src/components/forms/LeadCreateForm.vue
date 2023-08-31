@@ -164,6 +164,127 @@
         <div class="form-group">
           <div class="row">
             <div class="col-2">
+              <label class="labels" for="address"> Endereço </label>
+            </div>
+            <div class="col-10">
+              <input
+                class="form-control"
+                type="text"
+                id="address"
+                v-model="form.address"
+                placeholder="Endereço"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="row">
+            <div class="col-2">
+              <label class="labels" for="address_complement">
+                Complemento
+              </label>
+            </div>
+            <div class="col-10">
+              <input
+                class="form-control"
+                type="text"
+                id="address_complement"
+                v-model="form.address_complement"
+                placeholder="Complemento"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="row">
+            <div class="col-2">
+              <label class="labels" for="neighborhood"> Bairro </label>
+            </div>
+            <div class="col-10">
+              <input
+                class="form-control"
+                type="text"
+                id="neighborhood"
+                v-model="form.neighborhood"
+                placeholder="Bairro"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="row">
+            <div class="col-2">
+              <label class="labels" for="city"> Cidade </label>
+            </div>
+            <div class="col-10">
+              <input
+                class="form-control"
+                type="text"
+                id="city"
+                v-model="form.city"
+                placeholder="Cidade"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="row">
+            <div class="col-2">
+              <label class="labels" for="state"> Estado </label>
+            </div>
+            <div class="col-10">
+              <input
+                class="form-control"
+                type="text"
+                id="state"
+                v-model="form.state"
+                placeholder="Estado"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="row">
+            <div class="col-2">
+              <label class="labels" for="country"> País </label>
+            </div>
+            <div class="col-10">
+              <input
+                class="form-control"
+                type="text"
+                id="country"
+                v-model="form.country"
+                placeholder="País"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="row">
+            <div class="col-2">
+              <label class="labels" for="zip_code"> CEP </label>
+            </div>
+            <div class="col-10">
+              <input
+                class="form-control"
+                type="text"
+                id="zip_code"
+                v-model="form.zip_code"
+                placeholder="CEP"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="row">
+            <div class="col-2">
               <label class="labels" for="contact_date"> Data de contato </label>
             </div>
             <div class="col-10">
@@ -260,6 +381,13 @@ export default {
         facebook: null,
         instagram: null,
         other_social_media: null,
+        address: null,
+        address_complement: null,
+        neighborhood: null,
+        city: null,
+        state: null,
+        country: null,
+        zip_code: null,
         contact_date: null,
         source: null,
         source_contact_channel: null,
@@ -268,29 +396,41 @@ export default {
     };
   },
   methods: {
-    // getLeadsStatus() {
-    //     axios
-    //         .get("http://localhost:8191/api/leads/status")
-    //         .then((response) => {
-    //             this.allStatus = response.data;
-    //         })
-    //         .catch((error) => console.log(error));
-    // },
     async submitForm() {
       axios
         .post("http://localhost:8191/api/leads", this.form)
         .then((response) => {
           this.data = response.data;
           this.newLeadEvent(this.data);
+          this.clearForm();
         });
+    },
+    clearForm() {
+      this.form.name = null;
+      this.form.comments = null;
+      this.form.email = null;
+      this.form.cel_phone = null;
+      this.form.user_id = null;
+      this.form.linkedin = null;
+      this.form.facebook = null;
+      this.form.instagram = null;
+      this.form.other_social_media = null;
+      this.form.address = null;
+      this.form.address_complement = null;
+      this.form.neighborhood = null;
+      this.form.city = null;
+      this.form.state = null;
+      this.form.country = null;
+      this.form.zip_code = null;
+      this.form.contact_date = null;
+      this.form.source = null;
+      this.form.source_contact_channel = null;
+      this.form.reason_for_initial_contact = null;
     },
     newLeadEvent(data) {
       this.$emit("new-lead-event", data);
     },
   },
-  // mounted() {
-  //     this.getLeadsStatus();
-  // },
 };
 </script>
 

@@ -1,8 +1,12 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
+import "./assets/css/style.css"
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap"
+import VueMask from '@devindex/vue-mask'; // vue mask
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 
 /* import the fontawesome core */
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -19,5 +23,7 @@ library.add(fas, fab)
 
 createApp(App)
 .use(router)
+.use(VueMask)
+.use(VueDatePicker)
 .component('font-awesome-icon', FontAwesomeIcon)
 .mount('#app')

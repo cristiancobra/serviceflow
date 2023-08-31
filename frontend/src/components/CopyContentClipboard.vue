@@ -15,7 +15,7 @@ export default {
     methods: {
         copyContent(data) {
             const divConteudo = document.createElement("div");
-            divConteudo.innerText = this.data; // dado a ser copiado
+            divConteudo.innerText = data; // dado a ser copiado
 
             // Copia o conteúdo da div para a área de transferência
             navigator.clipboard.writeText(divConteudo.innerText)

@@ -2,23 +2,23 @@
   <div class="image">
     <img :src="require('@/assets/caixa_vazia-PB.png')" alt="logo-serviceflow" />
 
-    <p class="bold">Você não tem nenhum contato!</p>
-    <p class="message">Cadastre seu primeiro</p>
+    <p class="bold">Você não tem nenhum serviço!</p>
+    <p class="message">Cadastre um seviços para poder faturar</p>
 
     <div v-bind:class="{ hidden: isActive }">
-      <LeadCreateForm @new-lead-event="addLeadCreated($event)" />
+      <ServiceCreateForm @new-service-event="addServiceCreated($event)" />
     </div>
   </div>
 </template>
   
   <script>
-import LeadCreateForm from "@/components/forms/LeadCreateForm.vue";
 import axios from "axios";
+import ServiceCreateForm from "@/components/forms/ServiceCreateForm.vue";
 
 export default {
-  name: "NoLeadsMessage",
+  name: "NoServicesMessage",
   components: {
-    LeadCreateForm,
+    ServiceCreateForm,
   },
   data() {
     return {
@@ -29,17 +29,20 @@ export default {
     toggle() {
       this.isActive = !this.isActive;
     },
-    getLeads() {
+    getServices() {
       axios
-        .get("http://localhost:8191/api/leads")
+        .get("http://localhost:8191/api/services")
         .then((response) => {
-          this.leads = response.data.data;
+          this.services = response.data.data;
         })
         .catch((error) => console.log(error));
     },
-    addLeadCreated(newLead) {
-        this.$emit("new-lead-event", newLead);
-        console.log("Novo lead enviado pro componente pai:", newLead.lead);
+    addServiceCreated(newService) {
+      this.$emit("new-service-event", newService);
+      console.log(
+        "Novo service enviado pro componente pai:",
+        newService.service
+      );
     },
   },
 };

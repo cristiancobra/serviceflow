@@ -1,72 +1,72 @@
 <template>
   <div>
-
-    <LeadsFilter @toggle="toggle" />
-
-    <div v-bind:class="{ hidden: isActive }">
-      <LeadCreateForm @new-lead-event="addLeadCreated($event)" />
+    <div class="row justify-content-end pt-5 pe-5">
+      <div class="slot openForm" @click="toggle()">+</div>
     </div>
 
-    <template v-if="leads.length > 0">
-      <div class="row leads-container">
-        <LeadsList :leads="leads" />
+    <div v-bind:class="{ hidden: isActive }">
+      <ServiceCreateForm @new-service-event="addServiceCreated($event)" />
+    </div>
+
+    <template v-if="services.length > 0">
+      <div class="row services-container">
+        <ServicesList :services="services" />
       </div>
     </template>
     <template v-else>
-      <NoLeadsMessage @new-lead-event="addLeadCreated($event)" />
+      <NoServicesMessage @new-service-event="addServiceCreated($event)" />
     </template>
-
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import LeadsFilter from "@/components/filters/LeadsFilter.vue";
-import LeadsList from "@/components/lists/LeadsList.vue";
-import NoLeadsMessage from '@/components/messages/NoLeadsMessage.vue';
-import LeadCreateForm from "@/components/forms/LeadCreateForm.vue";
+// import servicesFilter from "@/components/filters/servicesFilter.vue";
+import ServicesList from "@/components/ServicesList.vue";
+import NoServicesMessage from '@/components/messages/NoServicesMessage.vue';
+import ServiceCreateForm from "@/components/forms/ServiceCreateForm.vue";
 
 export default {
-  name: "LeadsIndex",
+  name: "servicesIndex",
   components: {
-    LeadsFilter,
-    LeadCreateForm,
-    LeadsList,
-    NoLeadsMessage,
+    // servicesFilter,
+    ServiceCreateForm,
+    ServicesList,
+    NoServicesMessage,
   },
   data() {
     return {
       isActive: true,
       hasError: false,
       data: null,
-      leads: [],
-      newLead: {},
+      services: [],
+      newService: {},
     };
   },
   methods: {
     toggle() {
       this.isActive = !this.isActive;
     },
-    getLeads() {
+    getServices() {
       axios
-        .get("http://localhost:8191/api/leads")
+        .get("http://localhost:8191/api/services")
         .then((response) => {
-          this.leads = response.data.data;
+          this.services = response.data.data;
         })
         .catch((error) => console.log(error));
     },
-    addLeadCreated(newLead) {
-      this.leads.push(newLead.lead);
-      console.log("Novo lead adicionado:", newLead.lead);
+    addServiceCreated(newService) {
+      this.services.push(newService.service);
+      console.log("Novo service adicionado:", newService.service);
       !this.toggle();
     },
   },
   mounted() {
-    this.getLeads();
+    this.getServices();
   },
   computed: {
-    leadsData() {
-      return this.leads || [];
+    servicesData() {
+      return this.services || [];
     },
   },
 };
@@ -119,7 +119,7 @@ export default {
   background-color: #b1388d;
   color: white;
 }
-.new {
+.openForm {
   border-radius: 20px 20px 20px 20px;
   background-color: white;
   border-color: #ff3eb5;
@@ -132,7 +132,7 @@ export default {
   color: white;
   margin-left: 50px;
 }
-.leads-container {
+.services-container {
   margin-left: 10%;
   margin-right: 10%;
   margin-bottom: 10%;

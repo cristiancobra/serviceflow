@@ -1,0 +1,77 @@
+:root {
+    --azul: #3498db;
+    --azul-claro: #d8f5f9;
+    --verde: #2CB48D;
+    --verde-claro: #e5f9e0;
+    --laranja: #E78D1F;
+    --laranja-claro: #fdf1d4;
+    --roxo: #B1388D;
+    --roxo-claro: #DFBAD9;
+    --cinza-claro: #DCDCDC;
+    --cinza: #808080;
+  }
+
+  .button-new {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+    text-align: center;
+    border-style: solid;
+    border-radius: 10px;
+    background-color: var(--roxo-claro);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); 
+    color: var(--roxo);
+  }
+  .button-new:hover {
+    border-color: var(--roxo);
+    background-color: var(--roxo);
+    color: white;
+  }
+
+  .errorBox {
+    color: red;
+    background-color: rgb(239, 165, 165);
+    border-color: red;
+  }
+
+  .icon-new {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--roxo);
+  }
+
+  .button-new:hover .icon-new {
+    color: white;
+  }
+
+  .rotate-icon {
+    animation: rotateAnimation 1s infinite; /* Duração e repetição da animação */
+  }
+  
+  @keyframes rotateAnimation {
+    from {
+      transform: rotate(0deg); /* Ângulo inicial */
+    }
+    to {
+      transform: rotate(360deg); /* Ângulo final */
+    }
+  }
+
+  .list-line {
+    margin-top: 3px;
+    padding: 0px;
+    padding-top: 14px;
+    padding-bottom: 0px;
+    width: auto;
+    height: auto;
+    background-color: white;
+    text-align: left;
+    margin-right: 0;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-color: #007e8b;
+    border-radius: 0px 0 0 0px;
+  }
+
+  

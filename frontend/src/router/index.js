@@ -2,10 +2,12 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LeadsIndex from '../views/leads/LeadsIndex.vue'
 import LeadShow from '../views/leads/LeadShow.vue'
+import ServicesIndex from '../views/services/ServicesIndex.vue'
+import ServiceShow from '../views/services/ServiceShow.vue'
 import ProjectsIndexView from '../views/ProjectsIndexView.vue'
 import ProjectView from '../views/ProjectView.vue'
-import TasksIndexView from '../views/TasksIndexView.vue'
-import TaskView from '../views/TaskView.vue'
+import TasksIndex from '../views/tasks/TasksIndex.vue'
+import TaskShow from '../views/tasks/TaskShow.vue'
 
 const routes = [
   {
@@ -24,6 +26,16 @@ const routes = [
     component: LeadShow
   },
   {
+    path: '/services',
+    name: 'serviceIndex',
+    component: ServicesIndex
+  },
+  {
+    path: '/services/:id',
+    name: 'serviceShow',
+    component: ServiceShow
+  },
+  {
     path: '/projects',
     name: 'projectsIndex',
     component: ProjectsIndexView
@@ -36,12 +48,12 @@ const routes = [
   {
     path: '/tasks',
     name: 'tasksIndex',
-    component: TasksIndexView
+    component: TasksIndex
   },
   {
     path: '/task/:id',
     name: 'tasksShow',
-    component: TaskView
+    component: TaskShow
   },
 ]
 

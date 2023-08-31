@@ -9,17 +9,20 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <router-link to="/"> Home --</router-link>
+        <li class="nav-item primary-color">
+          <router-link to="/">Home</router-link>
         </li>
-        <li class="nav-item">
-          <router-link to="/leads"> Contatos --</router-link>
+        <li class="nav-item primary-color">
+          <router-link to="/leads">Contatos</router-link>
         </li>
-        <li class="nav-item">
-          <router-link to="/projects"> Projetos --</router-link>
+        <li class="nav-item green">
+          <router-link to="/services">Serviços</router-link>
         </li>
-        <li class="nav-item">
-          <router-link to="/tasks"> Tarefas </router-link>
+        <li class="nav-item orange">
+          <router-link to="/projects">Projetos</router-link>
+        </li>
+        <li class="nav-item pink">
+          <router-link to="/tasks">Tarefas</router-link>
         </li>
         
       </ul>
@@ -49,11 +52,42 @@ nav a {
 }
 
 nav a.router-link-exact-active {
-  color: #42b983;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 20px 20px 20px 20px;
+  padding: 10px 15px 10px 15px;
+  margin: 0 4px 0 4px;
+  font-weight: 800;
+  width: 120px;
+}
+
+.nav-item {
+  padding-right: 12px;
+}
+
+.nav-item a {
+  text-decoration: none;
 }
 
 .logo {
   width: 170px;
   height: 40px;
+}
+
+
+.primary-color a {
+  color: #b1388d;
+}
+
+.orange a {
+  color: #e78d1f;
+}
+
+.green a {
+  color: #2cb48d;
+}
+
+.pink a {
+  color: #ff3eb5;
 }
 </style>

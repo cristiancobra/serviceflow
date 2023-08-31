@@ -1,126 +1,131 @@
 <template>
-  <div id="line-container">
-    <div class="row list-line" v-for="lead in leads" v-bind:key="lead.id">
-      <div
-        id="name"
-        class="col-4"
-        style="position:relative"
-        @mouseover="showContextMenu(lead, 'name')"
-        @mouseleave="hideContextMenu(lead, 'name')"
+  <div id="line-container" class="row">
+    <div class="col m-3 card" v-for="lead in leads" v-bind:key="lead.id">
+      <router-link
+        :to="{
+          name: 'leadShow',
+          params: { id: lead.id },
+        }"
       >
-        <p class="name" v-if="!lead.editing || (lead.editing && lead.editingField !== 'name')">
-          {{ lead.name }}
-        </p>
-        <input
-          v-else-if="lead.editing && lead.editingField === 'name'"
-          type="text"
-          class="form-control"
-          v-model="lead.name"
-          @keydown.enter="saveLead(lead, 'name')"
-          @keydown.esc="cancelEdit(lead)"
-        />
-        <div
-          class="small-menu"
-          v-show="lead.showContextMenu && lead.activeField === 'name'"
-        >
-          <div class="icon-col small-menu-item">
-            <span class="icon" @click="startEdit(lead, 'name')">
-              <font-awesome-icon icon="fa-solid fa-pencil" />
-            </span>
-          </div>
-
-          <CopyContentClipboard :data="lead.name" />
-
-        </div>
-      </div>
-
-      <div
-        id="email"
-        class="col-3"
-        style="position:relative"
-        @mouseover="showContextMenu(lead, 'email')"
-        @mouseleave="hideContextMenu(lead, 'email')"
-      >
-        <p class="email" v-if="!lead.editing || (lead.editing && lead.editingField !== 'email')">
-          {{ lead.email }}
-        </p>
-        <input
-          v-else-if="lead.editing && lead.editingField === 'email'"
-          type="text"
-          class="form-control"
-          v-model="lead.email"
-          @keydown.enter="saveLead(lead, 'email')"
-          @keydown.esc="cancelEdit(lead)"
-        />
-        <div
-          class="small-menu"
-          v-show="lead.showContextMenu && lead.activeField === 'email'"
-        >
-          <div class="icon-col small-menu-item">
-            <span class="icon" @click="startEdit(lead, 'email')">
-              <font-awesome-icon icon="fa-solid fa-pencil" />
-            </span>
-          </div>
-
-          <CopyContentClipboard :data="lead.email" />
-
-        </div>
-      </div>
-
-      <div
-        id="cel_phone"
-        class="col-3"
-        style="position:relative"
-        @mouseover="showContextMenu(lead, 'cel_phone')"
-        @mouseleave="hideContextMenu(lead, 'cel_phone')"
-      >
-        <p class="cel_phone" v-if="!lead.editing || (lead.editing && lead.editingField !== 'cel_phone')">
-          {{ lead.cel_phone }}
-        </p>
-        <input
-          v-else-if="lead.editing && lead.editingField === 'cel_phone'"
-          type="text"
-          class="form-control"
-          v-model="lead.cel_phone"
-          @keydown.enter="saveLead(lead, 'cel_phone')"
-          @keydown.esc="cancelEdit(lead)"
-        />
-        <div
-          class="small-menu"
-          v-show="lead.showContextMenu && lead.activeField === 'cel_phone'"
-        >
-          <div class="icon-col small-menu-item">
-            <span class="icon" @click="startEdit(lead, 'cel_phone')">
-              <font-awesome-icon icon="fa-solid fa-pencil" />
-            </span>
-          </div>
-
-          <CopyContentClipboard :data="lead.cel_phone" />
-
-        </div>
-      </div>
-
-      <div id="icon-show" class="col-0 icon-col">
-        <router-link
-          :to="{
-            name: 'leadShow',
-            params: { id: lead.id },
-          }"
-        >
-          <span class="icon">
-            <font-awesome-icon icon="fa-solid fa-eye" />
+        <div id="name" class="row" style="position: relative">
+          <span class="icon big">
+            <font-awesome-icon icon="fa-solid fa-user-circle" />
           </span>
-        </router-link>
-      </div>
 
-      <router-view />
+          <p
+            class="name"
+            v-if="
+              !lead.editing || (lead.editing && lead.editingField !== 'name')
+            "
+          >
+            {{ lead.name }}
+          </p>
+          <input
+            v-else-if="lead.editing && lead.editingField === 'name'"
+            type="text"
+            class="form-control"
+            v-model="lead.name"
+            @keydown.enter="saveLead(lead, 'name')"
+            @keydown.esc="cancelEdit(lead)"
+          />
+          <div
+            class="small-menu"
+            v-show="lead.showContextMenu && lead.activeField === 'name'"
+          >
+            <div class="icon-col small-menu-item">
+              <span class="icon" @click="startEdit(lead, 'name')">
+                <font-awesome-icon icon="fa-solid fa-pencil" />
+              </span>
+            </div>
+
+            <CopyContentClipboard :data="lead.name" />
+          </div>
+        </div>
+
+        <div
+          id="email"
+          class="row"
+          style="position: relative"
+          @mouseover="showContextMenu(lead, 'email')"
+          @mouseleave="hideContextMenu(lead, 'email')"
+        >
+          <p
+            class="email"
+            v-if="
+              !lead.editing || (lead.editing && lead.editingField !== 'email')
+            "
+          >
+            {{ lead.email }}
+          </p>
+          <input
+            v-else-if="lead.editing && lead.editingField === 'email'"
+            type="text"
+            class="form-control"
+            v-model="lead.email"
+            @keydown.enter="saveLead(lead, 'email')"
+            @keydown.esc="cancelEdit(lead)"
+          />
+          <div
+            class="small-menu"
+            v-show="lead.showContextMenu && lead.activeField === 'email'"
+          >
+            <div class="icon-col small-menu-item">
+              <span class="icon" @click="startEdit(lead, 'email')">
+                <font-awesome-icon icon="fa-solid fa-pencil" />
+              </span>
+            </div>
+
+            <CopyContentClipboard :data="lead.email" />
+          </div>
+        </div>
+
+        <div
+          id="cel_phone"
+          class="row"
+          style="position: relative"
+          @mouseover="showContextMenu(lead, 'cel_phone')"
+          @mouseleave="hideContextMenu(lead, 'cel_phone')"
+        >
+          <p
+            class="cel_phone"
+            v-if="
+              !lead.editing ||
+              (lead.editing && lead.editingField !== 'cel_phone')
+            "
+          >
+            {{ lead.cel_phone }}
+          </p>
+          <input
+            v-else-if="lead.editing && lead.editingField === 'cel_phone'"
+            type="text"
+            class="form-control"
+            v-model="lead.cel_phone"
+            @keydown.enter="saveLead(lead, 'cel_phone')"
+            @keydown.esc="cancelEdit(lead)"
+          />
+          <div
+            class="small-menu"
+            v-show="lead.showContextMenu && lead.activeField === 'cel_phone'"
+          >
+            <div class="icon-col small-menu-item">
+              <span class="icon" @click="startEdit(lead, 'cel_phone')">
+                <font-awesome-icon icon="fa-solid fa-pencil" />
+              </span>
+            </div>
+
+            <CopyContentClipboard :data="lead.cel_phone" />
+          </div>
+        </div>
+      </router-link>
     </div>
+
+    <router-view />
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-import CopyContentClipboard from './CopyContentClipboard.vue';
+import axios from "axios";
+import CopyContentClipboard from "../CopyContentClipboard.vue";
 
 export default {
   name: "LeadsList",
@@ -145,7 +150,7 @@ export default {
     },
     hideContextMenu(lead) {
       lead.showContextMenu = false;
-      lead.activeField = '';
+      lead.activeField = "";
     },
     startEdit(lead, field) {
       lead.editing = true;
@@ -193,13 +198,26 @@ export default {
 
 <style scoped>
 .name {
-  text-align: left;
+  text-align: center;
   font-size: 16px;
   font-weight: 600;
 }
+.big {
+  font-size: 44px;
+  color: var(--azul);
+}
+.card {
+  border-style: solid;
+  border-width: 2px;
+  border-color: var(--azul);
+  border-radius: 6px;
+  padding: 10px;
+  background-color: var(--azul-claro);
+  /* height: 15vh; */
+}
 .email {
   text-align: center;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
 }
 .cel_phone {
@@ -212,7 +230,6 @@ export default {
   font-weight: 400;
 }
 .icon:hover {
-
 }
 .icon-col {
   font-size: 16px;
