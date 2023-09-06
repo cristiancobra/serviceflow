@@ -4,7 +4,7 @@
       {{ message }}
     </div>
 
-    <div id="form" class="container">
+    <div id="form" class="form-container">
       <form @submit.prevent="submitForm">
         <div class="form-group">
           <div class="row">
@@ -353,7 +353,7 @@
         </div>
 
         <div class="row ms-5 me-5 mt-4 mb-2">
-          <button type="submit" class="btn new">Criar</button>
+          <button type="submit" class="button-new">Criar</button>
         </div>
       </form>
     </div>
@@ -435,28 +435,8 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  border-style: solid;
-  border-color: #ff3eb5;
-  border-width: 2px;
-  margin-left: 180px;
-  margin-right: 180px;
-  margin-bottom: 60px;
-  margin-top: 60px;
-  padding: 20px;
-  border-radius: 16px;
-  transition: all 0.5s;
-  text-align: left;
-  font-weight: 800;
-}
 .labels {
   text-align: left;
   margin-left: 0;
-}
-.new {
-  background-color: #ff3eb5;
-  color: white;
-  font-weight: 800;
-  padding: 10px 20px 10px 20px;
 }
 </style>

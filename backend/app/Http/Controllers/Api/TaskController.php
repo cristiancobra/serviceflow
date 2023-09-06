@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Task;
 use App\Http\Resources\TasksResource;
 use App\Http\Resources\TaskResource;
+use App\Services\DateConversionService;
 
 class TaskController extends Controller
 {
@@ -17,7 +18,14 @@ class TaskController extends Controller
      */
     public function index()
     {
-		return TasksResource::collection(Task::all());
+        return TasksResource::collection(
+            Task::whereIn('status', [
+                'to-do',
+                'doing'
+            ])
+                ->orderBy('created_at', 'desc')
+                ->get()
+        );
     }
 
     /**
@@ -38,30 +46,32 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-		$task = new Task;
-		$task->account_id = 1;
-		$task->user_id = 1;
-		$task->contact_id = 1;
-		$task->company_id = 1;
-		$task->goal_id = $request->goal_id;
-		$task->project_id = 1;
-		$task->stage_id = 1;
-		$task->name = $request->name;
-//		$task->category = $request->category;
-		$task->date_start = '2021-11-15 00:00:00';
-		$task->date_due = '2021-11-19 00:00:00';
-		$task->date_conclusion = $request->date_conclusion;
-		$task->description = $request->description;
-		$task->status = $request->status;
-		$task->trash = 0;
+        $task = new Task;
+        $task->fill($request->all());
+        $task->account_id = 1;
+        $task->user_id = 1;
+        // $task->contact_id = 1;
+        $task->company_id = 1;
+        // $task->goal_id = $request->goal_id;
+        // $task->project_id = 1;
+        // $task->stage_id = 1;
+        // $task->name = $request->name;
+        //		$task->category = $request->category;
+        // $task->date_start = $request->date_start;
+        // $task->date_due = $request->date_due;
+
+        if ($request->date_conclusion) {
+            $task->date_conclusion = $request->date_conclusion;
+            $task->duration_days = DateConversionService::calculateDurationDays($request->date_conclusion, $request->date_start);
+        }
+
+        // $task->description = $request->description;
+        // $task->status = $request->status;
         $task->save();
-		
+
         return response()->json([
             'message' => "Tarefa $request->name criada",
-			'id' => $task->id,
-			'name' => $task->name,
-			'description' => $task->description,
-			
+            'task' => $task,
         ]);
     }
 
@@ -73,7 +83,8 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
-		return new TaskResource(Task::find($task->id));
+
+        return new TaskResource(Task::with('journeys')->find($task->id));
     }
 
     /**
@@ -109,11 +120,52 @@ class TaskController extends Controller
     {
         //
     }
-	
-	/**
-	 * Retorna os valores possíveis para SITUAÇÃO / STATUS 
-	 */
-	public function getTasksStatus() {
-		return $status = Task::getStatus();
-	}
+
+    /**
+     * Retorna os valores possíveis para SITUAÇÃO / STATUS 
+     */
+    public function getTasksStatus()
+    {
+        return $status = Task::getStatus();
+    }
+
+    /**
+     * Filtra tarefas pelo status
+     * 
+     * * @return \Illuminate\Http\Response
+     */
+    public function filterTasksByStatus(Request $request)
+    {
+        $status = $request->input('status'); // Obtenha o valor do parâmetro 'status'
+
+        $tasks = Task::orderBy('created_at', 'desc');
+
+        if ($status) {
+            $tasks->where('status', $status);
+        }
+
+        $filteredTasks = $tasks->get();
+
+        return TasksResource::collection($filteredTasks);
+    }
+
+    /**
+     * Filtra tarefas pela data
+     * 
+     * * @return \Illuminate\Http\Response
+     */
+    public function filterTasksByDate(Request $request)
+    {
+        $status = $request->input('date'); // Obtenha o valor do parâmetro 'status'
+
+        $tasks = Task::orderBy('date_due', 'desc');
+
+        // if ($status) {
+        //     $tasks->where('status', $status);
+        // }
+
+        $filteredTasks = $tasks->get();
+
+        return TasksResource::collection($filteredTasks);
+    }
 }

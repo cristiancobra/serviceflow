@@ -22,7 +22,7 @@
 <script>
 import axios from "axios";
 // import servicesFilter from "@/components/filters/servicesFilter.vue";
-import ServicesList from "@/components/ServicesList.vue";
+import ServicesList from "@/components/lists/ServicesList.vue";
 import NoServicesMessage from '@/components/messages/NoServicesMessage.vue';
 import ServiceCreateForm from "@/components/forms/ServiceCreateForm.vue";
 

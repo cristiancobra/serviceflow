@@ -9,7 +9,7 @@
             >
               <font-awesome-icon :icon="getStatusIcon(task.status)" />
               <p class="label">
-                {{ formatDuration(task.duration) }}
+                {{ formatDuration(task.duration_time) }}
               </p>
             </div>
             <div class="col-11 ps-3">
@@ -183,7 +183,7 @@ a:active {
 }
 .label {
   font-weight: 800;
-  font-size: 1.6rem;
+  font-size: 1.2rem;
   text-align: center;
 }
 .card {
@@ -203,26 +203,26 @@ a:active {
   color: var(--verde);
 }
 .doing {
-  background-color: var(--azul-claro);
-  border-color: var(--azul);
-  color: var(--azul);
+  background-color: var(--blue-light);
+  border-color: var(--blue);
+  color: var(--blue);
 }
 .to-do {
-  background-color: var(--laranja-claro);
-  border-color: var(--laranja);
-  color: var(--laranja);
+  background-color: var(--orange-light);
+  border-color: var(--orange);
+  color: var(--orange);
 }
 .wait {
-  background-color: var(--cinza-claro);
-  border-color: var(--cinza);
-  color: var(--cinza);
+  background-color: var(--gray-light);
+  border-color: var(--gray);
+  color: var(--gray);
 }
 .status {
   text-align: center;
   font-size: 3rem;
 }
 .title {
-  font-size: 32px;
+  font-size: 26px;
   font-weight: 900;
   padding-top: 10px;
   padding-bottom: 10px;

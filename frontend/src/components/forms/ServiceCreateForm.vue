@@ -43,27 +43,29 @@
         <div class="form-group">
           <div class="row">
             <div class="col">
-              <label class="labels" for="labor_hours">Horas de Trabalho</label>
+              <label class="labels" for="hours">Tempo de trabalho</label>
             </div>
             <div class="col">
               <input
                 class="form-control"
-                type="text"
-                name="labor_hours"
-                v-model="form.labor_hours"
-                v-mask="'000'"
+                type="number"
+                name="hours"
+                v-model="form.hours"
+                placeholder="HH"
+                min="0"
+                max="23"
               />
             </div>
             <div class="col">
-              <select id="minutes" v-model="form.minutes">
-                <option
-                  v-for="minute in minutes"
-                  :key="minute.value"
-                  :value="minute.value"
-                >
-                  {{ minute.label }}
-                </option>
-              </select>
+              <input
+                class="form-control"
+                type="number"
+                name="minutes"
+                v-model="form.minutes"
+                placeholder="MM"
+                min="0"
+                max="59"
+              />
             </div>
 
             <div class="col">
@@ -94,10 +96,8 @@
                 name="profit_percentage"
                 v-model="form.profit_percentage"
                 v-mask="'00'"
-                
               />
             </div>
-            
           </div>
         </div>
 
@@ -121,27 +121,23 @@ export default {
       formattedLaborHours: "",
       formattedLaborHourlyRate: "",
       laborHourlyRateMinutes: "",
-      minutes: [
-        { value: null, label: "" },
-        { value: 0.25, label: "15 minutos" },
-        { value: 0.5, label: "30 minutos" },
-        { value: 0.75, label: "45 minutos" },
-      ],
       message: null,
       data: [],
       form: {
         name: null,
         observations: null,
         labor_hours: null,
-        labor_hourly_rate: null,
-        minutes: null,
-        profit_percentage: null,
+        labor_hourly_rate: 0,
+        profit_percentage: 0,
+        hours: 1, // Campo para horas
+        minutes: 0, // Campo para minutos
       },
     };
   },
   methods: {
     async submitForm() {
-      console.log(this.form);
+      this.form.labor_hours = this.form.hours * 3600 + this.form.minutes * 60;
+      
       axios
         .post("http://localhost:8191/api/services", this.form)
         .then((response) => {
@@ -152,42 +148,16 @@ export default {
     newServiceEvent(data) {
       this.$emit("new-service-event", data);
     },
-    // validateInput() {
-    //   // Verifica se o valor é maior que 100
-    //   // Verifica se há mais de um ponto decimal
-    //   const parts = this.formattedLaborHours.split(".");
-    //   if (parts.length > 2) {
-    //     this.formattedLaborHours =
-    //       parts[0] +
-    //       "." +
-    //       parts.slice(1, parts.length - 1).join("") +
-    //       parts[parts.length - 1];
-    //   }
+    validateTimeInput() {
+      const input = this.form.labor_hours;
+      const timeRegex = /^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])$/;
 
-    //   // Limita o número de dígitos a 3 além do decimal
-    //   const decimalIndex = this.formattedLaborHours.indexOf(".");
-    //   if (
-    //     decimalIndex !== -1 &&
-    //     decimalIndex < this.formattedLaborHours.length - 4
-    //   ) {
-    //     this.formattedLaborHours = this.formattedLaborHours.substring(
-    //       0,
-    //       decimalIndex + 4
-    //     );
-    //   }
-
-    //   // Atualiza a propriedade labor_hours com o valor atualizado de formattedLaborHours
-    //   this.form.labor_hours = parseFloat(
-    //     this.formattedLaborHours.replace(",", ".")
-    //   );
-    // },
-    // updateLaborHourlyRate() {
-    //   // Remove todos os caracteres não numéricos, exceto o ponto decimal
-    //   this.formattedLaborHourlyRate = this.formattedLaborHourlyRate.replace(/[^0-9.]/g, '');
-
-    //   // Atualiza a propriedade laborHourlyRate com o valor atualizado de formattedLaborHourlyRate
-    //   this.laborHourlyRate = parseFloat(this.formattedLaborHourlyRate.replace(',', '.'));
-    // },
+      if (!timeRegex.test(input)) {
+        // O valor não está no formato de hora válido, você pode tratar isso aqui.
+        // Por exemplo, definir um valor padrão ou exibir uma mensagem de erro.
+        this.form.labor_hours = ""; // Defina um valor padrão vazio por enquanto.
+      }
+    },
   },
 };
 </script>

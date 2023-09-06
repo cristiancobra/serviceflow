@@ -328,7 +328,7 @@ icon-new:hover {
 .icon-stop {
   font-size: 24px;
   font-weight: 900;
-  color: var(--azul);
+  color: var(--blue);
 }
 .icon-col {
   font-size: 16px;
@@ -359,13 +359,13 @@ icon-new:hover {
   text-align: center;
   border-style: solid;
   border-radius: 50%;
-  background-color: var(--azul-claro);
+  background-color: var(--blue-light);
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  color: var(--azul);
+  color: var(--blue);
 }
 .button-stop:hover {
-  border-color: var(--azul);
-  background-color: var(--azul);
+  border-color: var(--blue);
+  background-color: var(--blue);
 }
 .button-stop:hover .icon-stop {
   color: white;

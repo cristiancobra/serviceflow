@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Lead;
 use App\Http\Resources\LeadsResource;
+use App\Http\Resources\LeadResource;
 use App\Http\Requests\LeadCreateRequest;
 use App\Http\Requests\LeadUpdateRequest;
 use Illuminate\Http\Request;
@@ -19,7 +20,10 @@ class LeadController extends Controller
      */
     public function index()
     {
-        return LeadsResource::collection(Lead::all());
+        $leads = Lead::orderBy('name', 'ASC')
+            ->paginate(20);
+        
+        return LeadsResource::collection($leads);
     }
 
     /**
@@ -52,14 +56,12 @@ class LeadController extends Controller
                 'message' => "Contato $lead->name atualizado",
                 'lead' => $lead,
             ]);
-        }
-        catch(ValidationException $validationException) {
+        } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",
                 'errors' => $validationException->errors(),
             ], 422);
         }
-
     }
 
     /**
@@ -70,12 +72,8 @@ class LeadController extends Controller
      */
     public function show(Lead $lead)
     {
-        $lead = Lead::find($lead->id);
-        
-        return response()->json([
-            'message' => "Teste do show",
-            'lead' => $lead,
-        ]);
+
+        return new LeadResource(Lead::find($lead->id));
     }
 
     /**
@@ -108,8 +106,7 @@ class LeadController extends Controller
                 'message' => "Contato $lead->name atualizado",
                 'lead' => $lead,
             ]);
-        }
-        catch(ValidationException $validationException) {
+        } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",
                 'errors' => $validationException->errors(),
@@ -132,8 +129,7 @@ class LeadController extends Controller
                 'message' => "Contato $lead->name deletado",
                 'lead' => $lead,
             ]);
-        }
-        catch(ValidationException $validationException) {
+        } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",
                 'errors' => $validationException->errors(),

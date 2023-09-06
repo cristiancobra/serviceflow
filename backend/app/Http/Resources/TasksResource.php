@@ -14,7 +14,7 @@ class TasksResource extends JsonResource
      */
     public function toArray($request)
     {
-       	return $data = [
+       	return [
 			"id" => $this->id,
 			"account_id" => $this->account_id,
 			"user_id" => $this->user_id,
@@ -27,8 +27,10 @@ class TasksResource extends JsonResource
 			"date_start" => $this->date_start,
 			"date_due" => $this->date_due,
 			"date_conclusion" => $this->date_conclusion,
+			"duration_days" => $this->duration_days,
+			'duration_time' => $this->duration_time,
 			"description" => $this->description,
-			"trash" => $this->trash,
+			"priority" => $this->priority,
 			"status" => $this->status,
 			"created_at" => $this->created_at,
 			"updated_at" => $this->updated_at,

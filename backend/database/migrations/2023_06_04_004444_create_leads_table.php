@@ -24,6 +24,13 @@ return new class extends Migration
             $table->string('facebook')->nullable();
             $table->string('instagram')->nullable();
             $table->string('other_social_media')->nullable();
+            $table->string('address')->nullable();
+            $table->string('address_complement')->nullable();
+            $table->string('neighborhood')->nullable();
+            $table->string('city')->nullable();
+            $table->string('state')->nullable();
+            $table->string('country')->nullable();
+            $table->string('zip_code')->nullable();
             $table->date('contact_date')->nullable();
             $table->string('source')->nullable();
             $table->string('source_contact_channel')->nullable();

@@ -1,6 +1,6 @@
 <template>
   <div id="line-container" class="row">
-    <div class="col m-3 card" v-for="lead in leads" v-bind:key="lead.id">
+    <div class="col-3 m-3 card" v-for="lead in leads" v-bind:key="lead.id">
       <router-link
         :to="{
           name: 'leadShow',
@@ -204,15 +204,15 @@ export default {
 }
 .big {
   font-size: 44px;
-  color: var(--azul);
+  color: var(--blue);
 }
 .card {
   border-style: solid;
   border-width: 2px;
-  border-color: var(--azul);
+  border-color: var(--blue);
   border-radius: 6px;
   padding: 10px;
-  background-color: var(--azul-claro);
+  background-color: var(--blue-light);
   /* height: 15vh; */
 }
 .email {

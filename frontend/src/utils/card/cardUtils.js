@@ -14,6 +14,18 @@ export function getStatusClass(status) {
     }
 }
 
+export function getPriorityClass(priority) {
+
+    switch (priority) {
+        case "high":
+            return "high";
+        case "medium":
+            return "medium";
+        case "low":
+            return "low";
+    }
+}
+
 export function getStatusIcon(status) {
 
     switch (status) {

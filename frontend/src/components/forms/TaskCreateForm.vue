@@ -62,19 +62,23 @@
             <div class="col-2">
               <label class="labels" for="contact_id"> Contato </label>
             </div>
-            <div class="col-10">
+            <div class="col-7">
               <select
-                class="form-control"
+                class="form-select"
                 id="contact_id"
                 v-model="form.contact_id"
                 placeholder="Selecione o contato"
               >
-                <option value="">Selecione um contato</option>
+                <option disabled value="">Selecione um contato</option>
                 <option v-for="lead in leads" :key="lead.id" :value="lead.id">
                   {{ lead.name }}
                 </option>
               </select>
             </div>
+            <div class="col-2 button-new m-1" @click="toggle()">+</div>
+          </div>
+          <div :class="{ hidden: isActive }">
+            <LeadCreateForm @new-lead-event="addLeadCreated($event)" />
           </div>
         </div>
 
@@ -130,7 +134,9 @@
         <div class="form-group">
           <div class="row">
             <div class="col-2">
-              <label class="labels" for="date_conclusion"> Data de conclusão </label>
+              <label class="labels" for="date_conclusion">
+                Data de conclusão
+              </label>
             </div>
             <div class="col-10">
               <input
@@ -142,7 +148,44 @@
             </div>
           </div>
         </div>
-        
+
+        <div class="form-group">
+          <div class="row mt-4 mb-4">
+            <div class="col-2">
+              <label class="labels" for="status"> Prioridade </label>
+            </div>
+            <div class="col-10">
+              <input
+                type="radio"
+                id="low"
+                value="low"
+                name="priority"
+                v-model="form.priority"
+              />
+              <label class="priority low" for="low">Baixa</label>
+
+              <input
+                type="radio"
+                id="medium"
+                value="medium"
+                name="priority"
+                v-model="form.priority"
+                checked
+              />
+              <label class="priority medium" for="medium">Média</label>
+
+              <input
+                type="radio"
+                id="high"
+                value="high"
+                name="priority"
+                v-model="form.priority"
+              />
+              <label class="priority high" for="high">Alta</label>
+            </div>
+          </div>
+        </div>
+
         <div class="form-group">
           <div class="row">
             <div class="col-2">
@@ -169,7 +212,7 @@
         </div>
 
         <div class="row ms-5 me-5 mt-4 mb-2">
-          <button type="submit" class="btn new">Criar</button>
+          <button type="submit" class="button-new">Criar</button>
         </div>
       </form>
     </div>
@@ -178,10 +221,14 @@
 
 <script>
 import axios from "axios";
+import LeadCreateForm from "./LeadCreateForm.vue";
 
 export default {
   name: "TaskCreateForm",
   emits: ["new-task-event"],
+  components: {
+    LeadCreateForm,
+  },
   data() {
     return {
       allStatus: [],
@@ -189,6 +236,7 @@ export default {
       newTask: null,
       leads: [],
       data: [],
+      isActive: true,
       form: {
         name: null,
         description: null,
@@ -198,11 +246,19 @@ export default {
         date_start: null,
         date_due: null,
         date_conclusion: null,
-        status: null,
+        status: "to-do",
+        priority: "medium",
       },
     };
   },
   methods: {
+    addLeadCreated(newLead) {
+      this.leads.push(newLead.lead);
+      !this.toggle();
+      this.form.contact_id = newLead.lead.id;
+      console.log(this.form.contact_id);
+      console.log(newLead)
+    },
     clearForm() {
       this.form.name = null;
       this.form.description = null;
@@ -212,6 +268,7 @@ export default {
       this.form.date_start = null;
       this.form.date_due = null;
       this.form.date_conclusion = null;
+      this.form.priority = "medium";
     },
     getLeads() {
       axios
@@ -241,6 +298,9 @@ export default {
     newTaskEvent(data) {
       this.$emit("new-task-event", data);
     },
+    toggle() {
+      this.isActive = !this.isActive;
+    },
   },
   mounted() {
     this.getTasksStatus();
@@ -268,10 +328,53 @@ export default {
   text-align: left;
   margin-left: 0;
 }
-.new {
-  background-color: #ff3eb5;
-  color: white;
-  font-weight: 800;
-  padding: 10px 20px 10px 20px;
+.radio-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+input[type="radio"] {
+  display: none;
+}
+
+.priority {
+  display: inline-block;
+  padding: 8px 16px;
+  font-size: 16px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  user-select: none;
+}
+
+.low {
+  border-radius: 16px 0px 0px 16px;
+  border-color: var(--gray);
+}
+.medium {
+  border-color: var(--blue);
+}
+.high {
+  border-radius: 0px 16px 16px 0px;
+  border-color: var(--red);
+}
+
+input[type="radio"][value="low"]:checked + label {
+  background-color: var(--gray);
+  color: #fff;
+  border: 1px solid var(--gray);
+}
+
+input[type="radio"][value="medium"]:checked + label {
+  background-color: var(--blue);
+  color: #fff;
+  border: 1px solid var(--blue);
+}
+
+input[type="radio"][value="high"]:checked + label {
+  background-color: var(--red);
+  color: #fff;
+  border: 1px solid var(--red);
 }
 </style>

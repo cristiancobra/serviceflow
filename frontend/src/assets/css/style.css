@@ -1,14 +1,16 @@
 :root {
-    --azul: #3498db;
-    --azul-claro: #d8f5f9;
+    --blue: #3498db;
+    --blue-light: #d1ecf8;
     --verde: #2CB48D;
     --verde-claro: #e5f9e0;
-    --laranja: #E78D1F;
-    --laranja-claro: #fdf1d4;
+    --orange: #E78D1F;
+    --orange-light: #faf2e0;
     --roxo: #B1388D;
     --roxo-claro: #DFBAD9;
-    --cinza-claro: #DCDCDC;
-    --cinza: #808080;
+    --gray-light: #DCDCDC;
+    --gray: #808080;
+    --red: #e85c5c;
+    --red-light: rgb(251, 226, 226);
   }
 
   .button-new {
@@ -17,8 +19,11 @@
     padding-top: 0.4rem;
     padding-bottom: 0.4rem;
     text-align: center;
+    font-weight: 900;
+    font-size: 1.1rem;
     border-style: solid;
     border-radius: 10px;
+    border-width: 2px;
     background-color: var(--roxo-claro);
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); 
     color: var(--roxo);
@@ -28,6 +33,47 @@
     background-color: var(--roxo);
     color: white;
   }
+
+  .button-rounded {
+    border-width: 2px;
+    border-style: solid;
+    border-color: white;
+    border-radius: 20px 20px 20px 20px;
+    /* padding: 10px 0px 10px 0px; */
+    /* margin: 0 4px 0 4px; */
+    text-align:center;
+    font-size: 32px;
+    color: white;
+    font-weight: 800;
+    width: 6%;
+  }
+  .form-container {
+    border-style: solid;
+    border-color: #ff3eb5;
+    border-width: 2px;
+    /* margin-left: 180px;
+    margin-right: 180px; */
+    margin-bottom: 60px;
+    margin-top: 60px;
+    padding: 20px;
+    border-radius: 16px;
+    transition: all 0.5s;
+    text-align: left;
+    font-weight: 800;
+  }
+.new {
+  border-radius: 20px 20px 20px 20px;
+  background-color: white;
+  border-color: #ff3eb5;
+  color: #ff3eb5;
+  margin-left: 50px;
+  font-size: 16px;
+}
+.new:hover {
+  background-color: #ff3eb5;
+  color: white;
+  margin-left: 50px;
+}
 
   .errorBox {
     color: red;
@@ -74,4 +120,12 @@
     border-radius: 0px 0 0 0px;
   }
 
+  .hidden {
+    display: none;
+    transition: display 2s;
+  }
+  .show {
+    display: block;
+    transition: display 2s;
+  }
   

@@ -101,12 +101,4 @@ export default {
   color: white;
   margin-left: 50px;
 }
-.hidden {
-  display: none;
-  transition: display 2s;
-}
-.show {
-  display: block;
-  transition: display 2s;
-}
 </style>

@@ -29,23 +29,30 @@ class Task extends Model
         'date_due',
         'date_start',
         'date_conclusion',
+        'duration_days',
+        'duration_time',
         'status',
         'priority',
-        'start_time',
-        'end_time',
-        'duration',
         'points',
         'type',
     ];
+
+     /**
+     * Get the journeys from task
+     */
+    public function journeys()
+    {
+        return $this->hasMany(Journey::class);
+    }
 	
 		
 	public static function getStatus() {
         return [
-            'fazer',
-            'aguardar',
-            'feito',
-            'fazendo',
-            'cancelado',
+            'to-do',
+            'wait',
+            'done',
+            'doing',
+            'canceled',
         ];
 	}
 }

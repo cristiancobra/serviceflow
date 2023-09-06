@@ -1,0 +1,13 @@
+BACKUP DO CONTAINER
+
+docker exec -it mysql-serviceflow bash
+mysqldump -u root -p > backup.sql
+docker cp mysql-serviceflow:/backup.sql /home/cristiancobra/docker/serviceflow/backups
+
+
+IMPORT BACKUP DO CONTAINER
+
+docker exec -it mysql-serviceflow bash
+mysql -u root -p serviceflow < backup.sql
+mysql -u root -p serviceflow < backup.sql
+

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
 
     <LeadsFilter @toggle="toggle" />
 
@@ -8,7 +8,7 @@
     </div>
 
     <template v-if="leads.length > 0">
-      <div class="row leads-container">
+      <div class="row">
         <LeadsList :leads="leads" />
       </div>
     </template>
@@ -131,11 +131,6 @@ export default {
   background-color: #ff3eb5;
   color: white;
   margin-left: 50px;
-}
-.leads-container {
-  margin-left: 10%;
-  margin-right: 10%;
-  margin-bottom: 10%;
 }
 .hidden {
   display: none;

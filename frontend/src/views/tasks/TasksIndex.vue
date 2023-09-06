@@ -18,7 +18,7 @@
 
 <script>
 import axios from "axios";
-import TasksList from "@/components/TasksList.vue";
+import TasksList from "@/components/lists/TasksList.vue";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import TasksFilter from "@/components/filters/TasksFilter.vue";
 
@@ -47,6 +47,7 @@ export default {
         date_due: null,
         duration_days: null,
         duration_time: null,
+        priority: null,
         status: null,
       },
     };
@@ -77,6 +78,7 @@ export default {
       this.newTask.date_due = this.data.date_due;
       this.newTask.duration_days = this.data.duration_days;
       this.newTask.duration_time = this.data.duration_time;
+      this.newTask.priority = this.data.priority;
       this.newTask.status = this.data.status;
 
       this.filteredTasks.unshift(this.newTask);
