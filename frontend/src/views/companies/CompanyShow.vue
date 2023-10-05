@@ -1,61 +1,48 @@
 <template>
   <div class="container mb-5">
     <div class="card" v-bind:class="getStatusClass(task.status)">
-      <div class="row ms-1">
-        <div class="col-1 status" v-bind:class="getStatusClass(task.status)">
-          <font-awesome-icon :icon="getStatusIcon(task.status)" />
-          <p class="label">
-            {{ formatDuration(task.duration_time) }}
-          </p>
-        </div>
-        <div class="col-11 ps-3">
-          <p class="title">
-            {{ task.name }}
-          </p>
-          <p class="description">
-            {{ task.description }}
-          </p>
-        </div>
+        
+          <div class="row ms-1">
+            <div
+              class="col-1 status"
+              v-bind:class="getStatusClass(task.status)"
+            >
+              <font-awesome-icon :icon="getStatusIcon(task.status)" />
+              <p class="label">
+                {{ formatDuration(task.duration_time) }}
+              </p>
+            </div>
+            <div class="col-11 ps-3">
+              <p class="title">
+                {{ task.name }}
+              </p>
+              <p class="description">
+                {{ task.description }}
+              </p>
+            </div>
+          </div>
+        
       </div>
-    </div>
 
     <div class="row">
       <p class="mb-5">
         {{ task.description }}
       </p>
-    </div>
-
-    <div class="row">
-      <div class="col">
-        <p>
-          <font-awesome-icon icon="fas fa-calendar" />
-          <span class="label"> Data de início: </span>
-          {{ formatDateBr(task.date_due) }}
-        </p>
-        <p>
-          <font-awesome-icon icon="fas fa-calendar" />
-          <span class="label"> Prazo final: </span>
-          {{ formatDateBr(task.date_start) }}
-        </p>
-        <p>
-          <font-awesome-icon icon="fas fa-calendar" />
-          <span class="label"> Data de conclusão: </span>
-          {{ formatDateBr(task.date_conclusion) }}
-        </p>
-      </div>
-
-      <div class="col">
-        <p>
-          <font-awesome-icon icon="fas fa-calendar" />
-          <span class="label"> Prioridade: </span>
-          {{ translatePriority(task.priority) }}
-        </p>
-        <p>
-          <font-awesome-icon icon="fas fa-calendar" />
-          <span class="label"> Situação: </span>
-          {{ translateStatus(task.status) }}
-        </p>
-      </div>
+      <p>
+        <font-awesome-icon icon="fas fa-calendar" />
+        <span class="label"> Data de início: </span>
+        {{ formatDateBr(task.date_due) }}
+      </p>
+      <p>
+        <font-awesome-icon icon="fas fa-calendar" />
+        <span class="label"> Prazo final: </span>
+        {{ formatDateBr(task.date_start) }}
+      </p>
+      <p>
+        <font-awesome-icon icon="fas fa-calendar" />
+        <span class="label"> Data de conclusão: </span>
+        {{ formatDateBr(task.date_conclusion) }}
+      </p>
     </div>
 
     <div class="row mt-5 mb-5">
@@ -79,8 +66,6 @@ import { formatDateBr } from "@/utils/date/dateUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
 import { getStatusClass } from "@/utils/card/cardUtils";
 import { getStatusIcon } from "@/utils/card/cardUtils";
-import { translateStatus } from '@/utils/translations/translationsUtils';
-import { translatePriority } from '@/utils/translations/translationsUtils';
 import JourneysList from "@/components/lists/JourneysList.vue";
 
 export default {
@@ -95,14 +80,16 @@ export default {
       taskId: "",
     };
   },
-  emits: ["new-journey-event", "journey-updated", "journey-deleted"],
+  emits: [
+    "new-journey-event",
+    "journey-updated",
+    "journey-deleted",
+  ],
   methods: {
     formatDateBr,
     formatDuration,
     getStatusClass,
     getStatusIcon,
-    translateStatus,
-    translatePriority,
     getTask() {
       axios
         .get(`http://localhost:8191/api/tasks/${this.taskId}`)
@@ -137,9 +124,7 @@ export default {
     },
     deleteJourney(deletedJourneyId) {
       // Atualize a lista de jornadas após a exclusão
-      this.journeysData = this.journeysData.filter(
-        (journey) => journey.id !== deletedJourneyId
-      );
+      this.journeysData = this.journeysData.filter((journey) => journey.id !== deletedJourneyId);
     },
     updateJourneys(updatedJourney) {
       console.log("updatedJourney:", updatedJourney);
@@ -169,11 +154,6 @@ export default {
     this.setTaskId(this.$route.params.id);
     this.getTask();
   },
-  computed: {
-    translatedStatus() {
-      return translateStatus(this.task.status);
-    }
-  }
 };
 </script>
 

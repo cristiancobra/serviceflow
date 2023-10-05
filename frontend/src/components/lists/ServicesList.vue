@@ -146,15 +146,15 @@ export default {
 }
 .big {
   font-size: 44px;
-  color: var(--verde);
+  color: var(--green);
 }
 .card {
   border-style: solid;
   border-width: 2px;
-  border-color: var(--verde);
+  border-color: var(--green);
   border-radius: 6px;
   padding: 10px;
-  background-color: var(--verde-claro);
+  background-color: var(--green-light);
   /* height: 15vh; */
 }
 .money {

@@ -1,27 +1,27 @@
 <template>
-  <div>
-    <div class="row errorBox" v-bind:class="{ 'd-none': datesError }"></div>
+  <div class="container">
+    <div class="row errorBox" v-bind:class="{ 'd-none': datesError }">
+    </div>
     <form @submit.prevent="submitForm">
-      <div class="row" v-bind:class="{ 'd-none': isActive }">
-        <div class="col-md-7 mb-3">
+      <div class="row form" v-bind:class="{ 'd-none': isActive }">
+        <div class="col-md-9 mb-3">
           <label for="details" class="form-label">Detalhes</label>
-          <input
+          <textarea
+            name="description"
+            rows="6"
+            cols="50"
             v-model="form.details"
-            type="text"
             class="form-control"
             id="details"
-          />
+          ></textarea>
         </div>
-        <div class="col-md-2 mb-3">
+        <div class="col-md-3 mb-3 text-center">
           <label for="start" class="form-label">Início</label>
           <VueDatePicker v-model="form.start" />
-        </div>
-        <div class="col-md-2 mb-3">
           <label for="end" class="form-label">Fim</label>
           <VueDatePicker v-model="form.end" />
-        </div>
-        <div class="col-md-1 d-flex mt-auto mb-auto">
-          <button type="submit" class="btn btn-primary">Enviar</button>
+          <br>
+          <button type="submit mt-5" class="button-new orange">Enviar</button>
         </div>
       </div>
     </form>
@@ -178,6 +178,13 @@ export default {
   font-size: 14px;
   margin-top: 20px;
 }
+.form {
+  padding: 1rem;
+  background-color: var(--orange-light);
+  border-color: var(--orange);
+  border-style: solid;
+  border-radius: 6px;
+}
 ul {
   list-style-type: none;
   padding: 0;
@@ -206,47 +213,18 @@ a:active {
   justify-content: end;
   padding-top: 1rem;
 }
+.orange {
+  background-color: var(--orange);
+  color: white;
+}
 .row {
   margin-top: 2rem;
   justify-content: end;
 }
-.slot {
-  display: block;
-  text-align: center;
-  border-style: solid;
-  border-width: 2px;
-  border-color: #007e8b;
-  border-radius: 0 6px 6px 0;
-  padding-top: 6px;
-  padding-bottom: 6px;
-  background-color: pink;
-}
-.slot.active {
-  border-left-style: none;
-  background-color: white;
-}
-.slot.inactive {
-  background-color: lightgray;
-}
-.slots-column {
-  margin-left: -12px;
-}
-.small-menu {
-  position: absolute;
-  top: 0;
-  right: 0;
-  display: block;
-  z-index: 1;
-  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); */
-  padding: 0px;
-}
-.small-menu.show {
-  display: none;
-}
 .table-header {
   display: flex;
   text-align: center;
-  background-color: var(--roxo);
+  background-color: var(--purple);
   color: white;
   border-style: none;
   border-radius: 20px;

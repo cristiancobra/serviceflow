@@ -33,4 +33,9 @@ class Lead extends Model
         'reason_for_initial_contact',
         'comments',
     ];
+
+    public function companies()
+    {
+        return $this->belongsToMany(Company::class);
+    }
 }

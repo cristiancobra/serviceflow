@@ -12,8 +12,11 @@
         <li class="nav-item primary-color">
           <router-link to="/">Home</router-link>
         </li>
-        <li class="nav-item primary-color">
+        <li class="nav-item red">
           <router-link to="/leads">Contatos</router-link>
+        </li>
+        <li class="nav-item blue">
+          <router-link to="/companies">Empresas</router-link>
         </li>
         <li class="nav-item green">
           <router-link to="/services">Serviços</router-link>
@@ -21,7 +24,7 @@
         <li class="nav-item orange">
           <router-link to="/projects">Projetos</router-link>
         </li>
-        <li class="nav-item pink">
+        <li class="nav-item purple">
           <router-link to="/tasks">Tarefas</router-link>
         </li>
         
@@ -75,19 +78,23 @@ nav a.router-link-exact-active {
 }
 
 
-.primary-color a {
-  color: #b1388d;
+.blue a {
+  color: var(--blue);
 }
 
 .orange a {
-  color: #e78d1f;
+  color: var(--orange);
 }
 
 .green a {
-  color: #2cb48d;
+  color: var(--green);
 }
 
-.pink a {
-  color: #ff3eb5;
+.purple a {
+  color: var(--purple);
+}
+
+.red a {
+  color: var(--red);
 }
 </style>

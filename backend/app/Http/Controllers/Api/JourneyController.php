@@ -139,6 +139,17 @@ class JourneyController extends Controller
      */
     public function destroy(Journey $journey)
     {
-        //
+        try {
+            // Verifique se o usuário tem permissão para excluir a jornada, por exemplo, se ele é o criador da jornada
+            // Você pode adicionar lógica de autorização aqui
+    
+            // Remova a jornada da base de dados
+            $journey->delete();
+    
+            return response()->json(['message' => 'Jornada excluída com sucesso'], 200);
+        } catch (\Exception $e) {
+            // Em caso de erro, retorne uma resposta de erro adequada
+            return response()->json(['message' => 'Falha ao excluir a jornada', 'error' => $e->getMessage()], 500);
+        }
     }
 }

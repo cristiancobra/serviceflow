@@ -178,9 +178,9 @@ a:active {
   background-color: var(--red);
 }
 .done {
-  background-color: var(--verde-claro);
-  border-color: var(--verde);
-  color: var(--verde);
+  background-color: var(--green-light);
+  border-color: var(--green);
+  color: var(--green);
 }
 .doing {
   background-color: var(--blue-light);
@@ -191,6 +191,11 @@ a:active {
   background-color: var(--orange-light);
   border-color: var(--orange);
   color: var(--orange);
+}
+.canceled {
+  background-color: var(--gray-light);
+  border-color: var(--gray);
+  color: var(--gray);
 }
 .wait {
   background-color: var(--gray-light);

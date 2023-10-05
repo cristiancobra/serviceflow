@@ -19,16 +19,16 @@
 
 <script>
 import axios from "axios";
-import TasksList from "@/components/lists/TasksList.vue";
-import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
-import TasksFilter from "@/components/filters/TasksFilter.vue";
+// import TasksList from "@/components/lists/TasksList.vue";
+// import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
+// import TasksFilter from "@/components/filters/TasksFilter.vue";
 
 export default {
   name: "TasksIndexView",
   components: {
-    TaskCreateForm,
-    TasksList,
-    TasksFilter,
+    // TaskCreateForm,
+    // TasksList,
+    // TasksFilter,
   },
   data() {
     return {

@@ -1,12 +1,14 @@
 export function getStatusClass(status) {
 
     switch (status) {
-        case "to-do":
-            return "to-do";
+        case "canceled":
+            return "canceled";
         case "doing":
             return "doing";
         case "done":
             return "done";
+        case "to-do":
+            return "to-do";
         case "wait":
             return "wait";
         default:

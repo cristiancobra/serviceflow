@@ -8,7 +8,7 @@
       <form @submit.prevent="submitForm">
         <div class="form-group">
           <div class="row">
-            <div class="col-2">
+            <div class="col-2 label-col">
               <label class="labels" for="name"> Nome </label>
             </div>
             <div class="col-10">
@@ -25,7 +25,7 @@
 
         <div class="form-group">
           <div class="row">
-            <div class="col-2">
+            <div class="col-2 label-col">
               <label class="labels" for="description"> Descrição </label>
             </div>
             <div class="col-10">
@@ -42,10 +42,10 @@
 
         <div class="form-group">
           <div class="row">
-            <div class="col-2">
+            <div class="col-2 label-col">
               <label class="labels" for="company_id"> Empresa </label>
             </div>
-            <div class="col-10">
+            <div class="col-3">
               <input
                 class="form-control"
                 type="text"
@@ -54,15 +54,11 @@
                 placeholder="Digite o nome da empresa"
               />
             </div>
-          </div>
-        </div>
 
-        <div class="form-group">
-          <div class="row">
-            <div class="col-2">
+            <div class="offset-1 col-1 label-col">
               <label class="labels" for="contact_id"> Contato </label>
             </div>
-            <div class="col-7">
+            <div class="col-3">
               <select
                 class="form-select"
                 id="contact_id"
@@ -75,7 +71,7 @@
                 </option>
               </select>
             </div>
-            <div class="col-2 button-new m-1" @click="toggle()">+</div>
+            <div class="col-1 button-new" @click="toggle()">+ criar</div>
           </div>
           <div :class="{ hidden: isActive }">
             <LeadCreateForm @new-lead-event="addLeadCreated($event)" />
@@ -84,7 +80,7 @@
 
         <div class="form-group">
           <div class="row">
-            <div class="col-2">
+            <div class="col-2 label-col">
               <label class="labels" for="user_id"> Responsável </label>
             </div>
             <div class="col-10">
@@ -101,10 +97,10 @@
 
         <div class="form-group">
           <div class="row">
-            <div class="col-2">
+            <div class="col-2 label-col">
               <label class="labels" for="date_start"> Início </label>
             </div>
-            <div class="col-10">
+            <div class="col-2">
               <input
                 class="form-control"
                 type="date"
@@ -112,15 +108,11 @@
                 v-model="form.date_start"
               />
             </div>
-          </div>
-        </div>
 
-        <div class="form-group">
-          <div class="row">
-            <div class="col-2">
+            <div class="col-2 label-col">
               <label class="labels" for="date_due"> Prazo final </label>
             </div>
-            <div class="col-10">
+            <div class="col-2">
               <input
                 class="form-control"
                 type="date"
@@ -128,17 +120,13 @@
                 v-model="form.date_due"
               />
             </div>
-          </div>
-        </div>
 
-        <div class="form-group">
-          <div class="row">
-            <div class="col-2">
+            <div class="col-2 label-col">
               <label class="labels" for="date_conclusion">
                 Data de conclusão
               </label>
             </div>
-            <div class="col-10">
+            <div class="col-2">
               <input
                 class="form-control"
                 type="date"
@@ -151,68 +139,29 @@
 
         <div class="form-group">
           <div class="row mt-4 mb-4">
-            <div class="col-2">
+            <div class="col-2 label-col">
               <label class="labels" for="status"> Prioridade </label>
             </div>
-            <div class="col-10">
-              <input
-                type="radio"
-                id="low"
-                value="low"
-                name="priority"
-                v-model="form.priority"
+            <div class="col-4">
+              <PrioritySelectRadio
+                :form="form"
+                @priority-change="updateFormPriority"
               />
-              <label class="priority low" for="low">Baixa</label>
-
-              <input
-                type="radio"
-                id="medium"
-                value="medium"
-                name="priority"
-                v-model="form.priority"
-                checked
-              />
-              <label class="priority medium" for="medium">Média</label>
-
-              <input
-                type="radio"
-                id="high"
-                value="high"
-                name="priority"
-                v-model="form.priority"
-              />
-              <label class="priority high" for="high">Alta</label>
             </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="row">
-            <div class="col-2">
+            <div class="col-2 label-col">
               <label class="labels" for="status"> Situação </label>
             </div>
-            <div class="col-10">
-              <select
-                class="form-select"
-                id="status"
-                name="status"
-                v-model="form.status"
-                aria-label="Selecione a situação do projeto"
-              >
-                <option
-                  v-for="(status, index) in allStatus"
-                  v-bind:key="index"
-                  :value="status"
-                >
-                  {{ status }}
-                </option>
-              </select>
+            <div class="col-4">
+              <StatusLinearRadios
+                :form="form"
+                @status-change="updateFormStatus"
+              />
             </div>
           </div>
         </div>
 
-        <div class="row ms-5 me-5 mt-4 mb-2">
-          <button type="submit" class="button-new">Criar</button>
+        <div class="row ms-5 me-5 mt-5 mb-2">
+          <button type="submit" class="button-new">criar</button>
         </div>
       </form>
     </div>
@@ -222,12 +171,16 @@
 <script>
 import axios from "axios";
 import LeadCreateForm from "./LeadCreateForm.vue";
+import PrioritySelectRadio from "../buttons/PrioritySelectRadio.vue";
+import StatusLinearRadios from "../buttons/StatusLinearRadios.vue";
 
 export default {
   name: "TaskCreateForm",
   emits: ["new-task-event"],
   components: {
     LeadCreateForm,
+    PrioritySelectRadio,
+    StatusLinearRadios,
   },
   data() {
     return {
@@ -257,7 +210,7 @@ export default {
       !this.toggle();
       this.form.contact_id = newLead.lead.id;
       console.log(this.form.contact_id);
-      console.log(newLead)
+      console.log(newLead);
     },
     clearForm() {
       this.form.name = null;
@@ -301,6 +254,12 @@ export default {
     toggle() {
       this.isActive = !this.isActive;
     },
+    updateFormPriority(newPriority) {
+      this.form.priority = newPriority;
+    },
+    updateFormStatus(newStatus) {
+      this.form.status = newStatus;
+    },
   },
   mounted() {
     this.getTasksStatus();
@@ -328,17 +287,34 @@ export default {
   text-align: left;
   margin-left: 0;
 }
+.label-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .radio-group {
   display: flex;
   gap: 10px;
   align-items: center;
 }
 
-input[type="radio"] {
-  display: none;
+/* status */
+.to-do {
+  border-radius: 16px 0px 0px 16px;
+  border-color: var(--gray);
+  color: var(--red);
 }
 
-.priority {
+.label-col {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
+
+.row {
+  margin-top: 1vh;
+}
+.status {
   display: inline-block;
   padding: 8px 16px;
   font-size: 16px;
@@ -346,35 +322,5 @@ input[type="radio"] {
   border: 1px solid #ccc;
   cursor: pointer;
   user-select: none;
-}
-
-.low {
-  border-radius: 16px 0px 0px 16px;
-  border-color: var(--gray);
-}
-.medium {
-  border-color: var(--blue);
-}
-.high {
-  border-radius: 0px 16px 16px 0px;
-  border-color: var(--red);
-}
-
-input[type="radio"][value="low"]:checked + label {
-  background-color: var(--gray);
-  color: #fff;
-  border: 1px solid var(--gray);
-}
-
-input[type="radio"][value="medium"]:checked + label {
-  background-color: var(--blue);
-  color: #fff;
-  border: 1px solid var(--blue);
-}
-
-input[type="radio"][value="high"]:checked + label {
-  background-color: var(--red);
-  color: #fff;
-  border: 1px solid var(--red);
 }
 </style>

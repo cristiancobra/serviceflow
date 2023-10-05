@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import CompaniesIndex from '../views/companies/CompaniesIndex.vue'
+import CompanyShow from '../views/companies/CompanyShow.vue'
 import LeadsIndex from '../views/leads/LeadsIndex.vue'
 import LeadShow from '../views/leads/LeadShow.vue'
 import ServicesIndex from '../views/services/ServicesIndex.vue'
@@ -14,6 +16,16 @@ const routes = [
     path: '/',
     name: 'home',
     component: HomeView
+  },
+  {
+    path: '/companies',
+    name: 'companiesIndex',
+    component: CompaniesIndex
+  },
+  {
+    path: '/companies/:id',
+    name: 'companyShow',
+    component: CompanyShow
   },
   {
     path: '/leads',

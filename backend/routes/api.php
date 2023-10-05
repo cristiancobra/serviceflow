@@ -22,6 +22,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
+// COMPANIES
+Route::apiResource('companies', CompanyController::class)
+		->names('companies');
+
+
 // JOURNEYS
 Route::apiResource('journeys', JourneyController::class)
 		->names('journeys');
