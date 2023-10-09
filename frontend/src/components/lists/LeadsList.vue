@@ -1,119 +1,71 @@
 <template>
-  <div id="line-container" class="row">
-    <div class="col-3 m-3 card" v-for="lead in leads" v-bind:key="lead.id">
+  <div id="line-container" class="row mb-5">
+    <div class="card" v-for="lead in leads" :key="lead.id">
       <router-link
-        :to="{
-          name: 'leadShow',
-          params: { id: lead.id },
-        }"
+        :to="
+          isLinkDisabled(lead.id)
+            ? ''
+            : { name: 'leadShow', params: { id: lead.id } }
+        "
+        class="row router-link"
       >
-        <div id="name" class="row" style="position: relative">
+        <!-- Coluna para a imagem -->
+        <div class="col-4 d-flex align-items-top">
           <span class="icon big">
             <font-awesome-icon icon="fa-solid fa-user-circle" />
           </span>
-
-          <p
-            class="name"
-            v-if="
-              !lead.editing || (lead.editing && lead.editingField !== 'name')
-            "
-          >
-            {{ lead.name }}
-          </p>
-          <input
-            v-else-if="lead.editing && lead.editingField === 'name'"
-            type="text"
-            class="form-control"
-            v-model="lead.name"
-            @keydown.enter="saveLead(lead, 'name')"
-            @keydown.esc="cancelEdit(lead)"
-          />
-          <div
-            class="small-menu"
-            v-show="lead.showContextMenu && lead.activeField === 'name'"
-          >
-            <div class="icon-col small-menu-item">
-              <span class="icon" @click="startEdit(lead, 'name')">
-                <font-awesome-icon icon="fa-solid fa-pencil" />
-              </span>
-            </div>
-
-            <CopyContentClipboard :data="lead.name" />
-          </div>
         </div>
 
-        <div
-          id="email"
-          class="row"
-          style="position: relative"
-          @mouseover="showContextMenu(lead, 'email')"
-          @mouseleave="hideContextMenu(lead, 'email')"
-        >
-          <p
-            class="email"
-            v-if="
-              !lead.editing || (lead.editing && lead.editingField !== 'email')
-            "
-          >
-            {{ lead.email }}
-          </p>
-          <input
-            v-else-if="lead.editing && lead.editingField === 'email'"
-            type="text"
-            class="form-control"
-            v-model="lead.email"
-            @keydown.enter="saveLead(lead, 'email')"
-            @keydown.esc="cancelEdit(lead)"
-          />
+        <!-- Coluna para as demais informações -->
+        <div class="col-8">
           <div
-            class="small-menu"
-            v-show="lead.showContextMenu && lead.activeField === 'email'"
+            class="infos-container"
+            @mouseover="showCopyName(lead.id)"
+            @mouseleave="hideCopyName(lead.id)"
           >
-            <div class="icon-col small-menu-item">
-              <span class="icon" @click="startEdit(lead, 'email')">
-                <font-awesome-icon icon="fa-solid fa-pencil" />
-              </span>
-            </div>
-
-            <CopyContentClipboard :data="lead.email" />
+            <p class="name">
+              {{ lead.name }}
+            </p>
+            <CopyContentClipboard
+              class="CopyContentClipboard"
+              :data="lead.name"
+              :key="'name_' + lead.id"
+              v-show="isMouseOverName[lead.id]"
+            />
           </div>
-        </div>
 
-        <div
-          id="cel_phone"
-          class="row"
-          style="position: relative"
-          @mouseover="showContextMenu(lead, 'cel_phone')"
-          @mouseleave="hideContextMenu(lead, 'cel_phone')"
-        >
-          <p
-            class="cel_phone"
-            v-if="
-              !lead.editing ||
-              (lead.editing && lead.editingField !== 'cel_phone')
-            "
-          >
-            {{ lead.cel_phone }}
-          </p>
-          <input
-            v-else-if="lead.editing && lead.editingField === 'cel_phone'"
-            type="text"
-            class="form-control"
-            v-model="lead.cel_phone"
-            @keydown.enter="saveLead(lead, 'cel_phone')"
-            @keydown.esc="cancelEdit(lead)"
-          />
           <div
-            class="small-menu"
-            v-show="lead.showContextMenu && lead.activeField === 'cel_phone'"
+            v-if="lead.email"
+            class="infos-container"
+            @mouseover="showCopyEmail(lead.id)"
+            @mouseleave="hideCopyEmail(lead.id)"
           >
-            <div class="icon-col small-menu-item">
-              <span class="icon" @click="startEdit(lead, 'cel_phone')">
-                <font-awesome-icon icon="fa-solid fa-pencil" />
-              </span>
-            </div>
+            <p class="email">
+              {{ lead.email }}
+            </p>
+            <CopyContentClipboard
+              class="CopyContentClipboard"
+              :data="lead.email"
+              :key="'email_' + lead.id"
+              v-show="isMouseOverEmail[lead.id]"
+            />
+          </div>
 
-            <CopyContentClipboard :data="lead.cel_phone" />
+          <div
+            v-if="lead.cel_phone"
+            class="infos-container"
+            @mouseover="showCopyCelPhone(lead.id)"
+            @mouseleave="hideCopyCelPhone(lead.id)"
+          >
+            <p class="cel_phone">
+              {{ lead.cel_phone }}
+            </p>
+            <CopyContentClipboard
+              class="CopyContentClipboard"
+              :data="lead.cel_phone"
+              :key="'cel_phone_' + lead.id"
+              v-show="isMouseOverCelPhone[lead.id]"
+            />
           </div>
         </div>
       </router-link>
@@ -123,8 +75,8 @@
   </div>
 </template>
 
+
 <script>
-import axios from "axios";
 import CopyContentClipboard from "../CopyContentClipboard.vue";
 
 export default {
@@ -141,69 +93,61 @@ export default {
         email: null,
         cel_phone: null,
       },
+      isMouseOverName: {},
+      isMouseOverEmail: {},
+      isMouseOverCelPhone: {},
+      // isLinkDisabled: {},
     };
   },
   methods: {
-    showContextMenu(lead, field) {
-      lead.showContextMenu = true;
-      lead.activeField = field;
+    hideCopyName(id) {
+      this.isMouseOverName[id] = false;
     },
-    hideContextMenu(lead) {
-      lead.showContextMenu = false;
-      lead.activeField = "";
+    hideCopyEmail(id) {
+      this.isMouseOverEmail[id] = false;
     },
-    startEdit(lead, field) {
-      lead.editing = true;
-      lead.editingField = field;
+    hideCopyCelPhone(id) {
+      this.isMouseOverCelPhone[id] = false;
     },
-    cancelEdit(lead) {
-      lead.editing = false;
-      lead.editingField = null;
+    showCopyName(id) {
+      this.isMouseOverName[id] = true;
     },
-    cancelEditOnEsc(event) {
-      if (event.key === "Escape") {
-        const lead = this.leads.find((lead) => lead.editing);
-        if (lead) {
-          this.cancelEdit(lead);
-        }
-      }
+    showCopyEmail(id) {
+      this.isMouseOverEmail[id] = true;
     },
-    saveLead(lead, field) {
-      if (lead.activeField === field) {
-        lead.editing = false;
-        lead.editingField = null;
-
-        this.updatedLead.id = lead.id;
-        this.updatedLead.name = lead.name;
-        this.updatedLead.email = lead.email;
-        this.updatedLead.cel_phone = lead.cel_phone;
-
-        axios
-          .put(`http://localhost:8191/api/leads/${lead.id}`, this.updatedLead)
-          .then((response) => {
-            console.log(response.data);
-          });
-      }
+    showCopyCelPhone(id) {
+      this.isMouseOverCelPhone[id] = true;
     },
-  },
-  mounted() {
-    window.addEventListener("keydown", this.cancelEditOnEsc);
-    // console.log(leads);
-  },
-  beforeUnmount() {
-    window.removeEventListener("keydown", this.cancelEditOnEsc);
+    isLinkDisabled(id) {
+      return (
+        this.isMouseOverName[id] ||
+        this.isMouseOverEmail[id] ||
+        this.isMouseOverCelPhone[id]
+      );
+    },
   },
 };
 </script>
 
 <style scoped>
+.router-link {
+  z-index: 1;
+  /* pointer-events: none; */
+}
+.infos-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
 .name {
-  text-align: center;
+  text-align: left;
   font-size: 16px;
   font-weight: 600;
+  margin-bottom: 0px;
 }
 .big {
-  font-size: 44px;
+  font-size: 76px;
   color: var(--blue);
 }
 .card {
@@ -212,17 +156,28 @@ export default {
   border-color: var(--blue);
   border-radius: 6px;
   padding: 10px;
+  margin-right: 1%;
+  margin-top: 2%;
   background-color: var(--blue-light);
-  /* height: 15vh; */
+  width: 24%;
+}
+.card:hover {
+  border-width: 5px;
+  border-radius: 14px;
+}
+.copyContentClipbord {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
 .email {
-  text-align: center;
+  text-align: left;
   font-size: 14px;
   font-weight: 400;
 }
 .cel_phone {
-  text-align: center;
-  font-size: 16px;
+  text-align: left;
+  font-size: 14px;
   font-weight: 400;
 }
 .icon {
@@ -232,7 +187,10 @@ export default {
 .icon:hover {
 }
 .icon-col {
+  z-index: 3;
   font-size: 16px;
+  position: absolute;
+  right: 0;
   display: inline-block;
   align-items: center; /* Centraliza verticalmente */
   justify-content: center; /* Centraliza horizontalmente */
@@ -240,7 +198,7 @@ export default {
   height: 35px;
   margin-right: 12px;
   margin-top: -8px;
-  padding: 10px;
+  padding: 16px;
   background-color: #f1f1f1;
   border-radius: 50%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Reduz a intensidade do sombreamento */

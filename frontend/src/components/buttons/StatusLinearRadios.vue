@@ -79,12 +79,7 @@ export default {
   },
   methods: {
     emitStatusChange() {
-      console.log('Status atual:', this.localForm.status);
       this.$emit("status-change", this.localForm.status);
-    },
-    submitForm() {
-      // Lógica para manipular o envio do formulário com this.localForm.status
-      console.log("Formulário enviado com status:", this.localForm.status);
     },
   },
 };

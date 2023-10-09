@@ -1,5 +1,5 @@
 <template>
-    <div class="icon-col small-menu-item">
+    <div class="copy-button">
         <span
         class="icon" @click="copyContent(data)">
         <font-awesome-icon icon="fa-solid fa-copy" />
@@ -38,25 +38,25 @@ export default {
 .icon:hover {
 
 }
-.icon-col {
-  font-size: 16px;
-  display: inline-block;
+.copy-button {
+  font-size: 19px;
+  color: var(--purple);
+  display: flex;
+  position: absolute;
+  right: 0;
   align-items: center; /* Centraliza verticalmente */
   justify-content: center; /* Centraliza horizontalmente */
   width: 35px;
   height: 35px;
-  margin-right: 12px;
-  margin-top: 0px;
-  padding: 10px;
   background-color: #f1f1f1;
   border-radius: 50%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Reduz a intensidade do sombreamento */
   transition: font-size 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
-.icon-col:hover {
-  font-size: 20px;
-  background-color: #f6f6f6;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+.copy-button:hover {
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
   transform: perspective(500px) rotateX(10deg);
   transform-origin: center center; /* Inicia a transformação a partir do centro */
 }

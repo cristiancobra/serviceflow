@@ -11,15 +11,15 @@
       <TaskCreateForm @new-task-event="addTaskCreated($event)" />
     </div>
 
-    <div class="row tasks-container">
-      <TasksList :tasks="filteredTasks" />
+    <div class="row companys-container">
+      <CompaniesList :companys="filteredCompanies" />
     </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-// import TasksList from "@/components/lists/TasksList.vue";
+import CompaniesList from "@/components/lists/CompaniesList.vue";
 // import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 // import TasksFilter from "@/components/filters/TasksFilter.vue";
 
@@ -27,7 +27,7 @@ export default {
   name: "TasksIndexView",
   components: {
     // TaskCreateForm,
-    // TasksList,
+    CompaniesList,
     // TasksFilter,
   },
   data() {
@@ -35,8 +35,8 @@ export default {
       isActive: true,
       hasError: false,
       data: null,
-      tasks: [],
-      filteredTasks: [], // Tarefas filtradas
+      companys: [],
+      filteredCompanies: [], // Tarefas filtradas
       newTask: {
         id: null,
         name: null,
@@ -59,10 +59,10 @@ export default {
     },
     getTasks() {
       axios
-        .get("http://localhost:8191/api/tasks")
+        .get("http://localhost:8191/api/companys")
         .then((response) => {
-          this.tasks = response.data.data;
-          this.filteredTasks = this.tasks; // Inicialmente, as tarefas filtradas são iguais a todas as tarefas
+          this.companys = response.data.data;
+          this.filteredCompanies = this.companys; // Inicialmente, as tarefas filtradas são iguais a todas as tarefas
         })
         .catch((error) => console.log(error));
     },
@@ -82,21 +82,21 @@ export default {
       this.newTask.priority = this.data.priority;
       this.newTask.status = this.data.status;
 
-      this.filteredTasks.unshift(this.newTask);
+      this.filteredCompanies.unshift(this.newTask);
     },
     getTasksDone() {
       axios
-        .get("http://localhost:8191/api/tasks/filter-status?status=done") // Faz a requisição filtrando por status "done"
+        .get("http://localhost:8191/api/companys/filter-status?status=done") // Faz a requisição filtrando por status "done"
         .then((response) => {
-          this.filteredTasks = response.data.data;
+          this.filteredCompanies = response.data.data;
         })
         .catch((error) => console.log(error));
     },
     getTasksCanceled() {
       axios
-        .get("http://localhost:8191/api/tasks/filter-status?status=canceled") // Faz a requisição filtrando por status "done"
+        .get("http://localhost:8191/api/companys/filter-status?status=canceled") // Faz a requisição filtrando por status "done"
         .then((response) => {
-          this.filteredTasks = response.data.data;
+          this.filteredCompanies = response.data.data;
         })
         .catch((error) => console.log(error));
     },
@@ -142,7 +142,7 @@ export default {
   margin-left: 50px;
   width: 60px;
 }
-.tasks-container {
+.companys-container {
   margin-left: 180px;
   margin-right: 180px;
   margin-bottom: 60px;
