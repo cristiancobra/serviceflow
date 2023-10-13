@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CompanyCreateRequest;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use App\Http\Resources\CompaniesResource;
+use App\Http\Resources\CompanyResource;
 
 class CompanyController extends Controller
 {
@@ -35,9 +37,24 @@ class CompanyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CompanyCreateRequest $request)
     {
-        //
+        try {
+            $company = new Company;
+
+            $company->fill($request->all());
+            $company->account_id = 1;
+            $company->user_id = 1;
+            $company->save();
+
+            return new CompanyResource($company);
+            
+        } catch (ValidationException $validationException) {
+            return response()->json([
+                'message' => "Erro de validação",
+                'errors' => $validationException->errors(),
+            ], 422);
+        }
     }
 
     /**

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class LeadUpdateRequest extends FormRequest
+class CompanyCreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,9 @@ class LeadUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
-            'email' => 'nullable',
+            'legal_name' => 'unique:companies|required',
+            'business_name' => 'nullable',
+            'email' => 'email|nullable',
             'cel_phone' => 'nullable',
             'linkedin' => 'nullable',
             'facebook' => 'nullable',
@@ -36,19 +37,6 @@ class LeadUpdateRequest extends FormRequest
             'source_contact_channel' => 'nullable',
             'reason_for_initial_contact' => 'nullable',
             'comments' => 'nullable',
-            'trash' => 'nullable|boolean',
         ];
     }
-
-    /**
-     * Return messages
-     */
-    public function messages()
-    {
-        return [
-            'name.required' => 'O campo nome é obrigatório.',
-            'email.email' => 'O campo email deve ser um endereço de email válido.',
-        ];
-    }
-
 }

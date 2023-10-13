@@ -36,7 +36,6 @@ class LeadCreateRequest extends FormRequest
             'source_contact_channel' => 'nullable',
             'reason_for_initial_contact' => 'nullable',
             'comments' => 'nullable',
-            'trash' => 'nullable|boolean',
         ];
     }
 
