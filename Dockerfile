@@ -16,16 +16,9 @@ COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
 
 # CMD [ "php", "./index.php" ]
 
-RUN echo "ServerName PROJETOS" >> /etc/apache2/apache2.conf
+RUN echo "ServerName SERVICEFLOW" >> /etc/apache2/apache2.conf
 
-# RUN a2dissite 000-default
-# RUN a2ensite 000-default.conf
-# RUN service apache2 restart
-
-# RUN apt-get update
-# RUN apt-get install  libapache2-mod-php -y
-
-# RUN service apache2 restart
-USER www-data
+# Define o usuário padrão
+USER 1000:1000
 
 WORKDIR /var/www/html

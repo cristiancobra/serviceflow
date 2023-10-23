@@ -7,17 +7,52 @@
     <div id="form" class="form-container">
       <form @submit.prevent="submitForm">
         <div class="form-group">
+          <TextInput
+            label="Nome"
+            type="text"
+            name="name"
+            :value="form.name"
+            placeholder="Digite um nome para seu projeto"
+            @input="updateForm"
+          />
+
           <div class="row">
-            <div class="col-2">
+            <div class="col-1">
               <label class="labels" for="name"> Nome </label>
             </div>
-            <div class="col-10">
+            <div class="col-4">
               <input
                 class="form-control"
                 type="text"
                 id="name"
                 v-model="form.name"
                 placeholder="Digite um nome para seu projeto"
+              />
+            </div>
+
+            <div class="col-1">
+              <label class="labels" for="email"> Email </label>
+            </div>
+            <div class="col-2">
+              <input
+                class="form-control"
+                type="text"
+                id="email"
+                v-model="form.email"
+                placeholder="Digite o nome da empresa"
+              />
+            </div>
+
+            <div class="col-1">
+              <label class="labels" for="cel_phone"> Celular </label>
+            </div>
+            <div class="col-2">
+              <input
+                class="form-control"
+                type="text"
+                id="cel_phone"
+                v-model="form.cel_phone"
+                placeholder="Digite o nome da pessoa que solicitou o projeto"
               />
             </div>
           </div>
@@ -43,41 +78,7 @@
         <div class="form-group">
           <div class="row">
             <div class="col-2">
-              <label class="labels" for="email"> Email </label>
-            </div>
-            <div class="col-10">
-              <input
-                class="form-control"
-                type="text"
-                id="email"
-                v-model="form.email"
-                placeholder="Digite o nome da empresa"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="row">
-            <div class="col-2">
-              <label class="labels" for="cel_phone"> Celular </label>
-            </div>
-            <div class="col-10">
-              <input
-                class="form-control"
-                type="text"
-                id="cel_phone"
-                v-model="form.cel_phone"
-                placeholder="Digite o nome da pessoa que solicitou o projeto"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="row">
-            <div class="col-2">
-              <label class="labels" for="user_id"> Responsável </label>
+              <label class="labels" for="user_id"> Adicionado por </label>
             </div>
             <div class="col-10">
               <input
@@ -362,9 +363,13 @@
 
 <script>
 import axios from "axios";
+import TextInput from "./inputs/TextInput";
 
 export default {
   name: "LeadCreateForm",
+  components: {
+    TextInput,
+  },
   emits: ["new-lead-event"],
   data() {
     return {
@@ -430,6 +435,9 @@ export default {
     newLeadEvent(data) {
       this.$emit("new-lead-event", data);
     },
+    updateForm(value) {
+      this.form.name = value;
+    }
   },
 };
 </script>
@@ -438,5 +446,6 @@ export default {
 .labels {
   text-align: left;
   margin-left: 0;
+  line-height: 2.5;
 }
 </style>

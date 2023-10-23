@@ -1,118 +1,83 @@
 <template>
-  <div>
-    <TasksFilter
-      @toggle="toggle"
-      @filter-to-do="getTasks"
-      @filter-done="getTasksDone"
-      @filter-canceled="getTasksCanceled"
-    />
+  <div class="container">
 
-    <div v-bind:class="{ 'd-none': isActive }">
-      <TaskCreateForm @new-task-event="addTaskCreated($event)" />
+    <LeadsFilter @toggle="toggle" />
+
+    <div v-bind:class="{ hidden: isActive }">
+      <CompanyCreateForm @new-company-event="addCompanyCreated($event)" />
     </div>
 
-    <div class="row companys-container">
-      <CompaniesList :companys="filteredCompanies" />
-    </div>
+    <template v-if="companies.length > 0">
+      <div class="row">
+        <CompaniesList :companies="companies" />
+      </div>
+    </template>
+    <template v-else>
+      <NoLeadsMessage @new-company-event="addCompanyCreated($event)" />
+    </template>
+
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import LeadsFilter from "@/components/filters/LeadsFilter.vue";
 import CompaniesList from "@/components/lists/CompaniesList.vue";
-// import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
-// import TasksFilter from "@/components/filters/TasksFilter.vue";
+import NoLeadsMessage from '@/components/messages/NoLeadsMessage.vue';
+import CompanyCreateForm from "@/components/forms/CompanyCreateForm.vue";
 
 export default {
-  name: "TasksIndexView",
+  name: "CompaniesIndex",
   components: {
-    // TaskCreateForm,
+    LeadsFilter,
+    CompanyCreateForm,
     CompaniesList,
-    // TasksFilter,
+    NoLeadsMessage,
   },
   data() {
     return {
       isActive: true,
       hasError: false,
       data: null,
-      companys: [],
-      filteredCompanies: [], // Tarefas filtradas
-      newTask: {
-        id: null,
-        name: null,
-        description: null,
-        company_id: null,
-        contact_id: null,
-        user_id: null,
-        date_start: null,
-        date_due: null,
-        duration_days: null,
-        duration_time: null,
-        priority: null,
-        status: null,
-      },
+      companies: [],
+      newCompany: {},
     };
   },
   methods: {
     toggle() {
       this.isActive = !this.isActive;
     },
-    getTasks() {
+    getCompanies() {
       axios
-        .get("http://localhost:8191/api/companys")
+        .get("http://localhost:8191/api/companies")
         .then((response) => {
-          this.companys = response.data.data;
-          this.filteredCompanies = this.companys; // Inicialmente, as tarefas filtradas são iguais a todas as tarefas
+          this.companies = response.data.data;
         })
         .catch((error) => console.log(error));
     },
-    addTaskCreated($event) {
-      this.data = $event;
-      console.log(this.data);
-      this.newTask.id = this.data.id;
-      this.newTask.name = this.data.name;
-      this.newTask.description = this.data.description;
-      this.newTask.company_id = "1";
-      this.newTask.contact_id = "2";
-      this.newTask.user_id = "3";
-      this.newTask.date_start = this.data.date_start;
-      this.newTask.date_due = this.data.date_due;
-      this.newTask.duration_days = this.data.duration_days;
-      this.newTask.duration_time = this.data.duration_time;
-      this.newTask.priority = this.data.priority;
-      this.newTask.status = this.data.status;
-
-      this.filteredCompanies.unshift(this.newTask);
-    },
-    getTasksDone() {
-      axios
-        .get("http://localhost:8191/api/companys/filter-status?status=done") // Faz a requisição filtrando por status "done"
-        .then((response) => {
-          this.filteredCompanies = response.data.data;
-        })
-        .catch((error) => console.log(error));
-    },
-    getTasksCanceled() {
-      axios
-        .get("http://localhost:8191/api/companys/filter-status?status=canceled") // Faz a requisição filtrando por status "done"
-        .then((response) => {
-          this.filteredCompanies = response.data.data;
-        })
-        .catch((error) => console.log(error));
+    addCompanyCreated(newCompany) {
+      this.companies.push(newCompany.data);
+      console.log("Nova EMPRESA adicionada:", newCompany.data);
+      // !this.toggle();
     },
   },
   mounted() {
-    this.getTasks();
+    this.getCompanies();
+  },
+  computed: {
+    companiesData() {
+      return this.companies || [];
+    },
   },
 };
 </script>
 
 <style scoped>
-.headers-line {
+.filters-container {
   margin-top: 40px;
   margin-bottom: 50px;
-  margin-left: 80px;
-  margin-right: 80px;
+  margin-left: 25%;
+  margin-right: 25%;
   display: flex;
   justify-content: center;
 }
@@ -127,25 +92,49 @@ export default {
   font-weight: 800;
   width: 120px;
 }
+.done {
+  background-color: white;
+  border-color: #2cb48d;
+  color: #2cb48d;
+}
+.done:hover {
+  background-color: #2cb48d;
+  color: white;
+}
+.doing {
+  background-color: white;
+  border-color: #e78d1f;
+  color: #e78d1f;
+}
+.doing:hover {
+  background-color: #e78d1f;
+  color: white;
+}
+.late {
+  background-color: white;
+  border-color: #b1388d;
+  color: #b1388d;
+}
+.late:hover {
+  background-color: #b1388d;
+  color: white;
+}
 .new {
   border-radius: 20px 20px 20px 20px;
   background-color: white;
   border-color: #ff3eb5;
   color: #ff3eb5;
   margin-left: 50px;
-  width: 60px;
   font-size: 16px;
 }
 .new:hover {
   background-color: #ff3eb5;
   color: white;
   margin-left: 50px;
-  width: 60px;
 }
-.companys-container {
-  margin-left: 180px;
-  margin-right: 180px;
-  margin-bottom: 60px;
+.hidden {
+  display: none;
+  transition: display 2s;
 }
 .show {
   display: block;

@@ -15,21 +15,23 @@ return new class extends Migration
     {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
-            $table->string('business_name');
+            $table->foreignId('account_id');
+            $table->foreignId('user_id');
             $table->string('legal_name');
-            $table->string('contact_person');
-            $table->string('cnpj');
-            $table->string('whatsapp');
-            $table->string('facebook');
-            $table->string('linkedin');
-            $table->string('email');
-            $table->string('address');
-            $table->string('complement');
-            $table->string('neighborhood');
-            $table->string('city');
-            $table->string('state');
-            $table->string('country');
-            $table->string('zip_code');
+            $table->string('business_name')->nullable();
+            $table->string('cnpj')->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('cel_phone')->nullable();
+            $table->string('facebook')->nullable();
+            $table->string('linkedin')->nullable();
+            $table->string('address')->nullable();
+            $table->string('complement')->nullable();
+            $table->string('neighborhood')->nullable();
+            $table->string('city')->nullable();
+            $table->string('state')->nullable();
+            $table->string('country')->nullable();
+            $table->string('zip_code')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
