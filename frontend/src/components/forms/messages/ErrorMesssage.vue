@@ -20,8 +20,13 @@ export default {
 </script>
   
   <style scoped>
+ul {
+  margin-bottom: 2px;
+  
+}
 li {
-  margin-bottom: -16px;
+  margin-bottom: 2px;
+  
 }
 .container {
   text-align: left;

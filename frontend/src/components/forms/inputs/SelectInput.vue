@@ -1,15 +1,20 @@
 <template>
   <div class="mb-4">
     <label class="form-label" :for="name">{{ label }}</label>
-      <input
-        class="form-control"
-        :type="type"
-        :id="name"
-        :name="name"
-        :value="modelValue"
-        :placeholder="placeholder"
-        @input="updateInput"
-      />
+
+    <select
+      class="form-select"
+      :id="name"
+      :name="name"
+      :value="modelValue"
+      :placeholder="placeholder"
+      @input="updateInput"
+    >
+      <option disabled value="">Selecione um contato</option>
+      <option v-for="item in items" :key="item.id" :value="item.id">
+        {{ displayItemText(item) }}
+      </option>
+    </select>
   </div>
 </template>
     
@@ -22,6 +27,8 @@ export default {
     modelValue: [String, Number],
     placeholder: String,
     size: String,
+    items: Array,
+    fieldToDisplay: [String, Array],
   },
   computed: {
     labelClass() {
@@ -43,13 +50,23 @@ export default {
     updateInput(event) {
       this.$emit("update:modelValue", event.target.value);
     },
+    displayItemText(item) {
+      if (Array.isArray(this.fieldToDisplay)) {
+        return this.fieldToDisplay.map((field) => item[field]).join(" - ");
+      } else {
+        return item[this.fieldToDisplay];
+      }
+    },
   },
 };
 </script>
     
   <style scoped>
-  label {
-    text-align: right;
-  }
+label {
+  text-align: right;
+}
+.input-field {
+  margin-bottom: 1rem;
+}
 </style>
   

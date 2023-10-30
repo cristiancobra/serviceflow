@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\LeadController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\TaskController;
+use App\Http\Controllers\Api\UserController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -59,3 +60,7 @@ Route::get('tasks/filter-date', [TaskController::class, 'filterTasksByDate'])
 
 Route::apiResource('tasks', TaskController::class)
 		->names('tasks');
+
+// USERS
+Route::apiResource('users', UserController::class)
+->names('users');

@@ -26,16 +26,29 @@
     </div>
 
     <div class="row">
+
+      <div class="col-3">
+        <TextInput
+          label="Descrição"
+          type="text"
+          name="description"
+          v-model="task.description"
+          placeholder="descrição detalhada da tarefa"
+        />
+      </div>
+    </div>
+    
+    <div class="row">
       <div class="col">
         <p>
           <font-awesome-icon icon="fas fa-calendar" />
           <span class="label"> Data de início: </span>
-          {{ formatDateBr(task.date_due) }}
+          {{ formatDateBr(task.date_start) }}
         </p>
         <p>
           <font-awesome-icon icon="fas fa-calendar" />
           <span class="label"> Prazo final: </span>
-          {{ formatDateBr(task.date_start) }}
+          {{ formatDateBr(task.date_due) }}
         </p>
         <p>
           <font-awesome-icon icon="fas fa-calendar" />
@@ -79,14 +92,16 @@ import { formatDateBr } from "@/utils/date/dateUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
 import { getStatusClass } from "@/utils/card/cardUtils";
 import { getStatusIcon } from "@/utils/card/cardUtils";
-import { translateStatus } from '@/utils/translations/translationsUtils';
-import { translatePriority } from '@/utils/translations/translationsUtils';
+import { translateStatus } from "@/utils/translations/translationsUtils";
+import { translatePriority } from "@/utils/translations/translationsUtils";
 import JourneysList from "@/components/lists/JourneysList.vue";
+import TextInput from "@/components/forms/inputs/TextInput";
 
 export default {
   name: "TaskShow",
   components: {
     JourneysList,
+    TextInput,
   },
   data() {
     return {
@@ -172,8 +187,8 @@ export default {
   computed: {
     translatedStatus() {
       return translateStatus(this.task.status);
-    }
-  }
+    },
+  },
 };
 </script>
 

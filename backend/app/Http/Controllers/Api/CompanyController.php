@@ -65,7 +65,7 @@ class CompanyController extends Controller
      */
     public function show(Company $company)
     {
-        //
+        return new CompanyResource(Company::find($company->id));
     }
 
     /**
@@ -99,6 +99,18 @@ class CompanyController extends Controller
      */
     public function destroy(Company $company)
     {
-        //
+        try {
+            $company->delete();
+
+            return response()->json([
+                'message' => "Contato $company->name deletado",
+                'company' => $company,
+            ]);
+        } catch (ValidationException $validationException) {
+            return response()->json([
+                'message' => "Erro de validação",
+                'errors' => $validationException->errors(),
+            ], 422);
+        }
     }
 }

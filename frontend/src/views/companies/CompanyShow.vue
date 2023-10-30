@@ -1,23 +1,25 @@
 <template>
   <div class="container mb-5">
-    <div class="card" v-bind:class="getStatusClass(task.status)">
+    <div class="card">
         
           <div class="row ms-1">
-            <div
-              class="col-1 status"
-              v-bind:class="getStatusClass(task.status)"
-            >
-              <font-awesome-icon :icon="getStatusIcon(task.status)" />
-              <p class="label">
-                {{ formatDuration(task.duration_time) }}
-              </p>
+            <div class="col-1 status">
+            <span class="icon big">
+            <font-awesome-icon icon="fa-solid fa-briefcase" />
+          </span>
+              
             </div>
-            <div class="col-11 ps-3">
+            <div v-if="company.business_name" class="col-11 ps-3">
               <p class="title">
-                {{ task.name }}
+                {{ company.business_name }}
               </p>
               <p class="description">
-                {{ task.description }}
+                {{ company.legal_name }}
+              </p>
+            </div>
+            <div v-else class="col-11 ps-3">
+              <p class="title">
+                {{ company.legal_name }}
               </p>
             </div>
           </div>
@@ -26,37 +28,31 @@
 
     <div class="row">
       <p class="mb-5">
-        {{ task.description }}
+        {{ company.description }}
       </p>
       <p>
         <font-awesome-icon icon="fas fa-calendar" />
-        <span class="label"> Data de início: </span>
-        {{ formatDateBr(task.date_due) }}
+        <span class="label"> CNPJ: </span>
+        {{ company.cnpj }}
       </p>
       <p>
         <font-awesome-icon icon="fas fa-calendar" />
-        <span class="label"> Prazo final: </span>
-        {{ formatDateBr(task.date_start) }}
+        <span class="label"> Email: </span>
+        {{ company.email }}
       </p>
       <p>
         <font-awesome-icon icon="fas fa-calendar" />
-        <span class="label"> Data de conclusão: </span>
-        {{ formatDateBr(task.date_conclusion) }}
+        <span class="label"> Telefone celular: </span>
+        {{ company.cel_phone }}
       </p>
     </div>
 
     <div class="row mt-5 mb-5">
-      <button class="offset-10 col-1 myButton delete" @click="deleteTask()">
+      <button class="offset-10 col-1 myButton delete" @click="deleteCompany()">
         excluir
       </button>
     </div>
 
-    <JourneysList
-      :journeys="journeysData"
-      @new-journey-event="addJourneyCreated"
-      @journey-updated="updateJourneys"
-      @journey-deleted="deleteJourney"
-    />
   </div>
 </template>
 
@@ -64,95 +60,49 @@
 import axios from "axios";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
-import { getStatusClass } from "@/utils/card/cardUtils";
-import { getStatusIcon } from "@/utils/card/cardUtils";
-import JourneysList from "@/components/lists/JourneysList.vue";
 
 export default {
-  name: "TaskShow",
-  components: {
-    JourneysList,
-  },
+  name: "CompanyShow",
   data() {
     return {
-      journeysData: [],
-      task: [],
-      taskId: "",
+      companies: [],
+      company: [],
+      companyId: "",
     };
   },
-  emits: [
-    "new-journey-event",
-    "journey-updated",
-    "journey-deleted",
-  ],
   methods: {
     formatDateBr,
     formatDuration,
-    getStatusClass,
-    getStatusIcon,
-    getTask() {
+    getCompany() {
       axios
-        .get(`http://localhost:8191/api/tasks/${this.taskId}`)
+        .get(`http://localhost:8191/api/companies/${this.companyId}`)
         .then((response) => {
-          this.task = response.data.data;
-          this.journeysData = this.task.journeys;
-          this.taskLoaded = true; // Marque a tarefa como carregada
+          this.company = response.data.data;
+          this.companyLoaded = true; // Marque a tarefa como carregada
         })
         .catch((error) => console.log(error));
     },
-    setTaskId(taskId) {
-      this.taskId = taskId;
+    setTaskId(companyId) {
+      this.companyId = companyId;
     },
-    async deleteTask() {
+    async deleteCompany() {
       axios
-        .delete(`http://localhost:8191/api/tasks/${this.taskId}`)
+        .delete(`http://localhost:8191/api/companies/${this.companyId}`)
         .then((response) => {
           this.data = response.data;
           // this.newTaskEvent(this.data);
           const successMessage = "Task excluído com sucesso";
-          this.$router.push({ name: "tasksIndex", query: { successMessage } });
+          this.$router.push({ name: "companiesIndex", query: { successMessage } });
         })
         .catch((error) => {
-          console.error("Erro ao deletar task:", error);
+          console.error("Erro ao deletar company:", error);
           // Lidar com o erro, se necessário
         });
-    },
-    addJourneyCreated(newJourney) {
-      // Add the new journey to the journeysData array
-      this.journeysData.push(newJourney);
-      this.updateTaskDuration();
-    },
-    deleteJourney(deletedJourneyId) {
-      // Atualize a lista de jornadas após a exclusão
-      this.journeysData = this.journeysData.filter((journey) => journey.id !== deletedJourneyId);
-    },
-    updateJourneys(updatedJourney) {
-      console.log("updatedJourney:", updatedJourney);
-      console.log(updatedJourney);
-      // Encontrar e atualizar a jornada na lista journeysData
-      const index = this.journeysData.findIndex(
-        (journey) => journey.id === updatedJourney.id
-      );
-      console.log("index:", index);
-
-      if (index !== -1) {
-        console.log("Before update:", this.journeysData[index]);
-        this.journeysData[index] = updatedJourney;
-        console.log("After update:", this.journeysData[index]);
-      }
-    },
-    updateTaskDuration() {
-      axios
-        .get(`http://localhost:8191/api/tasks/${this.taskId}`)
-        .then((response) => {
-          this.task.duration = response.data.data.duration;
-        })
-        .catch((error) => console.log(error));
     },
   },
   async mounted() {
     this.setTaskId(this.$route.params.id);
-    this.getTask();
+    this.getCompany();
   },
 };
 </script>
@@ -200,35 +150,15 @@ a:active {
   margin-top: 60px;
   border-style: solid;
   border-width: 2px;
-  border-color: gray;
+  border-color: var(--blue);
   border-radius: 6px;
   padding: 10px;
   padding-right: 0px;
   height: 15vh;
-}
-.done {
-  background-color: var(--green-light);
-  border-color: var(--green);
-  color: var(--green);
-}
-.doing {
   background-color: var(--blue-light);
-  border-color: var(--blue);
-  color: var(--blue);
 }
-.to-do {
-  background-color: var(--orange-light);
-  border-color: var(--orange);
-  color: var(--orange);
-}
-.wait {
-  background-color: var(--gray-light);
-  border-color: var(--gray);
-  color: var(--gray);
-}
-.status {
-  text-align: center;
-  font-size: 3rem;
+.description {
+  margin-top: -2%;
 }
 .title {
   font-size: 26px;
@@ -265,9 +195,11 @@ a:active {
   color: white;
 }
 .icon {
-  font-size: 1.2rem;
   text-align: center;
   font-weight: 400;
-  color: var(--green);
+}
+.big {
+  font-size: 56px;
+  color: var(--blue);
 }
 </style>

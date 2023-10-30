@@ -5,34 +5,64 @@
 
     <div id="form" class="form-container">
       <form @submit.prevent="submitForm">
-        <div class="form-group">
-          <TextInput
-            label="Nome legal"
-            type="text"
-            name="legal_name"
-            v-model="form.legal_name"
-            placeholder="nome oficial da empresa"
-          />
+        <div class="row">
+          <div class="col">
+            <TextInput
+              size="full"
+              label="Razão social"
+              type="text"
+              name="legal_name"
+              v-model="form.legal_name"
+              placeholder="nome legal da empresa"
+            />
+          </div>
         </div>
 
-        <div class="form-group">
-          <TextInput
-            label="Email"
-            type="text"
-            name="email"
-            v-model="form.email"
-            placeholder="email da empresa"
-          />
+        <div class="row">
+          <div class="col">
+            <TextInput
+              size="full"
+              label="Nome fantasia"
+              type="text"
+              name="business_name"
+              v-model="form.business_name"
+              placeholder="nome fantasia da empresa"
+            />
+          </div>
         </div>
 
-        <div class="form-group">
-          <TextInput
-            label="Telefone celular"
-            type="text"
-            name="cel_phone"
-            v-model="form.cel_phone"
-            placeholder="telefone celular da empresa"
-          />
+        <div class="row">
+          <div class="col-6">
+            <TextInput
+              label="CNPJ"
+              type="text"
+              name="cnpj"
+              v-model="form.cnpj"
+              placeholder="Cadastro nacional de Pessoa Jurídica"
+            />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-6">
+            <TextInput
+              label="Email"
+              type="text"
+              name="email"
+              v-model="form.email"
+              placeholder="email da empresa"
+            />
+          </div>
+
+          <div class="col-6">
+            <TextInput
+              label="Telefone celular"
+              type="text"
+              name="cel_phone"
+              v-model="form.cel_phone"
+              placeholder="telefone celular da empresa"
+            />
+          </div>
         </div>
 
         <div class="row ms-5 me-5 mt-4 mb-2">
@@ -66,6 +96,7 @@ export default {
       form: {
         legal_name: null,
         business_name: null,
+        cnpj: null,
         email: null,
         cel_phone: null,
       },
@@ -102,6 +133,7 @@ export default {
     clearForm() {
       this.form.legal_name = null;
       this.form.business_name = null;
+      this.form.cnpj = null;
       this.form.email = null;
       this.form.cel_phone = null;
     },
@@ -109,7 +141,8 @@ export default {
       this.$emit("new-company-event", data);
     },
     successMessage(data) {
-      this.formResponse = "Empresa " + data.data.legal_name + " criada com sucesso!";
+      this.formResponse =
+        "Empresa " + data.data.legal_name + " criada com sucesso!";
     },
     updateForm(value) {
       this.form.business_name = value;

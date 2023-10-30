@@ -23,6 +23,18 @@
             @mouseover="showCopyName(company.id)"
             @mouseleave="hideCopyName(company.id)"
           >
+          <div v-if="company.business_name">
+            <p class="name">
+              {{ company.business_name }}
+            </p>
+            <CopyContentClipboard
+              class="CopyContentClipboard"
+              :data="company.business_name"
+              :key="'name_' + company.id"
+              v-show="isMouseOverName[company.id]"
+            />
+          </div>
+          <div v-else>
             <p class="name">
               {{ company.legal_name }}
             </p>
@@ -31,6 +43,24 @@
               :data="company.legal_name"
               :key="'name_' + company.id"
               v-show="isMouseOverName[company.id]"
+            />
+          </div>
+        </div>
+
+        <div
+            v-if="company.cnpj"
+            class="infos-container"
+            @mouseover="showCopyEmail(company.id)"
+            @mouseleave="hideCopyEmail(company.id)"
+          >
+            <p class="cnpj">
+              {{ company.cnpj }}
+            </p>
+            <CopyContentClipboard
+              class="CopyContentClipboard"
+              :data="company.cnpj"
+              :key="'cnpj_' + company.id"
+              v-show="isMouseOverEmail[company.id]"
             />
           </div>
 

@@ -26,8 +26,9 @@ class CompanyCreateRequest extends FormRequest
         return [
             'legal_name' => 'unique:companies|required',
             'business_name' => 'nullable',
+            'cnpj' => 'nullable|numeric|digits:14',
             'email' => 'email|nullable',
-            'cel_phone' => 'nullable',
+            'cel_phone' => 'nullable|numeric|digits:10',
             'linkedin' => 'nullable',
             'facebook' => 'nullable',
             'instagram' => 'nullable',
