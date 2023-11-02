@@ -1,5 +1,5 @@
 <template>
-  <div class="container row">
+  <div class="container row mb-5">
     <div class="col-1">
       <p class="icon">
         <font-awesome-icon icon="fa-solid fa-triangle-exclamation" />

@@ -1,64 +1,63 @@
 <template>
-  <div id="form-wrapper">
+  <div class="mb-5">
+    <label class="form-label" :for="name">Situação</label>
+    <br />
     <div id="debt-amount-slider">
+      <input
+        type="radio"
+        name="status"
+        id="wait"
+        value="wait"
+        v-model="localForm.status"
+        @change="emitStatusChange"
+        required
+      />
+      <label class="label" for="wait" data-status="PENDENTE"></label>
 
       <input
-      type="radio"
-      name="status"
-      id="wait"
-      value="wait"
-      v-model="localForm.status"
-      @change="emitStatusChange"
-      required
-      >
-      <label for="wait" data-status="PENDENTE"></label>
-      
-      <input
-      type="radio"
-      name="status"
-      id="to-do"
-      value="to-do"
-      v-model="localForm.status"
-      @change="emitStatusChange"
-      required
-      >
-      <label for="to-do" data-status="FAZER"></label>
+        type="radio"
+        name="status"
+        id="to-do"
+        value="to-do"
+        v-model="localForm.status"
+        @change="emitStatusChange"
+        required
+      />
+      <label class="label" for="to-do" data-status="FAZER"></label>
 
       <input
-      type="radio"
-      name="status"
-      id="doing"
-      value="doing"
-      v-model="localForm.status"
-      @change="emitStatusChange"
-      required
-      >
-      <label for="doing" data-status="FAZENDO"></label>
+        type="radio"
+        name="status"
+        id="doing"
+        value="doing"
+        v-model="localForm.status"
+        @change="emitStatusChange"
+        required
+      />
+      <label class="label" for="doing" data-status="FAZENDO"></label>
 
       <input
-      type="radio"
-      name="status"
-      id="done"
-      value="done"
-      v-model="localForm.status"
-      @change="emitStatusChange"
-      required
-      >
-      <label for="done" data-status="FEITO"></label>
+        type="radio"
+        name="status"
+        id="done"
+        value="done"
+        v-model="localForm.status"
+        @change="emitStatusChange"
+        required
+      />
+      <label class="label" for="done" data-status="FEITO"></label>
 
       <input
-      type="radio"
-      name="status"
-      id="canceled"
-      value="canceled"
-      v-model="localForm.status"
-      @change="emitStatusChange"
-      required
-      >
-      <label for="canceled" data-status="CANCELADO"></label>
-      
+        type="radio"
+        name="status"
+        id="canceled"
+        value="canceled"
+        v-model="localForm.status"
+        @change="emitStatusChange"
+        required
+      />
+      <label class="label" for="canceled" data-status="CANCELADO"></label>
     </div>
-
   </div>
 </template>
   
@@ -86,8 +85,6 @@ export default {
 </script>
   
   <style scoped>
-
-
 #form-wrapper {
   width: 100%;
   display: flex;
@@ -115,20 +112,20 @@ export default {
   background: #000;
 }
 input,
-label {
+.label {
   box-sizing: border-box;
   flex: 1;
   user-select: none;
   cursor: pointer;
 }
-label {
+.label {
   display: inline-block;
   position: relative;
   width: 20%;
   height: 100%;
   user-select: none;
 }
-label::before {
+.label::before {
   content: attr(data-status);
   position: absolute;
   left: 50%;
@@ -141,7 +138,7 @@ label::before {
   opacity: 0.85;
   transition: all 0.15s ease-in-out;
 }
-label::after {
+.label::after {
   content: " ";
   position: absolute;
   left: 50%;
@@ -156,63 +153,63 @@ label::after {
   cursor: pointer;
   transition: all 0.15s ease-in-out;
 }
-label:hover::after {
+.label:hover::after {
   transform: translate(-50%, -50%) scale(1.25);
 }
 input {
   display: none;
 }
-input:checked + label::before {
+input:checked + .label::before {
   font-weight: 800;
   opacity: 1;
   font-size: 13.5px;
 }
-input:checked + label::after {
+input:checked + .label::after {
   border-width: 2px;
   transform: translate(-50%, -50%) scale(1.5);
 }
 
 /* checked button colors */
 
-input[value="wait"]:checked + label::after {
+input[value="wait"]:checked + .label::after {
   background-color: var(--wait-color);
 }
 
-input[value="to-do"]:checked + label::after {
+input[value="to-do"]:checked + .label::after {
   background-color: var(--to-do-color);
 }
 
-input[value="doing"]:checked + label::after {
+input[value="doing"]:checked + .label::after {
   background-color: var(--doing-color);
 }
 
-input[value="done"]:checked + label::after {
+input[value="done"]:checked + .label::after {
   background-color: var(--done-color);
 }
 
-input[value="canceled"]:checked + label::after {
+input[value="canceled"]:checked + .label::after {
   background-color: var(--canceled-color);
 }
 
-/* checked label colors */
+/* checked .label colors */
 
-input[value="wait"]:checked + label {
+input[value="wait"]:checked + .label {
   color: var(--wait-color);
 }
 
-input[value="to-do"]:checked + label {
+input[value="to-do"]:checked + .label {
   color: var(--to-do-color);
 }
 
-input[value="doing"]:checked + label {
+input[value="doing"]:checked + .label {
   color: var(--doing-color);
 }
 
-input[value="done"]:checked + label {
+input[value="done"]:checked + .label {
   color: var(--done-color);
 }
 
-input[value="canceled"]:checked + label {
+input[value="canceled"]:checked + .label {
   color: var(--canceled-color);
 }
 

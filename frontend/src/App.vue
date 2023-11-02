@@ -64,6 +64,7 @@ nav a.router-link-exact-active {
 
 .nav-item {
   padding-right: 12px;
+  padding-top: 1.2vh;
 }
 
 .nav-item a {

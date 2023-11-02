@@ -1,75 +1,71 @@
 <template>
-  <div>
+  <div class="form-container">
     <ErrorMessage v-if="isError" :formResponse="formResponse" />
     <SuccessMessage v-if="isSuccess" :formResponse="formResponse" />
 
-    <div id="form" class="form-container">
-      <form @submit.prevent="submitForm">
-        <div class="row">
-          <div class="col">
-            <TextInput
-              size="full"
-              label="Razão social"
-              type="text"
-              name="legal_name"
-              v-model="form.legal_name"
-              placeholder="nome legal da empresa"
-            />
-          </div>
+    <form @submit.prevent="submitForm">
+      <div class="row">
+        <div class="col">
+          <TextInput
+            label="Razão social"
+            type="text"
+            name="legal_name"
+            v-model="form.legal_name"
+            placeholder="nome legal da empresa"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <TextInput
+            label="Nome fantasia"
+            type="text"
+            name="business_name"
+            v-model="form.business_name"
+            placeholder="nome fantasia da empresa"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <TextInput
+            label="CNPJ"
+            type="text"
+            name="cnpj"
+            v-model="form.cnpj"
+            placeholder="Cadastro nacional de Pessoa Jurídica"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <TextInput
+            label="Email"
+            type="text"
+            name="email"
+            v-model="form.email"
+            placeholder="email da empresa"
+          />
         </div>
 
-        <div class="row">
-          <div class="col">
-            <TextInput
-              size="full"
-              label="Nome fantasia"
-              type="text"
-              name="business_name"
-              v-model="form.business_name"
-              placeholder="nome fantasia da empresa"
-            />
-          </div>
+        <div class="col-6">
+          <TextInput
+            label="Telefone celular"
+            type="text"
+            name="cel_phone"
+            v-model="form.cel_phone"
+            placeholder="telefone celular da empresa"
+          />
         </div>
+      </div>
 
-        <div class="row">
-          <div class="col-6">
-            <TextInput
-              label="CNPJ"
-              type="text"
-              name="cnpj"
-              v-model="form.cnpj"
-              placeholder="Cadastro nacional de Pessoa Jurídica"
-            />
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-6">
-            <TextInput
-              label="Email"
-              type="text"
-              name="email"
-              v-model="form.email"
-              placeholder="email da empresa"
-            />
-          </div>
-
-          <div class="col-6">
-            <TextInput
-              label="Telefone celular"
-              type="text"
-              name="cel_phone"
-              v-model="form.cel_phone"
-              placeholder="telefone celular da empresa"
-            />
-          </div>
-        </div>
-
-        <div class="row ms-5 me-5 mt-4 mb-2">
-          <button type="submit" class="button-new">Criar</button>
-        </div>
-      </form>
-    </div>
+      <div class="row ms-5 me-5 mt-4 mb-2">
+        <button type="submit" class="button-new">Criar</button>
+      </div>
+    </form>
   </div>
 </template>
 
@@ -87,6 +83,9 @@ export default {
     TextInput,
   },
   emits: ["new-company-event"],
+  props: {
+    updateList: String,
+  },
   data() {
     return {
       allStatus: [],
@@ -138,7 +137,12 @@ export default {
       this.form.cel_phone = null;
     },
     newCompanyEvent(data) {
+      // if (this.update === 'index') {
       this.$emit("new-company-event", data);
+      // }
+      // if (this.update === 'select') {
+      //   this.$emit("new-company-event", data);
+      // }
     },
     successMessage(data) {
       this.formResponse =

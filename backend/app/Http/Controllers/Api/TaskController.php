@@ -46,33 +46,26 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        $task = new Task;
-        $task->fill($request->all());
-        $task->account_id = 1;
-        $task->user_id = 1;
-        // $task->contact_id = 1;
-        $task->company_id = 1;
-        // $task->goal_id = $request->goal_id;
-        // $task->project_id = 1;
-        // $task->stage_id = 1;
-        // $task->name = $request->name;
-        //		$task->category = $request->category;
-        // $task->date_start = $request->date_start;
-        // $task->date_due = $request->date_due;
+        try {
+            $task = new Task;
+            $task->fill($request->all());
+            $task->account_id = 1;
 
-        if ($request->date_conclusion) {
-            $task->date_conclusion = $request->date_conclusion;
-            $task->duration_days = DateConversionService::calculateDurationDays($request->date_conclusion, $request->date_start);
+            if ($request->date_conclusion) {
+                $task->date_conclusion = $request->date_conclusion;
+                $task->duration_days = DateConversionService::calculateDurationDays($request->date_conclusion, $request->date_start);
+            }
+
+            $task->save();
+
+            return new TaskResource($task);
+            
+        } catch (ValidationException $validationException) {
+            return response()->json([
+                'message' => "Erro de validação",
+                'errors' => $validationException->errors(),
+            ], 422);
         }
-
-        // $task->description = $request->description;
-        // $task->status = $request->status;
-        $task->save();
-
-        return response()->json([
-            'message' => "Tarefa $request->name criada",
-            'task' => $task,
-        ]);
     }
 
     /**

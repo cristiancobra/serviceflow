@@ -49,7 +49,6 @@ class LeadController extends Controller
 
             $lead->fill($request->all());
             $lead->account_id = 1;
-            $lead->user_id = 1;
             $lead->save();
 
             return new LeadResource($lead);

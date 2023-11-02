@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <TasksFilter
       @toggle="toggle"
       @filter-to-do="getTasks"
@@ -11,7 +11,7 @@
       <TaskCreateForm @new-task-event="addTaskCreated($event)" />
     </div>
 
-    <div class="row tasks-container">
+    <div class="row">
       <TasksList :tasks="filteredTasks" />
     </div>
   </div>
@@ -67,8 +67,10 @@ export default {
         .catch((error) => console.log(error));
     },
     addTaskCreated($event) {
+      this.toggle();
+
       this.data = $event;
-      console.log(this.data);
+      
       this.newTask.id = this.data.id;
       this.newTask.name = this.data.name;
       this.newTask.description = this.data.description;
@@ -83,6 +85,7 @@ export default {
       this.newTask.status = this.data.status;
 
       this.filteredTasks.unshift(this.newTask);
+
     },
     getTasksDone() {
       axios
@@ -141,11 +144,6 @@ export default {
   color: white;
   margin-left: 50px;
   width: 60px;
-}
-.tasks-container {
-  margin-left: 180px;
-  margin-right: 180px;
-  margin-bottom: 60px;
 }
 .show {
   display: block;

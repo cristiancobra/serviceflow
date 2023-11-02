@@ -1,165 +1,133 @@
 <template>
-  <div class="container">
+  <div class="form-container">
     <ErrorMessage v-if="isError" :formResponse="formResponse" />
     <SuccessMessage v-if="isSuccess" :formResponse="formResponse" />
 
-    <!-- <div id="form" class="container"> -->
-    <form class="row" @submit.prevent="submitForm">
-      <div class="col-12">
-        <TextInput
-          size="full"
-          label="Nome"
-          type="text"
-          name="name"
-          v-model="form.name"
-          placeholder="nome da tarefa"
-        />
+    <form @submit.prevent="submitForm">
+      <div class="row">
+        <div class="col-12">
+          <TextInput
+            label="Nome"
+            type="text"
+            name="name"
+            v-model="form.name"
+            placeholder="nome da tarefa"
+          />
+        </div>
       </div>
 
-      <div class="col-12">
-        <TextInput
-          size="full"
-          label="Descrição"
-          type="text"
+      <div class="row">
+        <TextAreaInput
+          label="Descrição:"
           name="description"
           v-model="form.description"
-          placeholder="descrição detalhada da tarefa"
+          placeholder="Detalhamento da tarefa"
+          :rows="5"
         />
       </div>
 
-      <div class="col-md-4">
-        <SelectInput
-          label="Empresa cliente"
-          name="company_id"
-          v-model="form.company_id"
-          placeholder="Selecione a empresa"
-          :items="companies"
-          :fieldToDisplay="['business_name', 'legal_name']"
-        />
-      </div>
-      <div class="col-2 d-flex align-items-center justify-content-start">
-        <button class="button-new" @click="toggleCompany()">+ criar</button>
+      <div class="row">
+        <div class="col-md-4">
+          <SelectInput
+            label="Empresa cliente"
+            name="company_id"
+            :items="companies"
+            :fieldToDisplay="['business_name', 'legal_name']"
+            fieldNull="Não possui / minha empresa"
+          />
+        </div>
+        <div class="col-2 d-flex align-items-center justify-content-start">
+          <button type="button" class="button-new" @click="toggleCompany()">
+            + criar
+          </button>
+        </div>
+
+        <div class="col-md-4">
+          <SelectInput
+            label="Contato"
+            name="contact_id"
+            v-model="form.contact_id"
+            :items="leads"
+            fieldToDisplay="name"
+            fieldNull="Não possui"
+          />
+        </div>
+        <div class="col-2 d-flex align-items-center justify-content-start">
+          <button type="button" class="button-new" @click="toggleLead()">
+            + criar
+          </button>
+        </div>
       </div>
 
-      <div class="col-md-4">
-        <SelectInput
-          label="Contato"
-          name="contact_id"
-          v-model="form.contact_id"
-          placeholder="Selecione o contato"
-          :items="leads"
-          fieldToDisplay="name"
-        />
+      <div :class="{ hidden: !isActiveCompany }">
+        <CompanyCreateForm @new-company-event="addCompanyCreated()" />
       </div>
-      <div class="col-2 d-flex align-items-center justify-content-start">
-        <button class="button-new" @click="toggleLead()">+ criar</button>
-      </div>
-
-      <div :class="{ hidden: isActiveCompany }">
-        <CompanyCreateForm @new-company-event="addCompanyCreated($event)" />
-      </div>
-      <div :class="{ hidden: isActiveLead }">
+      <div :class="{ hidden: !isActiveLead }">
         <LeadCreateForm @new-lead-event="addLeadCreated($event)" />
       </div>
 
-      <div class="col-md-4">
-        <SelectInput
-          label="Responsável"
-          name="user_id"
-          v-model="form.user_id"
-          placeholder="Digite o nome do responsável pela execução da tarefa"
-          :items="users"
-          fieldToDisplay="name"
+      <div class="row">
+        <div class="col-md-4">
+          <SelectInput
+            label="Responsável"
+            name="user_id"
+            v-model="form.user_id"
+            :items="users"
+            fieldToDisplay="name"
+          />
+        </div>
+
+        <div class="offset-2 col-md-6">
+          <PrioritySelectRadioInput
+            :form="form"
+            @priority-change="updateFormPriority"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <TextInput
+            label="Início"
+            type="date"
+            name="date_start"
+            v-model="form.date_start"
+            placeholder="início do prazo"
+          />
+        </div>
+
+        <div class="col-md-4">
+          <TextInput
+            label="Prazo final"
+            type="date"
+            name="date_due"
+            v-model="form.date_due"
+            placeholder="final do prazo"
+          />
+        </div>
+
+        <div class="col-md-4">
+          <TextInput
+            label="Data de conclusão"
+            type="date"
+            name="date_conclusion"
+            v-model="form.date_conclusion"
+            placeholder="data quando a tarefa foi finalizada"
+          />
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <StatusLinearRadioInput
+          :form="form"
+          @status-change="updateFormStatus"
         />
       </div>
 
-      <div class="form-group">
-        <div class="row">
-          <div class="col-2 label-col">
-            <label class="labels" for="user_id"> Responsável </label>
-          </div>
-          <div class="col-10">
-            <input
-              class="form-control"
-              type="text"
-              id="user_id"
-              v-model="form.user_id"
-              placeholder="Digite o nome do responsável pela execução da tarefa"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="row">
-          <div class="col-2 label-col">
-            <label class="labels" for="date_start"> Início </label>
-          </div>
-          <div class="col-2">
-            <input
-              class="form-control"
-              type="date"
-              id="date_start"
-              v-model="form.date_start"
-            />
-          </div>
-
-          <div class="col-2 label-col">
-            <label class="labels" for="date_due"> Prazo final </label>
-          </div>
-          <div class="col-2">
-            <input
-              class="form-control"
-              type="date"
-              id="date_due"
-              v-model="form.date_due"
-            />
-          </div>
-
-          <div class="col-2 label-col">
-            <label class="labels" for="date_conclusion">
-              Data de conclusão
-            </label>
-          </div>
-          <div class="col-2">
-            <input
-              class="form-control"
-              type="date"
-              id="date_conclusion"
-              v-model="form.date_conclusion"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="row mt-4 mb-4">
-          <div class="col-2 label-col">
-            <label class="labels" for="status"> Prioridade </label>
-          </div>
-          <div class="col-4">
-            <PrioritySelectRadio
-              :form="form"
-              @priority-change="updateFormPriority"
-            />
-          </div>
-          <div class="col-2 label-col">
-            <label class="labels" for="status"> Situação </label>
-          </div>
-          <div class="col-4">
-            <StatusLinearRadios
-              :form="form"
-              @status-change="updateFormStatus"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div class="row ms-5 me-5 mt-5 mb-2">
+      <div class="row ms-auto me-auto mt-5 mb-5">
         <button type="submit" class="button-new">criar</button>
       </div>
     </form>
-    <!-- </div> -->
   </div>
 </template>
 
@@ -167,10 +135,11 @@
 import axios from "axios";
 import LeadCreateForm from "./LeadCreateForm.vue";
 import CompanyCreateForm from "./CompanyCreateForm.vue";
-import PrioritySelectRadio from "../buttons/PrioritySelectRadio.vue";
-import StatusLinearRadios from "../buttons/StatusLinearRadios.vue";
+import PrioritySelectRadioInput from "./inputs/PrioritySelectRadioInput.vue";
+import StatusLinearRadioInput from "./inputs/StatusLinearRadioInput.vue";
 import SelectInput from "./inputs/SelectInput";
 import TextInput from "./inputs/TextInput";
+import TextAreaInput from "./inputs/TextAreaInput";
 import ErrorMessage from "./messages/ErrorMesssage.vue";
 import SuccessMessage from "./messages/SuccessMessage.vue";
 
@@ -180,12 +149,13 @@ export default {
   components: {
     LeadCreateForm,
     CompanyCreateForm,
-    PrioritySelectRadio,
-    StatusLinearRadios,
+    PrioritySelectRadioInput,
+    StatusLinearRadioInput,
     ErrorMessage,
     SuccessMessage,
     SelectInput,
     TextInput,
+    TextAreaInput,
   },
   data() {
     return {
@@ -196,8 +166,8 @@ export default {
       leads: [],
       users: [],
       data: [],
-      isActiveCompany: true,
-      isActiveLead: true,
+      isActiveCompany: false,
+      isActiveLead: false,
       form: {
         name: null,
         description: null,
@@ -218,6 +188,9 @@ export default {
       !this.toggleLead();
       this.form.contact_id = newLead.lead.id;
     },
+    addCompanyCreated() {
+      this.getCompanies();
+    },
     clearForm() {
       this.form.name = null;
       this.form.description = null;
@@ -227,7 +200,8 @@ export default {
       this.form.date_start = null;
       this.form.date_due = null;
       this.form.date_conclusion = null;
-      this.form.priority = "medium";
+      this.status = "to-do";
+      this.priority = "medium";
     },
     getLeads() {
       axios
@@ -261,23 +235,49 @@ export default {
         })
         .catch((error) => console.log(error));
     },
-    async submitForm() {
-      axios
-        .post("http://localhost:8191/api/tasks", this.form)
-        .then((response) => {
-          this.newTask = response.data.task;
-          this.newTaskEvent(this.newTask);
-          this.clearForm();
-        });
-    },
     newTaskEvent(data) {
       this.$emit("new-task-event", data);
     },
+    async submitForm() {
+      try {
+        const response = await axios.post(
+          "http://localhost:8191/api/tasks",
+          this.form
+        );
+        this.data = response.data;
+        this.newTaskEvent(this.data);
+        this.isSuccess = true;
+        this.isError = false;
+        this.newCompanyEvent(this.data);
+        this.successMessage(this.data);
+        this.clearForm();
+      } catch (error) {
+        console.error(error);
+        if (error.response && error.response.status === 422) {
+          this.isError = true;
+          this.isSuccess = false;
+          this.formResponse = error.response.data;
+          console.log(error.response.data);
+        }
+        if (!error.response) {
+          this.formResponse =
+            "Ocorreu um erro ao enviar o formulário. Tente novamente.";
+        }
+      }
+    },
     toggleCompany() {
       this.isActiveCompany = !this.isActiveCompany;
+
+      if (this.isActiveCompany) {
+        this.isActiveLead = false;
+      }
     },
     toggleLead() {
       this.isActiveLead = !this.isActiveLead;
+
+      if (this.isActiveLead) {
+        this.isActiveCompany = false;
+      }
     },
     updateFormPriority(newPriority) {
       this.form.priority = newPriority;
@@ -296,20 +296,6 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  border-style: solid;
-  border-color: #ff3eb5;
-  border-width: 2px;
-  margin-left: 180px;
-  margin-right: 180px;
-  margin-bottom: 60px;
-  margin-top: 60px;
-  padding: 20px;
-  border-radius: 16px;
-  transition: all 0.5s;
-  text-align: left;
-  font-weight: 800;
-}
 .labels {
   text-align: left;
   margin-left: 0;
@@ -338,9 +324,6 @@ export default {
   align-items: center;
 }
 
-.row {
-  margin-top: 1vh;
-}
 .status {
   display: inline-block;
   padding: 8px 16px;

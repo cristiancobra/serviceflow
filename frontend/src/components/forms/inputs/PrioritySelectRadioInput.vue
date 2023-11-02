@@ -1,5 +1,7 @@
 <template>
-  <div>
+  <div class="mb-5">
+    <label class="form-label mb-2" :for="name">Prioridade</label>
+    <br>
     <input
       type="radio"
       :id="'low'"
@@ -35,9 +37,10 @@
   
 <script>
 export default {
-  name: "PrioritySelectRadio",
+  name: "PrioritySelectRadioInput",
   props: {
     form: Object, // Recebendo a variável form como uma propriedade
+    label: String,
   },
   data() {
     return {
@@ -62,6 +65,8 @@ export default {
   border: 1px solid #ccc;
   cursor: pointer;
   user-select: none;
+  width: 25%;
+  text-align: center;
 }
 /* priorities */
 .low {

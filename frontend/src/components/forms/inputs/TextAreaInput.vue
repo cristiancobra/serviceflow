@@ -1,15 +1,15 @@
 <template>
   <div class="mb-5">
     <label class="form-label" :for="name">{{ label }}</label>
-      <input
-        class="form-control"
-        :type="type"
-        :id="name"
-        :name="name"
-        :value="modelValue"
-        :placeholder="placeholder"
-        @input="updateInput"
-      />
+    <textarea
+      class="form-control"
+      :id="name"
+      :name="name"
+      :value="modelValue"
+      :placeholder="placeholder"
+      :rows="rows" 
+      @input="updateInput"
+    ></textarea>
   </div>
 </template>
     
@@ -21,6 +21,7 @@ export default {
     name: String,
     modelValue: [String, Number],
     placeholder: String,
+    rows: Number,
   },
   methods: {
     updateInput(event) {
