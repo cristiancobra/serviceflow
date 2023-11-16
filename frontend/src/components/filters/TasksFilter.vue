@@ -29,7 +29,7 @@
       >
         feitas
       </button>
-      <button class="col slot new" @click="toggle()">+</button>
+      <button class="col slot button-new" @click="toggle()">+</button>
     </div>
   </div>
 </template>
@@ -139,19 +139,6 @@ export default {
 .late.active {
   background-color: #b1388d;
   color: white;
-}
-.new {
-  border-radius: 20px 20px 20px 20px;
-  background-color: white;
-  border-color: #ff3eb5;
-  color: #ff3eb5;
-  margin-left: 50px;
-  font-size: 16px;
-}
-.new:hover {
-  background-color: #ff3eb5;
-  color: white;
-  margin-left: 50px;
 }
 .hidden {
   display: none;

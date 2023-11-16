@@ -31,8 +31,9 @@
           <SelectInput
             label="Empresa cliente"
             name="company_id"
+            v-model="form.company_id"
             :items="companies"
-            :fieldToDisplay="['business_name', 'legal_name']"
+            :fieldsToDisplay="['business_name', 'legal_name']"
             fieldNull="Não possui / minha empresa"
           />
         </div>
@@ -48,7 +49,7 @@
             name="contact_id"
             v-model="form.contact_id"
             :items="leads"
-            fieldToDisplay="name"
+            fieldsToDisplay="name"
             fieldNull="Não possui"
           />
         </div>
@@ -73,7 +74,7 @@
             name="user_id"
             v-model="form.user_id"
             :items="users"
-            fieldToDisplay="name"
+            fieldsToDisplay="name"
           />
         </div>
 
@@ -244,13 +245,15 @@ export default {
           "http://localhost:8191/api/tasks",
           this.form
         );
-        this.data = response.data;
+        this.data = response.data.data;
+        // console.log(this.data);
         this.newTaskEvent(this.data);
         this.isSuccess = true;
         this.isError = false;
-        this.newCompanyEvent(this.data);
-        this.successMessage(this.data);
-        this.clearForm();
+        // this.newCompanyEvent(this.data);
+        // this.successMessage(this.data);
+        this.toggleTaskForm();
+        // this.clearForm();
       } catch (error) {
         console.error(error);
         if (error.response && error.response.status === 422) {
@@ -278,6 +281,9 @@ export default {
       if (this.isActiveLead) {
         this.isActiveCompany = false;
       }
+    },
+    toggleTaskForm() {
+      this.$emit("toggle-task-form"); // Emitir evento para o componente pai
     },
     updateFormPriority(newPriority) {
       this.form.priority = newPriority;

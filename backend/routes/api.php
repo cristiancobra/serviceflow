@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\JourneyController;
 use App\Http\Controllers\Api\LeadController;
@@ -20,47 +21,52 @@ use App\Http\Controllers\Api\UserController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('/register', [AuthController::class, 'register']);
 
+Route::post('/login', [AuthController::class, 'login']);
 
-// COMPANIES
-Route::apiResource('companies', CompanyController::class)
+Route::middleware('auth:sanctum')->group(function () {
+
+	// logout
+	Route::post('/logout', [AuthController::class, 'logout']);
+
+	// COMPANIES
+	Route::apiResource('companies', CompanyController::class)
 		->names('companies');
 
 
-// JOURNEYS
-Route::apiResource('journeys', JourneyController::class)
+	// JOURNEYS
+	Route::apiResource('journeys', JourneyController::class)
 		->names('journeys');
 
-// LEADS
-Route::apiResource('leads', LeadController::class)
+	// LEADS
+	Route::apiResource('leads', LeadController::class)
 		->names('leads');
 
-//PROJETOS
-Route::get('projects/status', [ProjectController::class, 'getProjectsStatus']);
+	//PROJETOS
+	Route::get('projects/status', [ProjectController::class, 'getProjectsStatus']);
 
-Route::apiResource('projects', ProjectController::class)
+	Route::apiResource('projects', ProjectController::class)
 		->names('projects');
 
-// SERVICES
-Route::apiResource('services', ServiceController::class)
+	// SERVICES
+	Route::apiResource('services', ServiceController::class)
 		->names('services');
 
-//TAREFAS
-Route::get('tasks/status', [TaskController::class, 'getTasksStatus'])
-	->name('tasks.status');
+	//TAREFAS
+	Route::get('tasks/status', [TaskController::class, 'getTasksStatus'])
+		->name('tasks.status');
 
-Route::get('tasks/filter-status', [TaskController::class, 'filterTasksByStatus'])
-	->name('tasks.filter-status');
+	Route::get('tasks/filter-status', [TaskController::class, 'filterTasksByStatus'])
+		->name('tasks.filter-status');
 
-Route::get('tasks/filter-date', [TaskController::class, 'filterTasksByDate'])
-	->name('tasks.filter-date');
+	Route::get('tasks/filter-date', [TaskController::class, 'filterTasksByDate'])
+		->name('tasks.filter-date');
 
-Route::apiResource('tasks', TaskController::class)
+	Route::apiResource('tasks', TaskController::class)
 		->names('tasks');
 
-// USERS
-Route::apiResource('users', UserController::class)
-->names('users');
+	// USERS
+	Route::apiResource('users', UserController::class)
+		->names('users');
+});

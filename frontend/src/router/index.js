@@ -74,4 +74,15 @@ const router = createRouter({
   routes
 })
 
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = localStorage.getItem('access_token'); // Exemplo: verifique se há um token no armazenamento local
+console.log(isAuthenticated);
+  if (to.name !== 'home' && !isAuthenticated) {
+    next({ name: 'home' }); // Redirecione o usuário para a página de login
+  } else {
+    next();
+  }
+})
+
+
 export default router

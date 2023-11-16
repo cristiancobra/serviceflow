@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Task;
-use App\Http\Resources\TasksResource;
 use App\Http\Resources\TaskResource;
 use App\Services\DateConversionService;
 
@@ -18,7 +17,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return TasksResource::collection(
+        return TaskResource::collection(
             Task::whereIn('status', [
                 'to-do',
                 'doing'
@@ -58,7 +57,7 @@ class TaskController extends Controller
 
             $task->save();
 
-            return new TaskResource($task);
+            return TaskResource::make($task);
             
         } catch (ValidationException $validationException) {
             return response()->json([
@@ -77,7 +76,7 @@ class TaskController extends Controller
     public function show(Task $task)
     {
 
-        return new TaskResource(Task::with('journeys')->find($task->id));
+        return TaskResource::make(Task::with('journeys')->find($task->id));
     }
 
     /**
@@ -139,7 +138,7 @@ class TaskController extends Controller
 
         $filteredTasks = $tasks->get();
 
-        return TasksResource::collection($filteredTasks);
+        return TaskResource::collection($filteredTasks);
     }
 
     /**
@@ -159,6 +158,6 @@ class TaskController extends Controller
 
         $filteredTasks = $tasks->get();
 
-        return TasksResource::collection($filteredTasks);
+        return TaskResource::collection($filteredTasks);
     }
 }

@@ -12,22 +12,25 @@
           <p class="title">
             {{ task.name }}
           </p>
-          <p class="description">
-            {{ task.description }}
-          </p>
         </div>
       </div>
     </div>
 
     <div class="row">
-      <p class="mb-5">
-        {{ task.description }}
-      </p>
+      <div class="col-12">
+        <TextAreaInput
+          label="Descrição"
+          name="description"
+          v-model="task.description"
+          placeholder="descrição detalhada da tarefa"
+          :rows="6"
+        />
+      </div>
     </div>
 
-    <div class="row">
 
-      <div class="col-3">
+    <div class="row">
+      <div class="col-12">
         <TextInput
           label="Descrição"
           type="text"
@@ -37,7 +40,7 @@
         />
       </div>
     </div>
-    
+
     <div class="row">
       <div class="col">
         <p>
@@ -96,12 +99,14 @@ import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
 import JourneysList from "@/components/lists/JourneysList.vue";
 import TextInput from "@/components/forms/inputs/TextInput";
+import TextAreaInput from "@/components/forms/inputs/TextAreaInput";
 
 export default {
   name: "TaskShow",
   components: {
     JourneysList,
     TextInput,
+    TextAreaInput,
   },
   data() {
     return {
@@ -239,7 +244,7 @@ a:active {
   border-radius: 6px;
   padding: 10px;
   padding-right: 0px;
-  height: 15vh;
+  min-height: 15vh;
 }
 .done {
   background-color: var(--green-light);

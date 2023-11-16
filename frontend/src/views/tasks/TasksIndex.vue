@@ -8,7 +8,10 @@
     />
 
     <div v-bind:class="{ 'd-none': isActive }">
-      <TaskCreateForm @new-task-event="addTaskCreated($event)" />
+      <TaskCreateForm
+      @new-task-event="addTaskCreated($event)"
+      @toogle-task-form=toggle()
+       />
     </div>
 
     <div class="row">
@@ -76,7 +79,7 @@ export default {
       this.newTask.description = this.data.description;
       this.newTask.company_id = "1";
       this.newTask.contact_id = "2";
-      this.newTask.user_id = "3";
+      this.newTask.user_id = this.data.user_id;
       this.newTask.date_start = this.data.date_start;
       this.newTask.date_due = this.data.date_due;
       this.newTask.duration_days = this.data.duration_days;

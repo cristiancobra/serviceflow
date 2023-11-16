@@ -1,15 +1,17 @@
 <template>
   <div class="mb-5">
     <label class="form-label" :for="name">{{ label }}</label>
-    <select
-      class="form-select"
-      :id="name"
-      :name="name"
-      @input="updateInput"
-    >
-    <option v-if="fieldNull" selected value="null">{{ fieldNull }}</option>
-      <option v-if="optionLabel" disabled selected value="">{{optionLabel}}</option>
-      <option v-for="item in items" :key="item.id" :value="item.id">
+    <select class="form-select" :id="name" :name="name" @input="updateInput">
+      <option v-if="fieldNull" selected value="null">{{ fieldNull }}</option>
+      <option v-if="optionLabel" disabled selected value="">
+        {{ optionLabel }}
+      </option>
+      <option
+        v-for="(item, index) in items"
+        :key="item.id"
+        :value="item.id"
+        :selected="shouldSelectFirstItem(index, item)"
+      >
         {{ displayItemText(item) }}
       </option>
     </select>
@@ -24,7 +26,7 @@ export default {
     name: String,
     placeholder: String,
     items: Array,
-    fieldToDisplay: [String, Array],
+    fieldsToDisplay: [String, Array],
     fieldNull: String,
     optionLabel: String,
   },
@@ -33,10 +35,25 @@ export default {
       this.$emit("update:modelValue", event.target.value);
     },
     displayItemText(item) {
-      if (Array.isArray(this.fieldToDisplay)) {
-        return this.fieldToDisplay.map((field) => item[field]).join(" - ");
+      if (Array.isArray(this.fieldsToDisplay)) {
+        const displayedValues = this.fieldsToDisplay.map(
+          (field) => item[field]
+        );
+
+        // Filter out null values
+        const nonNullValues = displayedValues.filter(
+          (value) => value !== null && value !== undefined
+        );
+
+        // Join non-null values with ' - ' separator
+        return nonNullValues.join(" - ");
       } else {
-        return item[this.fieldToDisplay];
+        return item[this.fieldsToDisplay];
+      }
+    },
+    shouldSelectFirstItem(index, item) {
+      if (index === 0 && !this.optionLabel && !this.fieldNull) {
+        this.$emit("update:modelValue", item.id);
       }
     },
   },
