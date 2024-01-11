@@ -1,37 +1,54 @@
 <template>
-  <div>
     <div class="row mt-5 filters-container">
-      <button
-        class="col slot doing"
-        @click="handleButtonClick('doing', 'emitFilterToDo')"
-        :class="{ active: activeButton === 'doing' }"
-      >
-        fazer
-      </button>
-      <button
-        class="col slot late"
-        @click="handleButtonClick('late', 'emitFilterLate')"
-        :class="{ active: activeButton === 'late' }"
-      >
-        atrasadas
-      </button>
-      <button
-        class="col slot canceled"
-        @click="handleButtonClick('canceled', 'emitFilterCanceled')"
-        :class="{ active: activeButton === 'canceled' }"
-      >
-        canceladas
-      </button>
-      <button
-        class="col slot done"
-        @click="handleButtonClick('done', 'emitFilterDone')"
-        :class="{ active: activeButton === 'done' }"
-      >
-        feitas
-      </button>
-      <button class="col slot button-new" @click="toggle()">+</button>
+      <div class="col">
+        <button
+          class="slot doing"
+          @click="handleButtonClick('doing', 'emitFilterDoing')"
+          :class="{ active: activeButton === 'doing' }"
+        >
+          fazendo
+        </button>
+      </div>
+      <div class="col">
+        <button
+          class="slot to-do"
+          @click="handleButtonClick('to-do', 'emitFilterTodo')"
+          :class="{ active: activeButton === 'to-do' }"
+        >
+          fazer
+        </button>
+      </div>
+      <div class="col">
+        <button
+          class="slot late"
+          @click="handleButtonClick('late', 'emitFilterLate')"
+          :class="{ active: activeButton === 'late' }"
+        >
+          atrasadas
+        </button>
+      </div>
+      <div class="col">
+        <button
+          class="slot canceled"
+          @click="handleButtonClick('canceled', 'emitFilterCanceled')"
+          :class="{ active: activeButton === 'canceled' }"
+        >
+          canceladas
+        </button>
+      </div>
+      <div class="col">
+        <button
+          class="slot done"
+          @click="handleButtonClick('done', 'emitFilterDone')"
+          :class="{ active: activeButton === 'done' }"
+        >
+          feitas
+        </button>
+      </div>
+      <div class="col">
+        <button class="slot button-new" @click="toggle()">+</button>
+      </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -52,14 +69,20 @@ export default {
       this.activeButton = button; // Ative o botão
       this[emitEvent](); // Emita o evento correspondente
     },
+    emitFilterCanceled() {
+      this.$emit("filter-canceled"); // Emitindo o evento para o componente pai
+    },
+    emitFilterDoing() {
+      this.$emit("filter-doing"); // Emitindo o evento para o componente pai
+    },
     emitFilterDone() {
       this.$emit("filter-done"); // Emitindo o evento para o componente pai
     },
-    emitFilterToDo() {
-      this.$emit("filter-to-do"); // Emitindo o evento para o componente pai
+    emitFilterLate() {
+      this.$emit("filter-late"); // Emitindo o evento para o componente pai
     },
-    emitFilterCanceled() {
-      this.$emit("filter-canceled"); // Emitindo o evento para o componente pai
+    emitFilterTodo() {
+      this.$emit("filter-to-do"); // Emitindo o evento para o componente pai
     },
     toggle() {
       this.$emit("toggle"); // Emitir evento para o componente pai
@@ -72,10 +95,9 @@ export default {
 .filters-container {
   margin-top: 40px;
   margin-bottom: 50px;
-  margin-left: 25%;
-  margin-right: 25%;
   display: flex;
   justify-content: center;
+  /* width: 100%; */
 }
 .slot {
   border-width: 2px;
@@ -83,10 +105,9 @@ export default {
   border-color: white;
   border-radius: 20px 20px 20px 20px;
   padding: 10px 15px 10px 15px;
-  margin: 0 6px 0 6px;
   color: white;
   font-weight: 800;
-  width: 120px;
+  width: 100%;
 }
 .canceled {
   background-color: white;
@@ -116,15 +137,15 @@ export default {
 }
 .doing {
   background-color: white;
-  border-color: #e78d1f;
-  color: #e78d1f;
+  border-color: var(--blue);
+  color: var(--blue);
 }
 .doing:hover {
-  background-color: #e78d1f;
+  background-color: var(--blue);
   color: white;
 }
 .doing.active {
-  background-color: #e78d1f;
+  background-color: var(--blue);
   color: white;
 }
 .late {
@@ -138,6 +159,15 @@ export default {
 }
 .late.active {
   background-color: #b1388d;
+  color: white;
+}
+.to-do {
+  background-color: white;
+  border-color: var(--orange);
+  color: var(--orange);
+}
+.to-do:hover {
+  background-color: var(--orange);
   color: white;
 }
 .hidden {

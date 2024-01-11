@@ -15,6 +15,11 @@ class DateConversionService
         }
     }
 
+    public static function convertToUtc($date)
+    {
+        return date('Y-m-d H:i:s', strtotime($date . ' UTC'));
+    }
+
     public static function calculateDurationTime($start, $end)
     {
         $startDateTime = new DateTime($start);

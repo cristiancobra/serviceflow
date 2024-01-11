@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\JourneysResource;
+use App\Http\Resources\JourneyResource;
 
 class TaskResource extends JsonResource
 {
@@ -37,7 +37,7 @@ class TaskResource extends JsonResource
 			"updated_at" => $this->updated_at,
 
 			 // Relationships
-			 "journeys" => JourneysResource::collection($this->whenLoaded('journeys')),
+			 "journeys" => JourneyResource::collection($this->whenLoaded('journeys')),
 			];
     }
 }

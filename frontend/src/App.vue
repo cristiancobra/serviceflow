@@ -1,38 +1,33 @@
 <template>
-  <LoginForm v-if="!isLogged" />
-  <NavbarUser />
+  <div>
+  <NavbarUser v-if="showNavbar"/>
+  <router-view />
+
+  </div>
 </template>
 
 
 <script>
-import LoginForm from "./components/forms/LoginForm.vue";
-// import NavbarGuest from "./components/layout/NavbarGuest.vue";
 import NavbarUser from "./components/layout/NavbarUser.vue";
 
 export default {
   data() {
     return {
-      isLogged: false,
+      showNavbar: null,
     };
   },
   components: {
     NavbarUser,
-    LoginForm,
-  },
-  methods: {
-    async CheckLogin() {
-      if (localStorage.getItem("access_token")) {
-        this.isLogged = true;
-      } else {
-        this.isLogged = false;
-      }
-    },
   },
   watch: {
-    isLogged: function () {
-      console.log(this.isLogged);
-      this.CheckLogin();
-    },
+    // isLogged: function () {
+    //   console.log(this.isLogged);
+    //   // this.CheckLogin();
+    // },
+    $route(to) {
+      // Atualize a condição para mostrar ou ocultar a barra de navegação com base na rota atual
+      this.showNavbar = to.name !== 'login';
+    }
   },
 };
 </script>

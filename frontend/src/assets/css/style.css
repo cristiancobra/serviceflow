@@ -32,6 +32,7 @@
   border-style: solid;
   border-radius: 10px;
   border-width: 2px;
+  border-color: var(--purple);
   background-color: var(--purple-light);
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   color: var(--purple);
@@ -144,12 +145,30 @@
   border-radius: 6px;
   background-color: var(--gray-light);
   padding: 0.8rem;
-  min-height: 4vh;
+  min-height: 1%;
   position: relative;
   overflow: hidden;
 }
 
 .card-line:hover {
+  border-width: 5px;
+  border-radius: 14px;
+}
+
+.journey-line {
+  margin:0.8rem;
+  border-style: solid;
+  border-width: 2px;
+  border-color: gray;
+  border-radius: 6px;
+  background-color: var(--gray-light);
+  padding: 0.8rem;
+  /* min-height: 4vh; */
+  position: relative;
+  overflow: hidden;
+}
+
+.journey-line:hover {
   border-width: 5px;
   border-radius: 14px;
 }

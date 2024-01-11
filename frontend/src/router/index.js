@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import LoginView from '../views/LoginView.vue'
 import CompaniesIndex from '../views/companies/CompaniesIndex.vue'
 import CompanyShow from '../views/companies/CompanyShow.vue'
 import LeadsIndex from '../views/leads/LeadsIndex.vue'
@@ -36,6 +37,11 @@ const routes = [
     path: '/leads/:id',
     name: 'leadShow',
     component: LeadShow
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: LoginView
   },
   {
     path: '/services',
@@ -77,8 +83,8 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const isAuthenticated = localStorage.getItem('access_token'); // Exemplo: verifique se há um token no armazenamento local
 console.log(isAuthenticated);
-  if (to.name !== 'home' && !isAuthenticated) {
-    next({ name: 'home' }); // Redirecione o usuário para a página de login
+  if (to.name !== 'login' && !isAuthenticated) {
+    next({ name: 'login' }); // Redirecione o usuário para a página de login
   } else {
     next();
   }

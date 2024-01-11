@@ -61,7 +61,7 @@
       </div>
 
       <div :class="{ hidden: !isActiveCompany }">
-        <CompanyCreateForm @new-company-event="addCompanyCreated()" />
+        <CompanyCreateForm @new-company-event="dateLocal()" />
       </div>
       <div :class="{ hidden: !isActiveLead }">
         <LeadCreateForm @new-lead-event="addLeadCreated($event)" />
@@ -88,9 +88,8 @@
 
       <div class="row">
         <div class="col-md-4">
-          <TextInput
+          <DateInput
             label="Início"
-            type="date"
             name="date_start"
             v-model="form.date_start"
             placeholder="início do prazo"
@@ -134,12 +133,13 @@
 
 <script>
 import axios from "axios";
-import LeadCreateForm from "./LeadCreateForm.vue";
+import DateInput from "./inputs/DateInput";
 import CompanyCreateForm from "./CompanyCreateForm.vue";
+import LeadCreateForm from "./LeadCreateForm.vue";
 import PrioritySelectRadioInput from "./inputs/PrioritySelectRadioInput.vue";
 import StatusLinearRadioInput from "./inputs/StatusLinearRadioInput.vue";
 import SelectInput from "./inputs/SelectInput";
-import TextInput from "./inputs/TextInput";
+import TextInput from "./inputs/text/TextInput";
 import TextAreaInput from "./inputs/TextAreaInput";
 import ErrorMessage from "./messages/ErrorMesssage.vue";
 import SuccessMessage from "./messages/SuccessMessage.vue";
@@ -148,8 +148,9 @@ export default {
   name: "TaskCreateForm",
   emits: ["new-task-event"],
   components: {
-    LeadCreateForm,
     CompanyCreateForm,
+    DateInput,
+    LeadCreateForm,
     PrioritySelectRadioInput,
     StatusLinearRadioInput,
     ErrorMessage,

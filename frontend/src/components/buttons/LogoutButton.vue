@@ -30,9 +30,9 @@ export default {
 
         localStorage.removeItem('access_token');
 
-        this.$router.push({ name: "home" });
+        this.$router.push({ name: "login" });
 
-        this.$root.isLogged = false;
+        // this.$root.isLogged = false;
 
       } catch (error) {
         console.error("Erro de logout:", error);

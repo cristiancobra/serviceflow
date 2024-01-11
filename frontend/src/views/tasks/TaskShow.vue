@@ -4,71 +4,78 @@
       <div class="row ms-1">
         <div class="col-1 status" v-bind:class="getStatusClass(task.status)">
           <font-awesome-icon :icon="getStatusIcon(task.status)" />
-          <p class="label">
+          <p class="duration">
             {{ formatDuration(task.duration_time) }}
           </p>
         </div>
         <div class="col-11 ps-3">
           <p class="title">
-            {{ task.name }}
+            <TextEditableInput
+              name="name"
+              v-model="task.name"
+              placeholder="descrição detalhada da tarefa"
+              @save="updateTask('name', $event)"
+            />
           </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-3">
+          <SelectInput
+            label="Responsável"
+            name="user_id"
+            v-model="task.user_id"
+            :items="users"
+            fieldsToDisplay="name"
+          />
         </div>
       </div>
     </div>
 
-    <div class="row">
+    <div class="row mb-5">
       <div class="col-12">
-        <TextAreaInput
+        <TextEditor
           label="Descrição"
           name="description"
           v-model="task.description"
-          placeholder="descrição detalhada da tarefa"
-          :rows="6"
+          @save="updateTask('description', $event)"
         />
       </div>
     </div>
 
-
     <div class="row">
-      <div class="col-12">
-        <TextInput
-          label="Descrição"
-          type="text"
-          name="description"
-          v-model="task.description"
-          placeholder="descrição detalhada da tarefa"
-        />
-      </div>
+      <div class="col-12"></div>
     </div>
 
     <div class="row">
       <div class="col">
+        <DateEditableInput
+          name="date_start"
+          label="Data de início:"
+          v-model="task.date_start"
+          @save="updateTask('date_start', $event)"
+        />
         <p>
-          <font-awesome-icon icon="fas fa-calendar" />
-          <span class="label"> Data de início: </span>
-          {{ formatDateBr(task.date_start) }}
+          <span class="duration"> Data de início: </span>
+          {{ task.date_start }}
         </p>
         <p>
-          <font-awesome-icon icon="fas fa-calendar" />
-          <span class="label"> Prazo final: </span>
+          <span class="duration"> Prazo final: </span>
           {{ formatDateBr(task.date_due) }}
         </p>
         <p>
-          <font-awesome-icon icon="fas fa-calendar" />
-          <span class="label"> Data de conclusão: </span>
-          {{ formatDateBr(task.date_conclusion) }}
+          <span class="duration"> Data de conclusão: </span>
+          {{ formatDateTimeBr(task.date_conclusion) }}
         </p>
       </div>
 
       <div class="col">
         <p>
-          <font-awesome-icon icon="fas fa-calendar" />
-          <span class="label"> Prioridade: </span>
+          <span class="duration"> Prioridade: </span>
           {{ translatePriority(task.priority) }}
         </p>
         <p>
-          <font-awesome-icon icon="fas fa-calendar" />
-          <span class="label"> Situação: </span>
+          <span class="duration"> Situação: </span>
           {{ translateStatus(task.status) }}
         </p>
       </div>
@@ -91,47 +98,56 @@
 
 <script>
 import axios from "axios";
+import { API_BASE_URL, TASK_URL } from "@/config/apiConfig";
 import { formatDateBr } from "@/utils/date/dateUtils";
+import { formatDateTimeBr } from "@/utils/date/dateUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
 import { getStatusClass } from "@/utils/card/cardUtils";
 import { getStatusIcon } from "@/utils/card/cardUtils";
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
+import DateEditableInput from "@/components/forms/inputs/date/DateEditableInput";
 import JourneysList from "@/components/lists/JourneysList.vue";
-import TextInput from "@/components/forms/inputs/TextInput";
-import TextAreaInput from "@/components/forms/inputs/TextAreaInput";
+import TextEditableInput from "@/components/forms/inputs/text/TextEditableInput";
+import TextEditor from "@/components/forms/inputs/TextEditor.vue";
 
 export default {
   name: "TaskShow",
   components: {
+    DateEditableInput,
     JourneysList,
-    TextInput,
-    TextAreaInput,
+    TextEditableInput,
+    TextEditor,
   },
   data() {
     return {
       journeysData: [],
       task: [],
+      editedTask: [],
       taskId: "",
     };
   },
   emits: ["new-journey-event", "journey-updated", "journey-deleted"],
   methods: {
     formatDateBr,
+    formatDateTimeBr,
     formatDuration,
     getStatusClass,
     getStatusIcon,
     translateStatus,
     translatePriority,
-    getTask() {
-      axios
-        .get(`http://localhost:8191/api/tasks/${this.taskId}`)
-        .then((response) => {
-          this.task = response.data.data;
-          this.journeysData = this.task.journeys;
-          this.taskLoaded = true; // Marque a tarefa como carregada
-        })
-        .catch((error) => console.log(error));
+    async getTask() {
+      try {
+        const response = await axios.get(
+          `${API_BASE_URL}${TASK_URL}/${this.taskId}`
+        );
+
+        this.task = response.data.data;
+        this.journeysData = this.task.journeys;
+        this.taskLoaded = true; // Marque a tarefa como carregada
+      } catch (error) {
+        console.error("Erro ao acessar tarefa:", error);
+      }
     },
     setTaskId(taskId) {
       this.taskId = taskId;
@@ -141,14 +157,31 @@ export default {
         .delete(`http://localhost:8191/api/tasks/${this.taskId}`)
         .then((response) => {
           this.data = response.data;
-          // this.newTaskEvent(this.data);
-          const successMessage = "Task excluído com sucesso";
-          this.$router.push({ name: "tasksIndex", query: { successMessage } });
+          this.isSuccess = true;
+          this.isError = false;
+          this.$router.push({ name: "tasksIndex", query: { isSuccess: this.isSuccess } });
         })
         .catch((error) => {
           console.error("Erro ao deletar task:", error);
-          // Lidar com o erro, se necessário
+          this.isError = true;
+          this.isSuccess = false;
         });
+    },
+    async updateTask(fieldName, editedValue) {
+      const editedTask = { ...this.task };
+
+      editedTask[fieldName] = editedValue;
+
+      try {
+        const response = await axios.put(
+          `${API_BASE_URL}${TASK_URL}/${this.taskId}`,
+          editedTask
+        );
+
+        this.task = response.data.data;
+      } catch (error) {
+        console.error("Erro ao atualizar a tarefa:", error);
+      }
     },
     addJourneyCreated(newJourney) {
       // Add the new journey to the journeysData array
@@ -230,7 +263,7 @@ a:hover {
 a:active {
   text-decoration: none;
 }
-.label {
+.duration {
   font-weight: 800;
   font-size: 1.2rem;
   text-align: center;
@@ -243,7 +276,7 @@ a:active {
   border-color: gray;
   border-radius: 6px;
   padding: 10px;
-  padding-right: 0px;
+  padding-right: 20px;
   min-height: 15vh;
 }
 .done {
@@ -271,10 +304,10 @@ a:active {
   font-size: 3rem;
 }
 .title {
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 900;
   padding-top: 10px;
-  padding-bottom: 10px;
+  padding-bottom: 0px;
   color: black;
 }
 

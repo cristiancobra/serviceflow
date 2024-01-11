@@ -32,7 +32,7 @@
                 </p>
               </div>
               <div class="col-10 ps-3">
-                <p class="title">
+                <p class="card-title">
                   {{ task.name }}
                 </p>
                 <p class="description">
@@ -104,9 +104,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.title {
+.card-title {
   text-align: left;
-  font-size: 20px;
+  font-size: 1.1rem;
   font-weight: 800;
   margin: 5px;
   margin-top: 10px;

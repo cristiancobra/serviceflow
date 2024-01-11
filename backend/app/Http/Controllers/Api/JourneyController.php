@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\JourneyResource;
 use App\Models\Journey;
-use App\Models\Task;
 use Illuminate\Http\Request;
 use DateTime;
 use App\Services\DateConversionService;
@@ -116,13 +116,19 @@ class JourneyController extends Controller
                 $journey->end = DateConversionService::convertJavascriptDate($request->end);
             }
 
+            $journey->fill($request->all());
+
+            if (
+                $request->date_conclusion ||
+                $request->date_start
+            ) {
+                // $journey->date_conclusion = $request->date_conclusion;
+                $journey->duration_days = DateConversionService::calculateDurationDays($request->date_conclusion, $request->date_start);
+            }
+
             $journey->save();
 
-
-            return response()->json([
-                'message' => "Atualizado com sucesso",
-                'journey' => $journey,
-            ]);
+            return JourneyResource::make($journey);
         } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",
@@ -130,6 +136,7 @@ class JourneyController extends Controller
             ], 422);
         }
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -142,10 +149,10 @@ class JourneyController extends Controller
         try {
             // Verifique se o usuário tem permissão para excluir a jornada, por exemplo, se ele é o criador da jornada
             // Você pode adicionar lógica de autorização aqui
-    
+
             // Remova a jornada da base de dados
             $journey->delete();
-    
+
             return response()->json(['message' => 'Jornada excluída com sucesso'], 200);
         } catch (\Exception $e) {
             // Em caso de erro, retorne uma resposta de erro adequada

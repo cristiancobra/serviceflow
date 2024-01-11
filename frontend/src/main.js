@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import '@/config/axiosConfig'; 
 import router from './router'
 import "./assets/css/style.css"
 import "bootstrap/dist/css/bootstrap.min.css"

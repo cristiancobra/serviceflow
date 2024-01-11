@@ -27,9 +27,9 @@ return new class extends Migration
             $table->string('type')->nullable();
 			$table->decimal('points', 4,1)->nullable();
 			$table->longText('description')->nullable();
-			$table->date('date_due')->nullable();
-			$table->date('date_start')->nullable();
-			$table->date('date_conclusion')->nullable();
+			$table->dateTime('date_due')->nullable();
+			$table->dateTime('date_start')->nullable();
+			$table->dateTime('date_conclusion')->nullable();
 			$table->string('status')->nullable();
 			$table->string('priority')->nullable();
 			$table->timestamps();

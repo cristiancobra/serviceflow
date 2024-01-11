@@ -57,14 +57,6 @@ export default {
       },
     };
   },
-  // computed: {
-  //   transitionStyles() {
-  //     return {
-  //       transform: this.transitionIn ? "translateX(-130%)" : "translateX(0)",
-  //       transition: "transform 2s",
-  //     };
-  //   },
-  // },
   methods: {
     async login() {
       try {
@@ -74,18 +66,19 @@ export default {
 
         await axios.get("http://localhost:8191/sanctum/csrf-cookie");
 
+
         const response = await axios.post(
           `${API_BASE_URL}${LOGIN_URL}`,
           this.form
         );
 
         const token = response.data.access_token;
-        console.log(token);
+
         localStorage.setItem("access_token", token);
 
         setTimeout(() => {
           this.$router.push({ name: "home" });
-          this.$root.isLogged = true;
+          // this.$root.isLogged = true;
         }, 600);
       } catch (error) {
         // Trate erros de login, por exemplo, exibindo uma mensagem de erro
@@ -94,18 +87,15 @@ export default {
     },
     startTransition() {
       
-      if (this.$root.isLogged !== true) {
+      // if (this.$root.isLogged !== true) {
         this.transitionIn = true;
-        console.log(this.transitionIn);
-      } else {
-        this.transitionOut = true;
-        console.log(this.transitionOut);
-      }
+      // } else {
+      //   this.transitionOut = true;
+      // }
     },
   },
   mounted() {
-    // Defina transitionIn como true ao montar o componente
-    // this.transitionOut = true;
+    this.transitionOut = false;
     setTimeout(() => {
     this.startTransition();
   })
@@ -144,7 +134,7 @@ export default {
   /* width: 30%; */
 }
 .input {
-  background-color: var(--purple);
+  background: var(--purple);
   color: white;
   border-radius: 20px;
   padding: 3%;
@@ -155,6 +145,9 @@ export default {
 .input:focus {
   background-color: var(--purple);
   color: var(--orange);  /* Se desejar alterar a cor do texto ao focar */
+}
+.input:focus-visible {
+  border-color: none;
 }
 .login-box {
   display: flex;
