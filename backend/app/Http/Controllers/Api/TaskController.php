@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Task;
 use App\Http\Resources\TaskResource;
+use App\Http\Requests\TaskStoreRequest;
 use App\Services\DateConversionService;
 
 class TaskController extends Controller
@@ -18,12 +19,8 @@ class TaskController extends Controller
     public function index()
     {
         return TaskResource::collection(
-            Task::whereIn('status', [
-                'to-do',
-                'doing'
-            ])
-                ->orderBy('created_at', 'desc')
-                ->get()
+            Task::orderBy('created_at', 'desc')
+                ->paginate(50)
         );
     }
 
@@ -43,22 +40,16 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TaskStoreRequest $request)
     {
         try {
             $task = new Task;
-            $task->fill($request->all());
+            $task->fill($request->validated());
             $task->account_id = 1;
-
-            if ($request->date_conclusion) {
-                $task->date_conclusion = $request->date_conclusion;
-                $task->duration_days = DateConversionService::calculateDurationDays($request->date_conclusion, $request->date_start);
-            }
 
             $task->save();
 
             return TaskResource::make($task);
-            
         } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",
@@ -99,7 +90,27 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
-        //
+        try {
+            $task->fill($request->all());
+            $task->account_id = 1;
+
+            if (
+                $request->date_conclusion ||
+                $request->date_start
+            ) {
+                // $task->date_conclusion = $request->date_conclusion;
+                $task->duration_days = DateConversionService::calculateDurationDays($request->date_conclusion, $request->date_start);
+            }
+
+            $task->save();
+
+            return TaskResource::make($task);
+        } catch (ValidationException $validationException) {
+            return response()->json([
+                'message' => "Erro de validação",
+                'errors' => $validationException->errors(),
+            ], 422);
+        }
     }
 
     /**
@@ -110,7 +121,12 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        //
+            
+            $task->delete();
+    
+            return response()->json([
+                'message' => "Tarefa excluída com sucesso",
+            ], 200);
     }
 
     /**
@@ -146,18 +162,50 @@ class TaskController extends Controller
      * 
      * * @return \Illuminate\Http\Response
      */
-    public function filterTasksByDate(Request $request)
+    public function filterTasksByDate()
     {
-        $status = $request->input('date'); // Obtenha o valor do parâmetro 'status'
 
-        $tasks = Task::orderBy('date_due', 'desc');
+        $tasks = Task::whereIn(
+            'status',
+            [
+                'to-do',
+                'doing'
+            ]
+        )
+            ->orderBy('date_due', 'desc')
+            ->paginate(50);
 
-        // if ($status) {
-        //     $tasks->where('status', $status);
-        // }
+        return TaskResource::collection($tasks);
+    }
 
-        $filteredTasks = $tasks->get();
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function prioritizedTasks()
+    {
+        $tasks = Task::whereIn('status', [
+            'to-do',
+            'doing'
+        ])
+            ->orderByRaw("FIELD(priority, 'high', 'medium', 'low')")
+            ->paginate(10);
 
-        return TaskResource::collection($filteredTasks);
+        return TaskResource::collection(
+            $tasks
+        );
+    }
+
+    public function tasksMetrics()
+    {
+        return TaskResource::collection(
+            Task::whereIn('status', [
+                'to-do',
+                'doing'
+            ])
+                ->orderBy('created_at', 'desc')
+                ->get()
+        );
     }
 }

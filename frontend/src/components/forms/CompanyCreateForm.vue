@@ -71,7 +71,7 @@
 
 <script>
 import axios from "axios";
-import TextInput from "./inputs/TextInput";
+import TextInput from "./inputs/text/TextInput";
 import ErrorMessage from "./messages/ErrorMesssage.vue";
 import SuccessMessage from "./messages/SuccessMessage.vue";
 

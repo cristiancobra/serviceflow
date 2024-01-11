@@ -32,7 +32,7 @@
     <LogoutButton />
    
 </nav>
-<router-view />
+
 
 </template>
 

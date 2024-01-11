@@ -15,9 +15,13 @@
     
   <script>
 export default {
+  data() {
+    return {
+      type: 'datetime-local',
+    }
+  },
   props: {
     label: String,
-    type: String,
     name: String,
     modelValue: [String, Number],
     placeholder: String,

@@ -15,12 +15,13 @@
 
     <div
       v-else
-      class="row card-line"
+      class="row journey-line"
       v-for="journey in journeys"
       v-bind:key="journey.id"
     >
       <div class="col-1 big-icon">
         <font-awesome-icon icon="fa-solid fa-clock" />
+        {{ journey.id }}
       </div>
 
       <div id="date" class="col-1" style="position: relative">
@@ -30,19 +31,22 @@
       </div>
 
       <div id="details" class="col-5">
-        <p class="details">
-          {{ journey.details }}
-        </p>
+        <TextEditableInput
+          name="details"
+          class="details"
+          v-model="journey.details"
+          @save="updateJourney('details', $event, journey.id)"
+        />
       </div>
 
       <div id="start" class="col-1">
-        <p class="time">
+        <p class="time" v-if="journey.start !== null && journey.start !== ''">
           {{ formatTimeBr(journey.start) }}
         </p>
       </div>
 
       <div id="end" class="col-1">
-        <p class="time">
+        <p class="time" v-if="journey.end !== null && journey.end !== ''">
           {{ formatTimeBr(journey.end) }}
         </p>
       </div>
@@ -83,16 +87,19 @@
 
 <script>
 import axios from "axios";
+import { API_BASE_URL, JOURNEY_URL } from "@/config/apiConfig";
 // import CopyContentClipboard from "@/components/CopyContentClipboard.vue";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import { formatTimeBr } from "@/utils/date/dateUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
 import JourneyCreateForm from "@/components/forms/JourneyCreateForm.vue";
+import TextEditableInput from "@/components/forms/inputs/text/TextEditableInput.vue";
 
 export default {
   name: "JourneysList",
   components: {
     // CopyContentClipboard,
+    TextEditableInput,
     JourneyCreateForm,
   },
   props: ["journeys"],
@@ -112,37 +119,52 @@ export default {
       editedJourneys: this.journeys.map((journey) => ({ ...journey })), // Crie uma cópia dos dados para editar
     };
   },
-  emits: [
-    "new-journey-event",
-    "journey-updated",
-    "journey-deleted",
-  ],
+  emits: ["new-journey-event", "journey-updated", "journey-deleted"],
   methods: {
     formatDateBr,
     formatTimeBr,
     formatDuration,
-    saveJourney(journey, field) {
-      const updatedJourney = { ...journey };
+    // saveJourney(journey, field) {
+    //   const updatedJourney = { ...journey };
 
-      if (journey.activeField === field) {
-        journey.editing = false;
-        journey.editingField = null;
+    //   if (journey.activeField === field) {
+    //     journey.editing = false;
+    //     journey.editingField = null;
 
-        this.updatedJourney.id = journey.id;
-        this.updatedJourney.details = journey.details;
-        this.updatedJourney.start = journey.start;
-        this.updatedJourney.end = journey.end;
+    //     this.updatedJourney.id = journey.id;
+    //     this.updatedJourney.details = journey.details;
+    //     this.updatedJourney.start = journey.start;
+    //     this.updatedJourney.end = journey.end;
 
-        axios
-          .put(
-            `http://localhost:8191/api/journeys/${journey.id}`,
-            this.updatedJourney
-          )
-          .then((response) => {
-            this.editedJourneys = response.data.data;
-            this.editedJourneys.push(updatedJourney);
-            this.$emit("journey-updated", updatedJourney);
-          });
+    //     axios
+    //       .put(
+    //         `http://localhost:8191/api/journeys/${journey.id}`,
+    //         this.updatedJourney
+    //       )
+    //       .then((response) => {
+    //         this.editedJourneys = response.data.data;
+    //         this.editedJourneys.push(updatedJourney);
+    //         this.$emit("journey-updated", updatedJourney);
+    //       });
+    //   }
+    // },
+    async updateJourney(fieldName, editedValue, journeyId) {
+      const editedJourney = {
+        id: journeyId,
+        [fieldName]: editedValue,
+      };
+
+      try {
+        const response = await axios.put(
+          `${API_BASE_URL}${JOURNEY_URL}/${journeyId}`,
+          editedJourney
+        );
+
+        this.journey = response.data.data;
+
+        this.$emit("journey-updated", this.journey);
+      } catch (error) {
+        console.error("Erro ao atualizar a jornada:", error);
       }
     },
     createJourney() {
@@ -179,6 +201,15 @@ export default {
           });
       }
     },
+    // emitUpdateEvent(updatedJourney) {
+    //   const updatedJourneyIndex = this.editedJourneys.findIndex(
+    //     (journey) => journey.id === updatedJourney.id
+    //   );
+
+    //   if (updatedJourneyIndex !== -1) {
+    //     this.$emit("journey-updated", updatedJourneyIndex, updatedJourney);
+    //   }
+    // },
     stopJourney(journey) {
       this.stopedJourney.id = journey.id;
       this.stopedJourney.end = new Date();
@@ -194,7 +225,6 @@ export default {
         });
     },
     addJourneyCreated(newJourney) {
-      // Add the new journey to the journeysData array
       this.$emit("new-journey-event", newJourney);
     },
   },

@@ -63,6 +63,9 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::get('tasks/filter-date', [TaskController::class, 'filterTasksByDate'])
 		->name('tasks.filter-date');
 
+	Route::get('tasks/prioritized', [TaskController::class, 'prioritizedTasks'])
+		->name('tasks.prioritized');
+
 	Route::apiResource('tasks', TaskController::class)
 		->names('tasks');
 

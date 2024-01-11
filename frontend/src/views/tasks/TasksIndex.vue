@@ -1,10 +1,12 @@
 <template>
-  <div class="container">
+  <div class="container mb-5">
     <TasksFilter
       @toggle="toggle"
-      @filter-to-do="getTasks"
-      @filter-done="getTasksDone"
       @filter-canceled="getTasksCanceled"
+      @filter-doing="getTasksDoing"
+      @filter-done="getTasksDone"
+      @filter-late="getTasksLate"
+      @filter-to-do="getTasksToDo"
     />
 
     <div v-bind:class="{ 'd-none': isActive }">
@@ -13,6 +15,9 @@
       @toogle-task-form=toggle()
        />
     </div>
+
+    <ErrorMessage v-if="isError" :formResponse="formResponse" />
+    <SuccessMessage v-if="isSuccess" :formResponse="formResponse" />
 
     <div class="row">
       <TasksList :tasks="filteredTasks" />
@@ -25,6 +30,7 @@ import axios from "axios";
 import TasksList from "@/components/lists/TasksList.vue";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import TasksFilter from "@/components/filters/TasksFilter.vue";
+import SuccessMessage from '../../components/forms/messages/SuccessMessage.vue';
 
 export default {
   name: "TasksIndexView",
@@ -32,10 +38,13 @@ export default {
     TaskCreateForm,
     TasksList,
     TasksFilter,
+    SuccessMessage,
   },
   data() {
     return {
       isActive: true,
+      isError: false,
+      isSuccess: false,
       hasError: false,
       data: null,
       tasks: [],
@@ -90,6 +99,22 @@ export default {
       this.filteredTasks.unshift(this.newTask);
 
     },
+    getTasksCanceled() {
+      axios
+        .get("http://localhost:8191/api/tasks/filter-status?status=canceled") // Faz a requisição filtrando por status "done"
+        .then((response) => {
+          this.filteredTasks = response.data.data;
+        })
+        .catch((error) => console.log(error));
+    },
+    getTasksDoing() {
+      axios
+        .get("http://localhost:8191/api/tasks/filter-status?status=doing") // Faz a requisição filtrando por status "doing"
+        .then((response) => {
+          this.filteredTasks = response.data.data;
+        })
+        .catch((error) => console.log(error));
+    },
     getTasksDone() {
       axios
         .get("http://localhost:8191/api/tasks/filter-status?status=done") // Faz a requisição filtrando por status "done"
@@ -98,9 +123,17 @@ export default {
         })
         .catch((error) => console.log(error));
     },
-    getTasksCanceled() {
+    getTasksLate() {
       axios
-        .get("http://localhost:8191/api/tasks/filter-status?status=canceled") // Faz a requisição filtrando por status "done"
+        .get("http://localhost:8191/api/tasks/filter-date") // Faz a requisição filtrando por status "late"
+        .then((response) => {
+          this.filteredTasks = response.data.data;
+        })
+        .catch((error) => console.log(error));
+    },
+    getTasksToDo() {
+      axios
+        .get("http://localhost:8191/api/tasks/filter-status?status=to-do") // Faz a requisição filtrando por status "to-do"
         .then((response) => {
           this.filteredTasks = response.data.data;
         })
