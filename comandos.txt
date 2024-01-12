@@ -1,0 +1,3 @@
+ 
+# Fazer deploy no servidor
+scp -r -i /home/cristiancobra/.ssh/desktop-cobra /home/cristiancobra/docker/serviceflow/frontend/dist root@206.189.230.115:/var/www/serviceflow/

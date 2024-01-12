@@ -2,6 +2,7 @@
 node_modules
 /dist
 nginx-conf.txt
+comandos.txt
 
 
 # local env files
