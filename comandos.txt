@@ -1,3 +1,9 @@
  
 # Fazer deploy no servidor
 scp -r -i /home/cristiancobra/.ssh/desktop-cobra /home/cristiancobra/docker/serviceflow/frontend/dist root@206.189.230.115:/var/www/serviceflow/
+
+
+
+# GIT PULL com CHAVE SSH no servidor
+
+GIT_SSH_COMMAND="ssh -i /root/.ssh/cobra-server" git pull

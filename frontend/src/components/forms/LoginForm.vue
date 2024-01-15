@@ -43,7 +43,7 @@
 
 <script>
 import axios from "axios";
-import { API_BASE_URL, LOGIN_URL } from "@/config/apiConfig";
+import { LOGIN_URL } from "@/config/apiConfig";
 
 export default {
   data() {
@@ -64,11 +64,12 @@ export default {
 
         axios.defaults.withCredentials = true;
 
-        await axios.get("http://localhost:8191/sanctum/csrf-cookie");
+        await axios.get(process.env.VUE_APP_SANCTUM_URL);
 
+        const api = process.env.VUE_APP_BACKEND_API
 
         const response = await axios.post(
-          `${API_BASE_URL}${LOGIN_URL}`,
+          `${api}${LOGIN_URL}`,
           this.form
         );
 
