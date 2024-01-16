@@ -43,7 +43,7 @@
 
 <script>
 import axios from "axios";
-import { LOGIN_URL } from "@/config/apiConfig";
+import { API_SANCTUM_URL, BACKEND_URL, LOGIN_URL } from "@/config/apiConfig";
 
 export default {
   data() {
@@ -64,12 +64,10 @@ export default {
 
         axios.defaults.withCredentials = true;
 
-        await axios.get(process.env.VUE_APP_SANCTUM_URL);
-
-        const api = process.env.VUE_APP_BACKEND_API
+        await axios.get(API_SANCTUM_URL);
 
         const response = await axios.post(
-          `${api}${LOGIN_URL}`,
+          `${BACKEND_URL}${LOGIN_URL}`,
           this.form
         );
 

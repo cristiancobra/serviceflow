@@ -1,6 +1,6 @@
 // apiConfig.js
-export const API_BASE_URL = "http://localhost:8191/api/";
-export const API_SANCTUM_URL = "http://localhost:8191/sanctum/csrf-cookie"
+export const BACKEND_URL = process.env.VUE_APP_BACKEND_API;
+export const API_SANCTUM_URL = process.env.VUE_APP_SANCTUM_URL;
 export const COMPANY_URL = "companies";
 export const JOURNEY_URL = "journeys";
 export const LEAD_URL = "leads";
