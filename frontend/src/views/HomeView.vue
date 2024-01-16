@@ -19,6 +19,7 @@
 <script>
 import axios from "axios";
 import TasksList from "../components/lists/TasksList.vue";
+import { LOGIN_URL, TASK_PRIORIZED_URL } from "@/config/apiConfig";
 
 export default {
   data() {
@@ -41,8 +42,11 @@ export default {
       this.dateNow = data.toLocaleDateString("pt-BR", options);
     },
     getTasksHome() {
+
+      const api = process.env.VUE_APP_BACKEND_API
+
       axios
-        .get("http://localhost:8191/api/tasks/prioritized")
+        .get(`${api}${TASK_PRIORIZED_URL}`)
         .then((response) => {
           this.tasks = response.data.data;
           // this.filteredTasks = this.tasks; // Inicialmente, as tarefas filtradas são iguais a todas as tarefas

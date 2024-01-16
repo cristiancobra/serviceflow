@@ -7,3 +7,4 @@ export const LEAD_URL = "leads";
 export const LOGIN_URL = "login";
 export const LOGOUT_URL = "logout";
 export const TASK_URL = "tasks";
+export const TASK_PRIORIZED_URL = "tasks/prioritized";
