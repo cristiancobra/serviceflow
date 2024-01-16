@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home pb-5">
     <div>
       <p style="margin-top: 120px">
         Bem vindo, hoje é

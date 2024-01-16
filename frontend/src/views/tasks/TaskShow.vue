@@ -98,7 +98,7 @@
 
 <script>
 import axios from "axios";
-import { API_BASE_URL, TASK_URL } from "@/config/apiConfig";
+import { BACKEND_URL, TASK_URL } from "@/config/apiConfig";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import { formatDateTimeBr } from "@/utils/date/dateUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
@@ -139,7 +139,7 @@ export default {
     async getTask() {
       try {
         const response = await axios.get(
-          `${API_BASE_URL}${TASK_URL}/${this.taskId}`
+          `${BACKEND_URL}${TASK_URL}/${this.taskId}`
         );
 
         this.task = response.data.data;
@@ -174,7 +174,7 @@ export default {
 
       try {
         const response = await axios.put(
-          `${API_BASE_URL}${TASK_URL}/${this.taskId}`,
+          `${BACKEND_URL}${TASK_URL}/${this.taskId}`,
           editedTask
         );
 

@@ -87,7 +87,7 @@
 
 <script>
 import axios from "axios";
-import { API_BASE_URL, JOURNEY_URL } from "@/config/apiConfig";
+import { BACKEND_URL, JOURNEY_URL } from "@/config/apiConfig";
 // import CopyContentClipboard from "@/components/CopyContentClipboard.vue";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import { formatTimeBr } from "@/utils/date/dateUtils";
@@ -156,7 +156,7 @@ export default {
 
       try {
         const response = await axios.put(
-          `${API_BASE_URL}${JOURNEY_URL}/${journeyId}`,
+          `${BACKEND_URL}${JOURNEY_URL}/${journeyId}`,
           editedJourney
         );
 

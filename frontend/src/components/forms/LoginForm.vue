@@ -80,8 +80,8 @@ export default {
           // this.$root.isLogged = true;
         }, 600);
       } catch (error) {
-        // Trate erros de login, por exemplo, exibindo uma mensagem de erro
         console.error("Erro de login:", error);
+        this.$router.push({ name: "login" });
       }
     },
     startTransition() {
