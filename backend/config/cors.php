@@ -30,7 +30,7 @@ return [
 
     // 'allowed_origins' => ['*'],
 
-    'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:8080')],
+    'allowed_origins' => [env('FRONTEND_URL')],
 
     'allowed_origins_patterns' => [],
 
