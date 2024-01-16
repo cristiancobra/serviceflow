@@ -1,5 +1,5 @@
 // apiConfig.js
-export const BACKEND_URL = process.env.VUE_APP_BACKEND_API;
+export const BACKEND_URL = process.env.VUE_APP_BACKEND_URL;
 export const API_SANCTUM_URL = process.env.VUE_APP_SANCTUM_URL;
 export const COMPANY_URL = "companies";
 export const JOURNEY_URL = "journeys";
