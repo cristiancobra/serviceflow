@@ -12,7 +12,7 @@
 
 <script>
 import axios from "axios";
-import { API_BASE_URL, LOGOUT_URL } from "@/config/apiConfig";
+import { BACKEND_URL, LOGOUT_URL } from "@/config/apiConfig";
 
 export default {
   data() {
@@ -26,7 +26,7 @@ export default {
         
         axios.defaults.withCredentials = true;
 
-        await axios.post(`${API_BASE_URL}${LOGOUT_URL}`);
+        await axios.post(`${BACKEND_URL}${LOGOUT_URL}`);
 
         localStorage.removeItem('access_token');
 
