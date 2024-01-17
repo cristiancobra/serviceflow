@@ -110,6 +110,7 @@
 </template>
 
 <script>
+import { BACKEND_URL, SERVICE_URL } from "@/config/apiConfig";
 import axios from "axios";
 
 export default {
@@ -139,7 +140,7 @@ export default {
       this.form.labor_hours = this.form.hours * 3600 + this.form.minutes * 60;
       
       axios
-        .post("http://localhost:8191/api/services", this.form)
+        .post(`${BACKEND_URL}${SERVICE_URL}`, this.form)
         .then((response) => {
           this.data = response.data;
           this.newServiceEvent(this.data);

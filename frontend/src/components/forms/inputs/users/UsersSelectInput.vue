@@ -11,6 +11,7 @@
 </template>
     
   <script>
+import { BACKEND_URL, USER_URL } from "@/config/apiConfig";
 import axios from "axios";
 import SelectInput from '../SelectInput.vue';
 
@@ -46,7 +47,7 @@ export default {
     },
     getUsers() {
       axios
-        .get("http://localhost:8191/api/users")
+      .get(`${BACKEND_URL}${USER_URL}`)
         .then((response) => {
           this.users = response.data.data;
         })

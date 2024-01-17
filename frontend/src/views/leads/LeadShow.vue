@@ -113,6 +113,7 @@
 </template>
 
 <script>
+import { BACKEND_URL, LEAD_URL } from "@/config/apiConfig";
 import axios from "axios";
 import { formatDateBr } from '@/utils/date/dateUtils'; 
 
@@ -129,7 +130,7 @@ export default {
     formatDateBr,
     getLead() {
       axios
-        .get(`http://localhost:8191/api/leads/${this.leadId}`)
+        .get(`${BACKEND_URL}${LEAD_URL}${this.leadId}`)
         .then((response) => {
           this.lead = response.data.data;
           console.log(this.lead);
@@ -141,7 +142,7 @@ export default {
     },
     async deleteLead() {
       axios
-        .delete(`http://localhost:8191/api/leads/${this.leadId}`)
+        .delete(`${BACKEND_URL}${LEAD_URL}${this.leadId}`)
         .then((response) => {
           this.data = response.data;
           // this.newLeadEvent(this.data);

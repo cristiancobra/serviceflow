@@ -57,6 +57,7 @@
 </template>
 
 <script>
+import { BACKEND_URL, COMPANY_URL } from "@/config/apiConfig";
 import axios from "axios";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
@@ -75,7 +76,7 @@ export default {
     formatDuration,
     getCompany() {
       axios
-        .get(`http://localhost:8191/api/companies/${this.companyId}`)
+        .get(`${BACKEND_URL}${COMPANY_URL}${this.companyId}`)
         .then((response) => {
           this.company = response.data.data;
           this.companyLoaded = true; // Marque a tarefa como carregada
@@ -87,7 +88,7 @@ export default {
     },
     async deleteCompany() {
       axios
-        .delete(`http://localhost:8191/api/companies/${this.companyId}`)
+        .delete(`${BACKEND_URL}${COMPANY_URL}${this.companyId}`)
         .then((response) => {
           this.data = response.data;
           // this.newTaskEvent(this.data);

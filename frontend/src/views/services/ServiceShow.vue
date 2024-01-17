@@ -60,6 +60,7 @@
 
 
 <script>
+import { BACKEND_URL, SERVICE_URL } from "@/config/apiConfig";
 import axios from "axios";
 
 export default {
@@ -90,7 +91,7 @@ export default {
 
     getService() {
       axios
-        .get(`http://localhost:8191/api/services/${this.serviceId}`)
+        .get(`${BACKEND_URL}${SERVICE_URL}${this.serviceId}`)
         .then((response) => {
           this.service = response.data.data;
           console.log(this.service);
@@ -104,7 +105,7 @@ export default {
     
     async deleteService() {
       axios
-        .delete(`http://localhost:8191/api/services/${this.serviceId}`)
+        .delete(`${BACKEND_URL}${SERVICE_URL}${this.serviceId}`)
         .then((response) => {
           this.data = response.data.data;
           // this.newLeadEvent(this.data);

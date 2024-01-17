@@ -335,6 +335,7 @@
 </template>
 
 <script>
+import { BACKEND_URL, LEAD_URL } from "@/config/apiConfig";
 import axios from "axios";
 import ErrorMessage from "./messages/ErrorMesssage.vue";
 import SuccessMessage from "./messages/SuccessMessage.vue";
@@ -388,7 +389,7 @@ export default {
     async submitForm() {
       try {
         const response = await axios.post(
-          "http://localhost:8191/api/leads",
+          `${BACKEND_URL}${LEAD_URL}`,
           this.form
         );
         this.data = response.data.data;

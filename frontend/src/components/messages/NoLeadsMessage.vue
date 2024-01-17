@@ -12,6 +12,7 @@
 </template>
   
   <script>
+  import { BACKEND_URL, LEAD_URL } from "@/config/apiConfig";
 import LeadCreateForm from "@/components/forms/LeadCreateForm.vue";
 import axios from "axios";
 
@@ -31,7 +32,7 @@ export default {
     },
     getLeads() {
       axios
-        .get("http://localhost:8191/api/leads")
+      .get(`${BACKEND_URL}${LEAD_URL}`)
         .then((response) => {
           this.leads = response.data.data;
         })

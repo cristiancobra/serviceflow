@@ -87,7 +87,7 @@
 
 <script>
 import axios from "axios";
-import { BACKEND_URL, JOURNEY_URL } from "@/config/apiConfig";
+import { BACKEND_URL, JOURNEY_URL, USER_URL } from "@/config/apiConfig";
 // import CopyContentClipboard from "@/components/CopyContentClipboard.vue";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import { formatTimeBr } from "@/utils/date/dateUtils";
@@ -138,7 +138,7 @@ export default {
 
     //     axios
     //       .put(
-    //         `http://localhost:8191/api/journeys/${journey.id}`,
+    //                `${BACKEND_URL}${JOURNEY_URL}${journeyId}`,
     //         this.updatedJourney
     //       )
     //       .then((response) => {
@@ -156,7 +156,7 @@ export default {
 
       try {
         const response = await axios.put(
-          `${BACKEND_URL}${JOURNEY_URL}/${journeyId}`,
+          `${BACKEND_URL}${JOURNEY_URL}${journeyId}`,
           editedJourney
         );
 
@@ -173,7 +173,7 @@ export default {
       };
 
       axios
-        .post("http://localhost:8191/api/journeys", taskId)
+        .post(`${BACKEND_URL}${USER_URL}`, taskId)
         .then((response) => {
           this.data = response.data;
           this.newJourneyEvent(this.data);
@@ -187,7 +187,7 @@ export default {
 
       if (confirmation) {
         axios
-          .delete(`http://localhost:8191/api/journeys/${journeyToDelete.id}`)
+          .delete(`${BACKEND_URL}${JOURNEY_URL}${journeyToDelete.id}`)
           .then((response) => {
             if (response.status === 200) {
               this.$emit("journey-deleted", journeyToDelete.id);
@@ -216,7 +216,7 @@ export default {
 
       axios
         .put(
-          `http://localhost:8191/api/journeys/${journey.id}`,
+          `${BACKEND_URL}${JOURNEY_URL}${journey.id}`,
           this.stopedJourney
         )
         .then((response) => {

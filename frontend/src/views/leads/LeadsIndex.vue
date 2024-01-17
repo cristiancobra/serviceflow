@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import { BACKEND_URL, LEAD_URL } from "@/config/apiConfig";
 import axios from "axios";
 import LeadsFilter from "@/components/filters/LeadsFilter.vue";
 import LeadsList from "@/components/lists/LeadsList.vue";
@@ -49,7 +50,7 @@ export default {
     },
     getLeads() {
       axios
-        .get("http://localhost:8191/api/leads")
+      .get(`${BACKEND_URL}${LEAD_URL}`)
         .then((response) => {
           this.leads = response.data.data;
         })

@@ -154,7 +154,7 @@ export default {
     },
     async deleteTask() {
       axios
-        .delete(`http://localhost:8191/api/tasks/${this.taskId}`)
+        .delete(`${BACKEND_URL}${TASK_URL}/${this.taskId}`)
         .then((response) => {
           this.data = response.data;
           this.isSuccess = true;
@@ -211,7 +211,7 @@ export default {
     },
     updateTaskDuration() {
       axios
-        .get(`http://localhost:8191/api/tasks/${this.taskId}`)
+        .get(`${BACKEND_URL}${TASK_URL}/${this.taskId}`)
         .then((response) => {
           this.task.duration = response.data.data.duration;
         })

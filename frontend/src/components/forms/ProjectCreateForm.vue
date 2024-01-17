@@ -120,6 +120,7 @@
 </template>
 
 <script>
+import { BACKEND_URL, PROJECT_URL, PROJECT_STATUS_URL } from "@/config/apiConfig";
 import axios from 'axios'
 
 export default {
@@ -144,7 +145,7 @@ export default {
     methods: {
         getProjectsStatus() {
             axios
-                .get("http://localhost:8191/api/projects/status")
+                .get(`${BACKEND_URL}${PROJECT_STATUS_URL}`)
                 .then((response) => {
                     this.allStatus = response.data;
                 })
@@ -152,7 +153,7 @@ export default {
         },
         async submitForm() {
             axios
-                .post('http://localhost:8191/api/projects', this.form)
+                .post(`${BACKEND_URL}${PROJECT_URL}`, this.form)
                 .then((response) => {
                     this.data = response.data;
                     this.newProjectEvent(this.data);

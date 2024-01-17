@@ -12,6 +12,7 @@
 </template>
   
   <script>
+import { BACKEND_URL, SERVICE_URL } from "@/config/apiConfig";
 import axios from "axios";
 import ServiceCreateForm from "@/components/forms/ServiceCreateForm.vue";
 
@@ -31,7 +32,7 @@ export default {
     },
     getServices() {
       axios
-        .get("http://localhost:8191/api/services")
+      .get(`${BACKEND_URL}${SERVICE_URL}`)
         .then((response) => {
           this.services = response.data.data;
         })

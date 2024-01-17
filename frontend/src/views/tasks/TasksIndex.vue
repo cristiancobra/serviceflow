@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import { BACKEND_URL, TASK_URL } from "@/config/apiConfig";
 import axios from "axios";
 import TasksList from "@/components/lists/TasksList.vue";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
@@ -71,7 +72,7 @@ export default {
     },
     getTasks() {
       axios
-        .get("http://localhost:8191/api/tasks")
+      .get(`${BACKEND_URL}${TASK_URL}`)
         .then((response) => {
           this.tasks = response.data.data;
           this.filteredTasks = this.tasks; // Inicialmente, as tarefas filtradas são iguais a todas as tarefas
@@ -101,7 +102,7 @@ export default {
     },
     getTasksCanceled() {
       axios
-        .get("http://localhost:8191/api/tasks/filter-status?status=canceled") // Faz a requisição filtrando por status "done"
+        .get(`${BACKEND_URL}${TASK_URL}filter-status?status=canceled`) // Faz a requisição filtrando por status "done"
         .then((response) => {
           this.filteredTasks = response.data.data;
         })
@@ -109,7 +110,7 @@ export default {
     },
     getTasksDoing() {
       axios
-        .get("http://localhost:8191/api/tasks/filter-status?status=doing") // Faz a requisição filtrando por status "doing"
+      .get(`${BACKEND_URL}${TASK_URL}filter-status?status=doing`) // Faz a requisição filtrando por status "doing"
         .then((response) => {
           this.filteredTasks = response.data.data;
         })
@@ -117,7 +118,7 @@ export default {
     },
     getTasksDone() {
       axios
-        .get("http://localhost:8191/api/tasks/filter-status?status=done") // Faz a requisição filtrando por status "done"
+      .get(`${BACKEND_URL}${TASK_URL}filter-status?status=done`) // Faz a requisição filtrando por status "done"
         .then((response) => {
           this.filteredTasks = response.data.data;
         })
@@ -125,7 +126,7 @@ export default {
     },
     getTasksLate() {
       axios
-        .get("http://localhost:8191/api/tasks/filter-date") // Faz a requisição filtrando por status "late"
+      .get(`${BACKEND_URL}${TASK_URL}filter-date`) // Faz a requisição filtrando por status "late"
         .then((response) => {
           this.filteredTasks = response.data.data;
         })
@@ -133,7 +134,7 @@ export default {
     },
     getTasksToDo() {
       axios
-        .get("http://localhost:8191/api/tasks/filter-status?status=to-do") // Faz a requisição filtrando por status "to-do"
+      .get(`${BACKEND_URL}${TASK_URL}filter-status?status=to-do`) // Faz a requisição filtrando por status "to-do"
         .then((response) => {
           this.filteredTasks = response.data.data;
         })

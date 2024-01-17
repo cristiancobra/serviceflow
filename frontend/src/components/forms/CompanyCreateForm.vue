@@ -70,6 +70,7 @@
 </template>
 
 <script>
+import { BACKEND_URL, COMPANY_URL } from "@/config/apiConfig";
 import axios from "axios";
 import TextInput from "./inputs/text/TextInput";
 import ErrorMessage from "./messages/ErrorMesssage.vue";
@@ -106,7 +107,7 @@ export default {
     async submitForm() {
       try {
         const response = await axios.post(
-          "http://localhost:8191/api/companies",
+          `${BACKEND_URL}${COMPANY_URL}`,
           this.form
         );
         this.data = response.data;

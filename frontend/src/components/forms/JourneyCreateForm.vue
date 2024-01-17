@@ -1,7 +1,6 @@
 <template>
   <div class="container">
-    <div class="row errorBox" v-bind:class="{ 'd-none': datesError }">
-    </div>
+    <div class="row errorBox" v-bind:class="{ 'd-none': datesError }"></div>
     <form @submit.prevent="submitForm">
       <div class="row form" v-bind:class="{ 'd-none': isActive }">
         <div class="col-md-9 mb-3">
@@ -20,7 +19,7 @@
           <VueDatePicker v-model="form.start" />
           <label for="end" class="form-label">Fim</label>
           <VueDatePicker v-model="form.end" />
-          <br>
+          <br />
           <button type="submit mt-5" class="button-new orange">Enviar</button>
         </div>
       </div>
@@ -47,6 +46,7 @@
 </template>
 
 <script>
+import { BACKEND_URL, JOURNEY_URL } from "@/config/apiConfig";
 import axios from "axios";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
@@ -112,7 +112,7 @@ export default {
       this.checkDates();
 
       axios
-        .post("http://localhost:8191/api/journeys", this.form)
+        .post(`${BACKEND_URL}${JOURNEY_URL}`, this.form)
         .then((response) => {
           this.newJourney = response.data.journey;
           this.newJourneyEvent(this.newJourney);
@@ -121,7 +121,7 @@ export default {
     },
     async submitQuickForm() {
       axios
-        .post("http://localhost:8191/api/journeys", this.quickForm)
+        .post(`${BACKEND_URL}${JOURNEY_URL}`, this.quickForm)
         .then((response) => {
           this.newJourney = response.data.journey;
           this.newJourneyEvent(this.newJourney);

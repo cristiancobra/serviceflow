@@ -82,6 +82,7 @@
 </template>
 
 <script>
+import { BACKEND_URL, SERVICE_URL } from "@/config/apiConfig";
 import axios from "axios";
 // import CopyContentClipboard from "../CopyContentClipboard.vue";
 
@@ -126,7 +127,7 @@ export default {
 
         axios
           .put(
-            `http://localhost:8191/api/services/${service.id}`,
+            `${BACKEND_URL}${SERVICE_URL}${service.id}`,
             this.updatedservice
           )
           .then((response) => {

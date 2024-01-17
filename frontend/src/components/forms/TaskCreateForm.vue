@@ -132,6 +132,7 @@
 </template>
 
 <script>
+import { BACKEND_URL, LEAD_URL, COMPANY_URL, TASK_URL, TASK_STATUS_URL, USER_URL } from "@/config/apiConfig";
 import axios from "axios";
 import DateInput from "./inputs/DateInput";
 import CompanyCreateForm from "./CompanyCreateForm.vue";
@@ -207,7 +208,7 @@ export default {
     },
     getLeads() {
       axios
-        .get("http://localhost:8191/api/leads")
+        .get(`${BACKEND_URL}${LEAD_URL}`)
         .then((response) => {
           this.leads = response.data.data;
         })
@@ -215,7 +216,7 @@ export default {
     },
     getCompanies() {
       axios
-        .get("http://localhost:8191/api/companies")
+      .get(`${BACKEND_URL}${COMPANY_URL}`)
         .then((response) => {
           this.companies = response.data.data;
         })
@@ -223,7 +224,7 @@ export default {
     },
     getTasksStatus() {
       axios
-        .get("http://localhost:8191/api/tasks/status")
+      .get(`${BACKEND_URL}${TASK_STATUS_URL}`)
         .then((response) => {
           this.allStatus = response.data;
         })
@@ -231,7 +232,7 @@ export default {
     },
     getUsers() {
       axios
-        .get("http://localhost:8191/api/users")
+      .get(`${BACKEND_URL}${USER_URL}`)
         .then((response) => {
           this.users = response.data.data;
         })
@@ -243,7 +244,7 @@ export default {
     async submitForm() {
       try {
         const response = await axios.post(
-          "http://localhost:8191/api/tasks",
+          `${BACKEND_URL}${TASK_URL}`,
           this.form
         );
         this.data = response.data.data;

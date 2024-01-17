@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import { BACKEND_URL, SERVICE_URL } from "@/config/apiConfig";
 import axios from "axios";
 // import servicesFilter from "@/components/filters/servicesFilter.vue";
 import ServicesList from "@/components/lists/ServicesList.vue";
@@ -49,7 +50,7 @@ export default {
     },
     getServices() {
       axios
-        .get("http://localhost:8191/api/services")
+      .get(`${BACKEND_URL}${SERVICE_URL}`)
         .then((response) => {
           this.services = response.data.data;
         })

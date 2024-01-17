@@ -17,9 +17,9 @@
 </template>
 
 <script>
+import { BACKEND_URL, TASK_PRIORIZED_URL } from "@/config/apiConfig";
 import axios from "axios";
 import TasksList from "../components/lists/TasksList.vue";
-import { BACKEND_URL, TASK_PRIORIZED_URL } from "@/config/apiConfig";
 
 export default {
   data() {

@@ -23,6 +23,7 @@ import { fab } from '@fortawesome/free-brands-svg-icons'
 
 /* add icons to the library */
 library.add(fas, fab)
+console.log(process.env.VUE_APP_BACKEND_URL);
 
 createApp(App)
 .use(router)

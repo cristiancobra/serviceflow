@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import { BACKEND_URL, PROJECT_URL } from "@/config/apiConfig";
 import axios from "axios";
 import ProjectsList from "@/components/ProjectsList.vue";
 import ProjectCreateForm from "@/components/forms/ProjectCreateForm.vue";
@@ -54,7 +55,7 @@ export default {
     },
     getProjects() {
       axios
-        .get("http://localhost:8191/api/projects")
+      .get(`${BACKEND_URL}${PROJECT_URL}`)
         .then((response) => {
           this.projects = response.data.data;
         })

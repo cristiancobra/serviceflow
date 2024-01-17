@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import { BACKEND_URL, COMPANY_URL } from "@/config/apiConfig";
 import axios from "axios";
 import LeadsFilter from "@/components/filters/LeadsFilter.vue";
 import CompaniesList from "@/components/lists/CompaniesList.vue";
@@ -49,7 +50,7 @@ export default {
     },
     getCompanies() {
       axios
-        .get("http://localhost:8191/api/companies")
+      .get(`${BACKEND_URL}${COMPANY_URL}`)
         .then((response) => {
           this.companies = response.data.data;
         })
