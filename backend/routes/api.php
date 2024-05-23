@@ -36,6 +36,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 	// JOURNEYS
+	Route::get('/journeys-by-task-id', [JourneyController::class, 'getJourneysByTaskId'])
+		->name('journeysTaskId');
+
+	Route::get('/journeys/check-open-journey', [JourneyController::class, 'checkOpenJourney']);
+
+
 	Route::apiResource('journeys', JourneyController::class)
 		->names('journeys');
 
@@ -72,4 +78,6 @@ Route::middleware('auth:sanctum')->group(function () {
 	// USERS
 	Route::apiResource('users', UserController::class)
 		->names('users');
+
+	Route::get('/user', [UserController::class, 'currentUser']);
 });

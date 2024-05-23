@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Services\DateConversionService;
+use HTMLPurifier;
+use HTMLPurifier_Config;
 
 class TaskStoreRequest extends FormRequest
 {
@@ -39,16 +41,31 @@ class TaskStoreRequest extends FormRequest
 
     protected function prepareForValidation()
     {
-        // Ajuste a data para o formato do banco de dados e converta para UTC usando o serviço
-        if ($this->has('start')) {
+        if ($this->has('description')) {
+            $config = HTMLPurifier_Config::createDefault();
+            $purifier = new HTMLPurifier($config);
+            $sanitizedDescription = $purifier->purify($this->input('description'));
+
             $this->merge([
-                'start' => DateConversionService::convertToUtc($this->input('start')),
+                'description' => $sanitizedDescription,
             ]);
         }
 
-        if ($this->has('end')) {
+        if ($this->has('date_start')) {
             $this->merge([
-                'end' => DateConversionService::convertToUtc($this->input('end')),
+                'date_start' => DateConversionService::convertToUtc($this->input('date_start')),
+            ]);
+        }
+
+        if ($this->has('date_due')) {
+            $this->merge([
+                'date_due' => DateConversionService::convertToUtc($this->input('date_due')),
+            ]);
+        }
+
+        if ($this->has('date_conclusion')) {
+            $this->merge([
+                'date_conclusion' => DateConversionService::convertToUtc($this->input('date_conclusion')),
             ]);
         }
     }

@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CompanyCreateRequest;
+use App\Http\Requests\CompanyUpdateRequest;
 use App\Models\Company;
-use Illuminate\Http\Request;
 use App\Http\Resources\CompaniesResource;
 use App\Http\Resources\CompanyResource;
 
@@ -40,12 +41,9 @@ class CompanyController extends Controller
     public function store(CompanyCreateRequest $request)
     {
         try {
-            $company = new Company;
+            $user = Auth::guard('sanctum')->user();
 
-            $company->fill($request->all());
-            $company->account_id = 1;
-            $company->user_id = 1;
-            $company->save();
+            $company = Company::create($request->validated());
 
             return new CompanyResource($company);
             
@@ -86,9 +84,18 @@ class CompanyController extends Controller
      * @param  \App\Models\Company  $company
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Company $company)
+    public function update(CompanyUpdateRequest $request, Company $company)
     {
-        //
+        try {
+            $company->update($request->validated());
+            
+            return new CompanyResource($company);
+        } catch (ValidationException $validationException) {
+            return response()->json([
+                'message' => 'Erro de validação',
+                'errors' => $validationException->errors(),
+            ], 422);
+        }
     }
 
     /**

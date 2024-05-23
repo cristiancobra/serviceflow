@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class CompanyCreateRequest extends FormRequest
 {
@@ -24,11 +25,12 @@ class CompanyCreateRequest extends FormRequest
     public function rules()
     {
         return [
+            'account_id' => 'required|exists:accounts,id',
             'legal_name' => 'unique:companies|required',
             'business_name' => 'nullable',
             'cnpj' => 'nullable|numeric|digits:14',
             'email' => 'email|nullable',
-            'cel_phone' => 'nullable|numeric|digits:10',
+            'cel_phone' => 'nullable|numeric|digits:11',
             'linkedin' => 'nullable',
             'facebook' => 'nullable',
             'instagram' => 'nullable',
@@ -39,5 +41,21 @@ class CompanyCreateRequest extends FormRequest
             'reason_for_initial_contact' => 'nullable',
             'comments' => 'nullable',
         ];
+    }
+
+    /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        $user = Auth::user();
+        $accountId = Auth::user()->account_id;
+
+        // Adicione o account_id aos dados da requisição
+        $this->merge([
+            'account_id' => $accountId
+        ]);
     }
 }

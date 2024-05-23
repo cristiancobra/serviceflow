@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Resources\UsersResource;
 
@@ -84,4 +85,12 @@ class UserController extends Controller
     {
         //
     }
+
+    public function currentUser()
+    {
+        $user = Auth::user();
+
+        return UsersResource::make($user);
+    }
+
 }

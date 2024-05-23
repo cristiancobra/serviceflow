@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\JourneyResource;
 use App\Models\Journey;
+use App\Models\Task;
 use Illuminate\Http\Request;
 use DateTime;
 use App\Services\DateConversionService;
@@ -18,7 +19,17 @@ class JourneyController extends Controller
      */
     public function index()
     {
-        //
+
+        // $perPage = request()->get('per_page', 10); // Ajuste a quantidade de itens por página conforme necessário
+
+        // $journeys = Journey::where('task_id', $task->id)
+        //     ->orderBy('start', 'desc')
+        //     ->paginate($perPage);
+
+        // return [
+        //     // 'task' => TaskResource::make($taskData),
+        //     'journeys' => JourneyResource::collection($journeys),
+        // ];
     }
 
     /**
@@ -50,7 +61,8 @@ class JourneyController extends Controller
             if ($request->start) {
                 $journey->start = DateConversionService::convertJavascriptDate($request->start);
             } else {
-                $journey->start = now();
+                // $journey->start = now();
+                $journey->start = DateConversionService::convertToUtc(date('Y-m-d H:i:s'));
             }
 
             if ($request->end) {
@@ -64,10 +76,7 @@ class JourneyController extends Controller
             $journey->save();
             $journey->updateTaskDuration();
 
-            return response()->json([
-                'message' => "Contato $journey->details criado",
-                'journey' => $journey,
-            ]);
+            return new JourneyResource($journey);
         } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",
@@ -109,21 +118,15 @@ class JourneyController extends Controller
     {
         try {
 
-            if ($request->start) {
-                $journey->start = new DateTime($request->start);
-            }
-            if ($request->end) {
-                $journey->end = DateConversionService::convertJavascriptDate($request->end);
-            }
-
             $journey->fill($request->all());
 
-            if (
-                $request->date_conclusion ||
-                $request->date_start
-            ) {
-                // $journey->date_conclusion = $request->date_conclusion;
-                $journey->duration_days = DateConversionService::calculateDurationDays($request->date_conclusion, $request->date_start);
+            if ($request->start) {
+                // $journey->start = new DateTime($request->start);
+            }
+
+            if ($request->end) {
+                $journey->end = DateConversionService::convertJavascriptDate($request->end);
+                $journey->duration = DateConversionService::calculateDurationTime($journey->start, $journey->end);
             }
 
             $journey->save();
@@ -159,4 +162,53 @@ class JourneyController extends Controller
             return response()->json(['message' => 'Falha ao excluir a jornada', 'error' => $e->getMessage()], 500);
         }
     }
+
+    /**
+     * Display a listing of the resource by task_id.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getJourneysByTaskId(Request  $request)
+    {
+
+        $perPage = request()->get('per_page', 20); // Ajuste a quantidade de itens por página conforme necessário
+
+        $journeys = Journey::where('task_id', $request->task_id)
+            ->orderBy('start', 'desc')
+            ->paginate($perPage);
+
+        $journeys->appends(['task_id' => $request->task_id]);
+
+        return JourneyResource::collection($journeys);
+    }
+
+    /**
+     * Check if there are open journeys
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function checkOpenJourney()
+    {
+        $openJourney = Journey::whereNotNull('start')
+        ->whereNull('end')
+        ->first();  // Use first() para pegar a primeira jornada aberta
+
+    if ($openJourney) {
+        return response()->json([
+            'hasOpenJourneys' => true,
+            'openJourney' => [
+                'id' => $openJourney->id,
+                'task_id' => $openJourney->task_id,
+                'details' => $openJourney->details,
+                'start' => $openJourney->start,
+                'duration' => $openJourney->duration,
+            ]
+        ]);
+    } else {
+        return response()->json([
+            'hasOpenJourneys' => false,
+            'openJourney' => null
+        ]);
+    }
+}
 }

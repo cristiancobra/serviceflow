@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->foreignId('account_id');
-            $table->foreignId('user_id');
             $table->string('legal_name');
             $table->string('business_name')->nullable();
             $table->string('cnpj')->nullable();

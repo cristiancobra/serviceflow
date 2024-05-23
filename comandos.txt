@@ -14,7 +14,7 @@ GIT_SSH_COMMAND="ssh -i /root/.ssh/cobra-server" git pull
 - criar banco
 mysql -u root -p
 CREATE DATABASE serviceflow;
-CREATE USER 'serviceflow'@'localhost' IDENTIFIED BY 'ZCvbWvJ6YERBZWbj';
+CREATE USER 'serviceflow'@'localhost' IDENTIFIED BY 'senha';
 GRANT ALL PRIVILEGES ON serviceflow.* TO 'serviceflow'@'localhost';
 FLUSH PRIVILEGES;
 
@@ -22,7 +22,7 @@ FLUSH PRIVILEGES;
 
 - exportar no phpmyadmin
 - Copiar no servidor
-scp -r -i /home/cristiancobra/.ssh/desktop-cobra /home/cristiancobra/docker/serviceflow/backups/serviceflow-16-01-2024.sql root@206.189.230.115:/var/www/serviceflow/backups/
+scp -r -i /home/cristiancobra/.ssh/desktop-cobra "/home/cristiancobra/docker/serviceflow/backups/NOME_DO_ARQUIVO.sql" root@206.189.230.115:/var/www/serviceflow/backups/
 
 - importar o banco
 mysql -u root -p serviceflow < serviceflow-16-01-2024.sql

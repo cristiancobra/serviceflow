@@ -67,7 +67,11 @@ class TaskController extends Controller
     public function show(Task $task)
     {
 
-        return TaskResource::make(Task::with('journeys')->find($task->id));
+        // return TaskResource::make(Task::with('journeys')->find($task->id));
+
+        return TaskResource::make(Task::with(['journeys' => function ($query) {
+            $query->orderBy('start', 'desc');
+        }])->find($task->id));
     }
 
     /**
@@ -121,12 +125,12 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-            
-            $task->delete();
-    
-            return response()->json([
-                'message' => "Tarefa excluída com sucesso",
-            ], 200);
+
+        $task->delete();
+
+        return response()->json([
+            'message' => "Tarefa excluída com sucesso",
+        ], 200);
     }
 
     /**
