@@ -11,7 +11,7 @@
 
     <div v-bind:class="{ 'd-none': isActive }">
       <TaskCreateForm
-      @new-task-event="addTaskCreated($event)"
+      @new-task-event="addTaskCreated"
       @toogle-task-form=toggle()
        />
     </div>
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { BACKEND_URL, TASK_URL } from "@/config/apiConfig";
+import { BACKEND_URL, TASK_URL, TASK_URL_PARAMETER } from "@/config/apiConfig";
 import axios from "axios";
 import TasksList from "@/components/lists/TasksList.vue";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
@@ -50,20 +50,7 @@ export default {
       data: null,
       tasks: [],
       filteredTasks: [], // Tarefas filtradas
-      newTask: {
-        id: null,
-        name: null,
-        description: null,
-        company_id: null,
-        contact_id: null,
-        user_id: null,
-        date_start: null,
-        date_due: null,
-        duration_days: null,
-        duration_time: null,
-        priority: null,
-        status: null,
-      },
+      newTask: null,
     };
   },
   methods: {
@@ -79,30 +66,14 @@ export default {
         })
         .catch((error) => console.log(error));
     },
-    addTaskCreated($event) {
+    addTaskCreated(newTask) {
+      console.log(newTask);
       this.toggle();
-
-      this.data = $event;
-      
-      this.newTask.id = this.data.id;
-      this.newTask.name = this.data.name;
-      this.newTask.description = this.data.description;
-      this.newTask.company_id = "1";
-      this.newTask.contact_id = "2";
-      this.newTask.user_id = this.data.user_id;
-      this.newTask.date_start = this.data.date_start;
-      this.newTask.date_due = this.data.date_due;
-      this.newTask.duration_days = this.data.duration_days;
-      this.newTask.duration_time = this.data.duration_time;
-      this.newTask.priority = this.data.priority;
-      this.newTask.status = this.data.status;
-
-      this.filteredTasks.unshift(this.newTask);
-
+      this.filteredTasks.unshift(newTask);
     },
     getTasksCanceled() {
       axios
-        .get(`${BACKEND_URL}${TASK_URL}filter-status?status=canceled`) // Faz a requisição filtrando por status "done"
+        .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=canceled`) // Faz a requisição filtrando por status "done"
         .then((response) => {
           this.filteredTasks = response.data.data;
         })
@@ -110,7 +81,7 @@ export default {
     },
     getTasksDoing() {
       axios
-      .get(`${BACKEND_URL}${TASK_URL}filter-status?status=doing`) // Faz a requisição filtrando por status "doing"
+      .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=doing`) // Faz a requisição filtrando por status "doing"
         .then((response) => {
           this.filteredTasks = response.data.data;
         })
@@ -118,7 +89,7 @@ export default {
     },
     getTasksDone() {
       axios
-      .get(`${BACKEND_URL}${TASK_URL}filter-status?status=done`) // Faz a requisição filtrando por status "done"
+      .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=done`) // Faz a requisição filtrando por status "done"
         .then((response) => {
           this.filteredTasks = response.data.data;
         })
@@ -126,7 +97,7 @@ export default {
     },
     getTasksLate() {
       axios
-      .get(`${BACKEND_URL}${TASK_URL}filter-date`) // Faz a requisição filtrando por status "late"
+      .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-date`) // Faz a requisição filtrando por status "late"
         .then((response) => {
           this.filteredTasks = response.data.data;
         })
@@ -134,7 +105,7 @@ export default {
     },
     getTasksToDo() {
       axios
-      .get(`${BACKEND_URL}${TASK_URL}filter-status?status=to-do`) // Faz a requisição filtrando por status "to-do"
+      .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=to-do`) // Faz a requisição filtrando por status "to-do"
         .then((response) => {
           this.filteredTasks = response.data.data;
         })

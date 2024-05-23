@@ -1,30 +1,12 @@
 <template>
   <div class="container mb-5">
-    <div class="card">
-        
-          <div class="row ms-1">
-            <div class="col-1 status">
-            <span class="icon big">
-            <font-awesome-icon icon="fa-solid fa-briefcase" />
-          </span>
-              
-            </div>
-            <div v-if="company.business_name" class="col-11 ps-3">
-              <p class="title">
-                {{ company.business_name }}
-              </p>
-              <p class="description">
-                {{ company.legal_name }}
-              </p>
-            </div>
-            <div v-else class="col-11 ps-3">
-              <p class="title">
-                {{ company.legal_name }}
-              </p>
-            </div>
-          </div>
-        
-      </div>
+    <card-header
+      :name="company.business_name"
+      :status="company.status"
+      :secondLine="company.legal_name"
+      fa-icon="fa-solid fa-briefcase"
+      @save="updateCompany('business_name', $event)"
+    />
 
     <div class="row">
       <p class="mb-5">
@@ -52,22 +34,23 @@
         excluir
       </button>
     </div>
-
   </div>
 </template>
 
 <script>
-import { BACKEND_URL, COMPANY_URL } from "@/config/apiConfig";
+import { BACKEND_URL, COMPANY_URL_PARAMENTER } from "@/config/apiConfig";
 import axios from "axios";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
+import CardHeader from "../../components/layout/CardHeader.vue";
 
 export default {
+  components: { CardHeader },
   name: "CompanyShow",
   data() {
     return {
       companies: [],
-      company: [],
+      company: {},
       companyId: "",
     };
   },
@@ -76,33 +59,54 @@ export default {
     formatDuration,
     getCompany() {
       axios
-        .get(`${BACKEND_URL}${COMPANY_URL}${this.companyId}`)
+        .get(`${BACKEND_URL}${COMPANY_URL_PARAMENTER}${this.companyId}`)
         .then((response) => {
           this.company = response.data.data;
           this.companyLoaded = true; // Marque a tarefa como carregada
         })
         .catch((error) => console.log(error));
     },
-    setTaskId(companyId) {
+    setcompanyId(companyId) {
       this.companyId = companyId;
     },
     async deleteCompany() {
       axios
-        .delete(`${BACKEND_URL}${COMPANY_URL}${this.companyId}`)
+        .delete(`${BACKEND_URL}${COMPANY_URL_PARAMENTER}${this.companyId}`)
         .then((response) => {
           this.data = response.data;
-          // this.newTaskEvent(this.data);
-          const successMessage = "Task excluído com sucesso";
-          this.$router.push({ name: "companiesIndex", query: { successMessage } });
+          // this.newcompanyEvent(this.data);
+          const successMessage = "company excluído com sucesso";
+          this.$router.push({
+            name: "companiesIndex",
+            query: { successMessage },
+          });
         })
         .catch((error) => {
           console.error("Erro ao deletar company:", error);
           // Lidar com o erro, se necessário
         });
     },
+    async updateCompany(fieldName, editedValue) {
+      try {
+console.log("editedValue", editedValue);
+        const updatedField = { [fieldName]: editedValue };
+
+        const response = await axios.put(
+          `${BACKEND_URL}${COMPANY_URL_PARAMENTER}${this.companyId}`,
+          updatedField
+        );
+
+        this.company = response.data.data;
+        console.log("Company", this.company);
+        console.log("response", response);
+      } catch (error) {
+        console.error("Erro ao atualizar a tarefa:", error);
+      }
+    },
   },
-  async mounted() {
-    this.setTaskId(this.$route.params.id);
+
+  mounted() {
+    this.setcompanyId(this.$route.params.id);
     this.getCompany();
   },
 };

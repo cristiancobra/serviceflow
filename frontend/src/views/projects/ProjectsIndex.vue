@@ -24,7 +24,7 @@ import ProjectsList from "@/components/ProjectsList.vue";
 import ProjectCreateForm from "@/components/forms/ProjectCreateForm.vue";
 
 export default {
-  name: "ProjectsIndexView",
+  name: "ProjectsIndex",
   components: {
     ProjectCreateForm,
     ProjectsList,

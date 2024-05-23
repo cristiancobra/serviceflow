@@ -39,6 +39,8 @@ export function getStatusIcon(status) {
             return "fas fa-check-circle"; // Ícone para "feito"
         case "wait":
             return "fas fa-pause-circle"; // Ícone para "esperando"
+        case "canceled":
+            return "fas fa-times"; // Ícone para "esperando"
         default:
             return "fas fa-question-circle"; // Ícone padrão para outros status desconhecidos
     }

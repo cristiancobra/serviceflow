@@ -7,8 +7,8 @@ import LeadsIndex from '../views/leads/LeadsIndex.vue'
 import LeadShow from '../views/leads/LeadShow.vue'
 import ServicesIndex from '../views/services/ServicesIndex.vue'
 import ServiceShow from '../views/services/ServiceShow.vue'
-import ProjectsIndexView from '../views/ProjectsIndexView.vue'
-import ProjectView from '../views/ProjectView.vue'
+import ProjectsIndex from '../views/projects/ProjectsIndex.vue'
+import ProjectShow from '../views/projects/ProjectShow.vue'
 import TasksIndex from '../views/tasks/TasksIndex.vue'
 import TaskShow from '../views/tasks/TaskShow.vue'
 
@@ -56,12 +56,12 @@ const routes = [
   {
     path: '/projects',
     name: 'projectsIndex',
-    component: ProjectsIndexView
+    component: ProjectsIndex
   },
   {
     path: '/project/:id',
     name: 'projectsShow',
-    component: ProjectView
+    component: ProjectShow
   },
   {
     path: '/tasks',
@@ -82,7 +82,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const isAuthenticated = localStorage.getItem('access_token'); // Exemplo: verifique se há um token no armazenamento local
-console.log(isAuthenticated);
+
   if (to.name !== 'login' && !isAuthenticated) {
     next({ name: 'login' }); // Redirecione o usuário para a página de login
   } else {

@@ -2,43 +2,41 @@
   <div>
     <div class="row">
       <div class="col-12 mb-3">
-        <input
-          type="text"
-          class="form-control search-container"
-          v-model="searchTerm"
-          placeholder="Digite para buscar"
-        />
+        <input type="text" class="form-control search-container" v-model="searchTerm"
+          placeholder="Digite para buscar" />
       </div>
     </div>
     <div class="row">
       <div class="col-6 g-5" v-for="task in filteredTasks" v-bind:key="task.id">
-        <div
-          class="card"
-          :class="getCombinedClasses(task.status, task.priority)"
-        >
+        <div class="card" :class="getCombinedClasses(task.status, task.priority)">
           <router-link :to="{ name: 'tasksShow', params: { id: task.id } }">
             <div class="row ms-1">
-              <div class="col-2 status" :class="getStatusClass(task.status)">
-                <font-awesome-icon :icon="getStatusIcon(task.status)" />
-                <p class="label" v-if="task.duration_time">
+              <div class="row">
+                <div class="col-10">
+                  <p class="card-title">
+                    {{ task.name }}
+                  </p>
+                  <p v-html="trimDescription(task.description)" class="description"></p>
+                </div>
+                <div class="col-2 status" :class="getStatusClass(task.status)">
+                  <font-awesome-icon :icon="getStatusIcon(task.status)" />
+                </div>
+              </div>
+              <div class="icon" :class="getStatusClass(task.status)">
+                <div class="me-3">
+                  <font-awesome-icon icon="fa-solid fa-clock" style="color: rgb(48, 48, 48)" />
+                </div>
+                <div class="me-5">
                   {{ formatDuration(task.duration_time) }}
-                </p>
-                <p class="label" v-if="task.duration_days">
-                  <font-awesome-icon
-                    icon="fa-solid fa-calendar-alt"
-                    style="color: rgb(48, 48, 48)"
-                  />
+                </div>
+                <div class="me-3" v-if="task.duration_days">
+                  <font-awesome-icon icon="fa-solid fa-calendar-alt" style="color: rgb(48, 48, 48)" />
+                </div>
+                <div class="">
                   {{ task.duration_days }}
-                </p>
+                </div>
               </div>
-              <div class="col-10 ps-3">
-                <p class="card-title">
-                  {{ task.name }}
-                </p>
-                <p class="description">
-                  {{ trimDescription(task.description) }}
-                </p>
-              </div>
+
             </div>
           </router-link>
         </div>
@@ -112,34 +110,43 @@ export default {
   margin-top: 10px;
   color: black;
 }
+
 .description {
   text-align: left;
   font-size: 14px;
   margin-top: 20px;
 }
+
 ul {
   list-style-type: none;
   padding: 0;
 }
+
 li {
   display: inline-block;
   margin: 0 10px;
 }
+
 a {
   color: rgb(61, 61, 61);
 }
+
 a:link {
   text-decoration: none;
 }
+
 a:visited {
   text-decoration: none;
 }
+
 a:hover {
   text-decoration: none;
 }
+
 a:active {
   text-decoration: none;
 }
+
 .card {
   border-style: solid;
   border-width: 2px;
@@ -151,60 +158,82 @@ a:active {
   position: relative;
   overflow: hidden;
 }
+
 .card:hover {
   border-width: 5px;
   border-radius: 14px;
 }
+
 .card::before {
   content: "";
   position: absolute;
   top: auto;
   bottom: 0;
-  left: auto; /* Define left como auto */
+  left: auto;
+  /* Define left como auto */
   right: -24%;
   width: 60%;
   height: 14%;
-  transform: scaleX(-1) translateY(100%) rotate(45deg); /* Rotação de 45 graus */
+  transform: scaleX(-1) translateY(100%) rotate(45deg);
+  /* Rotação de 45 graus */
   background-color: white;
-  z-index: 1; /* Colocar a linha atrás do quadrado */
+  z-index: 1;
+  /* Colocar a linha atrás do quadrado */
 }
-.card.low::before{
+
+.card.low::before {
   background-color: var(--gray);
 }
-.card.medium::before{
+
+.card.medium::before {
   background-color: var(--blue);
 }
-.card.high::before{
+
+.card.high::before {
   background-color: var(--red);
 }
+
 .done {
   background-color: var(--green-light);
   border-color: var(--green);
   color: var(--green);
 }
+
 .doing {
   background-color: var(--blue-light);
   border-color: var(--blue);
   color: var(--blue);
 }
+
 .to-do {
   background-color: var(--orange-light);
   border-color: var(--orange);
   color: var(--orange);
 }
+
 .canceled {
   background-color: var(--gray-light);
   border-color: var(--gray);
   color: var(--gray);
 }
+
 .wait {
   background-color: var(--gray-light);
   border-color: var(--gray);
   color: var(--gray);
 }
+
 .status {
-  text-align: center;
+  display: flex;
   font-size: 3rem;
+}
+
+.icon {
+  display: flex;
+  justify-content: start;
+  align-content: flex-start;
+  font-size: 1.2rem;
+  margin-top: 10px;
 }
 
 .label {

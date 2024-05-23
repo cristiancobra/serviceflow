@@ -1,7 +1,12 @@
 <template>
   <div class="mb-5">
     <label class="form-label" :for="name">{{ label }}</label>
-    <select class="form-select" :id="name" :name="name" @input="updateInput">
+    <select
+      class="form-select"
+      :id="name"
+      :name="name"
+      @input="updateInput"
+    >
       <option v-if="fieldNull" selected value="null">{{ fieldNull }}</option>
       <option v-if="optionLabel" disabled selected value="">
         {{ optionLabel }}
@@ -20,6 +25,11 @@
     
   <script>
 export default {
+  data() {
+    return {
+      selectedItem: null,
+    };
+  },
   props: {
     label: String,
     type: String,
@@ -29,6 +39,8 @@ export default {
     fieldsToDisplay: [String, Array],
     fieldNull: String,
     optionLabel: String,
+    value: String,
+    autoSelect: Boolean
   },
   methods: {
     updateInput(event) {
@@ -52,10 +64,26 @@ export default {
       }
     },
     shouldSelectFirstItem(index, item) {
-      if (index === 0 && !this.optionLabel && !this.fieldNull) {
+      if (index === 0 && !this.optionLabel && !this.fieldNull && item.id === this.value) {
         this.$emit("update:modelValue", item.id);
       }
     },
+  },
+  watch: {
+    value(newValue) {
+      // Aqui você pode reagir às alterações em value
+      // Por exemplo, atualizar o estado interno do componente
+      this.selectedItem = newValue;
+      this.$emit("update:modelValue", newValue);
+      console.log(this.selectedItem);
+    },
+  },
+  mounted() {
+    // Define o ID do usuário logado como o valor selecionado por padrão
+    if (this.autoSelect == true) {
+      this.selectedItem = this.value;
+      console.log(this.selectedItem);
+    }
   },
 };
 </script>

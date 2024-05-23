@@ -7,8 +7,8 @@
       :id="'low'"
       value="low"
       name="priority"
-      v-model="localForm.priority"
-      @change="emitPriorityChange"
+      @change="updatePriority('low')"
+      :checked="priority === 'low'"
     />
     <label class="priority low" :for="'low'">Baixa</label>
 
@@ -16,10 +16,9 @@
       type="radio"
       :id="'medium'"
       value="medium"
-      name="priority"
-      v-model="localForm.priority"
-      @change="emitPriorityChange"
-      checked
+      name="priority"      
+      @change="updatePriority('medium')"
+      :checked="priority === 'medium'"
     />
     <label class="priority medium" :for="'medium'">Média</label>
 
@@ -27,9 +26,9 @@
       type="radio"
       :id="'high'"
       value="high"
-      name="priority"
-      v-model="localForm.priority"
-      @change="emitPriorityChange"
+      name="priority"      
+      @change="updatePriority('high')"
+      :checked="priority === 'high'"
     />
     <label class="priority high" :for="'high'">Alta</label>
   </div>
@@ -39,20 +38,32 @@
 export default {
   name: "PrioritySelectRadioInput",
   props: {
-    form: Object, // Recebendo a variável form como uma propriedade
+    priority: String,
     label: String,
   },
   data() {
     return {
-      localForm: { ...this.form }, // Criando uma cópia local da prop form
+      modelValue: this.priority,
     };
   },
   methods: {
-    emitPriorityChange() {
-      // Emitir um evento personalizado para notificar o componente pai
-      this.$emit("priority-change", this.localForm.priority);
+    updatePriority(value) {
+      this.$emit("priority-change", value);
     },
   },
+  // watch: {
+  //   priority: {
+  //     handler(newValue) {
+  //       this.modelValue = newValue;
+  //     },
+  //     immediate: true,
+  //   },
+  // },
+  mounted() {
+    console.log(this.priority);
+    console.log(this.modelValue);
+  },
+  
 };
 </script>
   

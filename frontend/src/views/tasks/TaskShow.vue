@@ -1,5 +1,8 @@
 <template>
   <div class="container mb-5">
+    <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
+    </AddMessage>
+
     <div class="card" v-bind:class="getStatusClass(task.status)">
       <div class="row ms-1">
         <div class="col-1 status" v-bind:class="getStatusClass(task.status)">
@@ -10,74 +13,45 @@
         </div>
         <div class="col-11 ps-3">
           <p class="title">
-            <TextEditableInput
-              name="name"
-              v-model="task.name"
-              placeholder="descrição detalhada da tarefa"
-              @save="updateTask('name', $event)"
-            />
+            <TextEditableInput name="name" v-model="task.name" placeholder="descrição detalhada da tarefa"
+              @save="updateTask('name', $event)" />
           </p>
         </div>
       </div>
       <div class="row">
         <div class="col-3">
-          <SelectInput
-            label="Responsável"
-            name="user_id"
-            v-model="task.user_id"
-            :items="users"
-            fieldsToDisplay="name"
-          />
+          <SelectInput label="Responsável" name="user_id" v-model="task.user_id" :items="users"
+            fieldsToDisplay="name" />
         </div>
       </div>
     </div>
 
     <div class="row mb-5">
       <div class="col-12">
-        <TextEditor
-          label="Descrição"
-          name="description"
-          v-model="task.description"
-          @save="updateTask('description', $event)"
-        />
+        <TextEditor label="Descrição" name="description" v-model="task.description"
+          @save="updateTask('description', $event)" />
       </div>
     </div>
 
     <div class="row">
-      <div class="col-12"></div>
-    </div>
-
-    <div class="row">
       <div class="col">
-        <DateEditableInput
-          name="date_start"
-          label="Data de início:"
-          v-model="task.date_start"
-          @save="updateTask('date_start', $event)"
-        />
-        <p>
-          <span class="duration"> Data de início: </span>
-          {{ task.date_start }}
-        </p>
-        <p>
-          <span class="duration"> Prazo final: </span>
-          {{ formatDateBr(task.date_due) }}
-        </p>
-        <p>
-          <span class="duration"> Data de conclusão: </span>
-          {{ formatDateTimeBr(task.date_conclusion) }}
-        </p>
+        <DateEditableInput name="date_start" label="Início:" v-model="task.date_start"
+          @save="updateTask('date_start', $event)" />
+        <DateEditableInput name="date_due" label="Prazo:" v-model="task.date_due"
+          @save="updateTask('date_due', $event)" />
+        <DateEditableInput name="date_conclusion" label="Conclusão:" v-model="task.date_conclusion"
+          @save="updateTask('date_conclusion', $event)" />
       </div>
 
       <div class="col">
-        <p>
-          <span class="duration"> Prioridade: </span>
-          {{ translatePriority(task.priority) }}
-        </p>
-        <p>
-          <span class="duration"> Situação: </span>
-          {{ translateStatus(task.status) }}
-        </p>
+        <div class="row duration">
+          <PrioritySelectRadioInput v-if="task.priority" :priority="task.priority"
+            @priority-change="updateTask('priority', $event)" />
+        </div>
+        <div class="row duration">
+          <StatusLinearRadioInput v-if="task.status" :status="task.status"
+            @status-change="updateTask('status', $event)" />
+        </div>
       </div>
     </div>
 
@@ -87,23 +61,21 @@
       </button>
     </div>
 
-    <JourneysList
-      :journeys="journeysData"
-      @new-journey-event="addJourneyCreated"
-      @journey-updated="updateJourneys"
-      @journey-deleted="deleteJourney"
-    />
+    <JourneysList :taskId="taskId" @update-task-duration="updateTaskDuration()" />
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import { BACKEND_URL, TASK_URL } from "@/config/apiConfig";
+import { BACKEND_URL, TASK_URL_PARAMETER } from "@/config/apiConfig";
+import { convertUtcToLocal } from "@/utils/date/dateUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import { formatDateTimeBr } from "@/utils/date/dateUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
 import { getStatusClass } from "@/utils/card/cardUtils";
 import { getStatusIcon } from "@/utils/card/cardUtils";
+import StatusLinearRadioInput from "@/components/forms/inputs/StatusLinearRadioInput.vue";
+import PrioritySelectRadioInput from "@/components/forms/inputs/PrioritySelectRadioInput.vue";
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
 import DateEditableInput from "@/components/forms/inputs/date/DateEditableInput";
@@ -116,12 +88,17 @@ export default {
   components: {
     DateEditableInput,
     JourneysList,
+    PrioritySelectRadioInput,
     TextEditableInput,
     TextEditor,
+    StatusLinearRadioInput,
   },
   data() {
     return {
       journeysData: [],
+      journeysUrl: "",
+      messageStatus: "",
+      messageText: "",
       task: [],
       editedTask: [],
       taskId: "",
@@ -136,14 +113,16 @@ export default {
     getStatusIcon,
     translateStatus,
     translatePriority,
+    convertUtcToLocal,
     async getTask() {
       try {
         const response = await axios.get(
-          `${BACKEND_URL}${TASK_URL}/${this.taskId}`
+          `${BACKEND_URL}${TASK_URL_PARAMETER}${this.taskId}`
         );
 
         this.task = response.data.data;
-        this.journeysData = this.task.journeys;
+        convertUtcToLocal(this.task.date_start);
+
         this.taskLoaded = true; // Marque a tarefa como carregada
       } catch (error) {
         console.error("Erro ao acessar tarefa:", error);
@@ -154,18 +133,33 @@ export default {
     },
     async deleteTask() {
       axios
-        .delete(`${BACKEND_URL}${TASK_URL}/${this.taskId}`)
+        .delete(`${BACKEND_URL}${TASK_URL_PARAMETER}${this.taskId}`)
         .then((response) => {
           this.data = response.data;
           this.isSuccess = true;
           this.isError = false;
-          this.$router.push({ name: "tasksIndex", query: { isSuccess: this.isSuccess } });
+          this.$router.push({
+            name: "tasksIndex",
+            query: { isSuccess: this.isSuccess },
+          });
+          this.messageStatus = "deleted";
+          this.messageText = "Jornada deletada com sucesso!";
         })
         .catch((error) => {
           console.error("Erro ao deletar task:", error);
           this.isError = true;
           this.isSuccess = false;
         });
+    },
+    updateJourneys(updatedJourney) {
+      // Encontrar e atualizar a jornada na lista journeysData
+      const index = this.journeysData.findIndex(
+        (journey) => journey.id === updatedJourney.id
+      );
+
+      if (index !== -1) {
+        this.journeysData[index] = updatedJourney;
+      }
     },
     async updateTask(fieldName, editedValue) {
       const editedTask = { ...this.task };
@@ -174,7 +168,7 @@ export default {
 
       try {
         const response = await axios.put(
-          `${BACKEND_URL}${TASK_URL}/${this.taskId}`,
+          `${BACKEND_URL}${TASK_URL_PARAMETER}${this.taskId}`,
           editedTask
         );
 
@@ -183,37 +177,11 @@ export default {
         console.error("Erro ao atualizar a tarefa:", error);
       }
     },
-    addJourneyCreated(newJourney) {
-      // Add the new journey to the journeysData array
-      this.journeysData.push(newJourney);
-      this.updateTaskDuration();
-    },
-    deleteJourney(deletedJourneyId) {
-      // Atualize a lista de jornadas após a exclusão
-      this.journeysData = this.journeysData.filter(
-        (journey) => journey.id !== deletedJourneyId
-      );
-    },
-    updateJourneys(updatedJourney) {
-      console.log("updatedJourney:", updatedJourney);
-      console.log(updatedJourney);
-      // Encontrar e atualizar a jornada na lista journeysData
-      const index = this.journeysData.findIndex(
-        (journey) => journey.id === updatedJourney.id
-      );
-      console.log("index:", index);
-
-      if (index !== -1) {
-        console.log("Before update:", this.journeysData[index]);
-        this.journeysData[index] = updatedJourney;
-        console.log("After update:", this.journeysData[index]);
-      }
-    },
     updateTaskDuration() {
       axios
-        .get(`${BACKEND_URL}${TASK_URL}/${this.taskId}`)
+        .get(`${BACKEND_URL}${TASK_URL_PARAMETER}${this.taskId}`)
         .then((response) => {
-          this.task.duration = response.data.data.duration;
+          this.task.duration_time = response.data.data.duration_time;
         })
         .catch((error) => console.log(error));
     },
@@ -226,6 +194,9 @@ export default {
     translatedStatus() {
       return translateStatus(this.task.status);
     },
+    localDate(date) {
+      return convertUtcToLocal(date);
+    },
   },
 };
 </script>
@@ -237,37 +208,47 @@ p {
   font-size: 1.2rem;
   font-weight: 400;
 }
+
 h3 {
   margin: 40px 0 0;
 }
+
 ul {
   list-style-type: none;
   padding: 0;
 }
+
 li {
   display: inline-block;
   margin: 0 10px;
 }
+
 a {
   color: rgb(61, 61, 61);
 }
+
 a:link {
   text-decoration: none;
 }
+
 a:visited {
   text-decoration: none;
 }
+
 a:hover {
   text-decoration: none;
 }
+
 a:active {
   text-decoration: none;
 }
+
 .duration {
   font-weight: 800;
   font-size: 1.2rem;
   text-align: center;
 }
+
 .card {
   margin-bottom: 60px;
   margin-top: 60px;
@@ -279,30 +260,36 @@ a:active {
   padding-right: 20px;
   min-height: 15vh;
 }
+
 .done {
   background-color: var(--green-light);
   border-color: var(--green);
   color: var(--green);
 }
+
 .doing {
   background-color: var(--blue-light);
   border-color: var(--blue);
   color: var(--blue);
 }
+
 .to-do {
   background-color: var(--orange-light);
   border-color: var(--orange);
   color: var(--orange);
 }
+
 .wait {
   background-color: var(--gray-light);
   border-color: var(--gray);
   color: var(--gray);
 }
+
 .status {
   text-align: center;
   font-size: 3rem;
 }
+
 .title {
   font-size: 24px;
   font-weight: 900;
@@ -327,16 +314,19 @@ a:active {
   font-weight: 800;
   /* width: 120px; */
 }
+
 .delete {
   background-color: #ffa1a1;
   border-color: #c82333;
   color: #c82333;
 }
+
 .delete:hover {
   background-color: #c82333;
   border-color: #c82333;
   color: white;
 }
+
 .icon {
   font-size: 1.2rem;
   text-align: center;

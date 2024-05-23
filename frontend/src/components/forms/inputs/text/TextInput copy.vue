@@ -1,12 +1,21 @@
 <template>
-  <div class="text-input-container">
-    <label v-if="label" class="form-label" :for="name">{{ label }}</label>
-    <input class="text-input" :type="type" :id="name" :name="name" :value="modelValue" :placeholder="placeholder"
-      @input="updateInput" @keydown.esc="cancelEditing" @blur="emitSave" @keydown.enter.prevent="emitSave" />
+  <div class="">
+    <input
+      class="form-control"
+      :type="type"
+      :id="name"
+      :name="name"
+      :value="modelValue"
+      :placeholder="placeholder"
+      @input="updateInput"
+      @keydown.esc="cancelEditing"
+      @blur="emitSave"
+      @keydown.enter.prevent="emitSave"
+    />
   </div>
 </template>
-
-<script>
+    
+  <script>
 export default {
   props: {
     label: String,
@@ -15,6 +24,9 @@ export default {
     placeholder: String,
   },
   methods: {
+    // updateInput(event) {
+    //   this.$emit("update:modelValue", event.target.value);
+    // },
     startEditing() {
       this.editing = true;
       this.editedValue = this.modelValue;
@@ -34,28 +46,17 @@ export default {
     },
     updateInput(event) {
       this.editedValue = event.target.value;
-      this.$emit("update:modelValue", this.editedValue);
     },
+  },
+  mounted() {
+    console.log("ta no input");
   },
 };
 </script>
-
-<style scoped>
-.text-input {
-  width: 100%;
-  padding: 0.5rem;
-  font-size: 1rem;
-  border: 1px solid var(--gray);
-  border-radius: 4px;
-  margin-top: 0.5rem;
-}
-
-.text-input-container {
-  margin-bottom: 1rem;
-  width: 100%;
-}
-
+    
+  <style scoped>
 label {
   text-align: right;
 }
 </style>
+  

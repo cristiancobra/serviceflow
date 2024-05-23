@@ -3,94 +3,71 @@
     <label class="form-label" :for="name">Situação</label>
     <br />
     <div id="debt-amount-slider">
-      <input
-        type="radio"
-        name="status"
-        id="wait"
-        value="wait"
-        v-model="localForm.status"
-        @change="emitStatusChange"
-        required
-      />
+
+      <input type="radio" name="status" id="wait" value="wait" v-model="modelValue" @change="emitStatusChange"
+        required />
       <label class="label" for="wait" data-status="PENDENTE"></label>
 
-      <input
-        type="radio"
-        name="status"
-        id="to-do"
-        value="to-do"
-        v-model="localForm.status"
-        @change="emitStatusChange"
-        required
-      />
+      <input type="radio" name="status" id="to-do" value="to-do" v-model="modelValue" @change="emitStatusChange"
+        required />
       <label class="label" for="to-do" data-status="FAZER"></label>
 
-      <input
-        type="radio"
-        name="status"
-        id="doing"
-        value="doing"
-        v-model="localForm.status"
-        @change="emitStatusChange"
-        required
-      />
+      <input type="radio" name="status" id="doing" value="doing" v-model="modelValue" @change="emitStatusChange"
+        required />
       <label class="label" for="doing" data-status="FAZENDO"></label>
 
-      <input
-        type="radio"
-        name="status"
-        id="done"
-        value="done"
-        v-model="localForm.status"
-        @change="emitStatusChange"
-        required
-      />
+      <input type="radio" name="status" id="done" value="done" v-model="modelValue" @change="emitStatusChange"
+        required />
       <label class="label" for="done" data-status="FEITO"></label>
 
-      <input
-        type="radio"
-        name="status"
-        id="canceled"
-        value="canceled"
-        v-model="localForm.status"
-        @change="emitStatusChange"
-        required
-      />
+      <input type="radio" name="status" id="canceled" value="canceled" v-model="modelValue" @change="emitStatusChange"
+        required />
       <label class="label" for="canceled" data-status="CANCELADO"></label>
     </div>
   </div>
 </template>
-  
+
 <script>
 export default {
   props: {
-    form: Object, // Recebendo a variável form como uma propriedade
+    status: String,
   },
   data() {
     return {
-      localForm: { ...this.form }, // Criando uma cópia local da prop form
+      modelValue: this.status,
     };
   },
   computed: {
     isValid() {
-      return this.localForm.status !== null;
+      return this.modelValue !== null;
     },
   },
   methods: {
     emitStatusChange() {
-      this.$emit("status-change", this.localForm.status);
+      if (this.status !== this.modelValue) {
+        this.$emit("status-change", this.modelValue);
+      }
+    },
+  },
+  watch: {
+    status: {
+      handler(newValue) {
+        this.modelValue = newValue;
+      },
+      immediate: true,
     },
   },
 };
 </script>
-  
-  <style scoped>
+
+<style scoped>
 #form-wrapper {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
 #debt-amount-slider {
   display: flex;
   flex-direction: row;
@@ -100,6 +77,7 @@ export default {
   height: 50px;
   user-select: none;
 }
+
 #debt-amount-slider::before {
   content: " ";
   position: absolute;
@@ -111,6 +89,7 @@ export default {
   transform: translate(-50%, -50%);
   background: #000;
 }
+
 input,
 .label {
   box-sizing: border-box;
@@ -118,6 +97,7 @@ input,
   user-select: none;
   cursor: pointer;
 }
+
 .label {
   display: inline-block;
   position: relative;
@@ -125,6 +105,7 @@ input,
   height: 100%;
   user-select: none;
 }
+
 .label::before {
   content: attr(data-status);
   position: absolute;
@@ -138,6 +119,7 @@ input,
   opacity: 0.85;
   transition: all 0.15s ease-in-out;
 }
+
 .label::after {
   content: " ";
   position: absolute;
@@ -153,63 +135,67 @@ input,
   cursor: pointer;
   transition: all 0.15s ease-in-out;
 }
+
 .label:hover::after {
   transform: translate(-50%, -50%) scale(1.25);
 }
+
 input {
   display: none;
 }
-input:checked + .label::before {
+
+input:checked+.label::before {
   font-weight: 800;
   opacity: 1;
   font-size: 13.5px;
 }
-input:checked + .label::after {
+
+input:checked+.label::after {
   border-width: 2px;
   transform: translate(-50%, -50%) scale(1.5);
 }
 
 /* checked button colors */
 
-input[value="wait"]:checked + .label::after {
+input[value="wait"]:checked+.label::after {
   background-color: var(--wait-color);
 }
 
-input[value="to-do"]:checked + .label::after {
+input[value="to-do"]:checked+.label::after {
   background-color: var(--to-do-color);
 }
 
-input[value="doing"]:checked + .label::after {
+input[value="doing"]:checked+.label::after {
   background-color: var(--doing-color);
 }
 
-input[value="done"]:checked + .label::after {
+input[value="done"]:checked+.label::after {
   background-color: var(--done-color);
 }
 
-input[value="canceled"]:checked + .label::after {
+input[value="canceled"]:checked+.label::after {
   background-color: var(--canceled-color);
 }
 
 /* checked .label colors */
 
-input[value="wait"]:checked + .label {
+input[value="wait"]:checked+.label {
   color: var(--wait-color);
 }
 
-input[value="to-do"]:checked + .label {
+input[value="to-do"]:checked+.label {
   color: var(--to-do-color);
 }
 
-input[value="doing"]:checked + .label {
+input[value="doing"]:checked+.label {
   color: var(--doing-color);
 }
 
-input[value="done"]:checked + .label {
+input[value="done"]:checked+.label {
   color: var(--done-color);
 }
 
-input[value="canceled"]:checked + .label {
+input[value="canceled"]:checked+.label {
   color: var(--canceled-color);
 }
 
@@ -230,19 +216,23 @@ button {
   user-select: none;
   cursor: pointer;
 }
+
 button:hover {
   background: #000;
   color: #fff;
 }
+
 button:active {
   transform: scale(0.9);
 }
+
 button:focus {
   background: #4caf50;
   border-color: #4caf50;
   color: #fff;
   pointer-events: none;
 }
+
 button:focus::before {
   display: inline-block;
   width: 0;
@@ -254,10 +244,12 @@ button:focus::before {
   transform: rotate(0deg);
   animation: spin 1s linear infinite;
 }
-form:invalid + button {
+
+form:invalid+button {
   pointer-events: none;
   opacity: 0.25;
 }
+
 @keyframes spin {
   from {
     transform: rotate(0deg);
@@ -265,6 +257,7 @@ form:invalid + button {
     opacity: 1;
     margin-right: 12px;
   }
+
   to {
     transform: rotate(360deg);
     width: 24px;
@@ -273,4 +266,3 @@ form:invalid + button {
   }
 }
 </style>
-  

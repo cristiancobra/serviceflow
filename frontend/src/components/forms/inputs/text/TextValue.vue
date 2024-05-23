@@ -1,32 +1,36 @@
 <template>
-  <div class="mb-5">
-    {{ internalValue }}
+  <div v-if="localValue" class="">
+    {{ localValue }}
+  </div>
+  <div v-else>
+    não informado
   </div>
 </template>
     
 <script>
-import { ref, watch } from 'vue';
+// import { ref, watch } from 'vue';
 
 export default {
-  props: {
-    name: String,
-    modelValue: [String, Number],
-    placeholder: String,
-  },
-  setup(props) {
-    // Cria uma referência reativa para o modelValue
-    const internalValue = ref(props.modelValue);
-
-    // Assista a alterações em props.modelValue e atualize internalValue
-    watch(() => {
-      internalValue.value = props.modelValue;
-    });
-
-    // Retorna o contexto de renderização
+  data() {
     return {
-      internalValue,
+      // modelValue: String,
     };
   },
+  props: {
+    name: String,
+    modelValue: String,
+    placeholder: String,
+  },
+  computed: {
+    localValue: {
+      get() {
+        return this.modelValue;
+      },
+      set(value) {
+        this.$emit('update:modelValue', value);
+      }
+    }
+  }
 };
 </script>
 

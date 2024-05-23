@@ -1,12 +1,12 @@
 <template>
-  <div class="mb-5 main-container">
+  <div class="main-container">
     <label class="form-label" :for="name">{{ label }}</label>
 
     <TextValue
       v-if="!editing"
       :id="name"
       :name="name"
-      :model-value="modelValue"
+      v-model="localValue"
       @click="startEditing"
     />
 
@@ -28,7 +28,6 @@ export default {
   data() {
     return {
       editing: false,
-      editedValue: null,
     };
   },
   components: {
@@ -40,6 +39,17 @@ export default {
     name: String,
     modelValue: [String, Number],
     placeholder: String,
+    status: String,
+  },
+  computed: {
+    localValue: {
+      get() {
+        return this.modelValue;
+      },
+      set(value) {
+        this.$emit('update:modelValue', value);
+      }
+    }
   },
   methods: {
     startEditing() {
@@ -50,7 +60,7 @@ export default {
       // });
     },
     emitSave(editedValue) {
-      
+      console.log("editedValue", editedValue);
         this.$emit("save", editedValue);
       
       this.editing = false;
@@ -58,10 +68,6 @@ export default {
     cancelEditing() {
       this.editing = false;
     },
-    // updateInput(event) {
-    //   this.editedValue = event.target.innerText;
-    //   console.log(this.editedValue);
-    // },
   },
 };
 </script>
@@ -76,15 +82,5 @@ export default {
   text-align: left;
   font-weight: 800;
 }
-.editable-content {
-  border: none;
-  padding: 5px;
-  cursor: pointer;
-  background: transparent;
-  text-align: left;
-}
-.editable-content[contenteditable="true"]:empty:before {
-  content: attr(placeholder);
-  color: #888;
-}
+
 </style>

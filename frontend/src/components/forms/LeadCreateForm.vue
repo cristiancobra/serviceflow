@@ -53,7 +53,7 @@
           <UsersSelectInput
             label="Adicionado por"
             v-model="form.user_id"
-            fieldToDisplay="name"
+            fieldsToDisplay="name"
           />
         </div>
       </div>
@@ -62,8 +62,7 @@
         <div class="col-md-4">
           <CompaniesSelectInput
             label="Companies"
-            :items="users"
-            fieldToDisplay="name"
+            fieldsToDisplay="legal_name"
           />
         </div>
       </div>
@@ -341,8 +340,8 @@ import ErrorMessage from "./messages/ErrorMesssage.vue";
 import SuccessMessage from "./messages/SuccessMessage.vue";
 import TextInput from "./inputs/text/TextInput";
 import TextAreaInput from "./inputs/TextAreaInput.vue";
-import CompaniesSelectInput from "./inputs/companies/CompaniesSelectInput.vue";
-import UsersSelectInput from "./inputs/users/UsersSelectInput.vue";
+import CompaniesSelectInput from "./selects/CompaniesSelectInput.vue";
+import UsersSelectInput from "./selects/UsersSelectInput.vue";
 
 export default {
   name: "LeadCreateForm",
@@ -383,6 +382,8 @@ export default {
         source_contact_channel: null,
         reason_for_initial_contact: null,
       },
+      users: [],
+      companies: [],
     };
   },
   methods: {
@@ -394,10 +395,10 @@ export default {
         );
         this.data = response.data.data;
         console.log(this.data);
-        this.newLeadEvent(this.data);
+        this.$emit("new-lead-event", this.data);
         this.clearForm();
       } catch (error) {
-        console.error(error);
+        console.log(error);
         if (error.response && error.response.status === 422) {
           this.isError = true;
           this.isSuccess = false;
@@ -431,10 +432,6 @@ export default {
       this.form.source = null;
       this.form.source_contact_channel = null;
       this.form.reason_for_initial_contact = null;
-    },
-    newLeadEvent(data) {
-      console.log(data);
-      this.$emit("new-lead-event", data);
     },
   },
 };

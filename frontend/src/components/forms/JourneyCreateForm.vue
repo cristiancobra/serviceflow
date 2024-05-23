@@ -1,5 +1,12 @@
 <template>
   <div class="container">
+    <AddMessage
+      v-if="messageStatus"
+      :messageStatus="messageStatus"
+      :messageText="messageText"
+    >
+    </AddMessage>
+
     <div class="row errorBox" v-bind:class="{ 'd-none': datesError }"></div>
     <form @submit.prevent="submitForm">
       <div class="row form" v-bind:class="{ 'd-none': isActive }">
@@ -24,14 +31,16 @@
         </div>
       </div>
     </form>
-    <div class="row">
-      <div class="col-md-12 d-flex justify-content-end">
+    <div class="row mb-5">
+      <div class="col-3">
         <button class="button-new me-3" @click="toggle()">
           <span class="icon-new">
             <font-awesome-icon icon="fa-solid fa-plus" />
           </span>
-          NOVA
+          NOVA JORNADA
         </button>
+      </div>
+      <div class="col-3">
         <form @submit.prevent="submitQuickForm">
           <button class="button-new">
             <span class="icon-new">
@@ -46,7 +55,9 @@
 </template>
 
 <script>
+import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import { BACKEND_URL, JOURNEY_URL } from "@/config/apiConfig";
+import {formatDateTimeForServer} from "@/utils/date/dateUtils";
 import axios from "axios";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
@@ -55,6 +66,7 @@ export default {
   name: "JourneyCreateForm",
   components: {
     VueDatePicker,
+    AddMessage,
   },
   data() {
     return {
@@ -64,6 +76,8 @@ export default {
         start: null,
         end: null,
       },
+      messageStatus: "",
+      messageText: "",
       quickForm: {
         task_id: this.$route.params.id,
       },
@@ -74,6 +88,7 @@ export default {
     };
   },
   methods: {
+    formatDateTimeForServer,
     clearForm() {
       this.form.details = null;
       this.form.start = null;
@@ -91,40 +106,58 @@ export default {
         }
       }
     },
-    convertToUTC(localDate) {
-      // Converta uma data local para UTC
-      const utcDate = new Date(localDate);
-      const timezoneOffset = utcDate.getTimezoneOffset();
-      utcDate.setMinutes(utcDate.getMinutes() - timezoneOffset); // Adicione o offset do fuso horário
-      return utcDate;
-    },
-    newJourneyEvent(newJourney) {
-      console.log(newJourney);
-      this.$emit("new-journey-event", newJourney);
+    // convertToUTC(localDate) {
+    //   // Converta uma data local para UTC
+    //   const utcDate = new Date(localDate);
+    //   const timezoneOffset = utcDate.getTimezoneOffset();
+    //   utcDate.setMinutes(utcDate.getMinutes() - timezoneOffset); // Adicione o offset do fuso horário
+    //   return utcDate;
+    // },
+    setMessageStatus(status) {
+      this.messageStatus = status;
+
+      if (status === "error") {
+        this.messageText = "Erro ao adicionar jornada!";
+      } else if (status === "success"){
+        this.messageText = "Jornada adicionada com sucesso!";
+      }
+
+      setTimeout(() => {
+        this.messageStatus = "";
+      }, 5000);
     },
     async submitForm() {
-      this.form.start = this.convertToUTC(this.form.start);
+      // this.form.start = this.form.start;
 
-      if (this.form.end) {
-        this.form.end = this.convertToUTC(this.form.end);
-      }
+      // if (this.form.end) {
+      //   this.form.end = this.form.end;
+      // }
 
       this.checkDates();
 
-      axios
-        .post(`${BACKEND_URL}${JOURNEY_URL}`, this.form)
-        .then((response) => {
-          this.newJourney = response.data.journey;
-          this.newJourneyEvent(this.newJourney);
-          this.clearForm();
-        });
+      try {
+        axios
+          .post(`${BACKEND_URL}${JOURNEY_URL}`, this.form)
+          .then((response) => {
+            this.newJourney = response.data.data;
+
+            console.log("newJourney", this.newJourney);
+            this.$emit("new-journey-event", this.newJourney);
+            this.clearForm();
+
+            this.setMessageStatus("success");
+          });
+      } catch (error) {
+        this.setMessageStatus("error");
+      }
     },
     async submitQuickForm() {
       axios
         .post(`${BACKEND_URL}${JOURNEY_URL}`, this.quickForm)
         .then((response) => {
-          this.newJourney = response.data.journey;
-          this.newJourneyEvent(this.newJourney);
+          this.newJourney = response.data.data;
+          console.log("newJourney", this.newJourney);
+          this.$emit("new-journey-event", this.newJourney);
         });
     },
     toggle() {

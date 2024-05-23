@@ -110,9 +110,10 @@ export default {
           `${BACKEND_URL}${COMPANY_URL}`,
           this.form
         );
-        this.data = response.data;
+        this.data = response.data.data;
         this.isSuccess = true;
         this.isError = false;
+        console.log(this.data);
         this.newCompanyEvent(this.data);
         this.successMessage(this.data);
         this.clearForm();

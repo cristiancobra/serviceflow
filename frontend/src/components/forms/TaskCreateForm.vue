@@ -1,5 +1,12 @@
 <template>
   <div class="form-container">
+    <AddMessage
+      v-if="messageStatus"
+      :messageStatus="messageStatus"
+      :messageText="messageText"
+    >
+    </AddMessage>
+
     <ErrorMessage v-if="isError" :formResponse="formResponse" />
     <SuccessMessage v-if="isSuccess" :formResponse="formResponse" />
 
@@ -26,7 +33,7 @@
         />
       </div>
 
-      <div class="row">
+      <div class="row mb-5 mt-5">
         <div class="col-md-4">
           <SelectInput
             label="Empresa cliente"
@@ -60,68 +67,68 @@
         </div>
       </div>
 
-      <div :class="{ hidden: !isActiveCompany }">
-        <CompanyCreateForm @new-company-event="dateLocal()" />
+      <div v-if="isActiveCompany">
+        <CompanyCreateForm @new-company-event="addCompanyCreated" />
       </div>
-      <div :class="{ hidden: !isActiveLead }">
-        <LeadCreateForm @new-lead-event="addLeadCreated($event)" />
+      <div v-if="isActiveLead">
+        <LeadCreateForm @new-lead-event="addLeadCreated" />
       </div>
 
-      <div class="row">
+      <div class="row mb-5 mt-5">
         <div class="col-md-4">
-          <SelectInput
+          <UsersSelectInput
             label="Responsável"
-            name="user_id"
             v-model="form.user_id"
-            :items="users"
             fieldsToDisplay="name"
+            autoSelect=true
           />
         </div>
 
         <div class="offset-2 col-md-6">
           <PrioritySelectRadioInput
-            :form="form"
+            :priority="form.priority"
             @priority-change="updateFormPriority"
           />
         </div>
       </div>
 
-      <div class="row">
+      <div class="row mb-5 mt-5">
         <div class="col-md-4">
-          <DateInput
+          <DateTimeInput
+            v-model="form.date_start"
             label="Início"
             name="date_start"
-            v-model="form.date_start"
             placeholder="início do prazo"
+            :autoFillNow="true"
           />
         </div>
 
         <div class="col-md-4">
-          <TextInput
-            label="Prazo final"
-            type="date"
-            name="date_due"
+          <DateTimeInput
             v-model="form.date_due"
-            placeholder="final do prazo"
+            label="Prazo final"
+            name="date_due"
+            placeholder="prazo final"
           />
         </div>
 
         <div class="col-md-4">
-          <TextInput
-            label="Data de conclusão"
-            type="date"
-            name="date_conclusion"
+          <DateTimeInput
             v-model="form.date_conclusion"
+            label="Data de conclusão"
+            name="date_conclusion"
             placeholder="data quando a tarefa foi finalizada"
           />
         </div>
       </div>
 
-      <div class="col-md-12">
-        <StatusLinearRadioInput
-          :form="form"
-          @status-change="updateFormStatus"
-        />
+      <div class="row mb-5 mt-5">
+        <div class="col-md-12">
+          <StatusLinearRadioInput
+            :status="form.status"
+            @status-change="updateFormStatus"
+          />
+        </div>
       </div>
 
       <div class="row ms-auto me-auto mt-5 mb-5">
@@ -132,16 +139,24 @@
 </template>
 
 <script>
-import { BACKEND_URL, LEAD_URL, COMPANY_URL, TASK_URL, TASK_STATUS_URL, USER_URL } from "@/config/apiConfig";
+import {
+  BACKEND_URL,
+  LEAD_URL,
+  COMPANY_URL,
+  TASK_URL,
+  TASK_STATUS_URL,
+} from "@/config/apiConfig";
+import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import axios from "axios";
-import DateInput from "./inputs/DateInput";
+import DateTimeInput from "./inputs/date/DateTimeInput";
 import CompanyCreateForm from "./CompanyCreateForm.vue";
 import LeadCreateForm from "./LeadCreateForm.vue";
 import PrioritySelectRadioInput from "./inputs/PrioritySelectRadioInput.vue";
 import StatusLinearRadioInput from "./inputs/StatusLinearRadioInput.vue";
-import SelectInput from "./inputs/SelectInput";
+import SelectInput from "./selects/SelectInput";
 import TextInput from "./inputs/text/TextInput";
 import TextAreaInput from "./inputs/TextAreaInput";
+import UsersSelectInput from "./selects/UsersSelectInput.vue";
 import ErrorMessage from "./messages/ErrorMesssage.vue";
 import SuccessMessage from "./messages/SuccessMessage.vue";
 
@@ -149,8 +164,9 @@ export default {
   name: "TaskCreateForm",
   emits: ["new-task-event"],
   components: {
+    AddMessage,
     CompanyCreateForm,
-    DateInput,
+    DateTimeInput,
     LeadCreateForm,
     PrioritySelectRadioInput,
     StatusLinearRadioInput,
@@ -159,6 +175,7 @@ export default {
     SelectInput,
     TextInput,
     TextAreaInput,
+    UsersSelectInput,
   },
   data() {
     return {
@@ -183,26 +200,30 @@ export default {
         status: "to-do",
         priority: "medium",
       },
+      messageStatus: "",
+      messageText: "",
     };
   },
   methods: {
     addLeadCreated(newLead) {
+      console.log(newLead);
       this.leads.push(newLead.lead);
       !this.toggleLead();
       this.form.contact_id = newLead.lead.id;
     },
-    addCompanyCreated() {
+    addCompanyCreated(newCompany) {
+      this.companies.push(newCompany.company);
       this.getCompanies();
     },
     clearForm() {
-      this.form.name = null;
-      this.form.description = null;
+      this.form.name = "";
+      this.form.description = "";
       this.form.company_id = null;
       this.form.contact_id = null;
-      this.form.user_id = null;
+      this.form.user_id = "";
       this.form.date_start = null;
-      this.form.date_due = null;
-      this.form.date_conclusion = null;
+      this.form.date_due = "";
+      this.form.date_conclusion = "";
       this.status = "to-do";
       this.priority = "medium";
     },
@@ -216,7 +237,7 @@ export default {
     },
     getCompanies() {
       axios
-      .get(`${BACKEND_URL}${COMPANY_URL}`)
+        .get(`${BACKEND_URL}${COMPANY_URL}`)
         .then((response) => {
           this.companies = response.data.data;
         })
@@ -224,22 +245,11 @@ export default {
     },
     getTasksStatus() {
       axios
-      .get(`${BACKEND_URL}${TASK_STATUS_URL}`)
+        .get(`${BACKEND_URL}${TASK_STATUS_URL}`)
         .then((response) => {
           this.allStatus = response.data;
         })
         .catch((error) => console.log(error));
-    },
-    getUsers() {
-      axios
-      .get(`${BACKEND_URL}${USER_URL}`)
-        .then((response) => {
-          this.users = response.data.data;
-        })
-        .catch((error) => console.log(error));
-    },
-    newTaskEvent(data) {
-      this.$emit("new-task-event", data);
     },
     async submitForm() {
       try {
@@ -247,20 +257,23 @@ export default {
           `${BACKEND_URL}${TASK_URL}`,
           this.form
         );
-        this.data = response.data.data;
-        // console.log(this.data);
-        this.newTaskEvent(this.data);
-        this.isSuccess = true;
+        this.newTask = response.data.data;
+        this.$emit("new-task-event", this.newTask);
+        // this.isSuccess = true;
+        this.messageStatus = "success";
+        this.messageText = "Tarefa criada com sucesso!";
         this.isError = false;
         // this.newCompanyEvent(this.data);
         // this.successMessage(this.data);
-        this.toggleTaskForm();
-        // this.clearForm();
+        // this.toggleTaskForm();
+        this.clearForm();
       } catch (error) {
         console.error(error);
         if (error.response && error.response.status === 422) {
           this.isError = true;
-          this.isSuccess = false;
+          // this.isSuccess = false;
+          this.messageStatus = "error";
+          this.messageText = "Erro ao criar tarefa. Verifique os campos.";
           this.formResponse = error.response.data;
           console.log(error.response.data);
         }
@@ -298,7 +311,6 @@ export default {
     this.getTasksStatus();
     this.getLeads();
     this.getCompanies();
-    this.getUsers();
   },
 };
 </script>

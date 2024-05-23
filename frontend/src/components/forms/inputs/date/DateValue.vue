@@ -1,8 +1,10 @@
 <template>
-  <div class="mb-5">
-    {{ internalValue }}
+  <div>
+    <p v-if="modelValue" class="mb-1">{{ internalValue }}</p>
+    <p v-else class="not-informed">Não informado</p>
   </div>
 </template>
+
     
 <script>
 import { ref, watch } from 'vue';

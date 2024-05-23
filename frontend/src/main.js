@@ -23,11 +23,14 @@ import { fab } from '@fortawesome/free-brands-svg-icons'
 
 /* add icons to the library */
 library.add(fas, fab)
-console.log(process.env.VUE_APP_BACKEND_URL);
+
+// paginate
+import Paginate from "vuejs-paginate-next";
 
 createApp(App)
 .use(router)
 .use(VueMask)
 .use(VueDatePicker)
+.use(Paginate)
 .component('font-awesome-icon', FontAwesomeIcon)
 .mount('#app')
