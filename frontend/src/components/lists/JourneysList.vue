@@ -12,58 +12,68 @@
       </div>
 
       <div class="table-header">
-        <div class="offset-1 col-1">DATA</div>
-        <div class="col-5">OBSERVAÇÕES</div>
-        <div class="col-1">INÍCIO</div>
-        <div class="col-1">FIM</div>
-        <div class="col-1">DURAÇÃO</div>
-        <div class="col-2">AÇÕES</div>
+        <div class="offset-1 table-cell">DATA</div>
+        <div class="table-cell big">OBSERVAÇÕES</div>
+        <div class="table-cell">INÍCIO</div>
+        <div class="table-cell">FIM</div>
+        <div class="table-cell">DURAÇÃO</div>
+        <div class="table-cell medium">AÇÕES</div>
       </div>
 
       <div class="p-5" v-if="!journeys">Ainda não possui nenhuma jornada</div>
 
       <div v-else class="line" v-for="journey in journeys" v-bind:key="journey.id">
-        <div class="col-1 big-icon">
+        <div class="table-cell big-icon">
           <font-awesome-icon icon="fa-solid fa-clock" />
         </div>
 
-        <div id="date" class="col-1" style="position: relative">
+        <div id="date" class="table-cell">
           <p class="start">
             {{ formatDateBr(journey.start) }}
           </p>
+
         </div>
 
-        <div id="details" class="col-5">
+        <div id="details" class="table-cell big">
           <TextEditableInput name="details" class="details" v-model="journey.details"
             @save="updateJourney('details', $event, journey.id)" />
         </div>
 
-        <div id="start" class="col-1">
-          <p class="time" v-if="journey.start !== null && journey.start !== ''">
+        <div id="start" class="table-cell" :class="{ 'big': journey.editing && journey.editing.start }"
+          style="position: relative" @click="editDateTime(journey, 'start')">
+          <p v-if="!journey.editing || !journey.editing.start" class="time">
             {{ displayLocalTime(journey.start) }}
           </p>
+          <DateTimeInput v-else v-model="journey.start"
+            @update:modelValue="updateJourney('start', $event, journey.id)" />
         </div>
 
-        <div id="end" class="col-1">
-          <p class="time" v-if="journey.end !== null && journey.end !== ''">
+        <div id="end" class="table-cell" :class="{ 'big': journey.editing && journey.editing.end }"
+          style="position: relative" @click="editDateTime(journey, 'end')">
+          <p v-if="!journey.editing || !journey.editing.end" class="time">
             {{ displayLocalTime(journey.end) }}
           </p>
+          <DateTimeInput v-else v-model="journey.end" @update:modelValue="updateJourney('end', $event, journey.id)" />
         </div>
 
-        <div id="duration" class="col-1">
-          <p class="time-bold" v-if="journey.duration !== null && journey.duration !== ''">
+
+
+        <div id="duration" class="table-cell">
+          <p class="time-bold">
             {{ formatDuration(journey.duration) }}
           </p>
         </div>
 
-        <div id="stop-button" class="col-2 text-end">
 
+        <div id="stop-button" class="table-cell">
           <button v-if="!journey.end" class="button stop" @click="stopJourney(journey)">
             <span class="stop">
               <font-awesome-icon icon="fa-solid fa-hand" />
             </span>
           </button>
-          
+        </div>
+
+        <div id="delete-button" class="table-cell">
           <button class="button delete" @click="deleteItem(journey)">
             <span class="delete">
               <font-awesome-icon icon="fa-solid fa-trash-alt" />
@@ -91,6 +101,7 @@ import { formatDateBr } from "@/utils/date/dateUtils";
 import { formatTimeToLocal } from "@/utils/date/dateUtils";
 import { formatDateTimeForServer } from "@/utils/date/dateUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
+import DateTimeInput from "@/components/forms/inputs/date/DateTimeInput.vue";
 import JourneyCreateForm from "@/components/forms/JourneyCreateForm.vue";
 import PaginateNav from "@/components/layout/PaginateNav.vue";
 import TextEditableInput from "@/components/forms/inputs/text/TextEditableInput.vue";
@@ -101,6 +112,7 @@ export default {
     TextEditableInput,
     JourneyCreateForm,
     PaginateNav,
+    DateTimeInput,
   },
   props: ["taskId"],
   data() {
@@ -137,6 +149,7 @@ export default {
     async updateJourney(fieldName, editedValue, journeyId) {
       const editedJourney = {
         id: journeyId,
+        task_id: this.$route.params.id,
         [fieldName]: editedValue,
       };
 
@@ -152,6 +165,14 @@ export default {
         this.$emit("journey-updated", this.journey);
       } catch (error) {
         console.error("Erro ao atualizar a jornada:", error);
+      }
+    },
+    cancelEditDateTime(event, journey) {
+      // Verifica se a tecla pressionada é "Esc" (código 27)
+      if (event.keyCode === 27) {
+        journey.editing = false;
+        // Remove o event listener após cancelar a edição
+        document.removeEventListener('keydown', (event) => this.cancelEditDateTime(event, journey));
       }
     },
     deleteItem(item) {
@@ -191,7 +212,9 @@ export default {
       try {
         const response = await axios.get(this.journeysUrl);
 
-        this.journeys = response.data.data;
+        this.journeys = response.data.data.map(journey => {
+          return { ...journey, editing: false }; // Adiciona a propriedade editing a cada journey
+        });
 
         this.paginationData = {
           links: response.data.links,
@@ -202,8 +225,21 @@ export default {
         console.error("Erro ao acessar jornadas:", error);
       }
     },
+    editDateTime(journey, field) {
+      if (!journey.editing) {
+        journey.editing = {};
+      }
+      journey.editing[field] = !journey.editing[field];
+
+      if (journey.editing[field]) {
+        document.addEventListener('keydown', (event) => this.cancelEditDateTime(event, journey, field));
+      } else {
+        document.removeEventListener('keydown', (event) => this.cancelEditDateTime(event, journey, field));
+      }
+    },
     async stopJourney(journey) {
       this.stopedJourney.id = journey.id;
+      this.stopedJourney.task_id = this.$route.params.id;
       this.stopedJourney.start = journey.start;
       this.stopedJourney.end = new Date();
 
@@ -366,15 +402,29 @@ a:active {
 
 .table-header {
   display: flex;
+  justify-content: space-between;
   text-align: center;
   background-color: var(--purple);
   color: white;
   border-style: none;
   border-radius: 20px;
   padding-top: 10px;
-  padding-left: 20px;
   padding-bottom: 10px;
   margin-bottom: 16px;
+}
+
+.table-cell {
+  flex: 1;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.big {
+  flex: 6;
+}
+
+.medium {
+  flex: 2;
 }
 
 /* paginate */

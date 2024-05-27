@@ -7,8 +7,7 @@ use App\Http\Resources\JourneyResource;
 use App\Models\Journey;
 use App\Models\Task;
 use Illuminate\Http\Request;
-use DateTime;
-use App\Services\DateConversionService;
+use App\Http\Requests\JourneyStoreRequest;
 
 class JourneyController extends Controller
 {
@@ -48,31 +47,11 @@ class JourneyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(JourneyStoreRequest $request)
     {
         try {
             $journey = new Journey;
-            $journey->task_id = $request->task_id;
-
-            if ($request->details) {
-                $journey->details = $request->details;
-            }
-
-            if ($request->start) {
-                $journey->start = DateConversionService::convertJavascriptDate($request->start);
-            } else {
-                // $journey->start = now();
-                $journey->start = DateConversionService::convertToUtc(date('Y-m-d H:i:s'));
-            }
-
-            if ($request->end) {
-                $journey->end = DateConversionService::convertJavascriptDate($request->end);
-                $journey->duration = DateConversionService::calculateDurationTime($journey->start, $journey->end);
-            } else {
-                $journey->end = null;
-                $journey->duration = null;
-            }
-
+            $journey->fill($request->validated());
             $journey->save();
             $journey->updateTaskDuration();
 
@@ -114,21 +93,11 @@ class JourneyController extends Controller
      * @param  \App\Models\Journey  $journey
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Journey $journey)
+    public function update(JourneyStoreRequest $request, Journey $journey)
     {
         try {
 
-            $journey->fill($request->all());
-
-            if ($request->start) {
-                // $journey->start = new DateTime($request->start);
-            }
-
-            if ($request->end) {
-                $journey->end = DateConversionService::convertJavascriptDate($request->end);
-                $journey->duration = DateConversionService::calculateDurationTime($journey->start, $journey->end);
-            }
-
+            $journey->fill($request->validated());
             $journey->save();
 
             return JourneyResource::make($journey);

@@ -1,20 +1,15 @@
 <template>
   <div class="">
     <label v-if="label" :for="label" class="form-label">{{ label }}</label>
-    <VueDatePicker
-      :name="name"
-      :label="label"
-      v-model="modelValue"
-      :placeholder="placeholder"
-      @update:modelValue="emitDateChange"
-    />
+    <VueDatePicker :name="name" :label="label" v-model="localValue" :placeholder="placeholder"
+      @update:modelValue="emitDateChange" />
   </div>
 </template>
-    
-  <script>
+
+<script>
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
-import { formatDateTimeForServer } from "@/utils/date/dateUtils";
+import { formatDateTimeToLocal } from "@/utils/date/dateUtils";
 
 export default {
   components: {
@@ -22,36 +17,37 @@ export default {
   },
   data() {
     return {
-      modelValue: null,
+      localValue: this.formatDateTimeToLocal(this.modelValue),
     };
   },
   props: {
-    name: String,
-    label: String,
-    placeholder: String,
     autoFillNow: {
       type: Boolean,
       default: false, // Define como false por padrão
     },
+    modelValue: {
+      type: String,
+      default: null,
+    },
+    name: String,
+    label: String,
+    placeholder: String,
   },
   methods: {
-    formatDateTimeForServer,
+    formatDateTimeToLocal,
     emitDateChange() {
+      console.log("emitDateChange", this.localValue)
       if (this.autoFillNow && this.modelValue === null) {
-        this.modelValue = new Date();
+        this.localValue = new Date();
       }
-      this.$emit("update:modelValue", formatDateTimeForServer(this.modelValue));
+      this.$emit("update:modelValue", this.localValue);
     },
-  },
-  mounted() {
-    this.emitDateChange();
   },
 };
 </script>
-    
-  <style scoped>
+
+<style scoped>
 label {
   text-align: right;
 }
 </style>
-  

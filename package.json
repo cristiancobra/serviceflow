@@ -1,11 +1,13 @@
 {
-  "dependencies": {
-    "vue-inputmask": "^0.2.1"
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build:dev": "vue-cli-service build --mode development",
+    "build:prod": "vue-cli-service build --mode production",
+    "lint": "vue-cli-service lint"
   },
 
-  "scripts": {
-    "build": "vue-cli-service build"
-  }
-  
+  "dependencies": {
+    "vue-inputmask": "^0.2.1"
+  }  
 
 }

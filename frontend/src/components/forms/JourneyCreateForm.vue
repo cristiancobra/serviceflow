@@ -127,11 +127,6 @@ export default {
       }, 5000);
     },
     async submitForm() {
-      // this.form.start = this.form.start;
-
-      // if (this.form.end) {
-      //   this.form.end = this.form.end;
-      // }
 
       this.checkDates();
 
@@ -152,6 +147,9 @@ export default {
       }
     },
     async submitQuickForm() {
+
+      this.quickForm.start = new Date();
+      
       axios
         .post(`${BACKEND_URL}${JOURNEY_URL}`, this.quickForm)
         .then((response) => {
