@@ -26,3 +26,13 @@ scp -r -i /home/cristiancobra/.ssh/desktop-cobra "/home/cristiancobra/docker/ser
 
 - importar o banco
 mysql -u root -p serviceflow < serviceflow-16-01-2024.sql
+
+
+
+#### DEPLOY
+
+- fazer o build
+npm run build:prod
+
+- copiar pro servidor
+scp -r -i /home/cristiancobra/.ssh/desktop-cobra "/home/cristiancobra/docker/serviceflow/frontend/dist" root@206.189.230.115:/var/www/serviceflow/frontend
