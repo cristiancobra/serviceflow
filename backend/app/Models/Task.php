@@ -44,6 +44,14 @@ class Task extends Model
     {
         return $this->hasMany(Journey::class);
     }
+
+    /**
+     * Get the project from task
+     */
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
 	
 		
 	public static function getStatus() {

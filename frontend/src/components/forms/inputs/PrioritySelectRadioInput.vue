@@ -50,20 +50,7 @@ export default {
     updatePriority(value) {
       this.$emit("priority-change", value);
     },
-  },
-  // watch: {
-  //   priority: {
-  //     handler(newValue) {
-  //       this.modelValue = newValue;
-  //     },
-  //     immediate: true,
-  //   },
-  // },
-  mounted() {
-    console.log(this.priority);
-    console.log(this.modelValue);
-  },
-  
+  },  
 };
 </script>
   

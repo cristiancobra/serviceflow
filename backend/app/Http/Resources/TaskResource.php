@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\JourneyResource;
+use App\Http\Resources\ProjectResource;
 
 class TaskResource extends JsonResource
 {
@@ -38,6 +39,7 @@ class TaskResource extends JsonResource
 
 			 // Relationships
 			 "journeys" => JourneyResource::collection($this->whenLoaded('journeys')),
+			 'project' => new ProjectResource($this->whenLoaded('project')),
 			];
     }
 }

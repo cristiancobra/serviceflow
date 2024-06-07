@@ -3,25 +3,48 @@
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
 
-    <div class="card" v-bind:class="getStatusClass(task.status)">
-      <div class="row ms-1">
-        <div class="col-1 status" v-bind:class="getStatusClass(task.status)">
-          <font-awesome-icon :icon="getStatusIcon(task.status)" />
-          <p class="duration">
-            {{ formatDuration(task.duration_time) }}
-          </p>
+    <div class="header">
+      <div class="project" v-bind:class="project ? getStatusClass(project.status) : ''">
+        <div v-if="project">
+          
+              <div class="status" v-bind:class="getStatusClass(project.status)">
+                <font-awesome-icon :icon="getStatusIcon(project.status)" />
+                <p class="duration">
+                  {{ formatDuration(project.duration_time) }}
+                </p>
+              </div>
+            
+          <ProjectsSelectInput label="Nome do Projeto" v-model="task.project_id"
+            @update:modelValue="updateTask('project_id', $event)" fieldsToDisplay="name" autoSelect=true />
+          <router-link :to="{ name: 'projectShow', params: { id: task.project_id } }">
+          </router-link>
         </div>
-        <div class="col-11 ps-3">
-          <p class="title">
-            <TextEditableInput name="name" v-model="task.name" placeholder="descrição detalhada da tarefa"
-              @save="updateTask('name', $event)" />
-          </p>
+        <div v-else class="">
+          <ProjectsSelectInput label="Adicionar projeto" v-model="task.project_id"
+            @update:modelValue="updateTask('project_id', $event)" fieldsToDisplay="name" autoSelect=true />
         </div>
       </div>
-      <div class="row">
-        <div class="col-3">
-          <SelectInput label="Responsável" name="user_id" v-model="task.user_id" :items="users"
-            fieldsToDisplay="name" />
+
+      <div class="card" v-bind:class="getStatusClass(task.status)">
+        <div class="row ms-1">
+          <div class="col-1 status" v-bind:class="getStatusClass(task.status)">
+            <font-awesome-icon :icon="getStatusIcon(task.status)" />
+            <p class="duration">
+              {{ formatDuration(task.duration_time) }}
+            </p>
+          </div>
+          <div class="col-11 ps-3">
+            <p class="title">
+              <TextEditableInput name="name" v-model="task.name" placeholder="descrição detalhada da tarefa"
+                @save="updateTask('name', $event)" />
+            </p>
+            <div class="row">
+              <div class="col-3">
+                <UsersSelectInput label="Responsável" v-model="task.user_id"
+                  @update:modelValue="updateTask('user_id', $event)" fieldsToDisplay="name" autoSelect=true />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -80,8 +103,10 @@ import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
 import DateEditableInput from "@/components/forms/inputs/date/DateEditableInput";
 import JourneysList from "@/components/lists/JourneysList.vue";
+import ProjectsSelectInput from "@/components/forms/selects/ProjectsSelectInput.vue";
 import TextEditableInput from "@/components/forms/inputs/text/TextEditableInput";
 import TextEditor from "@/components/forms/inputs/TextEditor.vue";
+import UsersSelectInput from "@/components/forms/selects/UsersSelectInput.vue";
 
 export default {
   name: "TaskShow",
@@ -89,9 +114,11 @@ export default {
     DateEditableInput,
     JourneysList,
     PrioritySelectRadioInput,
+    ProjectsSelectInput,
     TextEditableInput,
     TextEditor,
     StatusLinearRadioInput,
+    UsersSelectInput,
   },
   data() {
     return {
@@ -99,8 +126,9 @@ export default {
       journeysUrl: "",
       messageStatus: "",
       messageText: "",
+      project: [],
       task: [],
-      editedTask: [],
+      updatedField: [],
       taskId: "",
     };
   },
@@ -121,15 +149,13 @@ export default {
         );
 
         this.task = response.data.data;
+        this.project = this.task.project;
         convertUtcToLocal(this.task.date_start);
 
         this.taskLoaded = true; // Marque a tarefa como carregada
       } catch (error) {
         console.error("Erro ao acessar tarefa:", error);
       }
-    },
-    setTaskId(taskId) {
-      this.taskId = taskId;
     },
     async deleteTask() {
       axios
@@ -151,6 +177,9 @@ export default {
           this.isSuccess = false;
         });
     },
+    setTaskId(taskId) {
+      this.taskId = taskId;
+    },
     updateJourneys(updatedJourney) {
       // Encontrar e atualizar a jornada na lista journeysData
       const index = this.journeysData.findIndex(
@@ -162,17 +191,19 @@ export default {
       }
     },
     async updateTask(fieldName, editedValue) {
-      const editedTask = { ...this.task };
+      const updatedField = {};
 
-      editedTask[fieldName] = editedValue;
+      updatedField[fieldName] = editedValue;
 
       try {
         const response = await axios.put(
           `${BACKEND_URL}${TASK_URL_PARAMETER}${this.taskId}`,
-          editedTask
+          updatedField
         );
 
         this.task = response.data.data;
+        this.project = this.task.project;
+        console.log("projeto atualizada:", this.project);
       } catch (error) {
         console.error("Erro ao atualizar a tarefa:", error);
       }
@@ -259,6 +290,7 @@ a:active {
   padding: 10px;
   padding-right: 20px;
   min-height: 15vh;
+  width: 80%;
 }
 
 .done {
@@ -288,6 +320,23 @@ a:active {
 .status {
   text-align: center;
   font-size: 3rem;
+}
+
+.header {
+  display: flex;
+}
+
+.project {
+  width: 20%;
+  margin-bottom: 60px;
+  margin-top: 60px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: gray;
+  border-radius: 6px;
+  padding: 10px;
+  padding-right: 20px;
+  min-height: 15vh;
 }
 
 .title {

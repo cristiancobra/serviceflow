@@ -3,7 +3,7 @@
     :label="label"
     :name="name"
     :modelValue="modelValue"
-    :items="companies"
+    :items="leads"
     :fieldsToDisplay="fieldsToDisplay"
     :fieldNull="fieldNull"
     @update:modelValue="updateInput"
@@ -11,7 +11,7 @@
 </template>
     
   <script>
-import { BACKEND_URL, COMPANY_URL } from "@/config/apiConfig";
+import { BACKEND_URL, LEAD_URL } from "@/config/apiConfig";
 import axios from "axios";
 import SelectInput from "./SelectInput.vue";
 
@@ -30,7 +30,7 @@ export default {
   },
   data() {
     return {
-      companies: [],
+      leads: [],
       modelValue: null,
     };
   },
@@ -38,17 +38,17 @@ export default {
     updateInput(value) {
       this.modelValue = value;
     },
-    getCompanies() {
+    getLeads() {
       axios
-        .get(`${BACKEND_URL}${COMPANY_URL}`)
+        .get(`${BACKEND_URL}${LEAD_URL}`)
         .then((response) => {
-          this.companies = response.data.data;
+          this.leads = response.data.data;
         })
         .catch((error) => console.log(error));
     },
   },
   mounted() {
-    this.getCompanies();
+    this.getLeads();
   },
 };
 </script>

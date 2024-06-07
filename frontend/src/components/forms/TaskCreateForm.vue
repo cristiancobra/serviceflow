@@ -35,11 +35,10 @@
 
       <div class="row mb-5 mt-5">
         <div class="col-md-4">
-          <SelectInput
+          <CompaniesSelectInput
             label="Empresa cliente"
             name="company_id"
             v-model="form.company_id"
-            :items="companies"
             :fieldsToDisplay="['business_name', 'legal_name']"
             fieldNull="Não possui / minha empresa"
           />
@@ -51,11 +50,10 @@
         </div>
 
         <div class="col-md-4">
-          <SelectInput
+          <LeadsSelectInput
             label="Contato"
             name="contact_id"
             v-model="form.contact_id"
-            :items="leads"
             fieldsToDisplay="name"
             fieldNull="Não possui"
           />
@@ -141,8 +139,6 @@
 <script>
 import {
   BACKEND_URL,
-  LEAD_URL,
-  COMPANY_URL,
   TASK_URL,
   TASK_STATUS_URL,
 } from "@/config/apiConfig";
@@ -150,10 +146,11 @@ import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import axios from "axios";
 import DateTimeInput from "./inputs/date/DateTimeInput";
 import CompanyCreateForm from "./CompanyCreateForm.vue";
+import CompaniesSelectInput from "./selects/CompaniesSelectInput.vue";
 import LeadCreateForm from "./LeadCreateForm.vue";
+import LeadsSelectInput from "./selects/LeadsSelectInput.vue";
 import PrioritySelectRadioInput from "./inputs/PrioritySelectRadioInput.vue";
 import StatusLinearRadioInput from "./inputs/StatusLinearRadioInput.vue";
-import SelectInput from "./selects/SelectInput";
 import TextInput from "./inputs/text/TextInput";
 import TextAreaInput from "./inputs/TextAreaInput";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
@@ -166,13 +163,14 @@ export default {
   components: {
     AddMessage,
     CompanyCreateForm,
+    CompaniesSelectInput,
     DateTimeInput,
+    LeadsSelectInput,
     LeadCreateForm,
     PrioritySelectRadioInput,
     StatusLinearRadioInput,
     ErrorMessage,
     SuccessMessage,
-    SelectInput,
     TextInput,
     TextAreaInput,
     UsersSelectInput,
@@ -211,10 +209,10 @@ export default {
       !this.toggleLead();
       this.form.contact_id = newLead.lead.id;
     },
-    addCompanyCreated(newCompany) {
-      this.companies.push(newCompany.company);
-      this.getCompanies();
-    },
+    // addCompanyCreated(newCompany) {
+    //   this.companies.push(newCompany.company);
+    //   this.getCompanies();
+    // },
     clearForm() {
       this.form.name = "";
       this.form.description = "";
@@ -226,22 +224,6 @@ export default {
       this.form.date_conclusion = "";
       this.status = "to-do";
       this.priority = "medium";
-    },
-    getLeads() {
-      axios
-        .get(`${BACKEND_URL}${LEAD_URL}`)
-        .then((response) => {
-          this.leads = response.data.data;
-        })
-        .catch((error) => console.log(error));
-    },
-    getCompanies() {
-      axios
-        .get(`${BACKEND_URL}${COMPANY_URL}`)
-        .then((response) => {
-          this.companies = response.data.data;
-        })
-        .catch((error) => console.log(error));
     },
     getTasksStatus() {
       axios
@@ -309,8 +291,6 @@ export default {
   },
   mounted() {
     this.getTasksStatus();
-    this.getLeads();
-    this.getCompanies();
   },
 };
 </script>

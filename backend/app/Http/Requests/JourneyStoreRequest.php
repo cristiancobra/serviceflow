@@ -95,6 +95,9 @@ class JourneyStoreRequest extends FormRequest
         $startDate = new \DateTime($start);
         $endDate = new \DateTime($end);
 
+        $startDate->setTime($startDate->format('H'), $startDate->format('i'), 0);
+        $endDate->setTime($endDate->format('H'), $endDate->format('i'), 0);
+
         $interval = $startDate->diff($endDate);
 
         return $interval->h * 3600 + $interval->i * 60 + $interval->s;

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Task;
 use App\Http\Resources\TaskResource;
-use App\Http\Requests\TaskStoreRequest;
+use App\Http\Requests\TaskRequest;
 use App\Services\DateConversionService;
 
 class TaskController extends Controller
@@ -40,12 +40,11 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TaskStoreRequest $request)
+    public function store(TaskRequest $request)
     {
         try {
             $task = new Task;
             $task->fill($request->validated());
-            $task->account_id = 1;
 
             $task->save();
 
@@ -67,11 +66,10 @@ class TaskController extends Controller
     public function show(Task $task)
     {
 
-        // return TaskResource::make(Task::with('journeys')->find($task->id));
-
         return TaskResource::make(Task::with(['journeys' => function ($query) {
             $query->orderBy('start', 'desc');
-        }])->find($task->id));
+        }, 'project'])
+            ->find($task->id));
     }
 
     /**
@@ -92,11 +90,10 @@ class TaskController extends Controller
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Task $task)
+    public function update(TaskRequest $request, Task $task)
     {
         try {
-            $task->fill($request->all());
-            $task->account_id = 1;
+            $task->fill($request->validated());
 
             if (
                 $request->date_conclusion ||
@@ -108,7 +105,10 @@ class TaskController extends Controller
 
             $task->save();
 
-            return TaskResource::make($task);
+            return TaskResource::make($task)->additional([
+                'project' => $task->project,
+            ]);
+            
         } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",
@@ -181,6 +181,26 @@ class TaskController extends Controller
 
         return TaskResource::collection($tasks);
     }
+
+    /**
+     * Display a listing of the resource by task_id.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getTasksByProjectId(Request  $request)
+    {
+
+        $perPage = request()->get('per_page', 20); // Ajuste a quantidade de itens por página conforme necessário
+
+        $tasks = Task::where('project_id', $request->project_id)
+            ->orderBy('date_start', 'desc')
+            ->paginate($perPage);
+
+        $tasks->appends(['project_id' => $request->project_id]);
+
+        return TaskResource::collection($tasks);
+    }
+
 
     /**
      * Display a listing of the resource.

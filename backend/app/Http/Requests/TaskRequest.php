@@ -6,8 +6,9 @@ use Illuminate\Foundation\Http\FormRequest;
 use App\Services\DateConversionService;
 use HTMLPurifier;
 use HTMLPurifier_Config;
+use Illuminate\Support\Facades\Auth;
 
-class TaskStoreRequest extends FormRequest
+class TaskRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,8 +28,10 @@ class TaskStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'unique:tasks|required',
-            'user_id' => 'required|exists:users,id', 
+            'account_id' => 'required|exists:accounts,id',
+            'user_id' => 'required|exists:users,id',
+            'project_id' => 'nullable',
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'priority' => 'nullable|string',
             'status' => 'nullable|string',
@@ -37,10 +40,23 @@ class TaskStoreRequest extends FormRequest
             'date_conclusion' => 'nullable|date|after_or_equal:start',
             'duration' => 'nullable|integer',
         ];
+
+        if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
+            unset($rules['name']);
+            unset($rules['user_id']);
+        } else {
+            $rules['name'] = 'unique:tasks|required';
+            $rules['user_id'] = 'required|exists:users,id';
+        }
     }
 
     protected function prepareForValidation()
     {
+        $user = Auth::user();
+        $this->merge([
+            'account_id' => $user->account_id,
+        ]);
+
         if ($this->has('description')) {
             $config = HTMLPurifier_Config::createDefault();
             $purifier = new HTMLPurifier($config);

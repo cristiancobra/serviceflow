@@ -49,7 +49,7 @@ export default {
       hasError: false,
       data: null,
       tasks: [],
-      filteredTasks: [], // Tarefas filtradas
+      filteredTasks: [],
       newTask: null,
     };
   },
@@ -62,12 +62,11 @@ export default {
       .get(`${BACKEND_URL}${TASK_URL}`)
         .then((response) => {
           this.tasks = response.data.data;
-          this.filteredTasks = this.tasks; // Inicialmente, as tarefas filtradas são iguais a todas as tarefas
+          this.filteredTasks = this.tasks;
         })
         .catch((error) => console.log(error));
     },
     addTaskCreated(newTask) {
-      console.log(newTask);
       this.toggle();
       this.filteredTasks.unshift(newTask);
     },

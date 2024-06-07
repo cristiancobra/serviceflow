@@ -60,7 +60,7 @@ const routes = [
   },
   {
     path: '/project/:id',
-    name: 'projectsShow',
+    name: 'projectShow',
     component: ProjectShow
   },
   {

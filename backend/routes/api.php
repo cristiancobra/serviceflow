@@ -71,6 +71,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	Route::get('tasks/prioritized', [TaskController::class, 'prioritizedTasks'])
 		->name('tasks.prioritized');
+	
+	Route::get('/tasks-by-project-id', [TaskController::class, 'getTasksByProjectId'])
+		->name('TasksTaskId');
 
 	Route::apiResource('tasks', TaskController::class)
 		->names('tasks');

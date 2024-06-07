@@ -1,11 +1,9 @@
 <template>
+    <div class="form-container">
+        <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
+        </AddMessage>
 
-    <div>
-        <div class="mt-5 mb-5 success">
-            {{ message }}     
-        </div>
-
-        <div id ='form' class='container'>
+        <div id='form' class='container'>
             <form @submit.prevent="submitForm">
 
                 <div class='form-group'>
@@ -16,7 +14,8 @@
                             </label>
                         </div>
                         <div class='col-10'>
-                            <input class="form-control" type='text' id='name' v-model='form.name' placeholder='Digite um nome para seu projeto'>
+                            <input class="form-control" type='text' id='name' v-model='form.name'
+                                placeholder='Digite um nome para seu projeto'>
                         </div>
                     </div>
                 </div>
@@ -29,79 +28,53 @@
                             </label>
                         </div>
                         <div class='col-10'>
-                            <input class="form-control" type='text' id='description' v-model='form.description' placeholder='Digite o nome do responsável por garantir a execução do projeto'>
+                            <input class="form-control" type='text' id='description' v-model='form.description'
+                                placeholder='Digite o nome do responsável por garantir a execução do projeto'>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='form-group'>
+                    <div class='row mt-5 mb-5'>
+                        <div class="col">
+                            <CompaniesSelectInput label="Empresa cliente" v-model="form.company_id" name="company_id"
+                                :fieldsToDisplay="['business_name', 'legal_name']"
+                                fieldNull="Não possui / minha empresa" />
+                        </div>
+                        <div class="col">
+                            <div class="col">
+                                <UsersSelectInput label="Responsável" v-model="form.user_id" fieldsToDisplay="name"
+                                    autoSelect=true />
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class='form-group'>
                     <div class='row'>
-                        <div class='col-2'>
-                            <label class='labels' for='company_id'>
-                                Empresa
-                            </label>
-                        </div>
-                        <div class='col-10'>
-                            <input class="form-control" type='text' id='company_id' v-model='form.company_id' placeholder='Digite o nome da empresa'>
+                        <div class='col'>
+                            <LeadsSelectInput label="Contato" name="contact_id" v-model="form.contact_id"
+                                fieldsToDisplay="name" fieldNull="Não possui" />
                         </div>
                     </div>
                 </div>
 
                 <div class='form-group'>
-                    <div class='row'>
-                        <div class='col-2'>
-                            <label class='labels' for='contact_id'>
-                                Contato
-                            </label>
-                        </div>
-                        <div class='col-10'>
-                            <input class="form-control" type='text' id='contact_id' v-model='form.contact_id' placeholder='Digite o nome da pessoa que solicitou o projeto'>
-                        </div>
-                    </div>
-                </div>
 
-                <div class='form-group'>
-                    <div class='row'>
-                        <div class='col-2'>
-                            <label class='labels' for='user_id'>
-                                Responsável
-                            </label>
+                    <div class="row mb-5 mt-5">
+                        <div class="col-md-4">
+                            <DateTimeInput v-model="form.date_start" label="Início" name="date_start"
+                                placeholder="início do prazo" :autoFillNow="true" />
                         </div>
-                        <div class='col-10'>
-                            <input class="form-control" type='text' id='user_id' v-model='form.user_id' placeholder='Digite o nome do responsável por garantir a execução do projeto'>
+
+                        <div class="col-md-4">
+                            <DateTimeInput v-model="form.date_due" label="Prazo final" name="date_due"
+                                placeholder="prazo final" />
                         </div>
-                    </div>
-                </div>
-                    
-                <div class='form-group'>
-                    <div class='row pt-4'>
-                        <div class='col-2'>
-                            <label class='labels' for='date_start'>
-                                Início
-                            </label>
-                        </div>
-                        <div class='col-2'>
-                            <input class="form-control" type='date' id='date_start' v-model='form.date_start' placeholder='Digite o nome do responsável por garantir a execução do projeto'>
-                        </div>
-                        <div class='col-1'>
-                            <label class='labels' for='date_due'>
-                                Prazo final
-                            </label>
-                        </div>
-                        <div class='col-2'>
-                            <input class="form-control" type='date' id='date_due' v-model='form.date_due' placeholder='Digite o nome do responsável por garantir a execução do projeto'>
-                        </div>
-                        <div class='col-1'>
-                            <label class='labels' for='status'>
-                                Situação
-                            </label>
-                        </div>
-                        <div class='col-2'>
-                            <select class='form-select' id='status' name='status' v-model='form.status' aria-label="Selecione a situação do projeto">
-                                <option v-for='(status,index) in allStatus' v-bind:key='index' :value='status'>
-                                    {{ status }}
-                                </option>
-                            </select>
+
+                        <div class="col-md-4">
+                            <DateTimeInput v-model="form.date_conclusion" label="Data de conclusão"
+                                name="date_conclusion" placeholder="data quando a projeto foi finalizada" />
                         </div>
                     </div>
                 </div>
@@ -114,24 +87,37 @@
 
             </form>
         </div>
-    
+
     </div>
 
 </template>
 
 <script>
-import { BACKEND_URL, PROJECT_URL, PROJECT_STATUS_URL } from "@/config/apiConfig";
+import { BACKEND_URL, PROJECT_URL, TASK_STATUS_URL } from "@/config/apiConfig";
+import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import axios from 'axios'
+import CompaniesSelectInput from "@/components/forms/selects/CompaniesSelectInput.vue";
+import DateTimeInput from "@/components/forms/inputs/date/DateTimeInput.vue";
+import LeadsSelectInput from "@/components/forms/selects/LeadsSelectInput.vue";
+import UsersSelectInput from "./selects/UsersSelectInput.vue";
 
 export default {
     name: 'ProjectCreateForm',
     emits: ["new-project-event"],
+    components: {
+        AddMessage,
+        CompaniesSelectInput,
+        DateTimeInput,
+        LeadsSelectInput,
+        UsersSelectInput
+    },
     data() {
         return {
             allStatus: [],
-            message: null,
+            messageStatus: "",
+            messageText: "",
             data: [],
-            form : {
+            form: {
                 name: null,
                 description: null,
                 company_id: null,
@@ -145,21 +131,38 @@ export default {
     methods: {
         getProjectsStatus() {
             axios
-                .get(`${BACKEND_URL}${PROJECT_STATUS_URL}`)
+                .get(`${BACKEND_URL}${TASK_STATUS_URL}`)
                 .then((response) => {
                     this.allStatus = response.data;
                 })
                 .catch((error) => console.log(error));
         },
         async submitForm() {
-            axios
-                .post(`${BACKEND_URL}${PROJECT_URL}`, this.form)
-                .then((response) => {
-                    this.data = response.data;
-                    this.newProjectEvent(this.data);
-                })        
+            try {
+                axios
+                    .post(`${BACKEND_URL}${PROJECT_URL}`, this.form)
+                    .then((response) => {
+                        this.data = response.data.data;
+                        this.newProjectEvent(this.data);
+                        this.messageStatus = "success";
+                        this.messageText = "Projeto criado com sucesso!";
+                    })
+            } catch (error) {
+                console.error(error);
+                if (error.response && error.response.status === 422) {
+                    this.isError = true;
+                    // this.isSuccess = false;
+                    this.messageStatus = "error";
+                    this.messageText = "Erro ao criar tarefa. Verifique os campos.";
+                    // this.formResponse = error.response.data;
+                }
+                // if (!error.response) {
+                //     this.formResponse =
+                //         "Ocorreu um erro ao enviar o formulário. Tente novamente.";
+                // }
+            }
         },
-        newProjectEvent (data){
+        newProjectEvent(data) {
             this.$emit('new-project-event', data)
         },
     },
@@ -184,16 +187,19 @@ export default {
     text-align: left;
     font-weight: 800;
 }
+
 .labels {
     text-align: left;
     margin-left: 0;
 }
+
 .new {
     background-color: #FF3EB5;
     color: white;
     font-weight: 800;
     padding: 10px 20px 10px 20px;
 }
+
 .new:hover {
     background-color: #ffbf00;
 }

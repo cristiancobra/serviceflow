@@ -1,19 +1,19 @@
 <template>
-  <div class="container-message disappear" :class="status">
-    <div class="col-1">
+  <div class="container-message disappear" :class="messageStatus">
+
       <p class="icon">
-        <font-awesome-icon icon="fa-solid fa-triangle-exclamation" />
+        <font-awesome-icon icon="fa-solid fa-circle-check" />
       </p>
-    </div>
-    <div class="col">
       {{ messageText }}
-    </div>
   </div>
 </template>
-      
-      <script>
+
+<script>
 export default {
-  props: ["messageStatus", "messageText"],
+  props: [
+    "messageStatus",
+    "messageText"
+  ],
   methods: {
     closeMessage() {
       this.$refs.errorMessage.classList.add("highlight");
@@ -27,14 +27,16 @@ export default {
   },
 };
 </script>
-      
-      <style scoped>
+
+<style scoped>
 li {
   margin-bottom: -16px;
 }
+
 .container-message {
   position: fixed;
-  top: 40px; /* ajuste conforme necessário */
+  top: 40px;
+  /* ajuste conforme necessário */
   right: 40px;
   display: flex;
   text-align: left;
@@ -43,17 +45,21 @@ li {
   border-width: 2px;
   border-radius: 6px;
   padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Reduz a intensidade do sombreamento */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  /* Reduz a intensidade do sombreamento */
   z-index: 9999;
-  transition: opacity 5s ease; /* Transição de 5 segundos */
+  transition: opacity 5s ease;
+  /* Transição de 5 segundos */
 }
 
 .container-message.highlight {
-  opacity: 1; /* Destaque o elemento */
+  opacity: 1;
+  /* Destaque o elemento */
 }
 
 .container-message.fade-out {
-  opacity: 0; /* Faz o elemento desaparecer */
+  opacity: 0;
+  /* Faz o elemento desaparecer */
 }
 
 .deleted {
@@ -80,10 +86,12 @@ li {
     opacity: 1;
     transform: rotateX(90deg);
   }
+
   50% {
-    opacity: 0.5;
+    opacity: 1;
     transform: rotateX(0deg);
   }
+
   100% {
     display: none;
     opacity: 0;
@@ -95,5 +103,6 @@ li {
 .icon {
   font-size: 2rem;
   text-align: center;
+  padding-right: 1rem;
 }
 </style>

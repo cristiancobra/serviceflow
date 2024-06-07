@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Http\Resources\ProjectResource;
-use App\Http\Resources\ProjectsResource;
+use App\Http\Requests\ProjectRequest;
 
 class ProjectController extends Controller
 {
@@ -17,7 +17,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return ProjectsResource::collection(Project::all());
+        return ProjectResource::collection(Project::all());
     }
 
     /**
@@ -36,31 +36,19 @@ class ProjectController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProjectRequest $request)
     {
-		$project = new Project;
-		$project->account_id = 1;
-		$project->user_id = 1;
-		$project->contact_id = 1;
-		$project->company_id = 1;
-		$project->goal_id = $request->goal_id;
-		$project->name = $request->name;
-		$project->category = $request->category;
-		$project->date_start = '2021-11-15 00:00:00';
-		$project->date_due = '2021-11-19 00:00:00';
-		$project->date_conclusion = $request->date_conclusion;
-		$project->description = $request->description;
-		$project->status = $request->status;
-		$project->trash = 0;
-        $project->save();
-		
-        return response()->json([
-            'message' => "Projeto $request->name criado",
-			'id' => $project->id,
-			'name' => $project->name,
-			'description' => $project->description,
-			
-        ]);
+        try {
+            $project = Project::create($request->validated());
+            $project->save();
+
+            return ProjectResource::make($project);
+        } catch (ValidationException $validationException) {
+            return response()->json([
+                'message' => "Erro de validação",
+                'errors' => $validationException->errors(),
+            ], 422);
+        }
     }
 
     /**
@@ -71,7 +59,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-		return new ProjectResource(Project::find($project->id));
+        return new ProjectResource(Project::find($project->id));
     }
 
     /**
@@ -107,12 +95,12 @@ class ProjectController extends Controller
     {
         //
     }
-	
-	/**
-	 * Retorna os valores possíveis para SITUAÇÃO / STATUS 
-	 */
-	public function getProjectsStatus() {
-		return $status = Project::getStatus();
-	}
-	
+
+    /**
+     * Retorna os valores possíveis para SITUAÇÃO / STATUS 
+     */
+    public function getProjectsStatus()
+    {
+        return $status = Project::getStatus();
+    }
 }

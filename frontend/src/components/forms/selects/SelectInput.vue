@@ -6,45 +6,48 @@
       :id="name"
       :name="name"
       @input="updateInput"
+      v-model="internalValue"
     >
-      <option v-if="fieldNull" selected value="null">{{ fieldNull }}</option>
-      <option v-if="optionLabel" disabled selected value="">
+      <option v-if="fieldNull" value="null">{{ fieldNull }}</option>
+      <option v-if="optionLabel" disabled value="">
         {{ optionLabel }}
       </option>
       <option
-        v-for="(item, index) in items"
+        v-for="(item) in items"
         :key="item.id"
         :value="item.id"
-        :selected="shouldSelectFirstItem(index, item)"
       >
         {{ displayItemText(item) }}
       </option>
     </select>
   </div>
 </template>
-    
-  <script>
+
+<script>
 export default {
-  data() {
-    return {
-      selectedItem: null,
-    };
-  },
   props: {
     label: String,
-    type: String,
     name: String,
-    placeholder: String,
     items: Array,
     fieldsToDisplay: [String, Array],
     fieldNull: String,
     optionLabel: String,
-    value: String,
-    autoSelect: Boolean
+    modelValue: [String, Number],
+    autoSelect: [String, Object, Number],
+  },
+  data() {
+    return {
+      internalValue: this.modelValue,
+    };
   },
   methods: {
     updateInput(event) {
-      this.$emit("update:modelValue", event.target.value);
+      if (event.target.value === "null") {
+        this.internalValue = null;
+      } else {
+        this.internalValue = event.target.value;
+      }
+      this.$emit("update:modelValue", this.internalValue);
     },
     displayItemText(item) {
       if (Array.isArray(this.fieldsToDisplay)) {
@@ -63,32 +66,28 @@ export default {
         return item[this.fieldsToDisplay];
       }
     },
-    shouldSelectFirstItem(index, item) {
-      if (index === 0 && !this.optionLabel && !this.fieldNull && item.id === this.value) {
-        this.$emit("update:modelValue", item.id);
-      }
-    },
   },
   watch: {
-    value(newValue) {
-      // Aqui você pode reagir às alterações em value
-      // Por exemplo, atualizar o estado interno do componente
-      this.selectedItem = newValue;
-      this.$emit("update:modelValue", newValue);
-      console.log(this.selectedItem);
+    modelValue(newValue) {
+      this.internalValue = newValue;
     },
+    autoSelect(newValue) {
+      this.internalValue = newValue;
+      this.$emit("update:modelValue", newValue.id);
+    }
   },
   mounted() {
-    // Define o ID do usuário logado como o valor selecionado por padrão
-    if (this.autoSelect == true) {
-      this.selectedItem = this.value;
-      console.log(this.selectedItem);
+    if (this.autoSelect) {
+      this.internalValue = this.autoSelect.id;
+      this.$emit("update:modelValue", this.autoSelect.id);
+    } else if (this.modelValue) {
+      this.internalValue = this.modelValue;
     }
   },
 };
 </script>
-    
-  <style scoped>
+
+<style scoped>
 label {
   text-align: right;
 }
@@ -96,4 +95,3 @@ label {
   margin-bottom: 1rem;
 }
 </style>
-  

@@ -1,17 +1,9 @@
 <template>
-  <SelectInput
-    :label="label"
-    :name="name"
-    :value="modelValue"
-    :items="users"
-    :fieldToDisplay="fieldToDisplay"
-    fieldNull="Nenhum"
-    :autoSelect=autoSelect
-    @update:modelValue="updateInput"
-  />
+  <SelectInput :label="label" :name="name" v-model="localValue" :items="users" :fieldsToDisplay="fieldsToDisplay"
+    fieldNull="Nenhum" :autoSelect=autoSelectUser @update:modelValue="updateInput" />
 </template>
-    
-  <script>
+
+<script>
 import { BACKEND_URL, USER_URL, USER_CURRENT_URL } from "@/config/apiConfig";
 import axios from "axios";
 import SelectInput from "./SelectInput.vue";
@@ -22,24 +14,23 @@ export default {
   },
   props: {
     label: String,
-    type: String,
+    modelValue: null,
     name: String,
     placeholder: String,
-    fieldToDisplay: [String, Array],
+    fieldsToDisplay: [String, Array],
     // fieldNull: String,
     optionLabel: String,
     autoSelect: Boolean,
+    type: String,
   },
   data() {
     return {
       users: [],
-      modelValue: null,
+      localValue: this.modelValue,
+      autoSelectUser: null,
     };
   },
   methods: {
-    updateInput(value) {
-      this.modelValue = value;
-    },
     async getUsers() {
       axios
         .get(`${BACKEND_URL}${USER_URL}`)
@@ -52,36 +43,45 @@ export default {
       axios
         .get(`${BACKEND_URL}${USER_CURRENT_URL}`)
         .then((response) => {
-          const user = response.data.data;
-          this.modelValue = user.id;
+          this.autoSelectUser = response.data.data;
+          this.localValue = this.autoSelectUser;
+          // this.$emit('update:modelValue', user);
         })
         .catch((error) => {
           console.error("Erro ao buscar usuário:", error);
         });
     },
+    updateInput(newValue) {
+      this.$emit('update:modelValue', newValue);
+    },
   },
   watch: {
     modelValue(newValue) {
-      // Verifica se o novo valor de modelValue não é nulo
-      // e executa alguma ação, se necessário
       if (newValue !== null) {
-        this.modelValue = newValue;
+        this.localValue = newValue;
       }
     },
+    autoSelectUser(newValue) {
+      if (newValue !== null) {
+        this.autoSelectUser = newValue;
+      }
+    }
   },
   mounted() {
-    this.getCurrentUser();
+    if(this.autoSelect) {
+      this.getCurrentUser();
+    }
     this.getUsers();
   },
 };
 </script>
-    
-  <style scoped>
+
+<style scoped>
 label {
   text-align: right;
 }
+
 .input-field {
   margin-bottom: 1rem;
 }
 </style>
-  
