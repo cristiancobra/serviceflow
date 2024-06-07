@@ -27,7 +27,7 @@ class TaskRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'account_id' => 'required|exists:accounts,id',
             'user_id' => 'required|exists:users,id',
             'project_id' => 'nullable',
@@ -48,6 +48,8 @@ class TaskRequest extends FormRequest
             $rules['name'] = 'unique:tasks|required';
             $rules['user_id'] = 'required|exists:users,id';
         }
+
+        return $rules;
     }
 
     protected function prepareForValidation()

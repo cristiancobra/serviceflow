@@ -27,8 +27,7 @@ class ProjectRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'name' => 'required|string|max:255',
+        $rules = [
             'account_id' => 'required|exists:accounts,id',
             'type' => 'nullable|string|max:255',
             'budget' => 'nullable|numeric',
@@ -38,7 +37,6 @@ class ProjectRequest extends FormRequest
             'date_start' => 'nullable|date',
             'date_due' => 'nullable|date',
             'date_conclusion' => 'nullable|date',
-            'user_id' => 'required|exists:users,id',
             'contact_id' => 'nullable|exists:leads,id',
             'company_id' => 'nullable|exists:companies,id',
             'goal_id' => 'nullable|exists:goals,id',
@@ -54,7 +52,9 @@ class ProjectRequest extends FormRequest
             $rules['name'] = 'unique:tasks|required';
             $rules['user_id'] = 'required|exists:users,id';
         }
-        
+
+        return $rules;
+
     }
 
     protected function prepareForValidation()
