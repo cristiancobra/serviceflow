@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container mb-5">
     <div class="headers-line">
       <div class="col-1 slot done">concluidos</div>
       <div class="col-1 slot doing">andamento</div>
@@ -11,7 +11,7 @@
       <ProjectCreateForm @new-project-event="addProjectCreated($event)" @toogle-task-form=toggle() />
     </div>
 
-    <div class="row projects-container">
+    <div class="row">
       <ProjectsList :projects="filteredProjects" />
     </div>
   </div>

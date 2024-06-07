@@ -3,90 +3,80 @@
         <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
         </AddMessage>
 
-        <div id='form' class='container'>
-            <form @submit.prevent="submitForm">
 
-                <div class='form-group'>
-                    <div class='row'>
-                        <div class='col-2'>
-                            <label class='labels' for='name'>
-                                Nome
-                            </label>
-                        </div>
-                        <div class='col-10'>
-                            <input class="form-control" type='text' id='name' v-model='form.name'
-                                placeholder='Digite um nome para seu projeto'>
-                        </div>
+        <form @submit.prevent="submitForm">
+
+            <div class='row'>
+                <div class='col-2'>
+                    <label class='labels' for='name'>
+                        Nome
+                    </label>
+                </div>
+                <div class='col-10'>
+                    <input class="form-control" type='text' id='name' v-model='form.name'
+                        placeholder='Digite um nome para seu projeto'>
+                </div>
+            </div>
+
+            <div class='row'>
+                <div class='col-2'>
+                    <label class='labels' for='description'>
+                        Descrição
+                    </label>
+                </div>
+                <div class='col-10'>
+                    <input class="form-control" type='text' id='description' v-model='form.description'
+                        placeholder='Digite o nome do responsável por garantir a execução do projeto'>
+                </div>
+            </div>
+
+            <div class='row mt-5 mb-5'>
+                <div class="col">
+                    <CompaniesSelectInput label="Empresa cliente" v-model="form.company_id" name="company_id"
+                        :fieldsToDisplay="['business_name', 'legal_name']" fieldNull="Não possui / minha empresa" />
+                </div>
+                <div class="col">
+                    <div class="col">
+                        <UsersSelectInput label="Responsável" v-model="form.user_id" fieldsToDisplay="name"
+                            autoSelect=true />
                     </div>
                 </div>
+            </div>
 
-                <div class='form-group'>
-                    <div class='row'>
-                        <div class='col-2'>
-                            <label class='labels' for='description'>
-                                Descrição
-                            </label>
-                        </div>
-                        <div class='col-10'>
-                            <input class="form-control" type='text' id='description' v-model='form.description'
-                                placeholder='Digite o nome do responsável por garantir a execução do projeto'>
-                        </div>
-                    </div>
+            <div class='row'>
+                <div class='col'>
+                    <LeadsSelectInput label="Contato" name="contact_id" v-model="form.contact_id" fieldsToDisplay="name"
+                        fieldNull="Não possui" />
+                </div>
+                <div class="col">
+                    <StatusLinearRadioInput :status="form.status" @status-change="updateFormStatus" />
+                </div>
+            </div>
+
+            <div class="row mb-5 mt-5">
+                <div class="col-md-4">
+                    <DateTimeInput v-model="form.date_start" label="Início" name="date_start"
+                        placeholder="início do prazo" :autoFillNow="true" />
                 </div>
 
-                <div class='form-group'>
-                    <div class='row mt-5 mb-5'>
-                        <div class="col">
-                            <CompaniesSelectInput label="Empresa cliente" v-model="form.company_id" name="company_id"
-                                :fieldsToDisplay="['business_name', 'legal_name']"
-                                fieldNull="Não possui / minha empresa" />
-                        </div>
-                        <div class="col">
-                            <div class="col">
-                                <UsersSelectInput label="Responsável" v-model="form.user_id" fieldsToDisplay="name"
-                                    autoSelect=true />
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-md-4">
+                    <DateTimeInput v-model="form.date_due" label="Prazo final" name="date_due"
+                        placeholder="prazo final" />
                 </div>
 
-                <div class='form-group'>
-                    <div class='row'>
-                        <div class='col'>
-                            <LeadsSelectInput label="Contato" name="contact_id" v-model="form.contact_id"
-                                fieldsToDisplay="name" fieldNull="Não possui" />
-                        </div>
-                    </div>
+                <div class="col-md-4">
+                    <DateTimeInput v-model="form.date_conclusion" label="Data de conclusão" name="date_conclusion"
+                        placeholder="data quando a projeto foi finalizada" />
                 </div>
+            </div>
 
-                <div class='form-group'>
+            <div class="row ms-5 me-5 mt-4 mb-2">
+                <button type="submit" class="btn new">
+                    Criar
+                </button>
+            </div>
 
-                    <div class="row mb-5 mt-5">
-                        <div class="col-md-4">
-                            <DateTimeInput v-model="form.date_start" label="Início" name="date_start"
-                                placeholder="início do prazo" :autoFillNow="true" />
-                        </div>
-
-                        <div class="col-md-4">
-                            <DateTimeInput v-model="form.date_due" label="Prazo final" name="date_due"
-                                placeholder="prazo final" />
-                        </div>
-
-                        <div class="col-md-4">
-                            <DateTimeInput v-model="form.date_conclusion" label="Data de conclusão"
-                                name="date_conclusion" placeholder="data quando a projeto foi finalizada" />
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row ms-5 me-5 mt-4 mb-2">
-                    <button type="submit" class="btn new">
-                        Criar
-                    </button>
-                </div>
-
-            </form>
-        </div>
+        </form>
 
     </div>
 
@@ -99,6 +89,7 @@ import axios from 'axios'
 import CompaniesSelectInput from "@/components/forms/selects/CompaniesSelectInput.vue";
 import DateTimeInput from "@/components/forms/inputs/date/DateTimeInput.vue";
 import LeadsSelectInput from "@/components/forms/selects/LeadsSelectInput.vue";
+import StatusLinearRadioInput from "@/components/forms/inputs/StatusLinearRadioInput.vue";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
 
 export default {
@@ -109,6 +100,7 @@ export default {
         CompaniesSelectInput,
         DateTimeInput,
         LeadsSelectInput,
+        StatusLinearRadioInput,
         UsersSelectInput
     },
     data() {
@@ -164,6 +156,9 @@ export default {
         },
         newProjectEvent(data) {
             this.$emit('new-project-event', data)
+        },
+        updateFormStatus(newStatus) {
+            this.form.status = newStatus;
         },
     },
     mounted() {
