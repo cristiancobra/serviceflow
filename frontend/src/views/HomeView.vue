@@ -1,39 +1,45 @@
 <template>
-  <div class="home pb-5">
-    <div>
-      <p style="margin-top: 120px">
+  <div class="home pt-5 pb-5">
+    <div id="welcome">
+      <p>
         Bem vindo, hoje é
         <span style="font-weight: bolder">
           {{ dateNow }}
         </span>
       </p>
     </div>
-    <div class="container">
+    <div class="container mt-5">
       <div class="row">
-        <TasksList :tasks="tasks" />
+        <div class="col-6">
+          <h2 class="text-center">Projetos abertos</h2>
+          <ProjectsList :projects="projects" />
+        </div>
+        <div class="col-6">
+          <h2 class="text-center">Tarefas em destaque</h2>
+          <TasksList :tasks="tasks" />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { BACKEND_URL, TASK_PRIORIZED_URL } from "@/config/apiConfig";
+import { BACKEND_URL, PROJECTS_OPEN_URL, TASK_PRIORIZED_URL } from "@/config/apiConfig";
 import axios from "axios";
+import ProjectsList from "../components/lists/ProjectsList.vue";
 import TasksList from "../components/lists/TasksList.vue";
 
 export default {
   data() {
     return {
       dateNow: "", // Inicializando a propriedade dateNow
+      projects: [],
       tasks: [],
     };
   },
   components: {
+    ProjectsList,
     TasksList,
-  },
-  mounted() {
-    this.getDateNow();
-    this.getTasksHome();
   },
   methods: {
     getDateNow() {
@@ -50,7 +56,20 @@ export default {
         })
         .catch((error) => console.log(error));
     },
+    getProjectsHome() {
+      axios
+        .get(`${BACKEND_URL}${PROJECTS_OPEN_URL}`)
+        .then((response) => {
+          this.projects = response.data.data;
+          console.log("projects home", this.projects);
+        })
+        .catch((error) => console.log(error));
+    },
+  },
+  mounted() {
+    this.getDateNow();
+    this.getTasksHome();
+    this.getProjectsHome();
   },
 };
 </script>
-

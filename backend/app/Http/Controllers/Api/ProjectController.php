@@ -103,4 +103,23 @@ class ProjectController extends Controller
     {
         return $status = Project::getStatus();
     }
+
+        /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function openProjects()
+    {
+        $projects = Project::whereIn('status', [
+            'to-do',
+            'doing'
+        ])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return ProjectResource::collection(
+            $projects
+        );
+    }
 }

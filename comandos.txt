@@ -18,6 +18,15 @@ CREATE USER 'serviceflow'@'localhost' IDENTIFIED BY 'senha';
 GRANT ALL PRIVILEGES ON serviceflow.* TO 'serviceflow'@'localhost';
 FLUSH PRIVILEGES;
 
+
+# BACKUP BANCO DE DADOS servidor para local
+
+- Primeiro conectar via ssh
+mysqldump -u root -p serviceflow > /var/www/serviceflow/backups/serviceflow_07-06-2024.sql
+scp -r -i /home/cristiancobra/.ssh/desktop-cobra root@206.189.230.115:/var/www/serviceflow/backups/ /home/cristiancobra/docker/serviceflow/
+
+
+
 # EXPORTAR e IMPORTAR BANCO local para servidor
 
 - exportar no phpmyadmin

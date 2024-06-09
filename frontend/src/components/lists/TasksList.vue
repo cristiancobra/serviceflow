@@ -7,7 +7,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-6 g-5" v-for="task in filteredTasks" v-bind:key="task.id">
+      <div class="col-12 g-5" v-for="task in filteredTasks" v-bind:key="task.id">
         <div class="card" :class="getCombinedClasses(task.status, task.priority)">
           <router-link :to="{ name: 'tasksShow', params: { id: task.id } }">
             <div class="row ms-1">

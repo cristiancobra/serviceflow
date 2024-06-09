@@ -26,43 +26,50 @@
       </div>
     </div>
 
-    <div class="row mb-5">
-      <div class="col-12">
+    <div class="row pt-2">
+      <div id="col-infos" class="col">
+        <div class="row">
         <TextEditor label="Descrição" name="description" v-model="project.description"
           @save="updateProject('description', $event)" />
-      </div>
     </div>
-
-    <div class="row">
-      <div class="col">
-        <DateEditableInput name="date_start" label="Início:" v-model="project.date_start"
-          @save="updateProject('date_start', $event)" />
-        <DateEditableInput name="date_due" label="Prazo:" v-model="project.date_due"
-          @save="updateProject('date_due', $event)" />
-        <DateEditableInput name="date_conclusion" label="Conclusão:" v-model="project.date_conclusion"
-          @save="updateProject('date_conclusion', $event)" />
-      </div>
-
-      <div class="col">
-        <div class="row duration">
-          <PrioritySelectRadioInput v-if="project.priority" :priority="project.priority"
-            @priority-change="updateProject('priority', $event)" />
+    
+     <div class="row">
+          <DateEditableInput name="date_start" label="Início:" v-model="project.date_start"
+            @save="updateProject('date_start', $event)" />
+          <DateEditableInput name="date_due" label="Prazo:" v-model="project.date_due"
+            @save="updateProject('date_due', $event)" />
+          <DateEditableInput name="date_conclusion" label="Conclusão:" v-model="project.date_conclusion"
+            @save="updateProject('date_conclusion', $event)" />
         </div>
-        <div class="row duration">
-          <StatusLinearRadioInput v-if="project.status" :status="project.status"
-            @status-change="updateProject('status', $event)" />
-        </div>
+
+        <div class="row">
+          <div class="duration">
+            <PrioritySelectRadioInput v-if="project.priority" :priority="project.priority"
+              @priority-change="updateProject('priority', $event)" />
+          </div>
+          </div>
+
+          <div class="row mt-5">
+          <div class="duration">
+            <StatusLinearRadioInput v-if="project.status" :status="project.status"
+              @status-change="updateProject('status', $event)" />
+          </div>
+          </div>
+          
+  
+
+      <div class="row mt-5 mb-5">
+        <button class="col myButton delete" @click="deleteProject()">
+          excluir
+        </button>
       </div>
     </div>
 
-    <div class="row mt-5 mb-5">
-      <button class="offset-10 col-1 myButton delete" @click="deleteProject()">
-        excluir
-      </button>
+    <div id="col-list" class="col">
+      <ProjectTasksList :projectId="projectId" @update-project-duration="updateProjectDuration()" />
     </div>
-
-    <ProjectTasksList :projectId="projectId" @update-project-duration="updateProjectDuration()" />
   </div>
+</div>
 </template>
 
 <script>

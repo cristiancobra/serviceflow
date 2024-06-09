@@ -6,14 +6,14 @@
     <div class="header">
       <div class="project" v-bind:class="project ? getStatusClass(project.status) : ''">
         <div v-if="project">
-          
-              <div class="status" v-bind:class="getStatusClass(project.status)">
-                <font-awesome-icon :icon="getStatusIcon(project.status)" />
-                <p class="duration">
-                  {{ formatDuration(project.duration_time) }}
-                </p>
-              </div>
-            
+
+          <div class="status" v-bind:class="getStatusClass(project.status)">
+            <font-awesome-icon :icon="getStatusIcon(project.status)" />
+            <p class="duration">
+              {{ formatDuration(project.duration_time) }}
+            </p>
+          </div>
+
           <ProjectsSelectInput label="Nome do Projeto" v-model="task.project_id"
             @update:modelValue="updateTask('project_id', $event)" fieldsToDisplay="name" autoSelect=true />
           <router-link :to="{ name: 'projectShow', params: { id: task.project_id } }">
@@ -49,42 +49,47 @@
       </div>
     </div>
 
-    <div class="row mb-5">
-      <div class="col-12">
-        <TextEditor label="Descrição" name="description" v-model="task.description"
-          @save="updateTask('description', $event)" />
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col">
-        <DateEditableInput name="date_start" label="Início:" v-model="task.date_start"
-          @save="updateTask('date_start', $event)" />
-        <DateEditableInput name="date_due" label="Prazo:" v-model="task.date_due"
-          @save="updateTask('date_due', $event)" />
-        <DateEditableInput name="date_conclusion" label="Conclusão:" v-model="task.date_conclusion"
-          @save="updateTask('date_conclusion', $event)" />
-      </div>
-
-      <div class="col">
-        <div class="row duration">
-          <PrioritySelectRadioInput v-if="task.priority" :priority="task.priority"
-            @priority-change="updateTask('priority', $event)" />
+    <div class="row pt-2">
+      <div id="col-infos" class="col">
+        <div class="row">
+          <TextEditor label="Descrição" name="description" v-model="task.description"
+            @save="updateTask('description', $event)" />
         </div>
-        <div class="row duration">
-          <StatusLinearRadioInput v-if="task.status" :status="task.status"
-            @status-change="updateTask('status', $event)" />
+
+        <div class="row pt-5 pb-4">
+          <DateEditableInput name="date_start" label="Início:" v-model="task.date_start"
+            @save="updateTask('date_start', $event)" />
+          <DateEditableInput name="date_due" label="Prazo:" v-model="task.date_due"
+            @save="updateTask('date_due', $event)" />
+          <DateEditableInput name="date_conclusion" label="Conclusão:" v-model="task.date_conclusion"
+            @save="updateTask('date_conclusion', $event)" />
         </div>
+
+        <div class="row pt-5 pb-3">
+          <div class="duration">
+            <PrioritySelectRadioInput v-if="task.priority" :priority="task.priority"
+              @priority-change="updateTask('priority', $event)" />
+          </div>
+        </div>
+        <div class="row pt-5">
+          <div class="duration">
+            <StatusLinearRadioInput v-if="task.status" :status="task.status"
+              @status-change="updateTask('status', $event)" />
+          </div>
+        </div>
+
+        <div class="row pt-5">
+          <button class="col myButton delete" @click="deleteTask()">
+            excluir
+          </button>
+        </div>
+
+      </div>
+
+      <div id="col-list" class="col">
+        <JourneysList :taskId="taskId" @update-task-duration="updateTaskDuration()" />
       </div>
     </div>
-
-    <div class="row mt-5 mb-5">
-      <button class="offset-10 col-1 myButton delete" @click="deleteTask()">
-        excluir
-      </button>
-    </div>
-
-    <JourneysList :taskId="taskId" @update-task-duration="updateTaskDuration()" />
   </div>
 </template>
 

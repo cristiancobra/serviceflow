@@ -13,6 +13,7 @@ export const LOGIN_URL = "login";
 export const LOGOUT_URL = "logout";
 export const PROJECT_URL = "projects";
 export const PROJECT_URL_PARAMETER = "projects/";
+export const PROJECTS_OPEN_URL = "projects/open";
 // export const PROJECT_STATUS_URL = "projects/";
 export const SERVICE_URL = "services";
 export const TASK_URL = "tasks";

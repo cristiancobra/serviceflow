@@ -22,7 +22,7 @@
       </div>
     </form>
     <div class="row mb-5">
-      <div class="col-3">
+      <div class="col">
         <button class="button-new me-3" @click="toggle()">
           <span class="icon-new">
             <font-awesome-icon icon="fa-solid fa-plus" />
@@ -30,7 +30,7 @@
           NOVA JORNADA
         </button>
       </div>
-      <div class="col-3">
+      <div class="col">
         <form @submit.prevent="submitQuickForm">
           <button class="button-new">
             <span class="icon-new">
