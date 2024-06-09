@@ -52,8 +52,8 @@ Route::middleware('auth:sanctum')->group(function () {
 	//PROJETOS
 	Route::get('projects/status', [ProjectController::class, 'getProjectsStatus']);
 
-	Route::get('projects/open', [ProjectController::class, 'openProjects'])
-	->name('projects.open');
+	Route::get('projects/prioritized', [ProjectController::class, 'prioritizedProjects'])
+	->name('projects.prioritized');
 
 	Route::apiResource('projects', ProjectController::class)
 		->names('projects');

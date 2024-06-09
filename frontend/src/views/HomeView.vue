@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { BACKEND_URL, PROJECTS_OPEN_URL, TASK_PRIORIZED_URL } from "@/config/apiConfig";
+import { BACKEND_URL, PROJECTS_PRIORIZED_URL, TASK_PRIORIZED_URL } from "@/config/apiConfig";
 import axios from "axios";
 import ProjectsList from "../components/lists/ProjectsList.vue";
 import TasksList from "../components/lists/TasksList.vue";
@@ -58,7 +58,7 @@ export default {
     },
     getProjectsHome() {
       axios
-        .get(`${BACKEND_URL}${PROJECTS_OPEN_URL}`)
+        .get(`${BACKEND_URL}${PROJECTS_PRIORIZED_URL}`)
         .then((response) => {
           this.projects = response.data.data;
           console.log("projects home", this.projects);

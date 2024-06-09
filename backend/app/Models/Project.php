@@ -27,6 +27,7 @@ class Project extends Model {
         'date_conclusion',
         'description',
         'status',
+        'priority',
     ];
 	
 	public static function getStatus() {

@@ -109,13 +109,13 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function openProjects()
+    public function prioritizedProjects()
     {
         $projects = Project::whereIn('status', [
             'to-do',
             'doing'
         ])
-            ->orderBy('created_at', 'desc')
+            ->orderByRaw("FIELD(priority, 'high', 'medium', 'low')")
             ->paginate(10);
 
         return ProjectResource::collection(
