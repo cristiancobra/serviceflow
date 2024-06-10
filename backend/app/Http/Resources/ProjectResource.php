@@ -29,6 +29,7 @@ class ProjectResource extends JsonResource
 			"date_due" => $this->date_due,
 			"date_conclusion" => $this->date_conclusion,
 			"description" => $this->description,
+			"priority" => $this->priority,
 			"status" => $this->status,
 			"type" => $this->type,
 			"created_at" => $this->created_at,
