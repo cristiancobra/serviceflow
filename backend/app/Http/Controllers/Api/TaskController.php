@@ -18,10 +18,11 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return TaskResource::collection(
-            Task::orderBy('created_at', 'desc')
-                ->paginate(50)
-        );
+        $tasks = Task::with('project') // Carrega o relacionamento project
+            ->orderBy('created_at', 'desc')
+            ->paginate(50);
+
+        return TaskResource::collection($tasks);
     }
 
     /**
@@ -108,7 +109,6 @@ class TaskController extends Controller
             return TaskResource::make($task)->additional([
                 'project' => $task->project,
             ]);
-            
         } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",
@@ -213,6 +213,7 @@ class TaskController extends Controller
             'to-do',
             'doing'
         ])
+            ->with('project')
             ->orderByRaw("FIELD(priority, 'high', 'medium', 'low')")
             ->paginate(10);
 

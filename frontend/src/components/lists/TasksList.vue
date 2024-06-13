@@ -13,6 +13,10 @@
             <div class="row ms-1">
               <div class="row">
                 <div class="col-10">
+                  <p v-if="task.project" class="card-title" :class="getStatusClass(task.status)">
+                    <font-awesome-icon icon="fa-solid fa-folder-open" />
+                    {{ task.project.name }}
+                  </p>
                   <p class="card-title">
                     {{ task.name }}
                   </p>
