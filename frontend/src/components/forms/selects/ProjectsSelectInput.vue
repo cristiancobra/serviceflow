@@ -18,7 +18,6 @@ export default {
     name: String,
     placeholder: String,
     fieldToDisplay: [String, Array],
-    fieldNull: String,
     optionLabel: String,
     autoSelect: Boolean,
     type: String,
@@ -40,19 +39,7 @@ export default {
         })
         .catch((error) => console.log(error));
     },
-    // async getCurrentUser() {
-    //   axios
-    //     .get(`${BACKEND_URL}${USER_CURRENT_URL}`)
-    //     .then((response) => {
-    //       const user = response.data.data;
-    //       this.authUser = user.id;
-    //     })
-    //     .catch((error) => {
-    //       console.error("Erro ao buscar usuário:", error);
-    //     });
-    // },
     updateInput(newValue) {
-      console.log("Novo valor do modelo no pai:", newValue);
       this.$emit('update:modelValue', newValue);
     },
   },

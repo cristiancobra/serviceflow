@@ -1,10 +1,6 @@
 <template>
   <div class="form-container">
-    <AddMessage
-      v-if="messageStatus"
-      :messageStatus="messageStatus"
-      :messageText="messageText"
-    >
+    <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
 
     <ErrorMessage v-if="isError" :formResponse="formResponse" />
@@ -13,35 +9,19 @@
     <form @submit.prevent="submitForm">
       <div class="row">
         <div class="col-12">
-          <TextInput
-            label="Nome"
-            type="text"
-            name="name"
-            v-model="form.name"
-            placeholder="nome da tarefa"
-          />
+          <TextInput label="Nome" type="text" name="name" v-model="form.name" placeholder="nome da tarefa" />
         </div>
       </div>
 
       <div class="row">
-        <TextAreaInput
-          label="Descrição:"
-          name="description"
-          v-model="form.description"
-          placeholder="Detalhamento da tarefa"
-          :rows="5"
-        />
+        <TextAreaInput label="Descrição:" name="description" v-model="form.description"
+          placeholder="Detalhamento da tarefa" :rows="5" />
       </div>
 
       <div class="row mb-5 mt-5">
         <div class="col-md-4">
-          <CompaniesSelectInput
-            label="Empresa cliente"
-            name="company_id"
-            v-model="form.company_id"
-            :fieldsToDisplay="['business_name', 'legal_name']"
-            fieldNull="Não possui / minha empresa"
-          />
+          <CompaniesSelectInput label="Empresa cliente" name="company_id" v-model="form.company_id"
+            :fieldsToDisplay="['business_name', 'legal_name']" fieldNull="Não possui / minha empresa" />
         </div>
         <div class="col-2 d-flex align-items-center justify-content-start">
           <button type="button" class="button-new" @click="toggleCompany()">
@@ -50,13 +30,8 @@
         </div>
 
         <div class="col-md-4">
-          <LeadsSelectInput
-            label="Contato"
-            name="contact_id"
-            v-model="form.contact_id"
-            fieldsToDisplay="name"
-            fieldNull="Não possui"
-          />
+          <LeadsSelectInput label="Contato" name="contact_id" v-model="form.contact_id" fieldsToDisplay="name"
+            fieldNull="Não possui" />
         </div>
         <div class="col-2 d-flex align-items-center justify-content-start">
           <button type="button" class="button-new" @click="toggleLead()">
@@ -73,59 +48,36 @@
       </div>
 
       <div class="row mb-5 mt-5">
-        <div class="col-md-4">
-          <UsersSelectInput
-            label="Responsável"
-            v-model="form.user_id"
-            fieldsToDisplay="name"
-            autoSelect=true
-          />
+        <div class="col">
+          <UsersSelectInput label="Responsável" v-model="form.user_id" fieldsToDisplay="name" autoSelect=true />
         </div>
-
-        <div class="offset-2 col-md-6">
-          <PrioritySelectRadioInput
-            :priority="form.priority"
-            @priority-change="updateFormPriority"
-          />
+        <div class="col">
+          <ProjectsSelectInput label="Projeto" v-model="form.project_id" fieldsToDisplay="name" autoSelect=false />
         </div>
       </div>
 
       <div class="row mb-5 mt-5">
         <div class="col-md-4">
-          <DateTimeInput
-            v-model="form.date_start"
-            label="Início"
-            name="date_start"
-            placeholder="início do prazo"
-            :autoFillNow="true"
-          />
+          <DateTimeInput v-model="form.date_start" label="Início" name="date_start" placeholder="início do prazo"
+            :autoFillNow="true" />
         </div>
 
         <div class="col-md-4">
-          <DateTimeInput
-            v-model="form.date_due"
-            label="Prazo final"
-            name="date_due"
-            placeholder="prazo final"
-          />
+          <DateTimeInput v-model="form.date_due" label="Prazo final" name="date_due" placeholder="prazo final" />
         </div>
 
         <div class="col-md-4">
-          <DateTimeInput
-            v-model="form.date_conclusion"
-            label="Data de conclusão"
-            name="date_conclusion"
-            placeholder="data quando a tarefa foi finalizada"
-          />
+          <DateTimeInput v-model="form.date_conclusion" label="Data de conclusão" name="date_conclusion"
+            placeholder="data quando a tarefa foi finalizada" />
         </div>
       </div>
 
       <div class="row mb-5 mt-5">
-        <div class="col-md-12">
-          <StatusLinearRadioInput
-            :status="form.status"
-            @status-change="updateFormStatus"
-          />
+        <div class="col">
+          <PrioritySelectRadioInput :priority="form.priority" @priority-change="updateFormPriority" />
+        </div>
+        <div class="col">
+          <StatusLinearRadioInput :status="form.status" @status-change="updateFormStatus" />
         </div>
       </div>
 
@@ -156,6 +108,7 @@ import TextAreaInput from "./inputs/TextAreaInput";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
 import ErrorMessage from "./messages/ErrorMesssage.vue";
 import SuccessMessage from "./messages/SuccessMessage.vue";
+import ProjectsSelectInput from "./selects/ProjectsSelectInput.vue";
 
 export default {
   name: "TaskCreateForm",
@@ -168,6 +121,7 @@ export default {
     LeadsSelectInput,
     LeadCreateForm,
     PrioritySelectRadioInput,
+    ProjectsSelectInput,
     StatusLinearRadioInput,
     ErrorMessage,
     SuccessMessage,
@@ -192,6 +146,7 @@ export default {
         company_id: null,
         contact_id: null,
         user_id: null,
+        project_id: null,
         date_start: null,
         date_due: null,
         date_conclusion: null,
@@ -300,11 +255,13 @@ export default {
   text-align: left;
   margin-left: 0;
 }
+
 .label-col {
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 .radio-group {
   display: flex;
   gap: 10px;

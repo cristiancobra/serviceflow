@@ -1,22 +1,12 @@
 <template>
   <div class="mb-5">
     <label class="form-label" :for="name">{{ label }}</label>
-    <select
-      class="form-select"
-      :id="name"
-      :name="name"
-      @input="updateInput"
-      v-model="internalValue"
-    >
-      <option v-if="fieldNull" value="null">{{ fieldNull }}</option>
+    <select class="form-select" :id="name" :name="name" @input="updateInput" v-model="internalValue">
+      <option v-if="fieldNull" :value=null>{{ fieldNull }}</option>
       <option v-if="optionLabel" disabled value="">
         {{ optionLabel }}
       </option>
-      <option
-        v-for="(item) in items"
-        :key="item.id"
-        :value="item.id"
-      >
+      <option v-for="(item) in items" :key="item.id" :value="item.id">
         {{ displayItemText(item) }}
       </option>
     </select>
@@ -76,21 +66,29 @@ export default {
       this.$emit("update:modelValue", newValue.id);
     }
   },
+
   mounted() {
-    if (this.autoSelect) {
+    if (this.autoSelect && this.autoSelect.id !== undefined) {
       this.internalValue = this.autoSelect.id;
       this.$emit("update:modelValue", this.autoSelect.id);
-    } else if (this.modelValue) {
+    } else if (this.modelValue !== undefined) {
       this.internalValue = this.modelValue;
+    } else if (this.fieldNull) {
+      this.internalValue = null;
+      this.$emit("update:modelValue", null);
+    } else {
+      this.internalValue = '';
     }
   },
-};
+
+  };
 </script>
 
 <style scoped>
 label {
   text-align: right;
 }
+
 .input-field {
   margin-bottom: 1rem;
 }

@@ -44,14 +44,14 @@
 
         <div class="row">
           <div class="duration">
-            <PrioritySelectRadioInput v-if="project.priority" :priority="project.priority"
+            <PrioritySelectRadioInput :priority="project.priority"
               @priority-change="updateProject('priority', $event)" />
           </div>
           </div>
 
           <div class="row mt-5">
           <div class="duration">
-            <StatusLinearRadioInput v-if="project.status" :status="project.status"
+            <StatusLinearRadioInput :status="project.status"
               @status-change="updateProject('status', $event)" />
           </div>
           </div>
@@ -169,14 +169,14 @@ export default {
       }
     },
     async updateProject(fieldName, editedValue) {
-      const editedProject = { ...this.project };
+      const updatedField = {};
 
-      editedProject[fieldName] = editedValue;
+      updatedField[fieldName] = editedValue;
 
       try {
         const response = await axios.put(
           `${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.projectId}`,
-          editedProject
+          updatedField
         );
 
         this.project = response.data.data;

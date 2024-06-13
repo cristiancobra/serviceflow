@@ -34,6 +34,7 @@ class ProjectRequest extends FormRequest
             'type' => 'nullable|string|max:255',
             'budget' => 'nullable|numeric',
             'actual_cost' => 'nullable|numeric',
+            'priority' => 'nullable|string',
             'status' => 'nullable|string|max:255',
             'objective' => 'nullable|string|max:255',
             'date_start' => 'nullable|date',

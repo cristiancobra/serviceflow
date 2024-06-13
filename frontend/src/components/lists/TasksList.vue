@@ -20,7 +20,7 @@
                   <p class="card-title">
                     {{ task.name }}
                   </p>
-                  <p v-html="trimDescription(task.description)" class="description"></p>
+                  
                 </div>
                 <div class="col-2 status" :class="getStatusClass(task.status)">
                   <font-awesome-icon :icon="getStatusIcon(task.status)" />
