@@ -27,8 +27,10 @@ class ProjectRequest extends FormRequest
      */
     public function rules()
     {
-        $rules = [
+        return [
             'account_id' => 'required|exists:accounts,id',
+            'user_id' => 'sometimes|exists:users,id',
+            'name' => 'sometimes|unique:projects|required',
             'type' => 'nullable|string|max:255',
             'budget' => 'nullable|numeric',
             'actual_cost' => 'nullable|numeric',
@@ -43,17 +45,6 @@ class ProjectRequest extends FormRequest
             'category' => 'nullable|string|max:255',
             'description' => 'nullable|string',
         ];
-
-
-        if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
-            unset($rules['name']);
-            unset($rules['user_id']);
-        } else {
-            $rules['name'] = 'unique:tasks|required';
-            $rules['user_id'] = 'required|exists:users,id';
-        }
-
-        return $rules;
 
     }
 

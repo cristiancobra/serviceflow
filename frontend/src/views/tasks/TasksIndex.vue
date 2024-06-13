@@ -20,7 +20,7 @@
     <SuccessMessage v-if="isSuccess" :formResponse="formResponse" />
 
     <div class="row">
-      <TasksList :tasks="filteredTasks" />
+      <TasksList :tasks="filteredTasks" :columns="2" />
     </div>
   </div>
 </template>

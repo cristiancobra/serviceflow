@@ -80,9 +80,19 @@ class ProjectController extends Controller
      * @param  \App\Models\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Project $project)
+    public function update(ProjectRequest $request, Project $project)
     {
-        //
+        try {
+            $project->fill($request->validated());
+            $project->save();
+
+            return ProjectResource::make($project);
+        } catch (ValidationException $validationException) {
+            return response()->json([
+                'message' => "Erro de validação",
+                'errors' => $validationException->errors(),
+            ], 422);
+        }
     }
 
     /**
@@ -104,7 +114,7 @@ class ProjectController extends Controller
         return $status = Project::getStatus();
     }
 
-        /**
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

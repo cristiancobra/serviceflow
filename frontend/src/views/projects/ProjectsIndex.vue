@@ -12,7 +12,7 @@
     </div>
 
     <div class="row">
-      <ProjectsList :projects="filteredProjects" />
+      <ProjectsList :projects="filteredProjects" :columns="2" />
     </div>
   </div>
 </template>

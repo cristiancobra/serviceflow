@@ -7,17 +7,17 @@
       <div class="project" v-bind:class="project ? getStatusClass(project.status) : ''">
         <div v-if="project">
 
+          <router-link :to="{ name: 'projectShow', params: { id: task.project_id } }">
           <div class="status" v-bind:class="getStatusClass(project.status)">
             <font-awesome-icon :icon="getStatusIcon(project.status)" />
             <p class="duration">
               {{ formatDuration(project.duration_time) }}
             </p>
           </div>
+          </router-link>
 
           <ProjectsSelectInput label="Nome do Projeto" v-model="task.project_id"
             @update:modelValue="updateTask('project_id', $event)" fieldsToDisplay="name" autoSelect=true />
-          <router-link :to="{ name: 'projectShow', params: { id: task.project_id } }">
-          </router-link>
         </div>
         <div v-else class="">
           <ProjectsSelectInput label="Adicionar projeto" v-model="task.project_id"

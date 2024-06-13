@@ -7,7 +7,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-12 g-5" v-for="project in filteredProjects" v-bind:key="project.id">
+      <div :class="getColumnClass(columns)" v-for="project in filteredProjects" v-bind:key="project.id">
         <div class="card" :class="getCombinedClasses(project.status, project.priority)">
           <router-link :to="{ name: 'projectShow', params: { id: project.id } }">
             <div class="row ms-1">
@@ -56,7 +56,13 @@ import { getStatusIcon } from "@/utils/card/cardUtils";
 
 export default {
   name: "ProjectsList",
-  props: ["projects"],
+  props: {
+    projects: Array,
+    columns: {
+      type: Number,
+      default: 1,
+    },
+  },
   data() {
     return {
       searchTerm: "",
@@ -79,6 +85,16 @@ export default {
 
       // Combine as classes
       return `${statusClass} ${priorityClass}`;
+    },
+    getColumnClass(columns) {
+      switch (columns) {
+        case 1:
+          return "col-12 g-5";
+        case 2:
+          return "col-6 g-5";
+        default:
+          return "col-12";
+      }
     },
   },
   computed: {

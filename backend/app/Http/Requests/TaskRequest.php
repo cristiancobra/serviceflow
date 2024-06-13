@@ -27,11 +27,11 @@ class TaskRequest extends FormRequest
      */
     public function rules()
     {
-        $rules = [
+        return [
             'account_id' => 'required|exists:accounts,id',
-            'user_id' => 'required|exists:users,id',
+            'user_id' => 'sometimes|exists:users,id',
             'project_id' => 'nullable',
-            'name' => 'required|string|max:255',
+            'name' => 'sometimes|string|max:255',
             'description' => 'nullable|string',
             'priority' => 'nullable|string',
             'status' => 'nullable|string',
@@ -41,15 +41,6 @@ class TaskRequest extends FormRequest
             'duration' => 'nullable|integer',
         ];
 
-        if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
-            unset($rules['name']);
-            unset($rules['user_id']);
-        } else {
-            $rules['name'] = 'unique:tasks|required';
-            $rules['user_id'] = 'required|exists:users,id';
-        }
-
-        return $rules;
     }
 
     protected function prepareForValidation()
