@@ -1,6 +1,6 @@
 <template>
   <SelectInput :label="label" :name="name" v-model="localValue" :items="projects" :fieldToDisplay="fieldToDisplay"
-    fieldNull="Nenhum" :autoSelect=autoSelect @update:modelValue="updateInput" />
+  :fieldNull="fieldNullValue" :autoSelect=autoSelect @update:modelValue="updateInput" />
 </template>
 
 <script>
@@ -14,6 +14,7 @@ export default {
   },
   props: {
     label: String,
+    fieldNull: String,
     modelValue: null,
     name: String,
     placeholder: String,
@@ -27,6 +28,7 @@ export default {
       projects: [],
       localValue: this.modelValue,
       authUser: null,
+      fieldNullValue: null,
     };
   },
   methods: {
@@ -35,7 +37,6 @@ export default {
         .get(`${BACKEND_URL}${PROJECT_URL}`)
         .then((response) => {
           this.projects = response.data.data;
-          console.log("Projetos:", this.projects);
         })
         .catch((error) => console.log(error));
     },
@@ -51,7 +52,9 @@ export default {
     },
   },
   mounted() {
-    // this.getCurrentUser();
+    if(this.fieldNull) {
+      this.fieldNullValue = this.fieldNull;
+    }
     this.getProjects();
   },
 };

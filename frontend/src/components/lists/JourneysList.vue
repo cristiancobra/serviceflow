@@ -1,5 +1,14 @@
 <template>
-  <div class="mb-5">
+  <div class="journey-container mb-5 mt-0">
+
+    <div class="row align-items-start">
+      <div class="col-1">
+        <font-awesome-icon icon="fa-solid fa-clock" class="icon"/>
+      </div>
+      <div class="col">
+        <h2 class="title">JORNADAS</h2>
+      </div>
+    </div>
 
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
@@ -12,75 +21,52 @@
       </div>
 
       <div class="table-header">
-        <div class="offset-1 table-cell">DATA</div>
-        <div class="table-cell big">OBSERVAÇÕES</div>
-        <div class="table-cell">INÍCIO</div>
-        <div class="table-cell">FIM</div>
-        <div class="table-cell">DURAÇÃO</div>
-        <div class="table-cell medium">AÇÕES</div>
+        <div class="offset-2 col-4">INÍCIO</div>
+        <div class="col-3">FIM</div>
+        <div class="col-3">DURAÇÃO</div>
       </div>
-
       <div class="p-5" v-if="!journeys">Ainda não possui nenhuma jornada</div>
-
-      <div v-else class="line" v-for="journey in journeys" v-bind:key="journey.id">
-        <div class="table-cell big-icon">
+      <div v-else class="line row ms-1 me-1" v-for="journey in journeys" v-bind:key="journey.id"
+        :class="{ 'highlight': journey.id === newJourneyId }">
+        <div class="col-1 big-icon">
           <font-awesome-icon icon="fa-solid fa-clock" />
         </div>
-
-        <div id="date" class="table-cell">
-          <p class="start">
-            {{ formatDateBr(journey.start) }}
-          </p>
-
+        <div class="col-11">
+          <div class="row pt-2">
+            <div id="start" class="col-5" :class="{ 'col-big': journey.editing && journey.editing.start }"
+              style="position: relative" @click="editDateTime(journey, 'start')">
+              <DateEditableInput name="start" v-model="journey.start"
+                @save="updateJourney('start', $event, journey.id)" />
+            </div>
+            <div id="end" class="col-5" :class="{ 'col-big': journey.editing && journey.editing.end }"
+              style="position: relative" @click="editDateTime(journey, 'end')">
+              <TimeEditableInput name="end" v-model="journey.end" @save="updateJourney('end', $event, journey.id)" />
+            </div>
+            <div id="duration" class="col-2">
+              <p class="time-bold">
+                {{ formatDuration(journey.duration) }}
+              </p>
+            </div>
+          </div>
+          <div class="row pb-2">
+            <div id="details" class="col-9 big">
+              <TextEditableInput name="details" class="details" v-model="journey.details"
+                @save="updateJourney('details', $event, journey.id)" />
+            </div>
+            <div class="col-3 d-flex justify-content-end">
+              <button v-if="!journey.end" class="button stop" @click="stopJourney(journey)">
+                <span class="stop">
+                  <font-awesome-icon icon="fa-solid fa-hand" />
+                </span>
+              </button>
+              <button class="button delete" @click="deleteItem(journey)">
+                <span class="delete">
+                  <font-awesome-icon icon="fa-solid fa-trash-alt" />
+                </span>
+              </button>
+            </div>
+          </div>
         </div>
-
-        <div id="details" class="table-cell big">
-          <TextEditableInput name="details" class="details" v-model="journey.details"
-            @save="updateJourney('details', $event, journey.id)" />
-        </div>
-
-        <div id="start" class="table-cell" :class="{ 'big': journey.editing && journey.editing.start }"
-          style="position: relative" @click="editDateTime(journey, 'start')">
-          <p v-if="!journey.editing || !journey.editing.start" class="time">
-            {{ displayLocalTime(journey.start) }}
-          </p>
-          <DateTimeInput v-else v-model="journey.start"
-            @update:modelValue="updateJourney('start', $event, journey.id)" />
-        </div>
-
-        <div id="end" class="table-cell" :class="{ 'big': journey.editing && journey.editing.end }"
-          style="position: relative" @click="editDateTime(journey, 'end')">
-          <p v-if="!journey.editing || !journey.editing.end" class="time">
-            {{ displayLocalTime(journey.end) }}
-          </p>
-          <DateTimeInput v-else v-model="journey.end" @update:modelValue="updateJourney('end', $event, journey.id)" />
-        </div>
-
-
-
-        <div id="duration" class="table-cell">
-          <p class="time-bold">
-            {{ formatDuration(journey.duration) }}
-          </p>
-        </div>
-
-
-        <div id="stop-button" class="table-cell">
-          <button v-if="!journey.end" class="button stop" @click="stopJourney(journey)">
-            <span class="stop">
-              <font-awesome-icon icon="fa-solid fa-hand" />
-            </span>
-          </button>
-        </div>
-
-        <div id="delete-button" class="table-cell">
-          <button class="button delete" @click="deleteItem(journey)">
-            <span class="delete">
-              <font-awesome-icon icon="fa-solid fa-trash-alt" />
-            </span>
-          </button>
-        </div>
-
         <router-view />
       </div>
 
@@ -99,9 +85,10 @@ import { BACKEND_URL, JOURNEY_URL_PARAMETER, JOURNEY_BY_TASK_URL_QUERY, } from "
 import { displayLocalTime } from "@/utils/date/dateUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import { formatTimeToLocal } from "@/utils/date/dateUtils";
-import { formatDateTimeForServer } from "@/utils/date/dateUtils";
+import { convertDateTimeForServer } from "@/utils/date/dateUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
-import DateTimeInput from "@/components/forms/inputs/date/DateTimeInput.vue";
+import DateEditableInput from "../forms/inputs/date/DateEditableInput.vue";
+import TimeEditableInput from "@/components/forms/inputs/time/TimeEditableInput.vue";
 import JourneyCreateForm from "@/components/forms/JourneyCreateForm.vue";
 import PaginateNav from "@/components/layout/PaginateNav.vue";
 import TextEditableInput from "@/components/forms/inputs/text/TextEditableInput.vue";
@@ -109,10 +96,11 @@ import TextEditableInput from "@/components/forms/inputs/text/TextEditableInput.
 export default {
   name: "JourneysList",
   components: {
+    DateEditableInput,
     TextEditableInput,
     JourneyCreateForm,
     PaginateNav,
-    DateTimeInput,
+    TimeEditableInput,
   },
   props: ["taskId"],
   data() {
@@ -132,6 +120,7 @@ export default {
         end: null,
       },
       editedJourneys: [],
+      newJourneyId: null,
     };
   },
   emits: ["new-journey-event", "journey-updated", "journey-deleted"],
@@ -140,11 +129,18 @@ export default {
     formatDateBr,
     formatTimeToLocal,
     formatDuration,
-    formatDateTimeForServer,
+    convertDateTimeForServer,
     addJourneyCreated(newJourney) {
-      // Add the new journey to the journeysData array
       this.journeys.unshift(newJourney);
+      this.highlightNewJourney(newJourney.id);
       this.$emit("update-task-duration");
+    },
+    highlightNewJourney(journeyId) {
+      this.newJourneyId = journeyId;
+      setTimeout(() => {
+        this.newJourneyId = null;
+      }, 2000);
+
     },
     async updateJourney(fieldName, editedValue, journeyId) {
       const editedJourney = {
@@ -284,8 +280,8 @@ export default {
 <style scoped>
 .details {
   text-align: left;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 400;
 }
 
 .time {
@@ -302,19 +298,26 @@ export default {
 }
 
 .big-icon {
-  font-size: 1.8rem;
+  font-size: 2.6rem;
   text-align: center;
   font-weight: 400;
-  color: var(--purple);
+  background-color: var(--gray);
+  color: white;
+}
+
+.icon {
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: var(--gray);
 }
 
 .button {
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
   padding: 0;
   margin-left: 14px;
   text-align: center;
-  font-size: 20px;
+  font-size: 18px;
   border-style: solid;
   border-width: 2px;
   border-radius: 50%;
@@ -349,6 +352,13 @@ icon-new:hover {
 .button:hover .delete {
   color: white;
   background-color: var(--red);
+}
+
+.journey-container {
+  border-style: solid;
+  border-color: var(--primary);
+  border-radius: 14px;
+  padding: 1rem;
 }
 
 .stop {
@@ -394,6 +404,37 @@ a:active {
   text-decoration: none;
 }
 
+.highlight {
+  animation: highlightAnimation 4s ease-out;
+}
+
+@keyframes highlightAnimation {
+  0% {
+    background-color: var(--done-color);
+    border-color: var(--done-color);
+    border-width: 5px;
+  }
+
+  100% {
+    background-color: transparent;
+  }
+}
+
+.highlight .big-icon {
+  animation: highlightIcon 4s ease-out;
+}
+
+@keyframes highlightIcon {
+  0% {
+    color: white;
+  }
+
+  100% {
+    color: var(--gray);
+    /* ou a cor padrão que você deseja usar */
+  }
+}
+
 .new {
   display: flex;
   justify-content: end;
@@ -407,23 +448,17 @@ a:active {
   background-color: var(--purple);
   color: white;
   border-style: none;
-  border-radius: 20px;
+  border-radius: 12px;
   padding-top: 10px;
   padding-bottom: 10px;
   margin-bottom: 16px;
 }
 
-.table-cell {
-  flex: 1;
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
-.big {
+.col-big {
   flex: 6;
 }
 
-.medium {
+.col-medium {
   flex: 2;
 }
 
@@ -482,5 +517,9 @@ a:active {
   background-color: #ccc;
   color: #666;
   cursor: not-allowed;
+}
+
+.title {
+  text-align: left;
 }
 </style>

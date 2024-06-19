@@ -125,12 +125,6 @@ export default {
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  text-align: center;
-  color: #2c3e50;
-  background-color: var(--background-light);
-}
 
 .alert {
   color: red !important;
@@ -196,7 +190,7 @@ nav a {
 }
 
 .nav-item .router-link-text {
-  display: none;
+  /* display: none; */
   transition: display 0.3s ease;
 }
 

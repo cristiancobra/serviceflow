@@ -96,11 +96,11 @@ class JourneyController extends Controller
     public function update(JourneyStoreRequest $request, Journey $journey)
     {
         try {
-
             $journey->fill($request->validated());
             $journey->save();
-
+            $journey->updateTaskDuration();
             return JourneyResource::make($journey);
+            
         } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",
@@ -159,25 +159,25 @@ class JourneyController extends Controller
     public function checkOpenJourney()
     {
         $openJourney = Journey::whereNotNull('start')
-        ->whereNull('end')
-        ->first();  // Use first() para pegar a primeira jornada aberta
+            ->whereNull('end')
+            ->first();  // Use first() para pegar a primeira jornada aberta
 
-    if ($openJourney) {
-        return response()->json([
-            'hasOpenJourneys' => true,
-            'openJourney' => [
-                'id' => $openJourney->id,
-                'task_id' => $openJourney->task_id,
-                'details' => $openJourney->details,
-                'start' => $openJourney->start,
-                'duration' => $openJourney->duration,
-            ]
-        ]);
-    } else {
-        return response()->json([
-            'hasOpenJourneys' => false,
-            'openJourney' => null
-        ]);
+        if ($openJourney) {
+            return response()->json([
+                'hasOpenJourneys' => true,
+                'openJourney' => [
+                    'id' => $openJourney->id,
+                    'task_id' => $openJourney->task_id,
+                    'details' => $openJourney->details,
+                    'start' => $openJourney->start,
+                    'duration' => $openJourney->duration,
+                ]
+            ]);
+        } else {
+            return response()->json([
+                'hasOpenJourneys' => false,
+                'openJourney' => null
+            ]);
+        }
     }
-}
 }

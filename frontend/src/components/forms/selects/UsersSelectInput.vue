@@ -1,6 +1,6 @@
 <template>
   <SelectInput :label="label" :name="name" v-model="localValue" :items="users" :fieldsToDisplay="fieldsToDisplay"
-    fieldNull="Nenhum" :autoSelect=autoSelectUser @update:modelValue="updateInput" />
+    :fieldNull="fieldNullValue" @update:modelValue="updateInput" />
 </template>
 
 <script>
@@ -18,7 +18,7 @@ export default {
     name: String,
     placeholder: String,
     fieldsToDisplay: [String, Array],
-    // fieldNull: String,
+    fieldNull: String,
     optionLabel: String,
     autoSelect: Boolean,
     type: String,
@@ -28,6 +28,7 @@ export default {
       users: [],
       localValue: this.modelValue,
       autoSelectUser: null,
+      fieldNullValue: null,
     };
   },
   methods: {
@@ -43,7 +44,7 @@ export default {
       axios
         .get(`${BACKEND_URL}${USER_CURRENT_URL}`)
         .then((response) => {
-          this.autoSelectUser = response.data.data;
+          this.autoSelectUser = response.data.data.id;
           this.localValue = this.autoSelectUser;
           // this.$emit('update:modelValue', user);
         })
@@ -68,6 +69,9 @@ export default {
     }
   },
   mounted() {
+    if(this.fieldNull) {
+      this.fieldNullValue = this.fieldNull;
+    }
     if(this.autoSelect) {
       this.getCurrentUser();
     }

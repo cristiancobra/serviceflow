@@ -5,6 +5,7 @@ import router from './router'
 
 // assets
 import "./assets/css/style.css"
+import './assets/css/cards.css';
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap"
 import VueMask from '@devindex/vue-mask'; // vue mask

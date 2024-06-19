@@ -1,24 +1,10 @@
-:root {
-  --background-light:rgb(248, 249, 250);
-  --blue: #3498db;
-  --blue-light: #d1ecf8;
-  --green: #2CB48D;
-  --green-light: #e5f9e0;
-  --orange: #E78D1F;
-  --orange-light: #faf2e0;
-  --purple: #B1388D;
-  --purple-light: #DFBAD9;
-  --gray-light: #DCDCDC;
-  --gray: #808080;
-  --red: #e85c5c;
-  --red-light: rgb(251, 226, 226);
+@import './variables.css';
 
-  --to-do-color: #E78D1F;
-  --done-color: #2CB48D;
-  --canceled-color: #808080;
-  --doing-color: #3498db;
-  --wait-color: #808080;
-
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  text-align: center;
+  color: #2c3e50;
+  background-color: var(--background-light);
 }
 
 .button-new {
@@ -164,7 +150,6 @@
   border-color: gray;
   border-radius: 6px;
   background-color: var(--gray-light);
-  padding: 0.6rem;
 }
 
 .line:hover {

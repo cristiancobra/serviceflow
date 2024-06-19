@@ -55,17 +55,17 @@
 
             <div class="row mb-5 mt-5">
                 <div class="col-md-4">
-                    <DateTimeInput v-model="form.date_start" label="Início" name="date_start"
+                    <TimeInput v-model="form.date_start" label="Início" name="date_start"
                         placeholder="início do prazo" :autoFillNow="true" />
                 </div>
 
                 <div class="col-md-4">
-                    <DateTimeInput v-model="form.date_due" label="Prazo final" name="date_due"
+                    <TimeInput v-model="form.date_due" label="Prazo final" name="date_due"
                         placeholder="prazo final" />
                 </div>
 
                 <div class="col-md-4">
-                    <DateTimeInput v-model="form.date_conclusion" label="Data de conclusão" name="date_conclusion"
+                    <TimeInput v-model="form.date_conclusion" label="Data de conclusão" name="date_conclusion"
                         placeholder="data quando a projeto foi finalizada" />
                 </div>
             </div>
@@ -87,7 +87,7 @@ import { BACKEND_URL, PROJECT_URL, TASK_STATUS_URL } from "@/config/apiConfig";
 import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import axios from 'axios'
 import CompaniesSelectInput from "@/components/forms/selects/CompaniesSelectInput.vue";
-import DateTimeInput from "@/components/forms/inputs/date/DateTimeInput.vue";
+import TimeInput from "@/components/forms/inputs/time/TimeInput.vue";
 import LeadsSelectInput from "@/components/forms/selects/LeadsSelectInput.vue";
 import StatusLinearRadioInput from "@/components/forms/inputs/StatusLinearRadioInput.vue";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
@@ -98,7 +98,7 @@ export default {
     components: {
         AddMessage,
         CompaniesSelectInput,
-        DateTimeInput,
+        TimeInput,
         LeadsSelectInput,
         StatusLinearRadioInput,
         UsersSelectInput

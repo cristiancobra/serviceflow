@@ -8,20 +8,20 @@
         <div v-if="project">
 
           <router-link :to="{ name: 'projectShow', params: { id: task.project_id } }">
-          <div class="status" v-bind:class="getStatusClass(project.status)">
-            <font-awesome-icon :icon="getStatusIcon(project.status)" />
-            <p class="duration">
-              {{ formatDuration(project.duration_time) }}
-            </p>
-          </div>
+            <div class="status" v-bind:class="getStatusClass(project.status)">
+              <font-awesome-icon :icon="getStatusIcon(project.status)" />
+              <p class="duration">
+                {{ formatDuration(project.duration_time) }}
+              </p>
+            </div>
           </router-link>
 
           <ProjectsSelectInput label="Nome do Projeto" v-model="task.project_id"
-            @update:modelValue="updateTask('project_id', $event)" fieldsToDisplay="name" autoSelect=true />
+            @update:modelValue="updateTask('project_id', $event)" fieldsToDisplay="name" autoSelect=false fieldNull="Nenhum"/>
         </div>
         <div v-else class="">
           <ProjectsSelectInput label="Adicionar projeto" v-model="task.project_id"
-            @update:modelValue="updateTask('project_id', $event)" fieldsToDisplay="name" autoSelect=true />
+            @update:modelValue="updateTask('project_id', $event)" fieldsToDisplay="name" autoSelect=false />
         </div>
       </div>
 
@@ -38,24 +38,20 @@
               <TextEditableInput name="name" v-model="task.name" placeholder="descrição detalhada da tarefa"
                 @save="updateTask('name', $event)" />
             </p>
-            <div class="row">
-              <div class="col-3">
-                <UsersSelectInput label="Responsável" v-model="task.user_id"
-                  @update:modelValue="updateTask('user_id', $event)" fieldsToDisplay="name" autoSelect=true />
-              </div>
-            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <UsersSelectInput label="Responsável" v-model="task.user_id"
+              @update:modelValue="updateTask('user_id', $event)" fieldsToDisplay="name" autoSelect=false />
           </div>
         </div>
       </div>
     </div>
 
-    <div class="row pt-2">
-      <div id="col-infos" class="col">
-        <div class="row">
-          <TextEditor label="Descrição" name="description" v-model="task.description"
-            @save="updateTask('description', $event)" />
-        </div>
 
+    <div class="row pt-0">
+      <div id="col-infos" class="col">
         <div class="row pt-5 pb-4">
           <DateEditableInput name="date_start" label="Início:" v-model="task.date_start"
             @save="updateTask('date_start', $event)" />
@@ -64,20 +60,22 @@
           <DateEditableInput name="date_conclusion" label="Conclusão:" v-model="task.date_conclusion"
             @save="updateTask('date_conclusion', $event)" />
         </div>
-
         <div class="row pt-5 pb-3">
           <div class="duration">
             <PrioritySelectRadioInput v-if="task.priority" :priority="task.priority"
               @priority-change="updateTask('priority', $event)" />
           </div>
         </div>
-        <div class="row pt-5">
+        <div class="row pt-5 mb-5">
           <div class="duration">
             <StatusLinearRadioInput v-if="task.status" :status="task.status"
               @status-change="updateTask('status', $event)" />
           </div>
         </div>
-
+        <div class="row mt-5 mb-5">
+          <TextEditor label="Descrição" name="description" v-model="task.description"
+            @save="updateTask('description', $event)" />
+        </div>
         <div class="row pt-5">
           <button class="col myButton delete" @click="deleteTask()">
             excluir
@@ -86,7 +84,7 @@
 
       </div>
 
-      <div id="col-list" class="col">
+      <div id="col-list" class="col pt-0">
         <JourneysList :taskId="taskId" @update-task-duration="updateTaskDuration()" />
       </div>
     </div>
@@ -155,8 +153,6 @@ export default {
 
         this.task = response.data.data;
         this.project = this.task.project;
-        convertUtcToLocal(this.task.date_start);
-
         this.taskLoaded = true; // Marque a tarefa como carregada
       } catch (error) {
         console.error("Erro ao acessar tarefa:", error);
@@ -197,7 +193,6 @@ export default {
     },
     async updateTask(fieldName, editedValue) {
       const updatedField = {};
-
       updatedField[fieldName] = editedValue;
 
       try {
@@ -208,7 +203,6 @@ export default {
 
         this.task = response.data.data;
         this.project = this.task.project;
-        console.log("projeto atualizada:", this.project);
       } catch (error) {
         console.error("Erro ao atualizar a tarefa:", error);
       }
@@ -225,14 +219,6 @@ export default {
   async mounted() {
     this.setTaskId(this.$route.params.id);
     this.getTask();
-  },
-  computed: {
-    translatedStatus() {
-      return translateStatus(this.task.status);
-    },
-    localDate(date) {
-      return convertUtcToLocal(date);
-    },
   },
 };
 </script>
@@ -323,12 +309,14 @@ a:active {
 }
 
 .status {
+  display: block;
   text-align: center;
   font-size: 3rem;
 }
 
 .header {
   display: flex;
+  margin: 0;
 }
 
 .project {

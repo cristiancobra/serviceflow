@@ -1,24 +1,31 @@
 <template>
-  <div class="container">
+  <div class="">
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
 
     <div class="row errorBox" v-bind:class="{ 'd-none': datesError }"></div>
     <form @submit.prevent="submitForm">
       <div class="row form" v-bind:class="{ 'd-none': isActive }">
-        <div class="col-md-9 mb-3">
-          <label for="details" class="form-label">Detalhes</label>
-          <textarea name="description" rows="6" cols="50" v-model="form.details" class="form-control"
-            id="details"></textarea>
+        <div class="row mt-0">
+          <div class="col">
+            <label for="start">Início</label>
+            <VueDatePicker v-model="form.start" />
+          </div>
+          <div class="col">
+            <label for="end">Fim</label>
+            <VueDatePicker v-model="form.end" />
+          </div>
         </div>
-        <div class="col-md-3 mb-3 text-center">
-          <label for="start" class="form-label">Início</label>
-          <VueDatePicker v-model="form.start" />
-          <label for="end" class="form-label">Fim</label>
-          <VueDatePicker v-model="form.end" />
-          <br />
-          <button type="submit mt-5" class="button-new orange">Enviar</button>
+        <div class="row">
+          <div class="col">
+            <label for="details">Detalhes</label>
+            <textarea name="description" rows="5" cols="50" v-model="form.details" class="form-control"
+              id="details"></textarea>
+          </div>
         </div>
+        <div class="row d-flex justify-content-center">
+            <button type="submit mt-5" class="button-new orange">Enviar</button>
+          </div>
       </div>
     </form>
     <div class="row mb-5">
@@ -47,7 +54,7 @@
 <script>
 import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import { BACKEND_URL, JOURNEY_URL } from "@/config/apiConfig";
-import { formatDateTimeForServer } from "@/utils/date/dateUtils";
+import { convertDateTimeForServer } from "@/utils/date/dateUtils";
 import axios from "axios";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
@@ -75,14 +82,16 @@ export default {
       datesError: false,
       enableTime: true,
       newJourney: null,
+      isFirstStartChange: true,
     };
   },
   methods: {
-    formatDateTimeForServer,
+    convertDateTimeForServer,
     clearForm() {
       this.form.details = null;
       this.form.start = null;
       this.form.end = null;
+      this.isFirstStartChange = true;
     },
     checkDates() {
       if (this.form.end && this.form.start) {
@@ -96,13 +105,12 @@ export default {
         }
       }
     },
-    // convertToUTC(localDate) {
-    //   // Converta uma data local para UTC
-    //   const utcDate = new Date(localDate);
-    //   const timezoneOffset = utcDate.getTimezoneOffset();
-    //   utcDate.setMinutes(utcDate.getMinutes() - timezoneOffset); // Adicione o offset do fuso horário
-    //   return utcDate;
-    // },
+    handleStartChange(newVal) {
+      if (this.isFirstStartChange && newVal) {
+        this.form.end = newVal;
+        this.isFirstStartChange = false;
+      }
+    },
     setMessageStatus(status) {
       this.messageStatus = status;
 
@@ -129,7 +137,7 @@ export default {
             console.log("newJourney", this.newJourney);
             this.$emit("new-journey-event", this.newJourney);
             this.clearForm();
-
+            this.toggle();
             this.setMessageStatus("success");
           });
       } catch (error) {
@@ -157,6 +165,11 @@ export default {
     toggle() {
       this.isActive = !this.isActive;
     },
+  },
+  watch: {
+    'form.start': function (newVal) {
+      this.handleStartChange(newVal);
+    }
   },
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div class="mb-5">
     <label class="form-label" :for="name">{{ label }}</label>
-    <select class="form-select" :id="name" :name="name" @input="updateInput" v-model="internalValue">
+    <select class="form-select" :id="name" :name="name" @input="updateInput" v-model="localValue">
       <option v-if="fieldNull" :value=null>{{ fieldNull }}</option>
       <option v-if="optionLabel" disabled value="">
         {{ optionLabel }}
@@ -23,21 +23,20 @@ export default {
     fieldNull: String,
     optionLabel: String,
     modelValue: [String, Number],
-    autoSelect: [String, Object, Number],
   },
   data() {
     return {
-      internalValue: this.modelValue,
+      localValue: this.modelValue,
     };
   },
   methods: {
     updateInput(event) {
-      if (event.target.value === "null") {
-        this.internalValue = null;
+      if (event.target.value === "null" || event.target.value === this.fieldNull) {
+        this.localValue = null;
       } else {
-        this.internalValue = event.target.value;
+        this.localValue = event.target.value;
       }
-      this.$emit("update:modelValue", this.internalValue);
+      this.$emit("update:modelValue", this.localValue);
     },
     displayItemText(item) {
       if (Array.isArray(this.fieldsToDisplay)) {
@@ -59,25 +58,17 @@ export default {
   },
   watch: {
     modelValue(newValue) {
-      this.internalValue = newValue;
+      this.localValue = newValue;
     },
-    autoSelect(newValue) {
-      this.internalValue = newValue;
-      this.$emit("update:modelValue", newValue.id);
-    }
   },
 
   mounted() {
-    if (this.autoSelect && this.autoSelect.id !== undefined) {
-      this.internalValue = this.autoSelect.id;
-      this.$emit("update:modelValue", this.autoSelect.id);
-    } else if (this.modelValue !== undefined) {
-      this.internalValue = this.modelValue;
+    if (this.modelValue !== undefined) {
+      this.localValue = this.modelValue;
     } else if (this.fieldNull) {
-      this.internalValue = null;
-      this.$emit("update:modelValue", null);
+      this.localValue = null;
     } else {
-      this.internalValue = '';
+      this.localValue = '';
     }
   },
 

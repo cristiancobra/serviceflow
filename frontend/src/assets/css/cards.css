@@ -1,0 +1,177 @@
+@import './variables.css';
+
+/* ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  li {
+    display: inline-block;
+    margin: 0 10px;
+  }
+  
+  a {
+    color: rgb(61, 61, 61);
+  }
+  
+ */
+
+ .big-icon {
+    padding-right:1.4rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+  }
+
+  .cards {
+      border-style: solid;
+      border-width: 2px;
+      border-color: gray;
+      border-radius: 6px;
+      padding: 0;
+      min-height: 14vh;
+      position: relative;
+      overflow: hidden;
+      text-align: left;
+  }
+
+  .cards a:link {
+    text-decoration: none;
+  }
+  
+  .cards a:visited {
+    text-decoration: none;
+  }
+  
+  .cards a:hover {
+    text-decoration: none;
+  }
+  
+  .cards a:active {
+    text-decoration: none;
+  } 
+
+  .cards:hover {
+      border-width: 5px;
+      border-radius: 14px;
+  }
+/* 
+  .cards::before {
+      content: "";
+      position: absolute;
+      top: auto;
+      bottom: 0;
+      left: auto;
+      right: -24%;
+      width: 60%;
+      height: 14%;
+      transform: scaleX(-1) translateY(100%) rotate(45deg);
+      background-color: white;
+      z-index: 1;
+  }
+
+  .cards.low::before {
+      background-color: var(--gray);
+  }
+
+  .cards.medium::before {
+      background-color: var(--blue);
+  }
+
+  .cards.high::before {
+      background-color: var(--red);
+  } */
+
+  .low {
+    background-color: var(--gray);
+}
+  
+.medium {
+    background-color: var(--blue);
+}
+
+  .high {
+    background-color: var(--red);
+}
+  .cards-title {
+      text-align: left;
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 5px;
+      margin-top: 10px;
+      color: black;
+  }
+
+  .cards-project {
+    font-weight: 600;
+}
+
+.cards-project-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+  .description {
+      text-align: left;
+      font-size: 14px;
+      margin-top: 20px;
+      color: black;
+  }
+
+  .done {
+      background-color: var(--green-light);
+      border-color: var(--green);
+      color: var(--green);
+  }
+
+  .doing {
+      background-color: var(--blue-light);
+      border-color: var(--blue);
+      color: var(--blue);
+  }
+
+  .to-do {
+      background-color: var(--orange-light);
+      border-color: var(--orange);
+      color: var(--orange);
+  }
+
+  .canceled {
+      background-color: var(--gray-light);
+      border-color: var(--gray);
+      color: var(--gray);
+  }
+
+  .wait {
+      background-color: var(--gray-light);
+      border-color: var(--gray);
+      color: var(--gray);
+  }
+
+  .icon {
+      display: flex;
+      justify-content: start;
+      align-content: flex-start;
+      font-size: 1rem;
+      margin-top: 0.2rem;
+  }
+
+  .label {
+      margin-top: 0px;
+      margin-bottom: -0px;
+      font-size: 1.2rem;
+      font-weight: 800;
+  }
+
+  .search-container {
+      border-width: 2px;
+      border-style: solid;
+      border-color: lightgray;
+      border-radius: 20px 20px 20px 20px;
+      padding: 10px 15px 10px 15px;
+      margin: 0 4px 0 4px;
+      color: black;
+  }

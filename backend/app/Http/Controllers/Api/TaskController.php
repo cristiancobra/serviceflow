@@ -49,7 +49,7 @@ class TaskController extends Controller
 
             $task->save();
 
-            return TaskResource::make($task);
+            return TaskResource::make($task->load('project'));
         } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",

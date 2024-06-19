@@ -28,6 +28,21 @@ export function convertUtcToLocal(utcDateString) {
     return formattedDate;
 }
 
+export function convertUtcTimeToLocal(utcDateString) {
+    if (!utcDateString) return '--:--';
+
+    const utcDate = new Date(utcDateString);
+
+    const localDate = new Date(utcDate.getTime() + (utcDate.getTimezoneOffset() * 60000));
+
+    const hours = localDate.getHours();
+    const minutes = localDate.getMinutes();
+
+    var formattedTime = (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes;
+
+    return formattedTime;
+}
+
 export function displayLocalTime(utcDate) {
 
     if(!utcDate) return '--:--';
@@ -58,40 +73,42 @@ export function formatDateBr(date) {
 
 }
 
-export function formatDateTimeBr(dateTime) {
-    // Verifica se a data é válida
-    if (!dateTime) return "";
+// export function formatDateTimeBr(dateTime) {
+//     // Verifica se a data é válida
+//     if (!dateTime) return "";
 
-    const dateObj = new Date(dateTime);
-    const day = dateObj.getDate();
-    const month = dateObj.getMonth() + 1; // Os meses em JavaScript começam em 0, então adicionamos 1
-    const year = dateObj.getFullYear();
-    const hours = padZero(dateObj.getHours());
-    const minutes = padZero(dateObj.getMinutes());
-    const seconds = padZero(dateObj.getSeconds());
+//     const dateObj = new Date(dateTime);
+//     const day = dateObj.getDate();
+//     const month = dateObj.getMonth() + 1; // Os meses em JavaScript começam em 0, então adicionamos 1
+//     const year = dateObj.getFullYear();
+//     const hours = padZero(dateObj.getHours());
+//     const minutes = padZero(dateObj.getMinutes());
+//     const seconds = padZero(dateObj.getSeconds());
 
-    // Formate a data no formato desejado (exemplo: dd/mm/aaaa hh:mm:ss)
-    const dateTimeBr = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+//     // Formate a data no formato desejado (exemplo: dd/mm/aaaa hh:mm:ss)
+//     const dateTimeBr = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 
-    return dateTimeBr;
-}
+//     return dateTimeBr;
+// }
 
-export function formatDateTimeForServer(dateTimeString) {
+export function convertDateTimeForServer(dateTimeString) {
     const date = new Date(dateTimeString);
 
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // adiciona zero à esquerda se necessário
-    const day = date.getDate().toString().padStart(2, '0');
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const seconds = date.getSeconds().toString().padStart(2, '0');
+    // Convertendo para UTC
+    const utcDateString = date.toISOString();
+
+    // Extraindo as partes da data e hora
+    const year = utcDateString.slice(0, 4);
+    const month = utcDateString.slice(5, 7);
+    const day = utcDateString.slice(8, 10);
+    const hours = utcDateString.slice(11, 13);
+    const minutes = utcDateString.slice(14, 16);
+    const seconds = utcDateString.slice(17, 19);
 
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
-export function formatDateTimeToLocal(datetime) {
-    if (!datetime) return '--:--';
-
+export function convertDateTimeToLocal(datetime) {
     const dateObj = new Date(datetime);
     const userTimezoneOffset = dateObj.getTimezoneOffset() * 60000;
     const localDate = new Date(dateObj.getTime() - userTimezoneOffset); // Subtraímos o offset para obter o horário local
@@ -110,17 +127,47 @@ export function formatDateTimeToLocal(datetime) {
     return dateTimeLocal;
 }
 
+export function displayDate(datetimeLocal) {
+    if (datetimeLocal === null || datetimeLocal === undefined) return 'sem data';
 
-export function formatTimeToLocal(datetime) {
-    const dateObj = new Date(datetime);
-    const userTimezoneOffset = dateObj.getTimezoneOffset() * 60000;
-    const localDate = new Date(dateObj.getTime() + userTimezoneOffset);
+    const dateObj = new Date(datetimeLocal);
 
-    const hours = localDate.getHours();
-    const minutes = localDate.getMinutes();
+    const padZero = (num) => num.toString().padStart(2, '0');
 
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    const day = padZero(dateObj.getDate());
+    const month = padZero(dateObj.getMonth() + 1); // Os meses em JavaScript começam em 0, então adicionamos 1
+    const year = dateObj.getFullYear();
+
+    const date = `${day}/${month}/${year}`;
+
+    return date;
 }
+
+export function displayTime(datetimeLocal) {
+    if (!datetimeLocal) return '--:--';
+
+    const dateObj = new Date(datetimeLocal);
+
+    const padZero = (num) => num.toString().padStart(2, '0');
+    
+    const hours = padZero(dateObj.getHours());
+    const minutes = padZero(dateObj.getMinutes());
+
+    const time = `${hours}:${minutes}`;
+
+    return time;
+}
+
+// export function formatTimeToLocal(datetime) {
+//     const dateObj = new Date(datetime);
+//     const userTimezoneOffset = dateObj.getTimezoneOffset() * 60000;
+//     const localDate = new Date(dateObj.getTime() + userTimezoneOffset);
+
+//     const hours = localDate.getHours();
+//     const minutes = localDate.getMinutes();
+
+//     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+// }
 
 export function formatDuration(seconds) {
 
@@ -133,6 +180,6 @@ export function formatDuration(seconds) {
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 }
 
-function padZero(number) {
-    return number < 10 ? `0${number}` : number;
-}
+// function padZero(number) {
+//     return number < 10 ? `0${number}` : number;
+// }

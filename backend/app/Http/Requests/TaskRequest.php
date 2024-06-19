@@ -60,22 +60,22 @@ class TaskRequest extends FormRequest
             ]);
         }
 
-        if ($this->has('date_start')) {
-            $this->merge([
-                'date_start' => DateConversionService::convertToUtc($this->input('date_start')),
-            ]);
-        }
+        // if ($this->has('date_start')) {
+        //     $this->merge([
+        //         'date_start' => DateConversionService::convertToUtc($this->input('date_start')),
+        //     ]);
+        // }
 
-        if ($this->has('date_due')) {
-            $this->merge([
-                'date_due' => DateConversionService::convertToUtc($this->input('date_due')),
-            ]);
-        }
+        // if ($this->has('date_due')) {
+        //     $this->merge([
+        //         'date_due' => DateConversionService::convertToUtc($this->input('date_due')),
+        //     ]);
+        // }
 
-        if ($this->has('date_conclusion')) {
-            $this->merge([
-                'date_conclusion' => DateConversionService::convertToUtc($this->input('date_conclusion')),
-            ]);
-        }
+        // if ($this->has('date_conclusion')) {
+        //     $this->merge([
+        //         'date_conclusion' => DateConversionService::convertToUtc($this->input('date_conclusion')),
+        //     ]);
+        // }
     }
 }

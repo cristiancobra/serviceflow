@@ -58,17 +58,18 @@
 
       <div class="row mb-5 mt-5">
         <div class="col-md-4">
-          <DateTimeInput v-model="form.date_start" label="Início" name="date_start" placeholder="início do prazo"
-            :autoFillNow="true" />
+          <DateInput v-model="form.date_start" label="Início" name="date_start" placeholder="início do prazo"
+            :autoFillNow="true" @update="updateForm" />
         </div>
 
         <div class="col-md-4">
-          <DateTimeInput v-model="form.date_due" label="Prazo final" name="date_due" placeholder="prazo final" />
+          <DateInput v-model="form.date_due" label="Prazo final" name="date_due" placeholder="prazo final" 
+          @update="updateForm" />
         </div>
 
         <div class="col-md-4">
-          <DateTimeInput v-model="form.date_conclusion" label="Data de conclusão" name="date_conclusion"
-            placeholder="data quando a tarefa foi finalizada" />
+          <DateInput v-model="form.date_conclusion" label="Data de conclusão" name="date_conclusion"
+            placeholder="data quando a tarefa foi finalizada"  @update="updateForm" />
         </div>
       </div>
 
@@ -96,7 +97,7 @@ import {
 } from "@/config/apiConfig";
 import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import axios from "axios";
-import DateTimeInput from "./inputs/date/DateTimeInput";
+import DateInput from "./inputs/date/DateInput";
 import CompanyCreateForm from "./CompanyCreateForm.vue";
 import CompaniesSelectInput from "./selects/CompaniesSelectInput.vue";
 import LeadCreateForm from "./LeadCreateForm.vue";
@@ -117,7 +118,7 @@ export default {
     AddMessage,
     CompanyCreateForm,
     CompaniesSelectInput,
-    DateTimeInput,
+    DateInput,
     LeadsSelectInput,
     LeadCreateForm,
     PrioritySelectRadioInput,
@@ -159,7 +160,6 @@ export default {
   },
   methods: {
     addLeadCreated(newLead) {
-      console.log(newLead);
       this.leads.push(newLead.lead);
       !this.toggleLead();
       this.form.contact_id = newLead.lead.id;
@@ -168,6 +168,10 @@ export default {
     //   this.companies.push(newCompany.company);
     //   this.getCompanies();
     // },
+    updateForm(field, value) {
+      this.form[field] = value;
+    },
+    
     clearForm() {
       this.form.name = "";
       this.form.description = "";

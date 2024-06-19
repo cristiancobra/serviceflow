@@ -61,7 +61,6 @@ export default {
         .get(`${BACKEND_URL}${PROJECTS_PRIORIZED_URL}`)
         .then((response) => {
           this.projects = response.data.data;
-          console.log("projects home", this.projects);
         })
         .catch((error) => console.log(error));
     },

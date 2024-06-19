@@ -66,7 +66,7 @@ class JourneyStoreRequest extends FormRequest
 
         $journeyExists = $this->route('journey');
 
-        if ($journeyExists && $journeyExists->duration !== null) {
+        if ($journeyExists) {
 
             if ($this->has('start') && $this->input('start') !== $journeyExists->start) {
                 $this->merge([

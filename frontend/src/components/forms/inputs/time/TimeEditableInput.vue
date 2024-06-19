@@ -1,34 +1,26 @@
 <template>
   <div class="mb-1 main-container">
     <label class="form-label  ms-2" :for="name">{{ label }}</label>
-    <template v-if="!modelValue && !editing">
-      <p @click="startEditing" class="not-informed ms-2">Não informado</p>
-    </template>
-    <template v-else>
-      <DateValue v-if="!editing" :id="name" :name="name" v-model="localValue" @click="startEditing" />
-
-      <DateInput v-else @update:modelValue="emitSave" @editing="cancelEditing" v-model="localValue" ref="editableInputRef" />
-    </template>
+      <TimeValue v-if="!editing" :id="name" :name="name" v-model="localValue" @click="startEditing" />
+      <TimeInput v-else @update:modelValue="emitSave" @editing="cancelEditing" v-model="localValue" ref="editableInputRef" />
   </div>
 </template>
 
 <script>
-import DateInput from "@/components/forms/inputs/date/DateInput.vue";
-import DateValue from "@/components/forms/inputs/date/DateValue.vue";
-import { convertDateTimeToLocal } from "@/utils/date/dateUtils";
+import TimeInput from "@/components/forms/inputs/time/TimeInput.vue";
+import TimeValue from "@/components/forms/inputs/time/TimeValue.vue";
 
 export default {
   data() {
     return {
       editing: false,
       editedValue: null,
-      formatedDate: null,
       localValue: this.modelValue,
     };
   },
   components: {
-    DateInput,
-    DateValue,
+    TimeInput,
+    TimeValue,
   },
   props: {
     label: String,
@@ -37,11 +29,11 @@ export default {
     placeholder: String,
   },
   methods: {
-    convertDateTimeToLocal,
     startEditing() {
       this.editing = true;
     },
     emitSave(editedValue) {
+
       this.$emit("save", editedValue);
 
       this.editing = false;
@@ -56,19 +48,14 @@ export default {
   beforeUnmount() {
     document.removeEventListener("keydown", this.cancelEditing);
   },
-  watch: {
-    modelValue(newValue) {
-      this.localValue = newValue
-    },
-  },
+ 
 };
 </script>
 
 <style scoped>
 .form-label {
   font-weight: 900;
-  padding-right: 0rem;
-  color: var(--primary);
+  padding-right: 1rem;
 }
 
 .main-container {

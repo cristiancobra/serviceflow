@@ -32,9 +32,9 @@ export function getStatusIcon(status) {
 
     switch (status) {
         case "to-do":
-            return "fas fa-calendar"; // Ícone para "fazendo"
+            return "fas fa-stop"; // Ícone para "fazendo"
         case "doing":
-            return "fas fa-clock"; // Ícone para "fazendo"
+            return "fas fa-play"; // Ícone para "fazendo"
         case "done":
             return "fas fa-check-circle"; // Ícone para "feito"
         case "wait":
