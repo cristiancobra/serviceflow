@@ -1,8 +1,8 @@
 <template>
-    <div class="row mt-5 filters-container">
+    <div class="row ms-5 me-5 ps-5 pe-5 mt-5 filters-container">
       <div class="col">
         <button
-          class="slot doing"
+          class="button doing"
           @click="handleButtonClick('doing', 'emitFilterDoing')"
           :class="{ active: activeButton === 'doing' }"
         >
@@ -11,7 +11,7 @@
       </div>
       <div class="col">
         <button
-          class="slot to-do"
+          class="button to-do"
           @click="handleButtonClick('to-do', 'emitFilterTodo')"
           :class="{ active: activeButton === 'to-do' }"
         >
@@ -20,7 +20,7 @@
       </div>
       <div class="col">
         <button
-          class="slot late"
+          class="button late"
           @click="handleButtonClick('late', 'emitFilterLate')"
           :class="{ active: activeButton === 'late' }"
         >
@@ -29,7 +29,7 @@
       </div>
       <div class="col">
         <button
-          class="slot canceled"
+          class="button canceled"
           @click="handleButtonClick('canceled', 'emitFilterCanceled')"
           :class="{ active: activeButton === 'canceled' }"
         >
@@ -38,15 +38,12 @@
       </div>
       <div class="col">
         <button
-          class="slot done"
+          class="button done"
           @click="handleButtonClick('done', 'emitFilterDone')"
           :class="{ active: activeButton === 'done' }"
         >
           feitas
         </button>
-      </div>
-      <div class="col">
-        <button class="slot button-new" @click="toggle()">+</button>
       </div>
     </div>
 </template>
@@ -84,9 +81,6 @@ export default {
     emitFilterTodo() {
       this.$emit("filter-to-do"); // Emitindo o evento para o componente pai
     },
-    toggle() {
-      this.$emit("toggle"); // Emitir evento para o componente pai
-    },
   },
 };
 </script>
@@ -99,16 +93,7 @@ export default {
   justify-content: center;
   /* width: 100%; */
 }
-.slot {
-  border-width: 2px;
-  border-style: solid;
-  border-color: white;
-  border-radius: 20px 20px 20px 20px;
-  padding: 10px 15px 10px 15px;
-  color: white;
-  font-weight: 800;
-  width: 100%;
-}
+
 .canceled {
   background-color: white;
   border-color: var(--gray);

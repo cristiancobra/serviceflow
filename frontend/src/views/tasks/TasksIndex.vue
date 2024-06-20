@@ -1,7 +1,6 @@
 <template>
   <div class="container mb-5">
     <TasksFilter
-      @toggle="toggle"
       @filter-canceled="getTasksCanceled"
       @filter-doing="getTasksDoing"
       @filter-done="getTasksDone"
@@ -9,18 +8,11 @@
       @filter-to-do="getTasksToDo"
     />
 
-    <div v-bind:class="{ 'd-none': isActive }">
-      <TaskCreateForm
-      @new-task-event="addTaskCreated"
-      @toogle-task-form=toggle()
-       />
-    </div>
-
     <ErrorMessage v-if="isError" :formResponse="formResponse" />
     <SuccessMessage v-if="isSuccess" :formResponse="formResponse" />
 
     <div class="row">
-      <TasksList :tasks="filteredTasks" :columns="2" />
+      <TasksList :tasks="filteredTasks" :columns="2" @toggle="toggle" />
     </div>
   </div>
 </template>
@@ -29,21 +21,18 @@
 import { BACKEND_URL, TASK_URL, TASK_URL_PARAMETER } from "@/config/apiConfig";
 import axios from "axios";
 import TasksList from "@/components/lists/TasksList.vue";
-import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import TasksFilter from "@/components/filters/TasksFilter.vue";
 import SuccessMessage from '../../components/forms/messages/SuccessMessage.vue';
 
 export default {
   name: "TasksIndexView",
   components: {
-    TaskCreateForm,
     TasksList,
     TasksFilter,
     SuccessMessage,
   },
   data() {
     return {
-      isActive: true,
       isError: false,
       isSuccess: false,
       hasError: false,
@@ -54,9 +43,6 @@ export default {
     };
   },
   methods: {
-    toggle() {
-      this.isActive = !this.isActive;
-    },
     getTasks() {
       axios
       .get(`${BACKEND_URL}${TASK_URL}`)
@@ -66,10 +52,10 @@ export default {
         })
         .catch((error) => console.log(error));
     },
-    addTaskCreated(newTask) {
-      this.toggle();
-      this.filteredTasks.unshift(newTask);
-    },
+    // addTaskCreated(newTask) {
+    //   this.toggle();
+    //   this.filteredTasks.unshift(newTask);
+    // },
     getTasksCanceled() {
       axios
         .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=canceled`) // Faz a requisição filtrando por status "done"

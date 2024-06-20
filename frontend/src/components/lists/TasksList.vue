@@ -1,7 +1,24 @@
 <template>
-  <div>
+  <div class="tasks-container mb-5 mt-0">
+    <div class="row align-items-start">
+      <div class="col-1">
+        <font-awesome-icon icon="fa-solid fa-check-circle" class="icon" />
+      </div>
+      <div class="col-7">
+        <h2 class="title">TAREFAS</h2>
+      </div>
+      <div class="col-4 text-end">
+        <button class="button button-new" @click="toggle()">+</button>
+      </div>
+    </div>
+    <div class="row" v-bind:class="{ 'd-none': isActive }">
+      <TaskCreateForm
+      @new-task-event="addTaskCreated"
+      @toogle-task-form=toggle()
+       />
+    </div>
     <div class="row">
-      <div class="col-12 mb-3">
+      <div class="col-12 mb-3 mt-3">
         <input type="text" class="form-control search-container" v-model="searchTerm"
           placeholder="Digite para buscar" />
       </div>
@@ -71,6 +88,7 @@ import { getStatusClass } from "@/utils/card/cardUtils";
 import { getPriorityClass } from "@/utils/card/cardUtils";
 import { getStatusIcon } from "@/utils/card/cardUtils";
 import { convertUtcToLocal } from "@/utils/date/dateUtils";
+import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 
 export default {
   name: "TasksList",
@@ -83,8 +101,12 @@ export default {
   },
   data() {
     return {
+      isActive: true,
       searchTerm: "",
     };
+  },
+  components: {
+    TaskCreateForm,
   },
   methods: {
     convertUtcToLocal,
@@ -92,6 +114,10 @@ export default {
     getStatusClass,
     getPriorityClass,
     getStatusIcon,
+    addTaskCreated(newTask) {
+      this.toggle();
+      this.filteredTasks.unshift(newTask);
+    },
     formatDateDue(date) {
       if (date !== '1969-12-31 18:00:00' && date !== '1969-12-31 21:00:00') {
         return this.convertUtcToLocal(date);
@@ -121,6 +147,9 @@ export default {
       // Combine as classes
       return `${statusClass} ${priorityClass}`;
     },
+    toggle() {
+      this.isActive = !this.isActive;
+    },
   },
   computed: {
     filteredTasks() {
@@ -141,5 +170,22 @@ export default {
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped></style>
+<style scoped>
+.icon {
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: var(--gray);
+}
+
+.tasks-container {
+  border-style: solid;
+  border-width: 2px;
+  border-color: var(--primary);
+  border-radius: 14px;
+  padding: 1rem;
+}
+
+.title {
+  text-align: left;
+}
+</style>

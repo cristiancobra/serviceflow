@@ -356,6 +356,7 @@ icon-new:hover {
 
 .journey-container {
   border-style: solid;
+  border-width: 2px;
   border-color: var(--primary);
   border-radius: 14px;
   padding: 1rem;

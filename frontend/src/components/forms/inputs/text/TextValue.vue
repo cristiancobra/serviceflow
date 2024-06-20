@@ -1,6 +1,6 @@
 <template>
-  <div v-if="localValue" class="">
-    {{ localValue }}
+  <div v-if="modelValue" class="">
+    {{ modelValue }}
   </div>
   <div v-else>
     não informado
@@ -13,7 +13,7 @@
 export default {
   data() {
     return {
-      // modelValue: String,
+      localValue: null,
     };
   },
   props: {
@@ -21,16 +21,7 @@ export default {
     modelValue: String,
     placeholder: String,
   },
-  computed: {
-    localValue: {
-      get() {
-        return this.modelValue;
-      },
-      set(value) {
-        this.$emit('update:modelValue', value);
-      }
-    }
-  }
+
 };
 </script>
 

@@ -115,8 +115,5 @@ export default {
       }
     },
   },
-  mounted() {
-    console.log("projects", this.projects);
-  },
 };
 </script>

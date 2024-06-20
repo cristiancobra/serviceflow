@@ -1,5 +1,5 @@
 <template>
-  <div class="form-container">
+  <div class="form-container mt-5">
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
 
@@ -13,7 +13,7 @@
         </div>
       </div>
 
-      <div class="row">
+      <div class="row mt-5">
         <TextAreaInput label="Descrição:" name="description" v-model="form.description"
           placeholder="Detalhamento da tarefa" :rows="5" />
       </div>
@@ -52,7 +52,15 @@
           <UsersSelectInput label="Responsável" v-model="form.user_id" fieldsToDisplay="name" autoSelect=true />
         </div>
         <div class="col">
-          <ProjectsSelectInput label="Projeto" v-model="form.project_id" fieldsToDisplay="name" autoSelect=false />
+          <div v-if="currentProject">
+            <label for="project" class="form-label">Projeto</label>
+            <input type="hidden" id="project" name="project_id" v-model="currentProject.id" />
+            <TextValue v-model="currentProject.name" class="selected" />
+          </div>
+          <div v-else>
+            <ProjectsSelectInput label="Projeto" v-model="form.project_id" fieldsToDisplay="name" :autoSelect="false"
+              fieldNull="Nenhum" />
+          </div>
         </div>
       </div>
 
@@ -63,19 +71,19 @@
         </div>
 
         <div class="col-md-4">
-          <DateInput v-model="form.date_due" label="Prazo final" name="date_due" placeholder="prazo final" 
-          @update="updateForm" />
+          <DateInput v-model="form.date_due" label="Prazo final" name="date_due" placeholder="prazo final"
+            @update="updateForm" />
         </div>
 
         <div class="col-md-4">
           <DateInput v-model="form.date_conclusion" label="Data de conclusão" name="date_conclusion"
-            placeholder="data quando a tarefa foi finalizada"  @update="updateForm" />
+            placeholder="data quando a tarefa foi finalizada" @update="updateForm" />
         </div>
       </div>
 
       <div class="row mb-5 mt-5">
         <div class="col">
-          <PrioritySelectRadioInput :priority="form.priority" @priority-change="updateFormPriority" />
+          <PrioritySelectInput id="form" v-model="form.priority" @update:modelValue="updateFormPriority" />
         </div>
         <div class="col">
           <StatusLinearRadioInput :status="form.status" @status-change="updateFormStatus" />
@@ -95,69 +103,74 @@ import {
   TASK_URL,
   TASK_STATUS_URL,
 } from "@/config/apiConfig";
+// import { inject } from "vue";
 import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import axios from "axios";
-import DateInput from "./inputs/date/DateInput";
-import CompanyCreateForm from "./CompanyCreateForm.vue";
 import CompaniesSelectInput from "./selects/CompaniesSelectInput.vue";
+import CompanyCreateForm from "./CompanyCreateForm.vue";
+import DateInput from "./inputs/date/DateInput";
+import ErrorMessage from "./messages/ErrorMesssage.vue";
 import LeadCreateForm from "./LeadCreateForm.vue";
 import LeadsSelectInput from "./selects/LeadsSelectInput.vue";
-import PrioritySelectRadioInput from "./inputs/PrioritySelectRadioInput.vue";
-import StatusLinearRadioInput from "./inputs/StatusLinearRadioInput.vue";
-import TextInput from "./inputs/text/TextInput";
-import TextAreaInput from "./inputs/TextAreaInput";
-import UsersSelectInput from "./selects/UsersSelectInput.vue";
-import ErrorMessage from "./messages/ErrorMesssage.vue";
-import SuccessMessage from "./messages/SuccessMessage.vue";
+import PrioritySelectInput from "./inputs/PrioritySelectInput.vue";
 import ProjectsSelectInput from "./selects/ProjectsSelectInput.vue";
+import StatusLinearRadioInput from "./inputs/StatusLinearRadioInput.vue";
+import SuccessMessage from "./messages/SuccessMessage.vue";
+import TextAreaInput from "./inputs/TextAreaInput";
+import TextInput from "./inputs/text/TextInput";
+import TextValue from "./inputs/text/TextValue";
+import UsersSelectInput from "./selects/UsersSelectInput.vue";
 
 export default {
   name: "TaskCreateForm",
   emits: ["new-task-event"],
   components: {
     AddMessage,
-    CompanyCreateForm,
     CompaniesSelectInput,
+    CompanyCreateForm,
     DateInput,
-    LeadsSelectInput,
+    ErrorMessage,
     LeadCreateForm,
-    PrioritySelectRadioInput,
+    LeadsSelectInput,
+    PrioritySelectInput,
     ProjectsSelectInput,
     StatusLinearRadioInput,
-    ErrorMessage,
     SuccessMessage,
-    TextInput,
     TextAreaInput,
+    TextInput,
+    TextValue,
     UsersSelectInput,
   },
   data() {
     return {
       allStatus: [],
-      message: null,
-      newTask: null,
       companies: [],
-      leads: [],
-      users: [],
       data: [],
-      isActiveCompany: false,
-      isActiveLead: false,
       form: {
-        name: null,
-        description: null,
         company_id: null,
         contact_id: null,
-        user_id: null,
-        project_id: null,
-        date_start: null,
-        date_due: null,
         date_conclusion: null,
-        status: "to-do",
+        date_due: null,
+        date_start: null,
+        description: null,
+        name: null,
         priority: "medium",
+        project_id: null,
+        status: "to-do",
+        user_id: null,
       },
+      isActiveCompany: false,
+      isActiveLead: false,
+      leads: [],
+      message: null,
       messageStatus: "",
       messageText: "",
+      newTask: null,
+      // selectedProject: inject('currentProject'),
+      users: [],
     };
   },
+  inject: ['currentProject'],
   methods: {
     addLeadCreated(newLead) {
       this.leads.push(newLead.lead);
@@ -171,7 +184,7 @@ export default {
     updateForm(field, value) {
       this.form[field] = value;
     },
-    
+
     clearForm() {
       this.form.name = "";
       this.form.description = "";
@@ -206,7 +219,7 @@ export default {
         this.isError = false;
         // this.newCompanyEvent(this.data);
         // this.successMessage(this.data);
-        // this.toggleTaskForm();
+        this.toggleTaskForm();
         this.clearForm();
       } catch (error) {
         console.error(error);
@@ -248,6 +261,11 @@ export default {
       this.form.status = newStatus;
     },
   },
+  watch: {
+    currentProject(newValue) {
+      this.form.project_id = newValue.id;
+    },
+  },
   mounted() {
     this.getTasksStatus();
   },
@@ -283,6 +301,15 @@ export default {
   display: flex;
   justify-content: left;
   align-items: center;
+}
+
+.selected {
+  width: 100%;
+  padding: 0.4rem;
+  font-size: 1rem;
+  border: 1px dashed var(--primary);
+  border-radius: 4px;
+  font-weight: 400;
 }
 
 .status {

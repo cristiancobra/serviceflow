@@ -29,11 +29,11 @@
     <div class="row pt-2">
       <div id="col-infos" class="col">
         <div class="row">
-        <TextEditor label="Descrição" name="description" v-model="project.description"
-          @save="updateProject('description', $event)" />
-    </div>
-    
-     <div class="row">
+          <TextEditor label="Descrição" name="description" v-model="project.description"
+            @save="updateProject('description', $event)" />
+        </div>
+
+        <div class="row mt-5">
           <DateEditableInput name="date_start" label="Início:" v-model="project.date_start"
             @save="updateProject('date_start', $event)" />
           <DateEditableInput name="date_due" label="Prazo:" v-model="project.date_due"
@@ -44,45 +44,44 @@
 
         <div class="row">
           <div class="duration">
-            <PrioritySelectRadioInput :priority="project.priority"
-              @priority-change="updateProject('priority', $event)" />
+            <PrioritySelectInput id="show" v-model="project.priority" @update:modelValue="updateProject('priority', $event)" />
           </div>
-          </div>
+        </div>
 
-          <div class="row mt-5">
+        <div class="row mt-5">
           <div class="duration">
-            <StatusLinearRadioInput :status="project.status"
-              @status-change="updateProject('status', $event)" />
+            <StatusLinearRadioInput :status="project.status" @status-change="updateProject('status', $event)" />
           </div>
-          </div>
-          
-  
+        </div>
 
-      <div class="row mt-5 mb-5">
-        <button class="col myButton delete" @click="deleteProject()">
-          excluir
-        </button>
+
+
+        <div class="row mt-5 mb-5">
+          <button class="col myButton delete" @click="deleteProject()">
+            excluir
+          </button>
+        </div>
+      </div>
+
+      <div id="col-list" class="col">
+        <ProjectTasksList :projectId="projectId" @update-project-duration="updateProjectDuration()" />
       </div>
     </div>
-
-    <div id="col-list" class="col">
-      <ProjectTasksList :projectId="projectId" @update-project-duration="updateProjectDuration()" />
-    </div>
   </div>
-</div>
 </template>
 
 <script>
 import axios from "axios";
 import { BACKEND_URL, PROJECT_URL_PARAMETER } from "@/config/apiConfig";
-import { convertUtcToLocal } from "@/utils/date/dateUtils";
+import { convertDateTimeToLocal } from "@/utils/date/dateUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import { formatDateTimeBr } from "@/utils/date/dateUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
 import { getStatusClass } from "@/utils/card/cardUtils";
 import { getStatusIcon } from "@/utils/card/cardUtils";
+import { provide, ref } from 'vue';
 import StatusLinearRadioInput from "@/components/forms/inputs/StatusLinearRadioInput.vue";
-import PrioritySelectRadioInput from "@/components/forms/inputs/PrioritySelectRadioInput.vue";
+import PrioritySelectInput from "@/components/forms/inputs/PrioritySelectInput.vue";
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
 import DateEditableInput from "@/components/forms/inputs/date/DateEditableInput";
@@ -95,7 +94,7 @@ export default {
   components: {
     DateEditableInput,
     ProjectTasksList,
-    PrioritySelectRadioInput,
+    PrioritySelectInput,
     TextEditableInput,
     TextEditor,
     StatusLinearRadioInput,
@@ -109,6 +108,14 @@ export default {
       project: [],
       editedProject: [],
       projectId: this.$route.params.id,
+
+    };
+  },
+  setup() {
+    const currentProject = ref(null);
+    provide('currentProject', currentProject);
+    return {
+      currentProject,
     };
   },
   emits: ["new-journey-event", "journey-updated", "journey-deleted"],
@@ -120,16 +127,15 @@ export default {
     getStatusIcon,
     translateStatus,
     translatePriority,
-    convertUtcToLocal,
+    convertDateTimeToLocal,
     async getProject() {
       try {
         const response = await axios.get(
           `${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.projectId}`
         );
-
         this.project = response.data.data;
-        convertUtcToLocal(this.project.date_start);
-
+        this.currentProject = this.project;
+        convertDateTimeToLocal(this.project.date_start);
         this.projectLoaded = true; // Marque a tarefa como carregada
       } catch (error) {
         console.error("Erro ao acessar tarefa:", error);
@@ -193,17 +199,17 @@ export default {
         .catch((error) => console.log(error));
     },
   },
-  async mounted() {
-    this.setProjectId(this.$route.params.id);
-    this.getProject();
-  },
   computed: {
     translatedStatus() {
       return translateStatus(this.project.status);
     },
     localDate(date) {
-      return convertUtcToLocal(date);
+      return convertDateTimeToLocal(date);
     },
+  },
+  mounted() {
+    this.setProjectId(this.$route.params.id);
+    this.getProject();
   },
 };
 </script>

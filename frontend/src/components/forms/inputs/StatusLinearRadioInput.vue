@@ -2,30 +2,25 @@
   <div class="mb-5">
     <label class="form-label" :for="name">Situação</label>
     <br />
-    <div id="debt-amount-slider">
+    <div :id="uniqueId"  class="slider">
+      <input type="radio" :name="'status-' + uniqueId" :id="'wait-' + uniqueId" value="wait" v-model="modelValue" @change="emitStatusChange" required />
+      <label class="label" :for="'wait-' + uniqueId" data-status="PENDENTE"></label>
 
-      <input type="radio" name="status" id="wait" value="wait" v-model="modelValue" @change="emitStatusChange"
-        required />
-      <label class="label" for="wait" data-status="PENDENTE"></label>
+      <input type="radio" :name="'status-' + uniqueId" :id="'to-do-' + uniqueId" value="to-do" v-model="modelValue" @change="emitStatusChange" required />
+      <label class="label" :for="'to-do-' + uniqueId" data-status="FAZER"></label>
 
-      <input type="radio" name="status" id="to-do" value="to-do" v-model="modelValue" @change="emitStatusChange"
-        required />
-      <label class="label" for="to-do" data-status="FAZER"></label>
+      <input type="radio" :name="'status-' + uniqueId" :id="'doing-' + uniqueId" value="doing" v-model="modelValue" @change="emitStatusChange" required />
+      <label class="label" :for="'doing-' + uniqueId" data-status="FAZENDO"></label>
 
-      <input type="radio" name="status" id="doing" value="doing" v-model="modelValue" @change="emitStatusChange"
-        required />
-      <label class="label" for="doing" data-status="FAZENDO"></label>
+      <input type="radio" :name="'status-' + uniqueId" :id="'done-' + uniqueId" value="done" v-model="modelValue" @change="emitStatusChange" required />
+      <label class="label" :for="'done-' + uniqueId" data-status="FEITO"></label>
 
-      <input type="radio" name="status" id="done" value="done" v-model="modelValue" @change="emitStatusChange"
-        required />
-      <label class="label" for="done" data-status="FEITO"></label>
-
-      <input type="radio" name="status" id="canceled" value="canceled" v-model="modelValue" @change="emitStatusChange"
-        required />
-      <label class="label" for="canceled" data-status="CANCELADO"></label>
+      <input type="radio" :name="'status-' + uniqueId" :id="'canceled-' + uniqueId" value="canceled" v-model="modelValue" @change="emitStatusChange" required />
+      <label class="label" :for="'canceled-' + uniqueId" data-status="CANCELADO"></label>
     </div>
   </div>
 </template>
+
 
 <script>
 export default {
@@ -35,6 +30,7 @@ export default {
   data() {
     return {
       modelValue: this.status,
+      uniqueId: Math.random().toString(36).substring(2, 9),
     };
   },
   computed: {
@@ -68,7 +64,7 @@ export default {
   align-items: center;
 }
 
-#debt-amount-slider {
+.slider {
   display: flex;
   flex-direction: row;
   align-content: stretch;
@@ -78,7 +74,7 @@ export default {
   user-select: none;
 }
 
-#debt-amount-slider::before {
+.slider::before {
   content: " ";
   position: absolute;
   height: 2px;

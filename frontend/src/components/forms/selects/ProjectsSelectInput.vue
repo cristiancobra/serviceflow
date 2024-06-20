@@ -13,14 +13,14 @@ export default {
     SelectInput,
   },
   props: {
-    label: String,
+    autoSelect: Boolean,
     fieldNull: String,
+    fieldToDisplay: [String, Array],
+    label: String,
     modelValue: null,
     name: String,
-    placeholder: String,
-    fieldToDisplay: [String, Array],
     optionLabel: String,
-    autoSelect: Boolean,
+    placeholder: String,
     type: String,
   },
   data() {

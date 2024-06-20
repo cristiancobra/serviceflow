@@ -14,7 +14,7 @@
       v-else
       @save="emitSave"
       @editing="cancelEditing"
-      :model-value="modelValue"
+      v-model="localValue"
       ref="editableInputRef"
     />
   </div>
@@ -28,6 +28,7 @@ export default {
   data() {
     return {
       editing: false,
+      localValue: this.modelValue,
     };
   },
   components: {
@@ -41,16 +42,6 @@ export default {
     placeholder: String,
     status: String,
   },
-  computed: {
-    localValue: {
-      get() {
-        return this.modelValue;
-      },
-      set(value) {
-        this.$emit('update:modelValue', value);
-      }
-    }
-  },
   methods: {
     startEditing() {
       this.editing = true;
@@ -60,13 +51,17 @@ export default {
       // });
     },
     emitSave(editedValue) {
-      console.log("editedValue", editedValue);
         this.$emit("save", editedValue);
       
       this.editing = false;
     },
     cancelEditing() {
       this.editing = false;
+    },
+  },
+  watch: {
+    modelValue(newValue) {
+      this.localValue = newValue;
     },
   },
 };

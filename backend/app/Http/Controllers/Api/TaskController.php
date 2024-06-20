@@ -193,6 +193,7 @@ class TaskController extends Controller
         $perPage = request()->get('per_page', 20); // Ajuste a quantidade de itens por página conforme necessário
 
         $tasks = Task::where('project_id', $request->project_id)
+            ->with('project')
             ->orderBy('date_start', 'desc')
             ->paginate($perPage);
 

@@ -62,8 +62,8 @@
         </div>
         <div class="row pt-5 pb-3">
           <div class="duration">
-            <PrioritySelectRadioInput v-if="task.priority" :priority="task.priority"
-              @priority-change="updateTask('priority', $event)" />
+            <PrioritySelectInput v-if="task.priority" v-model="task.priority"
+              @update:modelValue="updateTask('priority', $event)" />
           </div>
         </div>
         <div class="row pt-5 mb-5">
@@ -101,7 +101,7 @@ import { formatDuration } from "@/utils/date/dateUtils";
 import { getStatusClass } from "@/utils/card/cardUtils";
 import { getStatusIcon } from "@/utils/card/cardUtils";
 import StatusLinearRadioInput from "@/components/forms/inputs/StatusLinearRadioInput.vue";
-import PrioritySelectRadioInput from "@/components/forms/inputs/PrioritySelectRadioInput.vue";
+import PrioritySelectInput from "@/components/forms/inputs/PrioritySelectInput.vue";
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
 import DateEditableInput from "@/components/forms/inputs/date/DateEditableInput";
@@ -116,7 +116,7 @@ export default {
   components: {
     DateEditableInput,
     JourneysList,
-    PrioritySelectRadioInput,
+    PrioritySelectInput,
     ProjectsSelectInput,
     TextEditableInput,
     TextEditor,
@@ -192,6 +192,7 @@ export default {
       }
     },
     async updateTask(fieldName, editedValue) {
+      console.log(fieldName, editedValue);
       const updatedField = {};
       updatedField[fieldName] = editedValue;
 

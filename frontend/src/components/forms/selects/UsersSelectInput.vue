@@ -46,7 +46,7 @@ export default {
         .then((response) => {
           this.autoSelectUser = response.data.data.id;
           this.localValue = this.autoSelectUser;
-          // this.$emit('update:modelValue', user);
+          this.$emit('update:modelValue', this.localValue);
         })
         .catch((error) => {
           console.error("Erro ao buscar usuário:", error);
