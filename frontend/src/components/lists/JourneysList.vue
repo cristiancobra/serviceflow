@@ -33,12 +33,12 @@
         </div>
         <div class="col-11">
           <div class="row pt-2">
-            <div id="start" class="col-5" :class="{ 'col-big': journey.editing && journey.editing.start }"
+            <div id="start" class="col-6" :class="{ 'col-big': journey.editing && journey.editing.start }"
               style="position: relative" @click="editDateTime(journey, 'start')">
               <DateEditableInput name="start" v-model="journey.start"
                 @save="updateJourney('start', $event, journey.id)" />
             </div>
-            <div id="end" class="col-5" :class="{ 'col-big': journey.editing && journey.editing.end }"
+            <div id="end" class="col-4" :class="{ 'col-big': journey.editing && journey.editing.end }"
               style="position: relative" @click="editDateTime(journey, 'end')">
               <TimeEditableInput name="end" v-model="journey.end" @save="updateJourney('end', $event, journey.id)" />
             </div>
@@ -54,12 +54,12 @@
                 @save="updateJourney('details', $event, journey.id)" />
             </div>
             <div class="col-3 d-flex justify-content-end">
-              <button v-if="!journey.end" class="button stop" @click="stopJourney(journey)">
+              <button v-if="!journey.end" class="button-circular stop" @click="stopJourney(journey.id)">
                 <span class="stop">
                   <font-awesome-icon icon="fa-solid fa-hand" />
                 </span>
               </button>
-              <button class="button delete" @click="deleteItem(journey)">
+              <button class="button-circular delete" @click="deleteItem(journey)">
                 <span class="delete">
                   <font-awesome-icon icon="fa-solid fa-trash-alt" />
                 </span>
@@ -111,12 +111,12 @@ export default {
       updatedJourney: {
         id: null,
         details: null,
+        duration: null,
         start: null,
         end: null,
       },
       stopedJourney: {
         id: null,
-        start: null,
         end: null,
       },
       editedJourneys: [],
@@ -142,27 +142,7 @@ export default {
       }, 2000);
 
     },
-    async updateJourney(fieldName, editedValue, journeyId) {
-      const editedJourney = {
-        id: journeyId,
-        task_id: this.$route.params.id,
-        [fieldName]: editedValue,
-      };
 
-      try {
-        const response = await axios.put(
-          `${BACKEND_URL}${JOURNEY_URL_PARAMETER}${journeyId}`,
-          editedJourney
-        );
-
-        this.updatedJourney = response.data.data;
-        this.updateJourneyInList(this.updatedJourney);
-
-        this.$emit("journey-updated", this.journey);
-      } catch (error) {
-        console.error("Erro ao atualizar a jornada:", error);
-      }
-    },
     cancelEditDateTime(event, journey) {
       // Verifica se a tecla pressionada é "Esc" (código 27)
       if (event.keyCode === 27) {
@@ -233,27 +213,30 @@ export default {
         document.removeEventListener('keydown', (event) => this.cancelEditDateTime(event, journey, field));
       }
     },
-    async stopJourney(journey) {
-      this.stopedJourney.id = journey.id;
-      this.stopedJourney.task_id = this.$route.params.id;
-      this.stopedJourney.start = journey.start;
-      this.stopedJourney.end = new Date();
+    async stopJourney(journeyId) {
+      const fieldName = 'end';
+      const now = new Date();
+      const endValue = this.convertDateTimeForServer(now);
+      this.updateJourney(fieldName, endValue, journeyId);
+    },
+    async updateJourney(fieldName, editedValue, journeyId) {
+      const editedJourney = {
+        id: journeyId,
+        [fieldName]: editedValue,
+      };
 
       try {
         const response = await axios.put(
-          `${BACKEND_URL}${JOURNEY_URL_PARAMETER}${journey.id}`,
-          this.stopedJourney
+          `${BACKEND_URL}${JOURNEY_URL_PARAMETER}${journeyId}`,
+          editedJourney
         );
-        this.updatedJourney = response.data.data;
 
+        this.updatedJourney = response.data.data;
         this.updateJourneyInList(this.updatedJourney);
-        this.$emit("journey-updated", this.updatedJourney);
       } catch (error) {
-        console.error("Erro ao parar a jornada:", error);
+        console.error("Erro ao atualizar a jornada:", error);
       }
     },
-
-    // Nova função para atualizar a lista de jornadas
     updateJourneyInList(updatedJourney) {
       const index = this.journeys.findIndex(journey => journey.id === updatedJourney.id);
       if (index !== -1) {
@@ -311,19 +294,6 @@ export default {
   color: var(--gray);
 }
 
-.button {
-  width: 38px;
-  height: 38px;
-  padding: 0;
-  margin-left: 14px;
-  text-align: center;
-  font-size: 18px;
-  border-style: solid;
-  border-width: 2px;
-  border-radius: 50%;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-}
-
 .icon-new {
   font-size: 26px;
   font-weight: 900;
@@ -337,22 +307,6 @@ icon-new:hover {
   color: var(--purple);
 }
 
-.delete {
-  font-weight: 900;
-  color: var(--red);
-  border-color: var(--red);
-  background-color: var(--red-light);
-}
-
-.delete:hover {
-  border-color: var(--red);
-  background-color: var(--red);
-}
-
-.button:hover .delete {
-  color: white;
-  background-color: var(--red);
-}
 
 .journey-container {
   border-style: solid;
@@ -362,22 +316,7 @@ icon-new:hover {
   padding: 1rem;
 }
 
-.stop {
-  font-weight: 900;
-  color: var(--blue);
-  border-color: var(--blue);
-  background-color: var(--blue-light);
-}
 
-.stop:hover {
-  border-color: var(--blue);
-  background-color: var(--blue);
-}
-
-.button:hover .stop {
-  color: white;
-  background-color: var(--blue);
-}
 
 .comments {
   text-align: left;

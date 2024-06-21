@@ -11,11 +11,9 @@
     <div class="container mt-5">
       <div class="row">
         <div class="col-6">
-          <h2 class="text-center">Projetos abertos</h2>
           <ProjectsList :projects="projects" />
         </div>
         <div class="col-6">
-          <h2 class="text-center">Tarefas em destaque</h2>
           <TasksList :tasks="tasks" />
         </div>
       </div>

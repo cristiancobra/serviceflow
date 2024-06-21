@@ -30,7 +30,7 @@
     </form>
     <div class="row mb-5">
       <div class="col">
-        <button class="button-new me-3" @click="toggle()">
+        <button class="button me-3" @click="toggle()">
           <span class="icon-new">
             <font-awesome-icon icon="fa-solid fa-plus" />
           </span>
@@ -39,7 +39,7 @@
       </div>
       <div class="col">
         <form @submit.prevent="submitQuickForm">
-          <button class="button-new">
+          <button class="button">
             <span class="icon-new">
               <font-awesome-icon icon="fa-solid fa-bolt" />
             </span>

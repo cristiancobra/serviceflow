@@ -42,6 +42,12 @@ export default {
       this.editing = false;
     },
   },
+  watch: {
+    modelValue(newValue) {
+      this.localValue = newValue;
+      console.log('timeeditabela', newValue);
+    },
+  },
   mounted() {
     document.addEventListener("keydown", this.cancelEditing);
   },

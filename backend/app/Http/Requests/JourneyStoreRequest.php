@@ -28,10 +28,10 @@ class JourneyStoreRequest extends FormRequest
     {
         return [
             'name' => 'nullable|string',
-            'user_id' => 'required|exists:users,id',
-            'task_id' => 'required|exists:tasks,id',
+            'user_id' => 'sometimes|exists:users,id',
+            'task_id' => 'sometimes|exists:tasks,id',
             'details' => 'nullable|string',
-            'start' => 'nullable|date',
+            'start' => 'sometimes|date',
             'end' => 'nullable|date|after_or_equal:start',
             'duration' => 'nullable|integer',
         ];

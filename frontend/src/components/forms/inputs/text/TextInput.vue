@@ -1,8 +1,8 @@
 <template>
   <div class="text-input-container">
     <label v-if="label" class="form-label" :for="name">{{ label }}</label>
-    <input class="text-input" :type="type" :id="name" :name="name" :value="modelValue" :placeholder="placeholder"
-      @input="updateInput" @keydown.esc="cancelEditing" @blur="emitSave" @keydown.enter.prevent="emitSave" />
+    <input class="text-input" :type="type" :id="name" :name="name" v-model="localValue" :placeholder="placeholder"
+      @keydown.esc="cancelEditing" @blur="emitSave" @keydown.enter.prevent="emitSave" />
   </div>
 </template>
 
@@ -14,27 +14,21 @@ export default {
     modelValue: [String, Number],
     placeholder: String,
   },
+  data() {
+    return {
+      localValue: this.modelValue,
+    };
+  },
   methods: {
-    startEditing() {
-      this.editing = true;
-      this.editedValue = this.modelValue;
-      this.$nextTick(() => {
-        this.$refs.editableInputRef.focus();
-      });
-    },
     emitSave() {
-      if (this.editedValue !== this.modelValue) {
-        this.$emit("save", this.editedValue);
+      console.log("Emitsave");
+      if (this.localValue !== this.modelValue) {
+        this.$emit("save", this.localValue);
       }
-      // this.editing = false;
     },
     cancelEditing() {
       this.$emit("editing", false);
-      // this.editing = false;
-    },
-    updateInput(event) {
-      this.editedValue = event.target.value;
-      this.$emit("update:modelValue", this.editedValue);
+      this.localValue = this.modelValue
     },
   },
 };

@@ -51,9 +51,64 @@
   border-style: solid;
   border-radius: 20px 20px 20px 20px;
   padding: 0.4rem;
+  padding-left: 0.8rem;
+  padding-right: 0.8rem;
   font-weight: 800;
   min-width: 9rem;
+    border-color: var(--purple-light);
+  background-color: var(--purple);
+  color: white;
 }
+
+.button:hover {
+  border-color: var(--purple);
+  background-color: var(--purple-light);
+  color: var(--purple);
+}
+
+/* circular button */
+.button-circular {
+  border-radius: 50%;
+}
+
+.button-circular:hover .delete {
+  color: white;
+  background-color: var(--red);
+}
+
+
+.button-circular:hover .stop {
+  color: white;
+  background-color: var(--blue);
+}
+
+.stop {
+  font-weight: 900;
+  color: var(--blue);
+  border-color: var(--blue);
+  background-color: var(--blue-light);
+}
+
+.stop:hover {
+  border-color: var(--blue);
+  background-color: var(--blue);
+}
+
+
+.delete {
+  font-weight: 900;
+  color: var(--red);
+  border-color: var(--red);
+  background-color: var(--red-light);
+}
+
+.delete:hover {
+  border-color: var(--red);
+  background-color: var(--red);
+}
+
+/* fim de button-circular */
+
 
 .form-container {
   border-style: solid;
@@ -94,11 +149,11 @@
 .icon-new {
   font-size: 20px;
   font-weight: 900;
-  color: var(--purple);
+  color: white;
 }
 
-.button-new:hover .icon-new {
-  color: white;
+.button:hover .icon-new {
+  color: var(--purple);
 }
 
 .rotate-icon {
@@ -135,7 +190,7 @@
 }
 
 .card-line {
-  margin:0.8rem;
+  margin: 0.8rem;
   border-style: solid;
   border-width: 2px;
   border-color: gray;
@@ -154,7 +209,7 @@
 
 .line {
   display: flex;
-  margin:0.8rem;
+  margin: 0.8rem;
   border-style: solid;
   border-width: 2px;
   border-color: gray;

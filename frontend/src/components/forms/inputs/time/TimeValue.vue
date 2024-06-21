@@ -25,13 +25,26 @@ export default {
     convertDateTimeToLocal,
     displayDate,
     displayTime,
-  },
-  mounted() {
-    if (this.modelValue != '1969-12-31 18:00:00' && this.modelValue != '1969-12-31 21:00:00' && this.modelValue != null) {
+    useDisplayTime(datetime) {
+      if (datetime != '1969-12-31 18:00:00' && datetime != '1969-12-31 21:00:00' && datetime != null) {
       this.formatedTime = displayTime(this.convertedDateTime);
     } else {
       this.formatedTime = '--:--';
     }
+  },
+  },
+  watch: {
+    modelValue(newValue) {
+      this.convertedDateTime = convertDateTimeToLocal(newValue);
+      if (newValue != '1969-12-31 18:00:00' && newValue != '1969-12-31 21:00:00' && newValue != null) {
+        this.formatedTime = displayTime(this.convertedDateTime);
+      } else {
+        this.formatedTime = '--:--';
+      }  
+    },
+  },
+  mounted() {
+    this.useDisplayTime(this.modelValue);
   },
 };
 </script>

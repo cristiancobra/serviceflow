@@ -45,6 +45,7 @@ export default {
       // this.editing = false;
     },
     updateInput(event) {
+      console.log("ta no input");
       this.editedValue = event.target.value;
     },
   },
