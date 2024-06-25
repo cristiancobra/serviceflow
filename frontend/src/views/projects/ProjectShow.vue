@@ -13,7 +13,7 @@
         </div>
         <div class="col-11 ps-3">
           <p class="title">
-            <TextEditableInput name="name" v-model="project.name" placeholder="descrição detalhada da tarefa"
+            <TextEditableField name="name" v-model="project.name" placeholder="descrição detalhada da tarefa"
               @save="updateProject('name', $event)" />
           </p>
         </div>
@@ -84,9 +84,9 @@ import StatusLinearRadioInput from "@/components/forms/inputs/StatusLinearRadioI
 import PrioritySelectInput from "@/components/forms/inputs/PrioritySelectInput.vue";
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
-import DateEditableInput from "@/components/forms/inputs/date/DateEditableInput";
+import DateEditableInput from "@/components/fields/date/DateEditableInput";
 import ProjectTasksList from "@/components/lists/ProjectTasksList.vue";
-import TextEditableInput from "@/components/forms/inputs/text/TextEditableInput";
+import TextEditableField from "@/components/fields/text/TextEditableField";
 import TextEditor from "@/components/forms/inputs/TextEditor.vue";
 
 export default {
@@ -95,7 +95,7 @@ export default {
     DateEditableInput,
     ProjectTasksList,
     PrioritySelectInput,
-    TextEditableInput,
+    TextEditableField,
     TextEditor,
     StatusLinearRadioInput,
   },

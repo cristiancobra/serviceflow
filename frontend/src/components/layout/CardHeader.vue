@@ -12,7 +12,7 @@
       <div class="col-11 ps-3">
         <div class="row">
           <p class="title" :class="{ loading: isLoading }">
-            <TextEditableInput
+            <TextEditableField
               name="name"
               v-model="localName"
               placeholder="descrição detalhada da tarefa"
@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import TextEditableInput from "@/components/forms/inputs/text/TextEditableInput.vue";
+import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 
 export default {
   name: "CardHeader",
@@ -42,7 +42,7 @@ export default {
     };
   },
   components: {
-    TextEditableInput,
+    TextEditableField,
   },
   props: {
     faIcon: {

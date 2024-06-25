@@ -9,7 +9,7 @@
     <form @submit.prevent="submitForm">
       <div class="row">
         <div class="col-12">
-          <TextInput label="Nome" type="text" name="name" v-model="form.name" placeholder="nome da tarefa" />
+          <TextInput label="Nome" name="name" v-model="form.name" placeholder="nome da tarefa" />
         </div>
       </div>
 
@@ -116,9 +116,9 @@ import PrioritySelectInput from "./inputs/PrioritySelectInput.vue";
 import ProjectsSelectInput from "./selects/ProjectsSelectInput.vue";
 import StatusLinearRadioInput from "./inputs/StatusLinearRadioInput.vue";
 import SuccessMessage from "./messages/SuccessMessage.vue";
-import TextAreaInput from "./inputs/TextAreaInput";
+import TextAreaInput from "./inputs/textarea/TextAreaInput";
 import TextInput from "./inputs/text/TextInput";
-import TextValue from "./inputs/text/TextValue";
+import TextValue from "../fields/text/TextValue";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
 
 export default {

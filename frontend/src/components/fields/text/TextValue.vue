@@ -21,7 +21,9 @@ export default {
     modelValue: String,
     placeholder: String,
   },
-
+mounted() {
+  this.localValue = this.modelValue;
+}
 };
 </script>
 

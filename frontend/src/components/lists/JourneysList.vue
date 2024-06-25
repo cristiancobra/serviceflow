@@ -50,7 +50,7 @@
           </div>
           <div class="row pb-2">
             <div id="details" class="col-9 big">
-              <TextEditableInput name="details" class="details" v-model="journey.details"
+              <TextEditableField name="details" class="details" v-model="journey.details"
                 @save="updateJourney('details', $event, journey.id)" />
             </div>
             <div class="col-3 d-flex justify-content-end">
@@ -87,17 +87,17 @@ import { formatDateBr } from "@/utils/date/dateUtils";
 import { formatTimeToLocal } from "@/utils/date/dateUtils";
 import { convertDateTimeForServer } from "@/utils/date/dateUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
-import DateEditableInput from "../forms/inputs/date/DateEditableInput.vue";
+import DateEditableInput from "../fields/date/DateEditableInput.vue";
 import TimeEditableInput from "@/components/forms/inputs/time/TimeEditableInput.vue";
 import JourneyCreateForm from "@/components/forms/JourneyCreateForm.vue";
 import PaginateNav from "@/components/layout/PaginateNav.vue";
-import TextEditableInput from "@/components/forms/inputs/text/TextEditableInput.vue";
+import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 
 export default {
   name: "JourneysList",
   components: {
     DateEditableInput,
-    TextEditableInput,
+    TextEditableField,
     JourneyCreateForm,
     PaginateNav,
     TimeEditableInput,

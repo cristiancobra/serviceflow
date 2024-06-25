@@ -1,8 +1,9 @@
 <template>
   <div class="text-input-container">
     <label v-if="label" class="form-label" :for="name">{{ label }}</label>
-    <input class="text-input" :type="type" :id="name" :name="name" v-model="localValue" :placeholder="placeholder"
-      @keydown.esc="cancelEditing" @blur="emitSave" @keydown.enter.prevent="emitSave" />
+    <input class="text-input" type="text" :name="name" :value="modelValue" :placeholder="placeholder"
+    @input="$emit('update:modelValue', $event.target.value)"
+   />
   </div>
 </template>
 
@@ -13,23 +14,6 @@ export default {
     name: String,
     modelValue: [String, Number],
     placeholder: String,
-  },
-  data() {
-    return {
-      localValue: this.modelValue,
-    };
-  },
-  methods: {
-    emitSave() {
-      console.log("Emitsave");
-      if (this.localValue !== this.modelValue) {
-        this.$emit("save", this.localValue);
-      }
-    },
-    cancelEditing() {
-      this.$emit("editing", false);
-      this.localValue = this.modelValue
-    },
   },
 };
 </script>

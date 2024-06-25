@@ -339,7 +339,7 @@ import axios from "axios";
 import ErrorMessage from "./messages/ErrorMesssage.vue";
 import SuccessMessage from "./messages/SuccessMessage.vue";
 import TextInput from "./inputs/text/TextInput";
-import TextAreaInput from "./inputs/TextAreaInput.vue";
+import TextAreaInput from "./inputs/textarea/TextAreaInput.vue";
 import CompaniesSelectInput from "./selects/CompaniesSelectInput.vue";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
 

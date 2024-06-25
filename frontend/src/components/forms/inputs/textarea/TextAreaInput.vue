@@ -3,12 +3,11 @@
     <label class="form-label" :for="name">{{ label }}</label>
     <textarea
       class="form-control"
-      :id="name"
       :name="name"
       :value="modelValue"
       :placeholder="placeholder"
       :rows="rows" 
-      @input="updateInput"
+      @input="$emit('update:modelValue', $event.target.value)"
     ></textarea>
   </div>
 </template>
@@ -22,11 +21,6 @@ export default {
     modelValue: [String, Number],
     placeholder: String,
     rows: Number,
-  },
-  methods: {
-    updateInput(event) {
-      this.$emit("update:modelValue", event.target.value);
-    },
   },
 };
 </script>

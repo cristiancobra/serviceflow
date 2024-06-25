@@ -1,39 +1,31 @@
 <template>
   <div class="main-container">
     <label class="form-label" :for="name">{{ label }}</label>
+    <div v-if="!editing"  @click="startEditing">
+      <div v-if="modelValue" class="">
+        {{ modelValue }}
+      </div>
+      <div v-else>
+        não informado
+      </div>
+    </div>
+    <div v-else>
+      <div class="text-input-container">
+        <input class="text-input" type="text" :name="name" v-model="localValue" :placeholder="placeholder"
+          @keydown.esc="cancelEditing" @blur="emitSave" @keydown.enter.prevent="emitSave" />
+      </div>
+    </div>
 
-    <TextValue
-      v-if="!editing"
-      :id="name"
-      :name="name"
-      v-model="localValue"
-      @click="startEditing"
-    />
-
-    <TextInput
-      v-else
-      @save="emitSave"
-      @editing="cancelEditing"
-      v-model="localValue"
-      ref="editableInputRef"
-    />
   </div>
 </template>
 
 <script>
-import TextInput from "@/components/forms/inputs/text/TextInput.vue";
-import TextValue from "@/components/forms/inputs/text/TextValue.vue";
-
 export default {
   data() {
     return {
       editing: false,
       localValue: this.modelValue,
     };
-  },
-  components: {
-    TextInput,
-    TextValue,
   },
   props: {
     label: String,
@@ -45,18 +37,14 @@ export default {
   methods: {
     startEditing() {
       this.editing = true;
-      // this.editedValue = this.modelValue;
-      // this.$nextTick(() => {
-      //   this.$refs.editableInputRef.focus();
-      // });
     },
-    emitSave(editedValue) {
-        this.$emit("save", editedValue);
-      
+    emitSave() {
+      this.$emit("save", this.localValue);
       this.editing = false;
     },
     cancelEditing() {
       this.editing = false;
+      this.localValue = this.modelValue
     },
   },
   watch: {
@@ -73,9 +61,9 @@ export default {
   flex-direction: row;
   align-items: flex-start;
 }
+
 .show-label {
   text-align: left;
   font-weight: 800;
 }
-
 </style>

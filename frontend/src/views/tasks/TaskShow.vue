@@ -35,7 +35,7 @@
           </div>
           <div class="col-11 ps-3">
             <p class="title">
-              <TextEditableInput name="name" v-model="task.name" placeholder="descrição detalhada da tarefa"
+              <TextEditableField name="name" v-model="task.name" placeholder="descrição detalhada da tarefa"
                 @save="updateTask('name', $event)" />
             </p>
           </div>
@@ -104,10 +104,10 @@ import StatusLinearRadioInput from "@/components/forms/inputs/StatusLinearRadioI
 import PrioritySelectInput from "@/components/forms/inputs/PrioritySelectInput.vue";
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
-import DateEditableInput from "@/components/forms/inputs/date/DateEditableInput";
+import DateEditableInput from "@/components/fields/date/DateEditableInput";
 import JourneysList from "@/components/lists/JourneysList.vue";
 import ProjectsSelectInput from "@/components/forms/selects/ProjectsSelectInput.vue";
-import TextEditableInput from "@/components/forms/inputs/text/TextEditableInput";
+import TextEditableField from "@/components/fields/text/TextEditableField";
 import TextEditor from "@/components/forms/inputs/TextEditor.vue";
 import UsersSelectInput from "@/components/forms/selects/UsersSelectInput.vue";
 
@@ -118,7 +118,7 @@ export default {
     JourneysList,
     PrioritySelectInput,
     ProjectsSelectInput,
-    TextEditableInput,
+    TextEditableField,
     TextEditor,
     StatusLinearRadioInput,
     UsersSelectInput,
