@@ -1,9 +1,13 @@
 <template>
   <div v-if="convertedDateTime" class="container-date">
     <font-awesome-icon icon="fa-solid fa-calendar" class="icon" />
-    {{ formatedDate }}
+    <span class="default-text">
+      {{ formatedDate }}
+    </span>
     <font-awesome-icon icon="fa-solid fa-clock" class="icon" />
-    {{ formatedTime }}
+    <span class="default-text">
+      {{ formatedTime }}
+    </span>
   </div>
 </template>
 
@@ -46,9 +50,9 @@ export default {
   display: flex;
   align-items: left;
 }
+
 .icon {
   margin-right: 0.4rem;
   margin-left: 1rem;
-  color: var(--primary);
 }
 </style>

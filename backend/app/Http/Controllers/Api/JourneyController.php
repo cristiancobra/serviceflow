@@ -18,6 +18,11 @@ class JourneyController extends Controller
      */
     public function index()
     {
+        $journeys = Journey::with('task') // Carrega o relacionamento project
+            ->orderBy('start', 'asc')
+            ->paginate(50);
+
+        return JourneyResource::collection($journeys);
 
         // $perPage = request()->get('per_page', 10); // Ajuste a quantidade de itens por página conforme necessário
 

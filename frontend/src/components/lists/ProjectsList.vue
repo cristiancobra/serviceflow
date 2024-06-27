@@ -1,14 +1,22 @@
 <template>
-  <div>
-    <div class="row">
-      <div class="col-12 mb-3">
-        <input type="text" class="form-control search-container" v-model="searchTerm"
-          placeholder="Digite para buscar" />
+  <div class="projects-container mb-5 mt-0">
+    <div class="row align-items-start">
+      <div class="col-1">
+        <font-awesome-icon icon="fa-solid fa-project-diagram" class="icon" />
       </div>
+      <div class="col-7">
+        <h2 class="title">PROJETOS</h2>
+      </div>
+      <div class="col-4 text-end">
+        <button class="button button-new" @click="toggle()">+</button>
+      </div>
+    </div>
+    <div class="row" v-bind:class="{ 'd-none': isActive }">
+      <TaskCreateForm @new-task-event="addTaskCreated" @toogle-task-form=toggle() />
     </div>
     <div class="row">
       <div :class="getColumnClass(columns)" v-for="project in filteredProjects" v-bind:key="project.id">
-        <div class="cards p-0" :class="getStatusClass(project.status)">
+        <div class="projects p-0" :class="getStatusClass(project.status)">
           <router-link :to="{ name: 'projectShow', params: { id: project.id } }">
             <div class="row">
               <div class="col-11">
@@ -117,3 +125,21 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.icon {
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: var(--gray);
+}
+.projects-container {
+  border-style: solid;
+  border-width: 2px;
+  border-color: var(--orange);
+  border-radius: 14px;
+  padding: 1rem;
+}
+.title {
+  text-align: left;
+}
+</style>

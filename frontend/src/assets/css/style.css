@@ -110,6 +110,10 @@
 /* fim de button-circular */
 
 
+.default-text {
+  color: black;
+}
+
 .form-container {
   border-style: solid;
   border-color: #ff3eb5;

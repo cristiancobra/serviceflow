@@ -88,21 +88,25 @@
   .cards.low {
     background-color: var(--low-light);
     border-color: var(--low);
+    color: var(--low);
 }
 
 .cards.medium {
     background-color: var(--medium-light);
     border-color: var(--medium);
+    color: var(--medium);
 }
 
 .cards.high {
     background-color: var(--high-light);
     border-color: var(--high);
+    color: var(--high);
 }
 
   .cards-project-h2 {
       font-size: 1rem;
-      font-weight: 600;
+      font-weight: 400;
+      color: black;
   }
 
   .featured-icon {

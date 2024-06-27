@@ -80,7 +80,7 @@
 
 <script>
 import axios from "axios";
-import { BACKEND_URL, JOURNEY_URL_PARAMETER, JOURNEY_BY_TASK_URL_QUERY, } from "@/config/apiConfig";
+import { BACKEND_URL, JOURNEY_URL, JOURNEY_URL_PARAMETER, JOURNEY_BY_TASK_URL_QUERY, } from "@/config/apiConfig";
 // import CopyContentClipboard from "@/components/CopyContentClipboard.vue";
 import { displayLocalTime } from "@/utils/date/dateUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
@@ -181,7 +181,16 @@ export default {
         (journey) => journey.id !== itemId
       );
     },
-    async getJourneys(page = 1) {
+    getJourneys() {
+      axios
+      .get(`${BACKEND_URL}${JOURNEY_URL}`)
+        .then((response) => {
+          this.journeys = response.data.data;
+          this.filteredJourneys = this.journeys;
+        })
+        .catch((error) => console.log(error));
+    },
+    async getJourneysFromTask(page = 1) {
 
       this.journeysUrl = `${BACKEND_URL}${JOURNEY_BY_TASK_URL_QUERY}task_id=${this.taskId}&per_page=10&page=${page}`;
 
@@ -251,11 +260,19 @@ export default {
     taskId: {
       handler(dataLoaded) {
         if (dataLoaded) {
-          this.getJourneys();
+          this.getJourneysFromTask();
         }
       },
       immediate: true,
     },
+  },
+  mounted() {
+    if(this.taskId) {
+      this.getJourneysFromTask();
+    } else {
+      this.getJourneys();
+    }
+    console.log("Journeys", this.journeys);
   },
 };
 </script>

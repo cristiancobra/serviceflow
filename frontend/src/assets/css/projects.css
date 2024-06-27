@@ -1,0 +1,13 @@
+@import './variables.css';
+
+.projects {
+    border-style: solid;
+    border-width: 2px;
+    border-color: gray;
+    border-radius: 6px;
+    padding: 0;
+    /* min-height: 14vh; */
+    position: relative;
+    overflow: hidden;
+    text-align: left;
+}

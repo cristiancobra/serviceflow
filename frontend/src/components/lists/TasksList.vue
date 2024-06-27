@@ -2,7 +2,7 @@
   <div class="tasks-container mb-5 mt-0">
     <div class="row align-items-start">
       <div class="col-1">
-        <font-awesome-icon icon="fa-solid fa-check-circle" class="icon" />
+        <font-awesome-icon icon="fa-solid fa-tasks" class="icon" />
       </div>
       <div class="col-7">
         <h2 class="title">TAREFAS</h2>
@@ -49,13 +49,13 @@
                   <div class="me-3">
                     <font-awesome-icon icon="fa-solid fa-clock" class="card-icon" />
                   </div>
-                  <div class="me-5">
+                  <div class="default-text me-5">
                     {{ formatDuration(task.duration_time) }}
                   </div>
                   <div class="me-3" v-if="task.duration_days">
                     <font-awesome-icon icon="fa-solid fa-calendar-alt" class="card-icon" />
                   </div>
-                  <div class="">
+                  <div class="default-text">
                     {{ task.duration_days }}
                   </div>
                 </div>

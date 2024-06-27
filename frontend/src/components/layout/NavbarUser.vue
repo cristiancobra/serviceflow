@@ -46,8 +46,15 @@
 
         <router-link to="/tasks">
           <li class="nav-item" @mouseover="toggleActive('tasks')" :class="{ active: activeItem === 'tasks' }">
-            <font-awesome-icon icon="fas fa-circle-check" />
+            <font-awesome-icon icon="fas fa-tasks" />
             <span class="router-link-text">TAREFAS</span>
+          </li>
+        </router-link>
+
+        <router-link to="/journeys">
+          <li class="nav-item" @mouseover="toggleActive('journeys')" :class="{ active: activeItem === 'journeys' }">
+            <font-awesome-icon icon="fas fa-clock" />
+            <span class="router-link-text">JORNADAS</span>
           </li>
         </router-link>
 
