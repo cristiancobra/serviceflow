@@ -192,7 +192,6 @@ export default {
       }
     },
     async updateTask(fieldName, editedValue) {
-      console.log(fieldName, editedValue);
       const updatedField = {};
       updatedField[fieldName] = editedValue;
 

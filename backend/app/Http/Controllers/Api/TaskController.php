@@ -19,7 +19,7 @@ class TaskController extends Controller
     public function index()
     {
         $tasks = Task::with('project') // Carrega o relacionamento project
-            ->orderBy('created_at', 'desc')
+            ->orderBy('date_due', 'asc')
             ->paginate(50);
 
         return TaskResource::collection($tasks);

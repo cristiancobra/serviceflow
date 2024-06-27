@@ -24,10 +24,10 @@
       <div class="col ps-4 pe-4 pt-0 pb-0" :class="getColumnClass(columns)" v-for="task in filteredTasks"
         v-bind:key="task.id">
         <router-link :to="{ name: 'tasksShow', params: { id: task.id } }">
-          <div class="row cards" :class="getPriorityClass(task.priority)">
+          <div class="row cards" :class="getCardColor(task.priority, task.status)">
             <div class="col-11 p-2">
               <div class="row" id="card-row-1">
-                <div class="col text-start">
+                <div class="col-7 text-start">
                   <p class="cards-title">
                     {{ task.name }}
                   </p>
@@ -74,11 +74,8 @@
 
 <script>
 // import axios from "axios";
-import { formatDuration } from "@/utils/date/dateUtils";
-import { getPriorityClass } from "@/utils/card/cardUtils";
-import { getStatusClass } from "@/utils/card/cardUtils";
-import { getStatusIcon } from "@/utils/card/cardUtils";
-import { convertUtcToLocal } from "@/utils/date/dateUtils";
+import { convertUtcToLocal, formatDuration } from "@/utils/date/dateUtils";
+import { getCardColor, getPriorityClass, getStatusClass, getStatusIcon } from "@/utils/card/cardUtils";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import DateValue from "../fields/date/DateValue.vue";
 
@@ -106,6 +103,7 @@ export default {
   methods: {
     convertUtcToLocal,
     formatDuration,
+    getCardColor,
     getPriorityClass,
     getStatusClass,
     getStatusIcon,

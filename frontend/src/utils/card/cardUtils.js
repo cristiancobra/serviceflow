@@ -1,3 +1,23 @@
+export function getCardColor(priority, status) {
+
+    if(status === "canceled") {
+        return "canceled";
+    }
+
+    if(status === "done") {
+        return "done";
+    }
+
+    switch (priority) {
+        case "high":
+            return "high";
+        case "medium":
+            return "medium";
+        case "low":
+            return "low";
+    }
+}
+
 export function getStatusClass(status) {
 
     switch (status) {

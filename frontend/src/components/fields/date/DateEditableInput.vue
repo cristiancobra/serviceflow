@@ -30,7 +30,7 @@ export default {
       editing: false,
       formatedDate: '',
       formatedTime: '',
-      localValue: this.modelValue,
+      localValue: this.convertDateTimeToLocal(this.modelValue),
     };
   },
   props: {
@@ -48,6 +48,8 @@ export default {
     emitSave() {
       if (this.convertDateTimeToLocal(this.modelValue) !== this.localValue) {
         this.$emit("save", this.convertDateTimeForServer(this.localValue));
+        console.log('Emitindo save:', this.convertDateTimeForServer(this.localValue));
+        console.log('LocalValue:', this.localValue);
       }
       this.editing = false;
     },
@@ -56,10 +58,11 @@ export default {
     },
     displayLocal() {
       if (this.localValue != '1969-12-31 18:00:00' && this.localValue != '1969-12-31 21:00:00' && this.localValue != null) {
-        const convertedDatetime = this.convertDateTimeToLocal(this.localValue)
-        this.formatedDate = displayDate(convertedDatetime);
-        this.formatedTime = displayTime(convertedDatetime);
+        // const convertedDatetime = this.convertDateTimeToLocal(this.localValue)
+        this.formatedDate = displayDate(this.localValue);
+        this.formatedTime = displayTime(this.localValue);
       } else {
+        this.localValue = null;
         this.formatedDate = '__/__/____';
         this.formatedTime = '__:__';
       }
@@ -74,7 +77,7 @@ export default {
   },
   watch: {
     modelValue(newValue) {
-      this.localValue = newValue;
+      this.localValue = this.convertDateTimeToLocal(newValue);
       this.displayLocal();
     },
   },

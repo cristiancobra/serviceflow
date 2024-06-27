@@ -12,49 +12,49 @@
         <router-link to="/">
           <li class="nav-item" @mouseover="toggleActive('home')" :class="{ active: activeItem === 'home' }">
             <font-awesome-icon icon="fas fa-home" />
-            <span class="router-link-text">Home</span>
+            <span class="router-link-text">PAINEL</span>
           </li>
         </router-link>
 
         <router-link to="/leads">
           <li class="nav-item" @mouseover="toggleActive('contacts')" :class="{ active: activeItem === 'contacts' }">
             <font-awesome-icon icon="fas fa-user" />
-            <span class="router-link-text">Contatos</span>
+            <span class="router-link-text">CONTATOS</span>
           </li>
         </router-link>
 
         <router-link to="/companies">
           <li class="nav-item" @mouseover="toggleActive('companies')" :class="{ active: activeItem === 'companies' }">
             <font-awesome-icon icon="fas fa-briefcase" />
-            <span class="router-link-text">Empresas</span>
+            <span class="router-link-text">EMPRESAS</span>
           </li>
         </router-link>
 
         <router-link to="/services">
           <li class="nav-item" @mouseover="toggleActive('services')" :class="{ active: activeItem === 'services' }">
             <font-awesome-icon icon="fas fa-coins" />
-            <span class="router-link-text">Serviços</span>
+            <span class="router-link-text">SERVIÇOS</span>
           </li>
         </router-link>
 
         <router-link to="/projects">
           <li class="nav-item" @mouseover="toggleActive('projects')" :class="{ active: activeItem === 'projects' }">
             <font-awesome-icon icon="fas fa-project-diagram" />
-            <span class="router-link-text">Projetos</span>
+            <span class="router-link-text">PROJETOS</span>
           </li>
         </router-link>
 
         <router-link to="/tasks">
           <li class="nav-item" @mouseover="toggleActive('tasks')" :class="{ active: activeItem === 'tasks' }">
             <font-awesome-icon icon="fas fa-circle-check" />
-            <span class="router-link-text">Tarefas</span>
+            <span class="router-link-text">TAREFAS</span>
           </li>
         </router-link>
 
         <router-link v-if="openJourney" :to="{ name: 'tasksShow', params: { id: openJourney.task_id } }">
           <li class="nav-item" @mouseover="toggleActive('openTask')" :class="{ active: activeItem === 'openTask' }">
           <font-awesome-icon icon="fas fa-exclamation-triangle alert" />
-            <span class="router-link-text">Jornada aberta</span>
+            <span class="router-link-text">FAZENDO</span>
           </li>
         </router-link>
 
@@ -62,7 +62,7 @@
           <li class="nav-item" @click="logout" @mouseover="toggleActive('logout')"
             :class="{ active: activeItem === 'logout' }">
             <font-awesome-icon icon="fas fa-sign-out" />
-            <span class="router-link-text">Logout</span>
+            <span class="router-link-text">SAIR</span>
           </li>
         </router-link>
       </ul>
@@ -149,17 +149,17 @@ nav a {
 
 .navbar {
   background-color: var(--primary);
-  /* background-image: linear-gradient(to bottom, var(--primary), rgba(255, 255, 255, 0.6)); */
+  /* background-image: linear-gradient(to bottom, var(--primary), rgba(255, 255, 255, 0.4)); */
 }
 
 .nav-item {
   border-width: 2px;
   border-style: none;
   border-radius: 16px 16px 16px 16px;
-  padding: 10px 15px 10px 15px;
+  padding: 4px 15px 4px 15px;
   margin: 0 4px 0 4px;
   font-weight: 200;
-  font-size: 1.2em;
+  font-size: 1rem;
 }
 
 .nav-item a {
@@ -176,18 +176,18 @@ nav a {
 }
 
 .nav-item.active:hover {
-  border-width: 2px;
+  border-width: 1px;
   border-style: solid;
   border-radius: 16px 16px 16px 16px;
   border-color: white;
-  padding: 10px 15px 10px 15px;
+  padding: 4px 15px 4px 15px;
   margin: 0 4px 0 4px;
-  font-weight: 800;
 }
 
 .logo {
-  width: 170px;
-  height: 40px;
+  margin-left: 2rem;
+  width: 146px;
+  height: 30px;
 }
 
 .router-link-text {
@@ -204,7 +204,7 @@ nav a {
 }
 
 nav a.router-link-exact-active {
-  border-width: 2px;
+  border-width: 1px;
   border-style: solid;
   border-radius: 16px 16px 16px 16px;
   border-color: white;
