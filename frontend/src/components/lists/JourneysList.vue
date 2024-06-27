@@ -3,7 +3,7 @@
 
     <div class="row align-items-start">
       <div class="col-1">
-        <font-awesome-icon icon="fa-solid fa-clock" class="icon"/>
+        <font-awesome-icon icon="fa-solid fa-clock" class="icon" />
       </div>
       <div class="col">
         <h2 class="title">JORNADAS</h2>
@@ -21,49 +21,69 @@
       </div>
 
       <div class="table-header">
-        <div class="offset-2 col-4">INÍCIO</div>
-        <div class="col-3">FIM</div>
-        <div class="col-3">DURAÇÃO</div>
-      </div>
-      <div class="p-5" v-if="!journeys">Ainda não possui nenhuma jornada</div>
-      <div v-else class="line row ms-1 me-1" v-for="journey in journeys" v-bind:key="journey.id"
-        :class="{ 'highlight': journey.id === newJourneyId }">
-        <div class="col-1 big-icon">
-          <font-awesome-icon icon="fa-solid fa-clock" />
+        <div class="offset-2 col-4">
+          INÍCIO
         </div>
-        <div class="col-11">
-          <div class="row pt-2">
-            <div id="start" class="col-6" :class="{ 'col-big': journey.editing && journey.editing.start }"
-              style="position: relative" @click="editDateTime(journey, 'start')">
-              <DateEditableInput name="start" v-model="journey.start"
-                @save="updateJourney('start', $event, journey.id)" />
-            </div>
-            <div id="end" class="col-4" :class="{ 'col-big': journey.editing && journey.editing.end }"
-              style="position: relative" @click="editDateTime(journey, 'end')">
-              <TimeEditableInput name="end" v-model="journey.end" @save="updateJourney('end', $event, journey.id)" />
-            </div>
-            <div id="duration" class="col-2">
-              <p class="time-bold">
-                {{ formatDuration(journey.duration) }}
-              </p>
-            </div>
+        <div class="col-3">
+          FIM
+        </div>
+        <div class="col-3">
+          DURAÇÃO
+        </div>
+      </div>
+      <div class="p-5" v-if="!journeys">
+        Ainda não possui nenhuma jornada
+      </div>
+      <div v-else class="row" v-for="journey in journeys" v-bind:key="journey.id"
+        :class="{ 'highlight': journey.id === newJourneyId }">
+        
+          <div v-if="journey.task && !taskId" class="col-7 taskCard">
+            <router-link :to="{ name: 'tasksShow', params: { id: journey.task_id } }">
+            {{ journey.task.name }}
+            </router-link>
           </div>
-          <div class="row pb-2">
-            <div id="details" class="col-9 big">
-              <TextEditableField name="details" class="details" v-model="journey.details"
-                @save="updateJourney('details', $event, journey.id)" />
+        
+        <div class="col line">
+          <div class="row">
+            <div class="col-1 big-icon">
+              <font-awesome-icon icon="fa-solid fa-clock" />
             </div>
-            <div class="col-3 d-flex justify-content-end">
-              <button v-if="!journey.end" class="button-circular stop" @click="stopJourney(journey.id)">
-                <span class="stop">
-                  <font-awesome-icon icon="fa-solid fa-hand" />
-                </span>
-              </button>
-              <button class="button-circular delete" @click="deleteItem(journey)">
-                <span class="delete">
-                  <font-awesome-icon icon="fa-solid fa-trash-alt" />
-                </span>
-              </button>
+            <div class="col-11">
+              <div class="row pt-2">
+                <div id="start" class="col-6" :class="{ 'col-big': journey.editing && journey.editing.start }"
+                  style="position: relative" @click="editDateTime(journey, 'start')">
+                  <DateEditableInput name="start" v-model="journey.start"
+                    @save="updateJourney('start', $event, journey.id)" />
+                </div>
+                <div id="end" class="col-4" :class="{ 'col-big': journey.editing && journey.editing.end }"
+                  style="position: relative" @click="editDateTime(journey, 'end')">
+                  <TimeEditableInput name="end" v-model="journey.end"
+                    @save="updateJourney('end', $event, journey.id)" />
+                </div>
+                <div id="duration" class="col-2">
+                  <p class="time-bold">
+                    {{ formatDuration(journey.duration) }}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="row pb-2">
+              <div id="details" class="col-9 big">
+                <TextEditableField name="details" class="details" v-model="journey.details"
+                  @save="updateJourney('details', $event, journey.id)" />
+              </div>
+              <div class="col-3 d-flex justify-content-end">
+                <button v-if="!journey.end" class="button-circular stop" @click="stopJourney(journey.id)">
+                  <span class="stop">
+                    <font-awesome-icon icon="fa-solid fa-hand" />
+                  </span>
+                </button>
+                <button class="button-circular delete" @click="deleteItem(journey)">
+                  <span class="delete">
+                    <font-awesome-icon icon="fa-solid fa-trash-alt" />
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -183,7 +203,7 @@ export default {
     },
     getJourneys() {
       axios
-      .get(`${BACKEND_URL}${JOURNEY_URL}`)
+        .get(`${BACKEND_URL}${JOURNEY_URL}`)
         .then((response) => {
           this.journeys = response.data.data;
           this.filteredJourneys = this.journeys;
@@ -267,7 +287,7 @@ export default {
     },
   },
   mounted() {
-    if(this.taskId) {
+    if (this.taskId) {
       this.getJourneysFromTask();
     } else {
       this.getJourneys();
@@ -474,6 +494,16 @@ a:active {
   background-color: #ccc;
   color: #666;
   cursor: not-allowed;
+}
+
+.taskCard {
+  background-color: var(--purple-light);
+  color: black;
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  text-align: left;
 }
 
 .title {
