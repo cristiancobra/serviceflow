@@ -215,7 +215,7 @@ class TaskController extends Controller
             'doing'
         ])
             ->with('project')
-            ->orderByRaw("FIELD(priority, 'high', 'medium', 'low')")
+            ->orderBy('date_due', 'asc')
             ->paginate(10);
 
         return TaskResource::collection(

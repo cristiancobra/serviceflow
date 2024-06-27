@@ -19,4 +19,11 @@
     --wait-color: #808080;
     --primary: #B1388D;
     --to-do-color: #E78D1F;
+
+    --low: #E78D1F;
+    --low-light: #faf2e0;
+    --medium: #3498db;
+    --medium-light: #d1ecf8;
+    --high: #e85c5c;
+    --high-light: rgb(251, 226, 226);
   }

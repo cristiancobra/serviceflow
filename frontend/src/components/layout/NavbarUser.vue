@@ -1,7 +1,7 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar navbar-expand-lg sticky-top">
     <a class="navbar-brand" href="#">
-      <img :src="require('@/assets/logo-serviceflow-ROXO.png')" class="logo" alt="logo-serviceflow" />
+      <img :src="require('@/assets/logo-serviceflow-BRANCO.png')" class="logo" alt="logo-serviceflow" />
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -143,8 +143,13 @@ nav {
 
 nav a {
   font-weight: bold;
-  color: var(--purple-light);
+  color: white;
   text-decoration: none;
+}
+
+.navbar {
+  background-color: var(--primary);
+  /* background-image: linear-gradient(to bottom, var(--primary), rgba(255, 255, 255, 0.6)); */
 }
 
 .nav-item {
@@ -153,28 +158,28 @@ nav a {
   border-radius: 16px 16px 16px 16px;
   padding: 10px 15px 10px 15px;
   margin: 0 4px 0 4px;
-  font-weight: 800;
+  font-weight: 200;
   font-size: 1.2em;
 }
 
 .nav-item a {
   text-decoration: none;
-  color: var(--purple-light);
+  color: white;
 }
 
 .nav-item:hover {
-  color: var(--purple);
+  /* color: var(--purple); */
 }
 
 .nav-item:hover a {
-  color: var(--purple);
+  
 }
 
 .nav-item.active:hover {
   border-width: 2px;
   border-style: solid;
   border-radius: 16px 16px 16px 16px;
-  border-color: var(--purple);
+  border-color: white;
   padding: 10px 15px 10px 15px;
   margin: 0 4px 0 4px;
   font-weight: 800;
@@ -202,7 +207,7 @@ nav a.router-link-exact-active {
   border-width: 2px;
   border-style: solid;
   border-radius: 16px 16px 16px 16px;
-  border-color: var(--purple-light);
+  border-color: white;
 }
 
 nav a.router-link-exact-active:hover {

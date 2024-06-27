@@ -12,10 +12,7 @@
       </div>
     </div>
     <div class="row" v-bind:class="{ 'd-none': isActive }">
-      <TaskCreateForm
-      @new-task-event="addTaskCreated"
-      @toogle-task-form=toggle()
-       />
+      <TaskCreateForm @new-task-event="addTaskCreated" @toogle-task-form=toggle() />
     </div>
     <div class="row">
       <div class="col-12 mb-3 mt-3">
@@ -24,57 +21,51 @@
       </div>
     </div>
     <div class="row">
-      <div :class="getColumnClass(columns)" v-for="task in filteredTasks" v-bind:key="task.id">
-        <div class="cards p-0" :class="getStatusClass(task.status)">
-          <router-link :to="{ name: 'tasksShow', params: { id: task.id } }">
-            <div class="row">
-              <div class="col-11">
-                <div class="row m-3">
-                  <div class="col-10 p-0">
-                    <div class="row align-items-center">
-                      <div class="col text-start">
-                        <p v-if="task.project" class="cards-project" :class="getStatusClass(task.status)">
-                          <font-awesome-icon icon="fa-solid fa-folder-open" />
-                          {{ task.project.name }}
-                        </p>
-                      </div>
-                      <div class="col text-end">
-                        <p class="cards-project" :class="getStatusClass(task.status)">
-                          {{ formatDateDue(task.date_due) }}
-                        </p>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <p class="cards-title">
-                        {{ task.name }}
-                      </p>
-                    </div>
-                  </div>
-
+      <div class="col ps-4 pe-4 pt-0 pb-0" :class="getColumnClass(columns)" v-for="task in filteredTasks"
+        v-bind:key="task.id">
+        <router-link :to="{ name: 'tasksShow', params: { id: task.id } }">
+          <div class="row cards" :class="getPriorityClass(task.priority)">
+            <div class="col-11 p-2">
+              <div class="row" id="card-row-1">
+                <div class="col text-start">
+                  <p class="cards-title">
+                    {{ task.name }}
+                  </p>
                 </div>
-                <div class="row m-3">
-                  <div class="icon mt-3" :class="getStatusClass(task.status)">
-                    <div class="me-3">
-                      <font-awesome-icon icon="fa-solid fa-clock" style="color: rgb(48, 48, 48)" />
-                    </div>
-                    <div class="me-5">
-                      {{ formatDuration(task.duration_time) }}
-                    </div>
-                    <div class="me-3" v-if="task.duration_days">
-                      <font-awesome-icon icon="fa-solid fa-calendar-alt" style="color: rgb(48, 48, 48)" />
-                    </div>
-                    <div class="">
-                      {{ task.duration_days }}
-                    </div>
-                  </div>
+                <div class="col text-end">
+                  <DateValue v-model="task.date_due" />
                 </div>
               </div>
-              <div class="col-1 big-icon" :class="getPriorityClass(task.priority)">
-                <font-awesome-icon :icon="getStatusIcon(task.status)" />
+              <div v-if="task.project" class="row pt-1" id="project-row">
+                <div class="col text-start d-flex">
+                  <font-awesome-icon icon="fa-solid fa-folder-open" />
+                  <p class="cards-project-h2 ps-2">
+                    {{ task.project.name }}
+                  </p>
+                </div>
+              </div>
+              <div class="row" id="card-row-2">
+                <div class="card-icon d-flex mt-1">
+                  <div class="me-3">
+                    <font-awesome-icon icon="fa-solid fa-clock" class="card-icon" />
+                  </div>
+                  <div class="me-5">
+                    {{ formatDuration(task.duration_time) }}
+                  </div>
+                  <div class="me-3" v-if="task.duration_days">
+                    <font-awesome-icon icon="fa-solid fa-calendar-alt" class="card-icon" />
+                  </div>
+                  <div class="">
+                    {{ task.duration_days }}
+                  </div>
+                </div>
               </div>
             </div>
-          </router-link>
-        </div>
+            <div class="col-1 featured-icon" :class="getPriorityClass(task.priority)">
+              <font-awesome-icon :icon="getStatusIcon(task.status)" />
+            </div>
+          </div>
+        </router-link>
         <router-view />
       </div>
     </div>
@@ -84,11 +75,12 @@
 <script>
 // import axios from "axios";
 import { formatDuration } from "@/utils/date/dateUtils";
-import { getStatusClass } from "@/utils/card/cardUtils";
 import { getPriorityClass } from "@/utils/card/cardUtils";
+import { getStatusClass } from "@/utils/card/cardUtils";
 import { getStatusIcon } from "@/utils/card/cardUtils";
 import { convertUtcToLocal } from "@/utils/date/dateUtils";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
+import DateValue from "../fields/date/DateValue.vue";
 
 export default {
   name: "TasksList",
@@ -101,18 +93,21 @@ export default {
   },
   data() {
     return {
+      formatedDate: '',
+      formatedTime: '',
       isActive: true,
       searchTerm: "",
     };
   },
   components: {
+    DateValue,
     TaskCreateForm,
   },
   methods: {
     convertUtcToLocal,
     formatDuration,
-    getStatusClass,
     getPriorityClass,
+    getStatusClass,
     getStatusIcon,
     addTaskCreated(newTask) {
       this.toggle();
@@ -141,7 +136,7 @@ export default {
     },
     getCombinedClasses(status, priority) {
       // Defina sua lógica para determinar as classes com base em status e prioridade
-      const statusClass = getStatusClass(status);
+      const statusClass = getPriorityClass(status);
       const priorityClass = getPriorityClass(priority);
 
       // Combine as classes
@@ -171,6 +166,10 @@ export default {
 </script>
 
 <style scoped>
+a {
+  text-decoration: none;
+}
+
 .icon {
   font-size: 1.8rem;
   font-weight: 400;

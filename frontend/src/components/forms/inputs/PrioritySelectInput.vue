@@ -3,13 +3,13 @@
     <label class="form-label mb-2" :for="'priority-' + uniqueId">Prioridade</label>
     <br>
     <input type="radio" :id="'low-' + uniqueId" value="low" :name="'priority-' + uniqueId" @change="updatePriority('low')" :checked="localValue === 'low'" />
-    <label :class="['priority', { 'low': localValue === 'low' }]" :for="'low-' + uniqueId">Baixa</label>
+    <label class="item" :class="['priority', { 'low': localValue === 'low' }]" :for="'low-' + uniqueId">Baixa</label>
 
     <input type="radio" :id="'medium-' + uniqueId" value="medium" :name="'priority-' + uniqueId" @change="updatePriority('medium')" :checked="localValue === 'medium'" />
-    <label :class="['priority', { 'medium': localValue === 'medium' }]" :for="'medium-' + uniqueId">Média</label>
+    <label class="item" :class="['priority', { 'medium': localValue === 'medium' }]" :for="'medium-' + uniqueId">Média</label>
 
     <input type="radio" :id="'high-' + uniqueId" value="high" :name="'priority-' + uniqueId" @change="updatePriority('high')" :checked="localValue === 'high'" />
-    <label :class="['priority', { 'high': localValue === 'high' }]" :for="'high-' + uniqueId">Alta</label>
+    <label class="item" :class="['priority', { 'high': localValue === 'high' }]" :for="'high-' + uniqueId">Alta</label>
   </div>
 </template>
 
@@ -56,18 +56,18 @@ export default {
 }
 
 /* priorities */
-.low {
+.item.low {
   border-radius: 16px 0px 0px 16px;
   border-color: var(--gray);
   color: #fff;
 }
 
-.medium {
+.item.medium {
   border-color: var(--blue);
   color: #fff;
 }
 
-.high {
+.item.high {
   border-radius: 0px 16px 16px 0px;
   border-color: var(--red);
   color: #fff;

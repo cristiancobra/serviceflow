@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <label v-if="label" :for="label" class="form-label">{{ label }}</label>
-    <VueDatePicker class="form-control" :id="name" :name="name" :label="label" v-model="localValue"
+    <VueDatePicker class="form-control" :name="name" :label="label" v-model="localValue"
       :placeholder="placeholder" @update:modelValue="emitSave" />
   </div>
 </template>
@@ -31,20 +31,9 @@ export default {
   methods: {
     convertDateTimeToLocal,
     convertDateTimeForServer,
-    startEditing() {
-      this.editing = true;
-      this.$nextTick(() => {
-        this.$refs.editableInputRef.focus();
-      });
-    },
     emitSave() {
       if (this.modelValue !== this.localValue) {
         this.$emit("update:modelValue", this.convertDateTimeForServer(this.localValue));
-      }
-    },
-    cancelEditing(event) {
-      if (event.key === 'Escape') {
-      this.$emit("editing", false);
       }
     },
   },
@@ -64,7 +53,7 @@ export default {
   watch: {
     modelValue(newValue) {
       console.log("watch value", newValue);
-      this.localValue = newValue;
+      this.localValue = this.convertDateTimeToLocal(newValue);
     },
   },
 };

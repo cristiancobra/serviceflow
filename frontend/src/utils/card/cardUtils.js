@@ -34,7 +34,7 @@ export function getStatusIcon(status) {
         case "to-do":
             return "fas fa-stop"; // Ícone para "fazendo"
         case "doing":
-            return "fas fa-play"; // Ícone para "fazendo"
+            return "fas fa-fast-forward"; // Ícone para "fazendo"
         case "done":
             return "fas fa-check-circle"; // Ícone para "feito"
         case "wait":
