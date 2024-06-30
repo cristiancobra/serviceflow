@@ -3,15 +3,18 @@
     <label class="form-label  ms-2" :for="name">{{ label }}</label>
     <div v-if="!editing" @click="startEditing">
       <div class="container-date">
-        <font-awesome-icon icon="fa-solid fa-calendar" class="icon" />
-        {{ formatedDate }}
-        <font-awesome-icon icon="fa-solid fa-clock" class="icon" />
-        {{ formatedTime }}
+        <font-awesome-icon icon="fa-solid fa-calendar" class="me-1" :class="localClassIcon" />
+        <span class="default-text" :class="classText">
+          {{ formatedDate }}
+        </span>
+        <font-awesome-icon icon="fa-solid fa-clock"  class="ms-2 me-1" :class="localClassIcon" />
+        <span class="default-text" :class="classText">
+          {{ formatedTime }}
+        </span>
       </div>
     </div>
     <VueDatePicker v-else class="form-control" :id="name" :name="name" :label="label" v-model="localValue"
       :placeholder="placeholder" @update:modelValue="emitSave" />
-    <!-- <DateInput v-else @update:modelValue="emitSave" @editing="cancelEditing" v-model="localValue" ref="editableInputRef" /> -->
   </div>
 </template>
 
@@ -31,9 +34,12 @@ export default {
       formatedDate: '',
       formatedTime: '',
       localValue: this.convertDateTimeToLocal(this.modelValue),
+      localClassIcon: '',
     };
   },
   props: {
+    classText: String,
+    classIcon: String,
     label: String,
     name: String,
     modelValue: [String, Number],
@@ -69,6 +75,12 @@ export default {
     }
   },
   mounted() {
+    if (!this.classIcon) {
+      this.localClassIcon = 'icon';
+    } else {
+      this.localClassIcon = this.classIcon;
+    }
+
     this.displayLocal();
     document.addEventListener("keydown", this.cancelEditing);
   },
@@ -118,6 +130,11 @@ export default {
 .container-date {
   display: flex;
   align-items: left;
+  margin-top: 0.8rem;
+}
+
+.danger {
+  color: var(--red);
 }
 
 .icon {

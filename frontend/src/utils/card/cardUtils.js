@@ -1,21 +1,9 @@
-export function getCardColor(priority, status) {
+export function getStatusColor(date) {
 
-    if(status === "canceled") {
-        return "canceled";
-    }
-
-    if(status === "done") {
+    if (date) {
         return "done";
     }
-
-    switch (priority) {
-        case "high":
-            return "high";
-        case "medium":
-            return "medium";
-        case "low":
-            return "low";
-    }
+    return "canceled";
 }
 
 export function getStatusClass(status) {
@@ -36,6 +24,16 @@ export function getStatusClass(status) {
     }
 }
 
+export function getDeadlineClass(task) {
+    const today = new Date();
+    const dueDate = new Date(task.date_due);
+
+    if (dueDate <= today) {
+        return "danger";
+    }
+    return "default-text";
+}
+
 export function getPriorityClass(priority) {
 
     switch (priority) {
@@ -48,20 +46,12 @@ export function getPriorityClass(priority) {
     }
 }
 
-export function getStatusIcon(status) {
+export function getStatusIcon(date) {
 
-    switch (status) {
-        case "to-do":
-            return "fas fa-stop"; // Ícone para "fazendo"
-        case "doing":
-            return "fas fa-fast-forward"; // Ícone para "fazendo"
-        case "done":
-            return "fas fa-check-circle"; // Ícone para "feito"
-        case "wait":
-            return "fas fa-pause-circle"; // Ícone para "esperando"
-        case "canceled":
-            return "fas fa-times"; // Ícone para "esperando"
-        default:
-            return "fas fa-question-circle"; // Ícone padrão para outros status desconhecidos
+
+    if (date) {
+        return "fas fa-check-circle";
     }
+    return "fas fa-stop";
+
 }

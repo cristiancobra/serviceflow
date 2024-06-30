@@ -104,7 +104,7 @@ import StatusLinearRadioInput from "@/components/forms/inputs/StatusLinearRadioI
 import PrioritySelectInput from "@/components/forms/inputs/PrioritySelectInput.vue";
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
-import DateEditableInput from "@/components/fields/date/DateEditableInput";
+import DateEditableInput from "@/components/fields/datetime/DateTimeEditableInput";
 import JourneysList from "@/components/lists/JourneysList.vue";
 import ProjectsSelectInput from "@/components/forms/selects/ProjectsSelectInput.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField";

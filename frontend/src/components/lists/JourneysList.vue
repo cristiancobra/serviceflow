@@ -34,60 +34,55 @@
       <div class="p-5" v-if="!journeys">
         Ainda não possui nenhuma jornada
       </div>
-      <div v-else class="row" v-for="journey in journeys" v-bind:key="journey.id"
+      <div v-else class="row cards" v-for="journey in journeys" v-bind:key="journey.id"
         :class="{ 'highlight': journey.id === newJourneyId }">
-        
-          <div v-if="journey.task && !taskId" class="col-7 taskCard">
-            <router-link :to="{ name: 'tasksShow', params: { id: journey.task_id } }">
+
+        <div v-if="journey.task && !taskId" class="col-7 taskCard">
+          <router-link :to="{ name: 'tasksShow', params: { id: journey.task_id } }">
             {{ journey.task.name }}
-            </router-link>
-          </div>
-        
-        <div class="col line">
+          </router-link>
+        </div>
+
+        <div class="col">
           <div class="row">
-            <div class="col-1 big-icon">
+            <div class="col-1 d-flex justify-content-center align-items-center">
               <font-awesome-icon icon="fa-solid fa-clock" />
             </div>
-            <div class="col-11">
-              <div class="row pt-2">
-                <div id="start" class="col-6" :class="{ 'col-big': journey.editing && journey.editing.start }"
-                  style="position: relative" @click="editDateTime(journey, 'start')">
-                  <DateEditableInput name="start" v-model="journey.start"
-                    @save="updateJourney('start', $event, journey.id)" />
-                </div>
-                <div id="end" class="col-4" :class="{ 'col-big': journey.editing && journey.editing.end }"
-                  style="position: relative" @click="editDateTime(journey, 'end')">
-                  <TimeEditableInput name="end" v-model="journey.end"
-                    @save="updateJourney('end', $event, journey.id)" />
-                </div>
-                <div id="duration" class="col-2">
-                  <p class="time-bold">
-                    {{ formatDuration(journey.duration) }}
-                  </p>
-                </div>
-              </div>
+            <div id="start" class="col pt-1" :class="{ 'col-big': journey.editing && journey.editing.start }"
+              @click="editDateTime(journey, 'start')">
+              <DateEditableInput name="start" v-model="journey.start"
+                @save="updateJourney('start', $event, journey.id)" />
             </div>
-            <div class="row pb-2">
-              <div id="details" class="col-9 big">
-                <TextEditableField name="details" class="details" v-model="journey.details"
-                  @save="updateJourney('details', $event, journey.id)" />
-              </div>
-              <div class="col-3 d-flex justify-content-end">
-                <button v-if="!journey.end" class="button-circular stop" @click="stopJourney(journey.id)">
-                  <span class="stop">
-                    <font-awesome-icon icon="fa-solid fa-hand" />
-                  </span>
-                </button>
-                <button class="button-circular delete" @click="deleteItem(journey)">
-                  <span class="delete">
-                    <font-awesome-icon icon="fa-solid fa-trash-alt" />
-                  </span>
-                </button>
-              </div>
+            <div id="end" class="col pt-3" :class="{ 'col-big': journey.editing && journey.editing.end }"
+              @click="editDateTime(journey, 'end')">
+              <TimeEditableInput name="end" v-model="journey.end" @save="updateJourney('end', $event, journey.id)" />
+            </div>
+            <div id="duration" class="col pt-3">
+              <p class="time-bold">
+                {{ formatDuration(journey.duration) }}
+              </p>
+            </div>
+            <div class="col d-flex justify-content-end">
+              <button v-if="!journey.end" class="button-circular stop" @click="stopJourney(journey.id)">
+                <span class="stop">
+                  <font-awesome-icon icon="fa-solid fa-hand" />
+                </span>
+              </button>
+              <button class="button-circular delete" @click="deleteItem(journey)">
+                <span class="delete">
+                  <font-awesome-icon icon="fa-solid fa-trash-alt" />
+                </span>
+              </button>
             </div>
           </div>
+          <div class="row pt-2">
+            <div id="details" class="col">
+              <TextEditableField name="details" class="details" v-model="journey.details"
+                @save="updateJourney('details', $event, journey.id)" />
+            </div>
+          
+          </div>
         </div>
-        <router-view />
       </div>
 
       <PaginateNav :paginationData="paginationData" @update-data="updatePaginationList" />
@@ -107,7 +102,7 @@ import { formatDateBr } from "@/utils/date/dateUtils";
 import { formatTimeToLocal } from "@/utils/date/dateUtils";
 import { convertDateTimeForServer } from "@/utils/date/dateUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
-import DateEditableInput from "../fields/date/DateEditableInput.vue";
+import DateEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import TimeEditableInput from "@/components/forms/inputs/time/TimeEditableInput.vue";
 import JourneyCreateForm from "@/components/forms/JourneyCreateForm.vue";
 import PaginateNav from "@/components/layout/PaginateNav.vue";

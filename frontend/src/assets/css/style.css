@@ -112,6 +112,12 @@
 
 .default-text {
   color: black;
+  font-size: 0.9rem;
+}
+
+.small-text {
+  color: black;
+  font-size: 0.8rem;
 }
 
 .form-container {

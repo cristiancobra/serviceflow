@@ -9,13 +9,11 @@
       </p>
     </div>
     <div class="container mt-5">
+      <div class="row mb-5">
+        <ProjectsList :projects="projects" />
+      </div>
       <div class="row">
-        <div class="col-6">
-          <ProjectsList :projects="projects" />
-        </div>
-        <div class="col-6">
-          <TasksList :tasks="tasks" />
-        </div>
+        <TasksList :tasks="tasks" />
       </div>
     </div>
   </div>

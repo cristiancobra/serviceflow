@@ -147,12 +147,6 @@ export default {
   width: 60px;
 }
 
-.projects-container {
-  margin-left: 180px;
-  margin-right: 180px;
-  margin-bottom: 60px;
-}
-
 .hidden {
   display: none;
   transition: display 8s;

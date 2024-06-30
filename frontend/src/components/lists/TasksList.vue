@@ -20,73 +20,70 @@
           placeholder="Digite para buscar" />
       </div>
     </div>
-    <div class="row">
-      <div class="col ps-4 pe-4 pt-0 pb-0" :class="getColumnClass(columns)" v-for="task in filteredTasks"
-        v-bind:key="task.id">
+
+    <div class="row" v-for="task in tasks" v-bind:key="task.id">
+      <div class="col-1 d-flex align-items-center justify-content-center" id="col-user">
+        <font-awesome-icon icon="fa-solid fa-user" class="primary big-icon" />
+      </div>
+      <div v-if="task.date_conclusion" class="col-2 status done">
+        <font-awesome-icon icon="fas fa-check-circle" style="font-size: 2rem;" class="done mb-3" />
+      </div>
+      <div v-else class="col-2 status canceled">
+        <font-awesome-icon icon="fas fa-check-circle" style="font-size: 2rem;" class="canceled" />
+      </div>
+      <div class="col cards">
         <router-link :to="{ name: 'tasksShow', params: { id: task.id } }">
-          <div class="row cards" :class="getCardColor(task.priority, task.status)">
-            <div class="col-11 p-2">
-              <div class="row" id="card-row-1">
-                <div class="col-7 text-start">
-                  <p class="cards-title">
-                    {{ task.name }}
-                  </p>
-                </div>
-                <div class="col text-end">
-                  <DateValue v-model="task.date_due" />
-                </div>
-              </div>
-              <div v-if="task.project" class="row pt-1" id="project-row">
-                <div class="col text-start d-flex">
-                  <font-awesome-icon icon="fa-solid fa-folder-open" />
-                  <p class="cards-project-h2 ps-2">
-                    {{ task.project.name }}
-                  </p>
-                </div>
-              </div>
-              <div class="row" id="card-row-2">
-                <div class="card-icon d-flex mt-1">
-                  <div class="me-3">
-                    <font-awesome-icon icon="fa-solid fa-clock" class="card-icon" />
-                  </div>
-                  <div class="default-text me-5">
-                    {{ formatDuration(task.duration_time) }}
-                  </div>
-                  <div class="me-3" v-if="task.duration_days">
-                    <font-awesome-icon icon="fa-solid fa-calendar-alt" class="card-icon" />
-                  </div>
-                  <div class="default-text">
-                    {{ task.duration_days }}
-                  </div>
-                </div>
-              </div>
+          <div class="row title">
+            <div class="col">
+              <p class="cards-title">
+                {{ task.name }}
+              </p>
             </div>
-            <div class="col-1 featured-icon" :class="getPriorityClass(task.priority)">
-              <font-awesome-icon :icon="getStatusIcon(task.status)" />
+          </div>
+          <div class="row">
+            <div v-if="task.project" class="col d-flex ps-4">
+              <font-awesome-icon icon="fa-solid fa-folder-open" class="primary" />
+              <p class="cards-project-h2 ps-2">
+                {{ task.project.name }}
+              </p>
+            </div>
+            <div v-else class="col d-flex ps-4">
+              <font-awesome-icon icon="fa-solid fa-folder-open" class="canceled" />
+              <p class="cards-project-h2 ps-2">
+                Sem projeto
+              </p>
             </div>
           </div>
         </router-link>
-        <router-view />
+      </div>
+      <div class="col-3 line-list d-flex align-items-center justify-content-center">
+        <DateTimeValue v-if="task.date_conclusion" v-model="task.date_conclusion" classText="done"
+          classIcon='done' @save="updateTask('date_conclusion', $event, task.id)" />
+        <DateTimeEditableInput v-else v-model="task.date_due" :classText="getDeadlineClass(task)"
+          :classIcon='getDeadlineClass(task)' @save="updateTask('date_due', $event, task.id)" />
       </div>
     </div>
+
   </div>
 </template>
 
 <script>
-// import axios from "axios";
+import axios from "axios";
 import { convertUtcToLocal, formatDuration } from "@/utils/date/dateUtils";
-import { getCardColor, getPriorityClass, getStatusClass, getStatusIcon } from "@/utils/card/cardUtils";
+import { getStatusColor, getPriorityClass, getDeadlineClass, getStatusIcon } from "@/utils/card/cardUtils";
+import { BACKEND_URL, TASK_URL_PARAMETER } from "@/config/apiConfig";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
-import DateValue from "../fields/date/DateValue.vue";
+import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
+import DateTimeValue from "../fields/datetime/DateTimeValue.vue";
 
 export default {
   name: "TasksList",
   props: {
-    tasks: Array,
     columns: {
       type: Number,
       default: 1,
     },
+    tasks: Array,
   },
   data() {
     return {
@@ -94,18 +91,20 @@ export default {
       formatedTime: '',
       isActive: true,
       searchTerm: "",
+      tasksLocal: this.tasks,
     };
   },
   components: {
-    DateValue,
+    DateTimeEditableInput,
+    DateTimeValue,
     TaskCreateForm,
   },
   methods: {
     convertUtcToLocal,
     formatDuration,
-    getCardColor,
+    getStatusColor,
     getPriorityClass,
-    getStatusClass,
+    getDeadlineClass,
     getStatusIcon,
     addTaskCreated(newTask) {
       this.toggle();
@@ -133,12 +132,33 @@ export default {
       }
     },
     getCombinedClasses(status, priority) {
-      // Defina sua lógica para determinar as classes com base em status e prioridade
       const statusClass = getPriorityClass(status);
       const priorityClass = getPriorityClass(priority);
 
-      // Combine as classes
       return `${statusClass} ${priorityClass}`;
+    },
+    async updateTask(fieldName, editedValue, taskId) {
+      const updatedField = {};
+      updatedField[fieldName] = editedValue;
+
+      try {
+        const response = await axios.put(
+          `${BACKEND_URL}${TASK_URL_PARAMETER}${taskId}`,
+          updatedField
+        );
+
+        const updatedTask = response.data.data;
+
+        const index = this.tasksLocal.findIndex(task => task.id === taskId);
+
+        this.tasksLocal.splice(index, 1, updatedTask);
+
+        this.task = updatedTask;
+
+      } catch (error) {
+        console.error("Erro ao atualizar a tarefa:", error);
+      }
+
     },
     toggle() {
       this.isActive = !this.isActive;
@@ -174,12 +194,17 @@ a {
   color: var(--gray);
 }
 
+.small-date {
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+
 .tasks-container {
   border-style: solid;
   border-width: 2px;
   border-color: var(--primary);
   border-radius: 14px;
-  padding: 1rem;
+  padding: 2rem;
 }
 
 .title {

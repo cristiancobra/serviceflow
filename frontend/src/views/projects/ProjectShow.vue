@@ -84,7 +84,7 @@ import StatusLinearRadioInput from "@/components/forms/inputs/StatusLinearRadioI
 import PrioritySelectInput from "@/components/forms/inputs/PrioritySelectInput.vue";
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
-import DateEditableInput from "@/components/fields/date/DateEditableInput";
+import DateEditableInput from "@/components/fields/datetime/DateTimeEditableInput";
 import ProjectTasksList from "@/components/lists/ProjectTasksList.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField";
 import TextEditor from "@/components/forms/inputs/TextEditor.vue";
