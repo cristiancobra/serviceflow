@@ -18,12 +18,10 @@
       <div class="col-1 d-flex align-items-center justify-content-center" id="col-user">
         <font-awesome-icon icon="fa-solid fa-folder-open" class="primary big-icon" />
       </div>
-      <div v-if="project.date_conclusion" class="col-2 status done">
+      <div v-if="project.date_conclusion" class="col-1 status done">
         <font-awesome-icon icon="fas fa-check-circle" style="font-size: 2rem;" class="done mb-3" />
-        <DateTimeValue v-model="project.date_conclusion" :classText="getDeadlineClass(project)"
-          :classIcon='getDeadlineClass(project)' @save="updateTask('date_conclusion', $event, project.id)" />
       </div>
-      <div v-else class="col-2 status canceled">
+      <div v-else class="col-1 status canceled">
         <font-awesome-icon icon="fas fa-check-circle" style="font-size: 2rem;" class="canceled" />
       </div>
       <div class="col cards">
@@ -34,22 +32,14 @@
                 {{ project.name }}
               </p>
             </div>
-            <div class="col-3 pt-2">
-              <DateTimeValue v-model="project.date_due" :classText="project.date_conclusion ? 'canceled' : ''"
-                :classIcon="project.date_conclusion ? 'canceled' : ''" />
-            </div>
           </div>
         </router-link>
       </div>
-      <div v-if="project.date_conclusion" class="col-3 line-list status done">
-        <font-awesome-icon icon="fas fa-check-circle" style="font-size: 2rem;" class="done" />
-        <DateTimeEditableInput v-model="project.date_conclusion" :classText="getDeadlineClass(project)" classIcon='default-text'
-          @save="updateTask('date_conclusion', $event, project.id)" />
-      </div>
-      <div v-else class="col-3 line-list status canceled">
-        <font-awesome-icon icon="fas fa-check-circle" style="font-size: 2rem;" class="canceled" />
-        <DateTimeEditableInput v-model="project.date_due" :classText="getDeadlineClass(project)" classIcon='default-text'
-          @save="updateTask('date_conclusion', $event, project.id)" />
+      <div class="col-3 line-list d-flex align-items-center justify-content-center">
+        <DateTimeValue v-if="project.date_conclusion" v-model="project.date_conclusion" classText="done"
+          classIcon='done' @save="updateProject('date_conclusion', $event, project.id)" />
+        <DateTimeEditableInput v-else v-model="project.date_due" :classText="getDeadlineClass(project)"
+          :classIcon='getDeadlineClass(project)' @save="updateProject('date_due', $event, project.id)" />
       </div>
     </div>
   </div>
@@ -59,9 +49,15 @@
 // import axios from "axios";
 import { formatDuration } from "@/utils/date/dateUtils";
 import { getDeadlineClass, getStatusClass, getPriorityClass, getStatusColor, getStatusIcon } from "@/utils/card/cardUtils";
+import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
+import DateTimeValue from "../fields/datetime/DateTimeValue.vue";
 
 export default {
   name: "ProjectsList",
+  components: {
+    DateTimeEditableInput,
+    DateTimeValue,
+  },
   props: {
     projects: Array,
     columns: {

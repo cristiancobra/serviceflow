@@ -12,13 +12,13 @@
     <SuccessMessage v-if="isSuccess" :formResponse="formResponse" />
 
     <div class="row">
-      <TasksList :tasks="filteredTasks" :columns="2" @toggle="toggle" />
+      <TasksList template="index" />
     </div>
   </div>
 </template>
 
 <script>
-import { BACKEND_URL, TASK_URL, TASK_URL_PARAMETER } from "@/config/apiConfig";
+import { BACKEND_URL, TASK_URL_PARAMETER } from "@/config/apiConfig";
 import axios from "axios";
 import TasksList from "@/components/lists/TasksList.vue";
 import TasksFilter from "@/components/filters/TasksFilter.vue";
@@ -43,15 +43,15 @@ export default {
     };
   },
   methods: {
-    getTasks() {
-      axios
-      .get(`${BACKEND_URL}${TASK_URL}`)
-        .then((response) => {
-          this.tasks = response.data.data;
-          this.filteredTasks = this.tasks;
-        })
-        .catch((error) => console.log(error));
-    },
+    // getTasks() {
+    //   axios
+    //   .get(`${BACKEND_URL}${TASK_URL}`)
+    //     .then((response) => {
+    //       this.tasks = response.data.data;
+    //       this.filteredTasks = this.tasks;
+    //     })
+    //     .catch((error) => console.log(error));
+    // },
     // addTaskCreated(newTask) {
     //   this.toggle();
     //   this.filteredTasks.unshift(newTask);
@@ -98,7 +98,7 @@ export default {
     },
   },
   mounted() {
-    this.getTasks();
+    // this.getTasks();
   },
 };
 </script>

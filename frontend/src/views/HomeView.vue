@@ -13,14 +13,14 @@
         <ProjectsList :projects="projects" />
       </div>
       <div class="row">
-        <TasksList :tasks="tasks" />
+        <TasksList template="priorized" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { BACKEND_URL, PROJECTS_PRIORIZED_URL, TASK_PRIORIZED_URL } from "@/config/apiConfig";
+import { BACKEND_URL, PROJECTS_PRIORIZED_URL } from "@/config/apiConfig";
 import axios from "axios";
 import ProjectsList from "../components/lists/ProjectsList.vue";
 import TasksList from "../components/lists/TasksList.vue";
@@ -43,15 +43,6 @@ export default {
       const options = { year: "numeric", month: "long", day: "numeric" };
       this.dateNow = data.toLocaleDateString("pt-BR", options);
     },
-    getTasksHome() {
-      axios
-        .get(`${BACKEND_URL}${TASK_PRIORIZED_URL}`)
-        .then((response) => {
-          this.tasks = response.data.data;
-          // this.filteredTasks = this.tasks; // Inicialmente, as tarefas filtradas são iguais a todas as tarefas
-        })
-        .catch((error) => console.log(error));
-    },
     getProjectsHome() {
       axios
         .get(`${BACKEND_URL}${PROJECTS_PRIORIZED_URL}`)
@@ -63,7 +54,6 @@ export default {
   },
   mounted() {
     this.getDateNow();
-    this.getTasksHome();
     this.getProjectsHome();
   },
 };

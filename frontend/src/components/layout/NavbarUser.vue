@@ -1,4 +1,5 @@
 <template>
+  <div>
   <nav class="navbar navbar-expand-lg sticky-top">
     <a class="navbar-brand" href="#">
       <img :src="require('@/assets/logo-serviceflow-BRANCO.png')" class="logo" alt="logo-serviceflow" />
@@ -58,13 +59,6 @@
           </li>
         </router-link>
 
-        <router-link v-if="openJourney" :to="{ name: 'tasksShow', params: { id: openJourney.task_id } }">
-          <li class="nav-item" @mouseover="toggleActive('openTask')" :class="{ active: activeItem === 'openTask' }">
-          <font-awesome-icon icon="fas fa-exclamation-triangle alert" />
-            <span class="router-link-text">FAZENDO</span>
-          </li>
-        </router-link>
-
         <router-link to="/logout">
           <li class="nav-item" @click="logout" @mouseover="toggleActive('logout')"
             :class="{ active: activeItem === 'logout' }">
@@ -75,6 +69,20 @@
       </ul>
     </div>
   </nav>
+  <div v-if="openJourney" class="second-line">
+    <router-link v-if="openJourney" :to="{ name: 'tasksShow', params: { id: openJourney.task_id } }">
+      <div class="col-12">
+        <p class="task-doing">
+          <font-awesome-icon icon="fas fa-clock alert" />
+          fazendo: 
+          <span style="font-weight: normal;">
+            {{ openJourney.name }}
+          </span>
+        </p>
+      </div>
+    </router-link>
+  </div>
+</div>
 </template>
 
 
@@ -219,5 +227,18 @@ nav a.router-link-exact-active {
 
 nav a.router-link-exact-active:hover {
   border-style: none;
+}
+.second-line {
+  background-color: var(--orange-light);
+}
+.second-line a {
+  text-decoration: none;
+  color: black;
+}
+.task-doing {
+  padding: 0.4rem 2rem;
+  text-align: right;
+  font-size: 0.8rem;
+  font-weight: 800;
 }
 </style>

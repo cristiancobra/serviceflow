@@ -25,10 +25,10 @@
       <div class="col-1 d-flex align-items-center justify-content-center" id="col-user">
         <font-awesome-icon icon="fa-solid fa-user" class="primary big-icon" />
       </div>
-      <div v-if="task.date_conclusion" class="col-2 status done">
+      <div v-if="task.date_conclusion" class="col-1 status done">
         <font-awesome-icon icon="fas fa-check-circle" style="font-size: 2rem;" class="done mb-3" />
       </div>
-      <div v-else class="col-2 status canceled">
+      <div v-else class="col-1 status canceled">
         <font-awesome-icon icon="fas fa-check-circle" style="font-size: 2rem;" class="canceled" />
       </div>
       <div class="col cards">
@@ -57,7 +57,7 @@
         </router-link>
       </div>
       <div class="col-3 line-list d-flex align-items-center justify-content-center">
-        <DateTimeValue v-if="task.date_conclusion" v-model="task.date_conclusion" classText="done"
+        <DateTimeValue v-if="formatDateDue(task.date_conclusion)" v-model="task.date_conclusion" classText="done"
           classIcon='done' @save="updateTask('date_conclusion', $event, task.id)" />
         <DateTimeEditableInput v-else v-model="task.date_due" :classText="getDeadlineClass(task)"
           :classIcon='getDeadlineClass(task)' @save="updateTask('date_due', $event, task.id)" />
@@ -71,7 +71,7 @@
 import axios from "axios";
 import { convertUtcToLocal, formatDuration } from "@/utils/date/dateUtils";
 import { getStatusColor, getPriorityClass, getDeadlineClass, getStatusIcon } from "@/utils/card/cardUtils";
-import { BACKEND_URL, TASK_URL_PARAMETER } from "@/config/apiConfig";
+import { BACKEND_URL, TASK_URL, TASK_URL_PARAMETER, TASK_PRIORIZED_URL } from "@/config/apiConfig";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import DateTimeValue from "../fields/datetime/DateTimeValue.vue";
@@ -79,11 +79,10 @@ import DateTimeValue from "../fields/datetime/DateTimeValue.vue";
 export default {
   name: "TasksList",
   props: {
-    columns: {
-      type: Number,
-      default: 1,
+    template: {
+      type: String,
+      required: true,
     },
-    tasks: Array,
   },
   data() {
     return {
@@ -91,7 +90,7 @@ export default {
       formatedTime: '',
       isActive: true,
       searchTerm: "",
-      tasksLocal: this.tasks,
+      tasks: [],
     };
   },
   components: {
@@ -108,13 +107,12 @@ export default {
     getStatusIcon,
     addTaskCreated(newTask) {
       this.toggle();
-      this.filteredTasks.unshift(newTask);
+      this.tasks.unshift(newTask);
     },
     formatDateDue(date) {
-      if (date !== '1969-12-31 18:00:00' && date !== '1969-12-31 21:00:00') {
-        return this.convertUtcToLocal(date);
+      if (date === '1969-12-31 18:00:00' && date === '1969-12-31 21:00:00' && date === '1970-01-01 00:00:00') {
+        return "";
       }
-      return 'sem prazo';
     },
     trimDescription(description) {
       if (description) {
@@ -137,6 +135,24 @@ export default {
 
       return `${statusClass} ${priorityClass}`;
     },
+    getTasks() {
+      axios
+        .get(`${BACKEND_URL}${TASK_URL}`)
+        .then((response) => {
+          this.tasks = response.data.data;
+          // this.filteredTasks = this.tasks;
+        })
+        .catch((error) => console.log(error));
+    },
+    getTasksPriorized() {
+      axios
+        .get(`${BACKEND_URL}${TASK_PRIORIZED_URL}`)
+        .then((response) => {
+          this.tasks = response.data.data;
+          // this.filteredTasks = this.tasks; // Inicialmente, as tarefas filtradas são iguais a todas as tarefas
+        })
+        .catch((error) => console.log(error));
+    },
     async updateTask(fieldName, editedValue, taskId) {
       const updatedField = {};
       updatedField[fieldName] = editedValue;
@@ -149,11 +165,9 @@ export default {
 
         const updatedTask = response.data.data;
 
-        const index = this.tasksLocal.findIndex(task => task.id === taskId);
+        const index = this.tasks.findIndex(task => task.id === taskId);
 
-        this.tasksLocal.splice(index, 1, updatedTask);
-
-        this.task = updatedTask;
+        this.tasks.splice(index, 1, updatedTask);
 
       } catch (error) {
         console.error("Erro ao atualizar a tarefa:", error);
@@ -179,6 +193,16 @@ export default {
         });
       }
     },
+  },
+  mounted() {
+    if (this.template === 'priorized') {
+      this.getTasksPriorized();
+    }
+
+    if (this.template === 'index') {
+      this.getTasks();
+    }
+    console.log(this.template);
   },
 };
 </script>

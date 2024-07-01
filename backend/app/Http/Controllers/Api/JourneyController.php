@@ -165,7 +165,8 @@ class JourneyController extends Controller
     {
         $openJourney = Journey::whereNotNull('start')
             ->whereNull('end')
-            ->first();  // Use first() para pegar a primeira jornada aberta
+            ->with('task')
+            ->first();
 
         if ($openJourney) {
             return response()->json([
@@ -173,6 +174,7 @@ class JourneyController extends Controller
                 'openJourney' => [
                     'id' => $openJourney->id,
                     'task_id' => $openJourney->task_id,
+                    'name' => $openJourney->task->name,
                     'details' => $openJourney->details,
                     'start' => $openJourney->start,
                     'duration' => $openJourney->duration,

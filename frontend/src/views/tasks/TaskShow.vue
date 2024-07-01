@@ -85,7 +85,7 @@
       </div>
 
       <div id="col-list" class="col pt-0">
-        <JourneysList :taskId="taskId" @update-task-duration="updateTaskDuration()" />
+        <JourneysList :taskId="taskId" @update-task-duration="updateTaskDuration()" template="by-task"/>
       </div>
     </div>
   </div>

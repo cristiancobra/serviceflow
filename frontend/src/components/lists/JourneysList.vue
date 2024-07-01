@@ -80,7 +80,7 @@
               <TextEditableField name="details" class="details" v-model="journey.details"
                 @save="updateJourney('details', $event, journey.id)" />
             </div>
-          
+
           </div>
         </div>
       </div>
@@ -117,7 +117,15 @@ export default {
     PaginateNav,
     TimeEditableInput,
   },
-  props: ["taskId"],
+  props: {
+    taskId: {
+      type: Number,
+      default: null,
+    },
+    template: {
+      type: String,
+    },
+  },
   data() {
     return {
       journeys: [],
@@ -201,13 +209,12 @@ export default {
         .get(`${BACKEND_URL}${JOURNEY_URL}`)
         .then((response) => {
           this.journeys = response.data.data;
-          this.filteredJourneys = this.journeys;
         })
         .catch((error) => console.log(error));
     },
-    async getJourneysFromTask(page = 1) {
+    async getJourneysFromTask(newTaskId, page = 1) {
 
-      this.journeysUrl = `${BACKEND_URL}${JOURNEY_BY_TASK_URL_QUERY}task_id=${this.taskId}&per_page=10&page=${page}`;
+      this.journeysUrl = `${BACKEND_URL}${JOURNEY_BY_TASK_URL_QUERY}task_id=${newTaskId}&per_page=10&page=${page}`;
 
       try {
         const response = await axios.get(this.journeysUrl);
@@ -272,21 +279,17 @@ export default {
     },
   },
   watch: {
-    taskId: {
-      handler(dataLoaded) {
-        if (dataLoaded) {
-          this.getJourneysFromTask();
-        }
-      },
-      immediate: true,
+    taskId(newValue) {
+      this.getJourneysFromTask(newValue);
     },
   },
   mounted() {
-    if (this.taskId) {
+    if (this.taskId !=- null && this.template === "by-task") {
       this.getJourneysFromTask();
-    } else {
+    } 
+    if (this.template === "index") {
       this.getJourneys();
-    }
+    } 
     console.log("Journeys", this.journeys);
   },
 };

@@ -28,9 +28,7 @@
 
 .cards {
   padding: 0.3rem;
-  /* min-height: 14vh; */
   position: relative;
-  overflow: hidden;
   text-align: left;
   border-bottom-style: solid;
   border-bottom-width: 2px;

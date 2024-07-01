@@ -12,14 +12,12 @@
     <SuccessMessage v-if="isSuccess" :formResponse="formResponse" />
 
     <div class="row">
-      <JourneysList :journeys="filteredJourneys" :columns="2" @toggle="toggle" />
+      <JourneysList @toggle="toggle" template="index" />
     </div>
   </div>
 </template>
 
 <script>
-import { BACKEND_URL, JOURNEY_URL, JOURNEY_URL_PARAMETER } from "@/config/apiConfig";
-import axios from "axios";
 import JourneysList from "@/components/lists/JourneysList.vue";
 import JourneysFilter from "@/components/filters/JourneysFilter.vue";
 import SuccessMessage from '../../components/forms/messages/SuccessMessage.vue';
@@ -38,68 +36,10 @@ export default {
       hasError: false,
       data: null,
       journeys: [],
-      filteredJourneys: [],
       newTask: null,
     };
   },
   methods: {
-    getJourneys() {
-      axios
-      .get(`${BACKEND_URL}${JOURNEY_URL}`)
-        .then((response) => {
-          this.journeys = response.data.data;
-          this.filteredJourneys = this.journeys;
-          console.log(this.filteredJourneys);
-        })
-        .catch((error) => console.log(error));
-    },
-    // addTaskCreated(newTask) {
-    //   this.toggle();
-    //   this.filteredJourneys.unshift(newTask);
-    // },
-    getJourneysCanceled() {
-      axios
-        .get(`${BACKEND_URL}${JOURNEY_URL_PARAMETER}filter-status?status=canceled`) // Faz a requisição filtrando por status "done"
-        .then((response) => {
-          this.filteredJourneys = response.data.data;
-        })
-        .catch((error) => console.log(error));
-    },
-    getJourneysDoing() {
-      axios
-      .get(`${BACKEND_URL}${JOURNEY_URL_PARAMETER}filter-status?status=doing`) // Faz a requisição filtrando por status "doing"
-        .then((response) => {
-          this.filteredJourneys = response.data.data;
-        })
-        .catch((error) => console.log(error));
-    },
-    getJourneysDone() {
-      axios
-      .get(`${BACKEND_URL}${JOURNEY_URL_PARAMETER}filter-status?status=done`) // Faz a requisição filtrando por status "done"
-        .then((response) => {
-          this.filteredJourneys = response.data.data;
-        })
-        .catch((error) => console.log(error));
-    },
-    getJourneysLate() {
-      axios
-      .get(`${BACKEND_URL}${JOURNEY_URL_PARAMETER}filter-date`) // Faz a requisição filtrando por status "late"
-        .then((response) => {
-          this.filteredJourneys = response.data.data;
-        })
-        .catch((error) => console.log(error));
-    },
-    getJourneysToDo() {
-      axios
-      .get(`${BACKEND_URL}${JOURNEY_URL_PARAMETER}filter-status?status=to-do`) // Faz a requisição filtrando por status "to-do"
-        .then((response) => {
-          this.filteredJourneys = response.data.data;
-        })
-        .catch((error) => console.log(error));
-    },
-  },
-  mounted() {
-    this.getJourneys();
   },
 };
 </script>
