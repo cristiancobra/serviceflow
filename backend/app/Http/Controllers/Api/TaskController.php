@@ -211,11 +211,9 @@ class TaskController extends Controller
      */
     public function prioritizedTasks()
     {
-        $tasks = Task::whereIn('status', [
-            'to-do',
-            'doing'
-        ])
+        $tasks = Task::with('project')
             ->with('project')
+            ->where('date_conclusion', null)
             ->orderBy('date_due', 'asc')
             ->paginate(10);
 
