@@ -12,9 +12,9 @@
       </div>
     </div>
     <div class="row" v-bind:class="{ 'd-none': isActive }">
-      <TaskCreateForm @new-task-event="addTaskCreated" @toogle-task-form=toggle() />
+      <ProjectCreateForm @new-project-event="addProjectCreated" @toogle-project-form=toggle() />
     </div>
-    <div class="row" v-for="project in filteredProjects" v-bind:key="project.id">
+    <div class="row" v-for="project in projects" v-bind:key="project.id">
       <div class="col-1 d-flex align-items-center justify-content-center" id="col-user">
         <font-awesome-icon icon="fa-solid fa-folder-open" class="primary big-icon" />
       </div>
@@ -46,9 +46,10 @@
 </template>
 
 <script>
-// import axios from "axios";
 import { formatDuration } from "@/utils/date/dateUtils";
 import { getDeadlineClass, getStatusClass, getPriorityClass, getStatusColor, getStatusIcon } from "@/utils/card/cardUtils";
+import { BACKEND_URL, PROJECT_URL, PROJECT_URL_PARAMETER, PROJECTS_PRIORIZED_URL } from "@/config/apiConfig";
+import axios from "axios";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import DateTimeValue from "../fields/datetime/DateTimeValue.vue";
 
@@ -59,14 +60,17 @@ export default {
     DateTimeValue,
   },
   props: {
-    projects: Array,
     columns: {
       type: Number,
       default: 1,
     },
+    template: {
+      type: String,
+    }
   },
   data() {
     return {
+      projects: [],
       searchTerm: "",
     };
   },
@@ -77,6 +81,9 @@ export default {
     getStatusColor,
     getPriorityClass,
     getStatusIcon,
+    addProjectCreated(newProject) {
+      this.projects.unshift(newProject);
+    },
     getCombinedClasses(status, priority) {
       // Defina sua lógica para determinar as classes com base em status e prioridade
       const statusClass = getStatusClass(status);
@@ -95,6 +102,44 @@ export default {
           return "col-12";
       }
     },
+    getProjectsPriorized() {
+      axios
+        .get(`${BACKEND_URL}${PROJECTS_PRIORIZED_URL}`)
+        .then((response) => {
+          this.projects = response.data.data;
+        })
+        .catch((error) => console.log(error));
+    },
+    async updateProject(fieldName, editedValue, projectId) {
+      const updatedField = {};
+      updatedField[fieldName] = editedValue;
+      try {
+        const response = await axios.put(
+          `${BACKEND_URL}${PROJECT_URL_PARAMETER}${projectId}`,
+          updatedField
+        );
+        const updatedProject = response.data.data;
+        this.updateProjectsList(updatedProject, projectId);
+        console.log("updatedProjec", updatedProject)
+      } catch (error) {
+        console.error("Erro ao atualizar a tarefa:", error);
+      }
+    },
+    getProjects() {
+      axios
+        .get(`${BACKEND_URL}${PROJECT_URL}`)
+        .then((response) => {
+          this.projects = response.data.data;
+        })
+        .catch((error) => console.log(error));
+    },
+    toggle() {
+      this.isActive = !this.isActive;
+    },
+    updateProjectsList(updatedProject, projectId) {
+      const index = this.projects.findIndex(project => project.id === projectId);
+      this.projects.splice(index, 1, updatedProject);
+    },
   },
   computed: {
     filteredProjects() {
@@ -112,6 +157,16 @@ export default {
       }
     },
   },
+  mounted() {
+    if (this.template === 'priorized') {
+      this.getProjectsPriorized();
+    }
+
+    if (this.template === 'index') {
+      this.getProjects();
+    }
+
+  }
 };
 </script>
 

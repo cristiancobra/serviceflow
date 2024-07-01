@@ -8,18 +8,16 @@
     </div>
 
     <div v-bind:class="{ hidden: isActive }">
-      <ProjectCreateForm @new-project-event="addProjectCreated($event)" @toogle-task-form=toggle() />
+      <ProjectCreateForm @new-project-event="addProjectCreated($event)" @toogle-project-form=toggle() />
     </div>
 
     <div class="row">
-      <ProjectsList :projects="filteredProjects" :columns="2" />
+      <ProjectsList template="index"/>
     </div>
   </div>
 </template>
 
 <script>
-import { BACKEND_URL, PROJECT_URL } from "@/config/apiConfig";
-import axios from "axios";
 import ProjectsList from "@/components/lists/ProjectsList.vue";
 import ProjectCreateForm from "@/components/forms/ProjectCreateForm.vue";
 
@@ -34,8 +32,6 @@ export default {
       isActive: true,
       hasError: false,
       data: null,
-      filteredProjects: [],
-      projects: [],
       newProject: {
         id: null,
         name: null,
@@ -47,30 +43,6 @@ export default {
         date_due: null,
       },
     };
-  },
-  methods: {
-    toggle() {
-      setTimeout(() => {
-        this.isActive = !this.isActive;
-      }, 100);
-    },
-    getProjects() {
-      axios
-        .get(`${BACKEND_URL}${PROJECT_URL}`)
-        .then((response) => {
-          this.projects = response.data.data;
-          this.filteredProjects = this.projects;
-          console.log("projects2", this.projects);
-        })
-        .catch((error) => console.log(error));
-    },
-    addProjectCreated(newProject) {
-      this.toggle();
-      this.filteredProjects.unshift(newProject);
-    },
-  },
-  mounted() {
-    this.getProjects();
   },
 };
 </script>

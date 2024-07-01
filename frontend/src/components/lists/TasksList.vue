@@ -165,14 +165,16 @@ export default {
 
         const updatedTask = response.data.data;
 
-        const index = this.tasks.findIndex(task => task.id === taskId);
-
-        this.tasks.splice(index, 1, updatedTask);
+        this.updateTasksList(updatedTask, taskId);
 
       } catch (error) {
         console.error("Erro ao atualizar a tarefa:", error);
       }
 
+    },
+    updateTasksList(updatedTask, taskId) {
+      const index = this.tasks.findIndex(task => task.id === taskId);
+      this.tasks.splice(index, 1, updatedTask);
     },
     toggle() {
       this.isActive = !this.isActive;

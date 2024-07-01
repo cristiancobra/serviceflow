@@ -17,7 +17,10 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return ProjectResource::collection(Project::all());
+        $projects = Project::orderBy('date_due', 'asc')
+            ->paginate(50);
+
+        return ProjectResource::collection($projects);
     }
 
     /**
@@ -121,11 +124,8 @@ class ProjectController extends Controller
      */
     public function prioritizedProjects()
     {
-        $projects = Project::whereIn('status', [
-            'to-do',
-            'doing'
-        ])
-            ->orderByRaw("FIELD(priority, 'high', 'medium', 'low')")
+        $projects = Project::where('date_conclusion', null)
+            ->orderBy('date_due', 'asc')
             ->paginate(10);
 
         return ProjectResource::collection(
