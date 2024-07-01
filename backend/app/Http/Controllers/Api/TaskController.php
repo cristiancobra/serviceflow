@@ -19,7 +19,6 @@ class TaskController extends Controller
     public function index()
     {
         $tasks = Task::with('project')
-            ->where('date_conclusion', null)
             ->orderBy('date_due', 'asc')
             ->paginate(50);
 

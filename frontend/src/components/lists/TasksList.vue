@@ -21,7 +21,7 @@
       </div>
     </div>
 
-    <div class="row" v-for="task in tasks" v-bind:key="task.id">
+    <div class="row" v-for="task in filteredTasks" v-bind:key="task.id">
       <div class="col-1 d-flex align-items-center justify-content-center" id="col-user">
         <font-awesome-icon icon="fa-solid fa-user" class="primary big-icon" />
       </div>

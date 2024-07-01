@@ -14,7 +14,13 @@
     <div class="row" v-bind:class="{ 'd-none': isActive }">
       <ProjectCreateForm @new-project-event="addProjectCreated" @toogle-project-form=toggle() />
     </div>
-    <div class="row" v-for="project in projects" v-bind:key="project.id">
+    <div class="row">
+      <div class="col-12 mb-3 mt-3">
+        <input type="text" class="form-control search-container" v-model="searchTerm"
+          placeholder="Digite para buscar" />
+      </div>
+    </div>
+    <div class="row" v-for="project in filteredProjects" v-bind:key="project.id">
       <div class="col-1 d-flex align-items-center justify-content-center" id="col-user">
         <font-awesome-icon icon="fa-solid fa-folder-open" class="primary big-icon" />
       </div>
