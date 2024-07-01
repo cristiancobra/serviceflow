@@ -7,7 +7,7 @@
         <span class="default-text" :class="classText">
           {{ formatedDate }}
         </span>
-        <font-awesome-icon icon="fa-solid fa-clock"  class="ms-2 me-1" :class="localClassIcon" />
+        <font-awesome-icon icon="fa-solid fa-clock" class="ms-2 me-1" :class="localClassIcon" />
         <span class="default-text" :class="classText">
           {{ formatedTime }}
         </span>
@@ -63,8 +63,11 @@ export default {
       this.editing = false;
     },
     displayLocal() {
-      if (this.localValue != '1969-12-31 18:00:00' && this.localValue != '1969-12-31 21:00:00' && this.localValue != null) {
-        // const convertedDatetime = this.convertDateTimeToLocal(this.localValue)
+      if (this.localValue != '1969-12-31 18:00:00'
+        && this.localValue != '1969-12-31 21:00:00'
+        && this.localValue != '1970-01-01 00:00:00'
+        && this.localValue != null
+      ) {
         this.formatedDate = displayDate(this.localValue);
         this.formatedTime = displayTime(this.localValue);
       } else {

@@ -18,8 +18,9 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = Task::with('project') // Carrega o relacionamento project
-        ->orderByRaw('COALESCE(date_conclusion, date_due) DESC')
+        $tasks = Task::with('project')
+            ->where('date_conclusion', null)
+            ->orderBy('date_due', 'asc')
             ->paginate(50);
 
         return TaskResource::collection($tasks);

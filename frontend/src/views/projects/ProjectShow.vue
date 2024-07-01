@@ -174,22 +174,22 @@ export default {
         this.journeysData[index] = updatedJourney;
       }
     },
-    // async updateProject(fieldName, editedValue) {
-    //   const updatedField = {};
+    async updateProject(fieldName, editedValue) {
+      const updatedField = {};
 
-    //   updatedField[fieldName] = editedValue;
+      updatedField[fieldName] = editedValue;
 
-    //   try {
-    //     const response = await axios.put(
-    //       `${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.projectId}`,
-    //       updatedField
-    //     );
+      try {
+        const response = await axios.put(
+          `${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.projectId}`,
+          updatedField
+        );
 
-    //     this.project = response.data.data;
-    //   } catch (error) {
-    //     console.error("Erro ao atualizar a tarefa:", error);
-    //   }
-    // },
+        this.project = response.data.data;
+      } catch (error) {
+        console.error("Erro ao atualizar a tarefa:", error);
+      }
+    },
     updateProjectDuration() {
       axios
         .get(`${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.projectId}`)

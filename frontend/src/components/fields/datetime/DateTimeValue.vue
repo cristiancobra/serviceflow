@@ -35,7 +35,11 @@ export default {
     convertDateTimeToLocal,
   },
   mounted() {
-    if (this.modelValue != '1969-12-31 18:00:00' && this.modelValue != '1969-12-31 21:00:00' && this.modelValue != null) {
+    if (this.modelValue != '1969-12-31 18:00:00'
+        && this.modelValue != '1969-12-31 21:00:00'
+        && this.modelValue != '1970-01-01 00:00:00'
+        && this.modelValue != null
+      ) {
       this.formatedDate = displayDate(this.convertedDateTime);
       this.formatedTime = displayTime(this.convertedDateTime);
     } else {

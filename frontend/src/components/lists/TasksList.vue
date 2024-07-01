@@ -25,7 +25,7 @@
       <div class="col-1 d-flex align-items-center justify-content-center" id="col-user">
         <font-awesome-icon icon="fa-solid fa-user" class="primary big-icon" />
       </div>
-      <div v-if="task.date_conclusion" class="col-1 status done">
+      <div v-if="isValidDate(task.date_conclusion)" class="col-1 status done">
         <font-awesome-icon icon="fas fa-check-circle" style="font-size: 2rem;" class="done mb-3" />
       </div>
       <div v-else class="col-1 status canceled">
@@ -57,7 +57,7 @@
         </router-link>
       </div>
       <div class="col-3 line-list d-flex align-items-center justify-content-center">
-        <DateTimeValue v-if="formatDateDue(task.date_conclusion)" v-model="task.date_conclusion" classText="done"
+        <DateTimeValue v-if="isValidDate(task.date_conclusion)" v-model="task.date_conclusion" classText="done"
           classIcon='done' @save="updateTask('date_conclusion', $event, task.id)" />
         <DateTimeEditableInput v-else v-model="task.date_due" :classText="getDeadlineClass(task)"
           :classIcon='getDeadlineClass(task)' @save="updateTask('date_due', $event, task.id)" />
@@ -152,6 +152,15 @@ export default {
           // this.filteredTasks = this.tasks; // Inicialmente, as tarefas filtradas são iguais a todas as tarefas
         })
         .catch((error) => console.log(error));
+    },
+    isValidDate(date) {
+      if (date != '1969-12-31 18:00:00'
+        && date != '1969-12-31 21:00:00'
+        && date != '1970-01-01 00:00:00'
+        && date != null
+      ) {
+        return true;
+      }
     },
     async updateTask(fieldName, editedValue, taskId) {
       const updatedField = {};
