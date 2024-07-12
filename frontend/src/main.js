@@ -4,9 +4,12 @@ import '@/config/axiosConfig';
 import router from './router'
 
 // assets
-import "./assets/css/style.css"
 import './assets/css/cards.css';
+import './assets/css/forms.css';
+import './assets/css/lists.css';
+import './assets/css/modal.css';
 import './assets/css/projects.css';
+import "./assets/css/style.css"
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap"
 import VueMask from '@devindex/vue-mask'; // vue mask

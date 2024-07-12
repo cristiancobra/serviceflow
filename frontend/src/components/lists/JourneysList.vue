@@ -87,8 +87,6 @@
 
       <PaginateNav :paginationData="paginationData" @update-data="updatePaginationList" />
 
-      <JourneyCreateForm @new-journey-event="addJourneyCreated" />
-
     </div>
   </div>
 </template>
@@ -157,6 +155,7 @@ export default {
       this.journeys.unshift(newJourney);
       this.highlightNewJourney(newJourney.id);
       this.$emit("update-task-duration");
+      this.emitLastJourneyEnd();
     },
     highlightNewJourney(journeyId) {
       this.newJourneyId = journeyId;
@@ -188,6 +187,7 @@ export default {
               this.deleteItemList(item.id);
               this.messageStatus = "deleted";
               this.messageText = "Jornada excluída com sucesso!";
+              this.emitLastJourneyEnd();
             } else {
               alert("Falha ao excluir a jornada. Por favor, tente novamente.");
             }
@@ -228,8 +228,30 @@ export default {
           meta: response.data.meta,
         };
 
+        this.emitLastJourneyEnd();
+
       } catch (error) {
         console.error("Erro ao acessar jornadas:", error);
+      }
+    },
+    emitLastJourneyEnd() {
+      if (this.journeys.length === 0) {
+        this.$emit('last-journey-end', null)
+        return null;
+      }
+
+      const lastJourney = this.journeys[this.journeys.length - 1];
+
+      if (!lastJourney.end) {
+        this.$emit('last-journey-end', null)
+        return null;
+      }
+
+      try {
+        this.$emit('last-journey-end', lastJourney.end)
+      } catch (error) {
+        console.error('Erro ao converter a data:', error);
+        return null;
       }
     },
     editDateTime(journey, field) {
@@ -264,6 +286,7 @@ export default {
 
         this.updatedJourney = response.data.data;
         this.updateJourneyInList(this.updatedJourney);
+        this.emitLastJourneyEnd();
       } catch (error) {
         console.error("Erro ao atualizar a jornada:", error);
       }
@@ -284,12 +307,12 @@ export default {
     },
   },
   mounted() {
-    if (this.taskId !=- null && this.template === "by-task") {
+    if (this.taskId != - null && this.template === "by-task") {
       this.getJourneysFromTask();
-    } 
+    }
     if (this.template === "index") {
       this.getJourneys();
-    } 
+    }
     console.log("Journeys", this.journeys);
   },
 };

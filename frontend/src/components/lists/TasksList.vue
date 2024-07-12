@@ -1,18 +1,15 @@
 <template>
-  <div class="tasks-container mb-5 mt-0">
+  <div class="list-container mb-5 mt-0">
     <div class="row align-items-start">
       <div class="col-1">
         <font-awesome-icon icon="fa-solid fa-tasks" class="icon" />
       </div>
-      <div class="col-7">
+      <div class="col-8">
         <h2 class="title">TAREFAS</h2>
       </div>
-      <div class="col-4 text-end">
-        <button class="button button-new" @click="toggle()">+</button>
+      <div class="col-3 d-flex justify-content-end">
+        <TaskCreateForm @new-task-event="addTaskCreated" />
       </div>
-    </div>
-    <div class="row" v-bind:class="{ 'd-none': isActive }">
-      <TaskCreateForm @new-task-event="addTaskCreated" @toogle-task-form=toggle() />
     </div>
     <div class="row">
       <div class="col-12 mb-3 mt-3">
@@ -20,50 +17,32 @@
           placeholder="Digite para buscar" />
       </div>
     </div>
-
-    <div class="row" v-for="task in filteredTasks" v-bind:key="task.id">
-      <div class="col-1 d-flex align-items-center justify-content-center" id="col-user">
-        <font-awesome-icon icon="fa-solid fa-user" class="primary big-icon" />
-      </div>
-      <div v-if="isValidDate(task.date_conclusion)" class="col-1 status done">
-        <font-awesome-icon icon="fas fa-check-circle" style="font-size: 2rem;" class="done mb-3" />
-      </div>
-      <div v-else class="col-1 status canceled">
-        <font-awesome-icon icon="fas fa-check-circle" style="font-size: 2rem;" class="canceled" />
-      </div>
-      <div class="col cards">
+    <div class="row cards" v-for="task in filteredTasks" v-bind:key="task.id">
+      <div class="col-9 d-flex">
         <router-link :to="{ name: 'tasksShow', params: { id: task.id } }">
-          <div class="row title">
-            <div class="col">
-              <p class="cards-title">
-                {{ task.name }}
-              </p>
-            </div>
+          <div class="d-flex">
+            <font-awesome-icon icon="fa-solid fa-user" class="primary pe-2" />
+            <font-awesome-icon icon="fas fa-check-circle" class="pe-2"
+              :class="isValidDate(task.date_conclusion) ? 'done' : 'canceled'" />
+            <p class="cards-title">
+              {{ task.name }}
+            </p>
+          <div v-if="task.project" class="project ms-2">
+            <font-awesome-icon icon="fa-solid fa-folder-open" class="primary ps-2" />
+            <p class="ps-1">
+              {{ task.project.name }}
+            </p>
           </div>
-          <div class="row">
-            <div v-if="task.project" class="col d-flex ps-4">
-              <font-awesome-icon icon="fa-solid fa-folder-open" class="primary" />
-              <p class="cards-project-h2 ps-2">
-                {{ task.project.name }}
-              </p>
-            </div>
-            <div v-else class="col d-flex ps-4">
-              <font-awesome-icon icon="fa-solid fa-folder-open" class="canceled" />
-              <p class="cards-project-h2 ps-2">
-                Sem projeto
-              </p>
-            </div>
-          </div>
+        </div>
         </router-link>
       </div>
-      <div class="col-3 line-list d-flex align-items-center justify-content-center">
+      <div class="col-3">
         <DateTimeValue v-if="isValidDate(task.date_conclusion)" v-model="task.date_conclusion" classText="done"
           classIcon='done' @save="updateTask('date_conclusion', $event, task.id)" />
         <DateTimeEditableInput v-else v-model="task.date_due" :classText="getDeadlineClass(task)"
-          :classIcon='getDeadlineClass(task)' @save="updateTask('date_due', $event, task.id)" />
+          :classIcon="getDeadlineClass(task)" @save="updateTask('date_due', $event, task.id)" />
       </div>
     </div>
-
   </div>
 </template>
 
@@ -71,7 +50,8 @@
 import axios from "axios";
 import { convertUtcToLocal, formatDuration } from "@/utils/date/dateUtils";
 import { getStatusColor, getPriorityClass, getDeadlineClass, getStatusIcon } from "@/utils/card/cardUtils";
-import { BACKEND_URL, TASK_URL, TASK_URL_PARAMETER, TASK_PRIORIZED_URL } from "@/config/apiConfig";
+import { BACKEND_URL, TASK_URL_PARAMETER, TASK_PRIORIZED_URL, TASK_BY_PROJECT_URL, TASK_BY_OPPORTUNITY_URL } from "@/config/apiConfig";
+import { fetchIndexData } from "@/utils/requests/httpUtils";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import DateTimeValue from "../fields/datetime/DateTimeValue.vue";
@@ -79,6 +59,14 @@ import DateTimeValue from "../fields/datetime/DateTimeValue.vue";
 export default {
   name: "TasksList",
   props: {
+    opportunityId: {
+      type: Number,
+      required: false,
+    },
+    projectId: {
+      type: Number,
+      required: false,
+    },
     template: {
       type: String,
       required: true,
@@ -135,14 +123,53 @@ export default {
 
       return `${statusClass} ${priorityClass}`;
     },
-    getTasks() {
-      axios
-        .get(`${BACKEND_URL}${TASK_URL}`)
-        .then((response) => {
-          this.tasks = response.data.data;
-          // this.filteredTasks = this.tasks;
-        })
-        .catch((error) => console.log(error));
+    async getTasks() {
+      try {
+        this.tasks = await fetchIndexData(`tasks`);
+        console.log("Tarefas:", this.tasks);
+      } catch (error) {
+        console.error("Erro ao acessar tarefas:", error);
+      }
+    },
+    async getTasksFromProject(page = 1) {
+
+      this.tasksUrl = `${BACKEND_URL}${TASK_BY_PROJECT_URL}project_id=${this.projectId}&per_page=10&page=${page}`;
+
+      try {
+        const response = await axios.get(this.tasksUrl);
+
+        this.tasks = response.data.data.map(task => {
+          return { ...task, editing: false }; // Adiciona a propriedade editing a cada task
+        });
+
+        this.paginationData = {
+          links: response.data.links,
+          meta: response.data.meta,
+        };
+
+      } catch (error) {
+        console.error("Erro ao acessar tarefas:", error);
+      }
+    },
+    async getTasksFromOpportunity(page = 1) {
+
+      this.tasksUrl = `${BACKEND_URL}${TASK_BY_OPPORTUNITY_URL}opportunity_id=${this.opportunityId}&per_page=10&page=${page}`;
+
+      try {
+        const response = await axios.get(this.tasksUrl);
+
+        this.tasks = response.data.data.map(task => {
+          return { ...task, editing: false }; // Adiciona a propriedade editing a cada task
+        });
+
+        this.paginationData = {
+          links: response.data.links,
+          meta: response.data.meta,
+        };
+
+      } catch (error) {
+        console.error("Erro ao acessar tarefas:", error);
+      }
     },
     getTasksPriorized() {
       axios
@@ -213,7 +240,14 @@ export default {
     if (this.template === 'index') {
       this.getTasks();
     }
-    console.log(this.template);
+
+    if (this.template === 'project') {
+      this.getTasksFromProject();
+    }
+
+    if (this.template === 'opportunity') {
+      this.getTasksFromOpportunity();
+    }
   },
 };
 </script>
@@ -223,26 +257,8 @@ a {
   text-decoration: none;
 }
 
-.icon {
-  font-size: 1.8rem;
-  font-weight: 400;
-  color: var(--gray);
-}
-
 .small-date {
   font-size: 0.8rem;
   font-weight: 400;
-}
-
-.tasks-container {
-  border-style: solid;
-  border-width: 2px;
-  border-color: var(--primary);
-  border-radius: 14px;
-  padding: 2rem;
-}
-
-.title {
-  text-align: left;
 }
 </style>

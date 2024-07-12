@@ -1,99 +1,135 @@
 <template>
-  <div class="form-container mt-5">
-    <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
-    </AddMessage>
+  <div>
+    <button type="button" class="button button-new d-flex justify-content-center" @click="showModal"
+      data-bs-toggle="modal" data-bs-target="#taskModal">
+      <font-awesome-icon icon="fa-solid fa-plus" class="" />
+    </button>
 
-    <ErrorMessage v-if="isError" :formResponse="formResponse" />
-    <SuccessMessage v-if="isSuccess" :formResponse="formResponse" />
-
-    <form @submit.prevent="submitForm">
-      <div class="row">
-        <div class="col-12">
-          <TextInput label="Nome" name="name" v-model="form.name" placeholder="nome da tarefa" />
-        </div>
-      </div>
-
-      <div class="row mt-5">
-        <TextAreaInput label="Descrição:" name="description" v-model="form.description"
-          placeholder="Detalhamento da tarefa" :rows="5" />
-      </div>
-
-      <div class="row mb-5 mt-5">
-        <div class="col-md-4">
-          <CompaniesSelectInput label="Empresa cliente" name="company_id" v-model="form.company_id"
-            :fieldsToDisplay="['business_name', 'legal_name']" fieldNull="Não possui / minha empresa" />
-        </div>
-        <div class="col-2 d-flex align-items-center justify-content-start">
-          <button type="button" class="button-new" @click="toggleCompany()">
-            + criar
-          </button>
-        </div>
-
-        <div class="col-md-4">
-          <LeadsSelectInput label="Contato" name="contact_id" v-model="form.contact_id" fieldsToDisplay="name"
-            fieldNull="Não possui" />
-        </div>
-        <div class="col-2 d-flex align-items-center justify-content-start">
-          <button type="button" class="button-new" @click="toggleLead()">
-            + criar
-          </button>
-        </div>
-      </div>
-
-      <div v-if="isActiveCompany">
-        <CompanyCreateForm @new-company-event="addCompanyCreated" />
-      </div>
-      <div v-if="isActiveLead">
-        <LeadCreateForm @new-lead-event="addLeadCreated" />
-      </div>
-
-      <div class="row mb-5 mt-5">
-        <div class="col">
-          <UsersSelectInput label="Responsável" v-model="form.user_id" fieldsToDisplay="name" autoSelect=true />
-        </div>
-        <div class="col">
-          <div v-if="currentProject">
-            <label for="project" class="form-label">Projeto</label>
-            <input type="hidden" id="project" name="project_id" v-model="currentProject.id" />
-            <TextValue v-model="currentProject.name" class="selected" />
+    <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="taskModalLabel">Nova tarefa</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" @click="closeModal"
+              aria-label="Close"></button>
           </div>
-          <div v-else>
-            <ProjectsSelectInput label="Projeto" v-model="form.project_id" fieldsToDisplay="name" :autoSelect="false"
-              fieldNull="Nenhum" />
+          <div class="modal-body">
+            <form @submit.prevent="submitForm">
+
+              <div class="row">
+                <div class="col-12">
+                  <TextInput label="Nome" name="name" v-model="form.name" placeholder="nome da tarefa" />
+                </div>
+              </div>
+
+              <div class="row mt-5">
+                <TextAreaInput label="Descrição:" name="description" v-model="form.description"
+                  placeholder="Detalhamento da tarefa" :rows="5" />
+              </div>
+
+              <div class="row mb-5 mt-5">
+                <div class="col-md-4">
+                  {{ currentOpportunity }}
+                  <div v-if="currentOpportunity">
+                    <label for="company_id" class="form-label">Empresa cliente</label>
+                    <input type="hidden" name="company_id" v-model="currentOpportunity.company_id" />
+                    <TextValue v-model="currentOpportunity.name" class="selected" />
+                  </div>
+                  <div v-else>
+                  <CompaniesSelectInput label="Empresa cliente" name="company_id" v-model="form.company_id"
+                    :fieldsToDisplay="['business_name', 'legal_name']" fieldNull="Não possui / minha empresa" />
+                  </div>
+                </div>
+                <div class="col-2 d-flex align-items-center justify-content-start">
+                  <button type="button" class="button-new" @click="toggleCompany()">
+                    + criar
+                  </button>
+                </div>
+
+                <div class="col-md-4">
+                  <LeadsSelectInput label="Contato" name="contact_id" v-model="form.contact_id" fieldsToDisplay="name"
+                    fieldNull="Não possui" />
+                </div>
+                <div class="col-2 d-flex align-items-center justify-content-start">
+                  <button type="button" class="button-new" @click="toggleLead()">
+                    + criar
+                  </button>
+                </div>
+              </div>
+
+              <div v-if="isActiveCompany">
+                <CompanyCreateForm @new-company-event="addCompanyCreated" />
+              </div>
+              <div v-if="isActiveLead">
+                <LeadCreateForm @new-lead-event="addLeadCreated" />
+              </div>
+
+              <div class="row mb-5 mt-5">
+                <div class="col">
+                  <div v-if="currentOpportunity">
+                    <label for="opportunity" class="form-label">Oportunidade</label>
+                    <input type="hidden" id="opportunity" name="opportunity_id" v-model="currentOpportunity.id" />
+                    <TextValue v-model="currentOpportunity.name" class="selected" />
+                  </div>
+                  <div v-else>
+                    <OpportunitiesSelectInput label="Oportunidade" v-model="form.opportunity_id" fieldsToDisplay="name"
+                      :autoSelect="false" fieldNull="Nenhum" />
+                  </div>
+                </div>
+                <div class="col">
+                  <div v-if="currentProject">
+                    <label for="project" class="form-label">Projeto</label>
+                    <input type="hidden" id="project" name="project_id" v-model="currentProject.id" />
+                    <TextValue v-model="currentProject.name" class="selected" />
+                  </div>
+                  <div v-else>
+                    <ProjectsSelectInput label="Projeto" v-model="form.project_id" fieldsToDisplay="name"
+                      :autoSelect="false" fieldNull="Nenhum" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-5 mt-5">
+                <div class="col">
+                  <UsersSelectInput label="Responsável" v-model="form.user_id" fieldsToDisplay="name" autoSelect=true />
+                </div>
+              </div>
+
+              <div class="row mb-5 mt-5">
+                <div class="col-md-4">
+                  <DateInput v-model="form.date_start" label="Início" name="date_start" placeholder="início do prazo"
+                    :autoFillNow="true" @update="updateForm" />
+                </div>
+
+                <div class="col-md-4">
+                  <DateInput v-model="form.date_due" label="Prazo final" name="date_due" placeholder="prazo final"
+                    @update="updateForm" />
+                </div>
+
+                <div class="col-md-4">
+                  <DateInput v-model="form.date_conclusion" label="Data de conclusão" name="date_conclusion"
+                    placeholder="data quando a tarefa foi finalizada" @update="updateForm" />
+                </div>
+              </div>
+
+              <div class="row mb-5 mt-5">
+                <div class="col">
+                  <PrioritySelectInput id="form" v-model="form.priority" @update:modelValue="updateFormPriority" />
+                </div>
+                <div class="col">
+                  <StatusLinearRadioInput :status="form.status" @status-change="updateFormStatus" />
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                  @click="closeModal">Fechar</button>
+                <button type="submit" class="button-new" data-bs-dismiss="modal">criar</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
-
-      <div class="row mb-5 mt-5">
-        <div class="col-md-4">
-          <DateInput v-model="form.date_start" label="Início" name="date_start" placeholder="início do prazo"
-            :autoFillNow="true" @update="updateForm" />
-        </div>
-
-        <div class="col-md-4">
-          <DateInput v-model="form.date_due" label="Prazo final" name="date_due" placeholder="prazo final"
-            @update="updateForm" />
-        </div>
-
-        <div class="col-md-4">
-          <DateInput v-model="form.date_conclusion" label="Data de conclusão" name="date_conclusion"
-            placeholder="data quando a tarefa foi finalizada" @update="updateForm" />
-        </div>
-      </div>
-
-      <div class="row mb-5 mt-5">
-        <div class="col">
-          <PrioritySelectInput id="form" v-model="form.priority" @update:modelValue="updateFormPriority" />
-        </div>
-        <div class="col">
-          <StatusLinearRadioInput :status="form.status" @status-change="updateFormStatus" />
-        </div>
-      </div>
-
-      <div class="row ms-auto me-auto mt-5 mb-5">
-        <button type="submit" class="button-new">criar</button>
-      </div>
-    </form>
+    </div>
   </div>
 </template>
 
@@ -104,18 +140,19 @@ import {
   TASK_STATUS_URL,
 } from "@/config/apiConfig";
 // import { inject } from "vue";
-import AddMessage from "@/components/forms/messages/AddMessage.vue";
+// import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import axios from "axios";
 import CompaniesSelectInput from "./selects/CompaniesSelectInput.vue";
 import CompanyCreateForm from "./CompanyCreateForm.vue";
 import DateInput from "./inputs/date/DateInput";
-import ErrorMessage from "./messages/ErrorMesssage.vue";
+// import ErrorMessage from "./messages/ErrorMesssage.vue";
 import LeadCreateForm from "./LeadCreateForm.vue";
 import LeadsSelectInput from "./selects/LeadsSelectInput.vue";
+import OpportunitiesSelectInput from "./selects/OpportunitiesSelectInput.vue";
 import PrioritySelectInput from "./inputs/PrioritySelectInput.vue";
 import ProjectsSelectInput from "./selects/ProjectsSelectInput.vue";
 import StatusLinearRadioInput from "./inputs/StatusLinearRadioInput.vue";
-import SuccessMessage from "./messages/SuccessMessage.vue";
+// import SuccessMessage from "./messages/SuccessMessage.vue";
 import TextAreaInput from "./inputs/textarea/TextAreaInput";
 import TextInput from "./inputs/text/TextInput";
 import TextValue from "../fields/text/TextValue";
@@ -125,17 +162,18 @@ export default {
   name: "TaskCreateForm",
   emits: ["new-task-event"],
   components: {
-    AddMessage,
+    // AddMessage,
     CompaniesSelectInput,
     CompanyCreateForm,
     DateInput,
-    ErrorMessage,
+    // ErrorMessage,
     LeadCreateForm,
     LeadsSelectInput,
+    OpportunitiesSelectInput,
     PrioritySelectInput,
     ProjectsSelectInput,
     StatusLinearRadioInput,
-    SuccessMessage,
+    // SuccessMessage,
     TextAreaInput,
     TextInput,
     TextValue,
@@ -155,6 +193,7 @@ export default {
         description: null,
         name: null,
         priority: "medium",
+        opportunity_id: null,
         project_id: null,
         status: "to-do",
         user_id: null,
@@ -170,7 +209,10 @@ export default {
       users: [],
     };
   },
-  inject: ['currentProject'],
+  inject: [
+    'currentProject',
+    'currentOpportunity',
+  ],
   methods: {
     addLeadCreated(newLead) {
       this.leads.push(newLead.lead);
@@ -262,6 +304,9 @@ export default {
     },
   },
   watch: {
+    currentOpportunity(newValue) {
+      this.form.opportunity_id = newValue.id;
+    },
     currentProject(newValue) {
       this.form.project_id = newValue.id;
     },
@@ -273,17 +318,6 @@ export default {
 </script>
 
 <style scoped>
-.labels {
-  text-align: left;
-  margin-left: 0;
-}
-
-.label-col {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .radio-group {
   display: flex;
   gap: 10px;

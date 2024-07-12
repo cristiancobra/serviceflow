@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-5">
+   <div class="label-input-container">
     <label class="form-label" :for="name">{{ label }}</label>
     <textarea
       class="form-control"
@@ -24,10 +24,3 @@ export default {
   },
 };
 </script>
-    
-  <style scoped>
-  label {
-    text-align: right;
-  }
-</style>
-  

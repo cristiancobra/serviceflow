@@ -3,24 +3,24 @@
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
 
-    <div class="card" v-bind:class="getStatusClass(project.status)">
+    <div class="card" v-bind:class="getStatusClass(opportunity.status)">
       <div class="row ms-1">
-        <div class="col-1 status" v-bind:class="getStatusClass(project.status)">
-          <font-awesome-icon :icon="getStatusIcon(project.status)" />
+        <div class="col-1 status" v-bind:class="getStatusClass(opportunity.status)">
+          <font-awesome-icon :icon="getStatusIcon(opportunity.status)" />
           <p class="duration">
-            {{ formatDuration(project.duration_time) }}
+            {{ opportunity.duration_time }}
           </p>
         </div>
         <div class="col-11 ps-3">
           <p class="title">
-            <TextEditableField name="name" v-model="project.name" placeholder="descrição detalhada da tarefa"
+            <TextEditableField name="name" v-model="opportunity.name" placeholder="descrição detalhada da tarefa"
               @save="updateProject('name', $event)" />
           </p>
         </div>
       </div>
       <div class="row">
         <div class="col-3">
-          <SelectInput label="Responsável" name="user_id" v-model="project.user_id" :items="users"
+          <SelectInput label="Responsável" name="user_id" v-model="opportunity.user_id" :items="users"
             fieldsToDisplay="name" />
         </div>
       </div>
@@ -29,28 +29,28 @@
     <div class="row pt-2">
       <div id="col-infos" class="col">
         <div class="row">
-          <TextEditor label="Descrição" name="description" v-model="project.description"
+          <TextEditor label="Descrição" name="description" v-model="opportunity.description"
             @save="updateProject('description', $event)" />
         </div>
 
         <div class="row mt-5">
-          <DateEditableInput name="date_start" label="Início:" v-model="project.date_start"
+          <DateEditableInput name="date_start" label="Início:" v-model="opportunity.date_start"
             @save="updateProject('date_start', $event)" />
-          <DateEditableInput name="date_due" label="Prazo:" v-model="project.date_due"
+          <DateEditableInput name="date_due" label="Prazo:" v-model="opportunity.date_due"
             @save="updateProject('date_due', $event)" />
-          <DateEditableInput name="date_conclusion" label="Conclusão:" v-model="project.date_conclusion"
+          <DateEditableInput name="date_conclusion" label="Conclusão:" v-model="opportunity.date_conclusion"
             @save="updateProject('date_conclusion', $event)" />
         </div>
 
         <div class="row">
           <div class="duration">
-            <PrioritySelectInput id="show" v-model="project.priority" @update:modelValue="updateProject('priority', $event)" />
+            <PrioritySelectInput id="show" v-model="opportunity.priority" @update:modelValue="updateProject('priority', $event)" />
           </div>
         </div>
 
         <div class="row mt-5">
           <div class="duration">
-            <StatusLinearRadioInput :status="project.status" @status-change="updateProject('status', $event)" />
+            <StatusLinearRadioInput :status="opportunity.status" @status-change="updateProject('status', $event)" />
           </div>
         </div>
 
@@ -64,7 +64,7 @@
       </div>
 
       <div id="col-list" class="col">
-        <TasksList template="project" :projectId="projectId" @update-project-duration="updateProjectDuration()" />
+        <TasksList template="opportunity" :opportunityId="opportunityId"  @update-opportunity-duration="updateProjectDuration()"/>
       </div>
     </div>
   </div>
@@ -74,11 +74,8 @@
 import axios from "axios";
 import { BACKEND_URL, PROJECT_URL_PARAMETER } from "@/config/apiConfig";
 import { convertDateTimeToLocal } from "@/utils/date/dateUtils";
-import { formatDateBr } from "@/utils/date/dateUtils";
-import { formatDateTimeBr } from "@/utils/date/dateUtils";
-import { formatDuration } from "@/utils/date/dateUtils";
-import { getStatusClass } from "@/utils/card/cardUtils";
-import { getStatusIcon } from "@/utils/card/cardUtils";
+import { fetchShowData } from "@/utils/requests/httpUtils";
+import { formatDateBr,formatDateTimeBr, formatDuration, getStatusClass, getStatusIcon } from "@/utils/card/cardUtils";
 import { provide, ref } from 'vue';
 import StatusLinearRadioInput from "@/components/forms/inputs/StatusLinearRadioInput.vue";
 import PrioritySelectInput from "@/components/forms/inputs/PrioritySelectInput.vue";
@@ -105,17 +102,17 @@ export default {
       journeysUrl: "",
       messageStatus: "",
       messageText: "",
-      project: [],
+      opportunity: [],
       editedProject: [],
-      projectId: this.$route.params.id,
+      opportunityId: this.$route.params.id,
 
     };
   },
   setup() {
-    const currentProject = ref(null);
-    provide('currentProject', currentProject);
+    const currentOpportunity = ref(null);
+    provide('currentOpportunity', currentOpportunity);
     return {
-      currentProject,
+      currentOpportunity,
     };
   },
   emits: ["new-journey-event", "journey-updated", "journey-deleted"],
@@ -128,38 +125,31 @@ export default {
     translateStatus,
     translatePriority,
     convertDateTimeToLocal,
-    async getProject() {
-      try {
-        const response = await axios.get(
-          `${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.projectId}`
-        );
-        this.project = response.data.data;
-        this.currentProject = this.project;
-        convertDateTimeToLocal(this.project.date_start);
-        this.projectLoaded = true; // Marque a tarefa como carregada
-      } catch (error) {
-        console.error("Erro ao acessar tarefa:", error);
-      }
+    async getOpportunity() {
+        this.opportunity = await fetchShowData("opportunities", this.opportunityId);
+        this.currentOpportunity = this.opportunity;
+        convertDateTimeToLocal(this.opportunity.date_start);
+        this.opportunityLoaded = true;
     },
-    setProjectId(projectId) {
-      this.projectId = projectId;
+    setOpportunityId(opportunityId) {
+      this.opportunityId = opportunityId;
     },
     async deleteProject() {
       axios
-        .delete(`${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.projectId}`)
+        .delete(`${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.opportunityId}`)
         .then((response) => {
           this.data = response.data;
           this.isSuccess = true;
           this.isError = false;
           this.$router.push({
-            name: "projectsIndex",
+            name: "opportunitysIndex",
             query: { isSuccess: this.isSuccess },
           });
           this.messageStatus = "deleted";
           this.messageText = "Jornada deletada com sucesso!";
         })
         .catch((error) => {
-          console.error("Erro ao deletar project:", error);
+          console.error("Erro ao deletar opportunity:", error);
           this.isError = true;
           this.isSuccess = false;
         });
@@ -181,35 +171,35 @@ export default {
 
       try {
         const response = await axios.put(
-          `${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.projectId}`,
+          `${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.opportunityId}`,
           updatedField
         );
 
-        this.project = response.data.data;
+        this.opportunity = response.data.data;
       } catch (error) {
         console.error("Erro ao atualizar a tarefa:", error);
       }
     },
     updateProjectDuration() {
       axios
-        .get(`${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.projectId}`)
+        .get(`${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.opportunityId}`)
         .then((response) => {
-          this.project.duration_time = response.data.data.duration_time;
+          this.opportunity.duration_time = response.data.data.duration_time;
         })
         .catch((error) => console.log(error));
     },
   },
   computed: {
     translatedStatus() {
-      return translateStatus(this.project.status);
+      return translateStatus(this.opportunity.status);
     },
     localDate(date) {
       return convertDateTimeToLocal(date);
     },
   },
   mounted() {
-    this.setProjectId(this.$route.params.id);
-    this.getProject();
+    this.setOpportunityId(this.$route.params.id);
+    this.getOpportunity();
   },
 };
 </script>

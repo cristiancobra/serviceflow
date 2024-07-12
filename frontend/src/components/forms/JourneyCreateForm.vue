@@ -133,8 +133,6 @@ export default {
           .post(`${BACKEND_URL}${JOURNEY_URL}`, this.form)
           .then((response) => {
             this.newJourney = response.data.data;
-
-            console.log("newJourney", this.newJourney);
             this.$emit("new-journey-event", this.newJourney);
             this.clearForm();
             this.toggle();
@@ -153,7 +151,6 @@ export default {
           .post(`${BACKEND_URL}${JOURNEY_URL}`, this.quickForm)
           .then((response) => {
             this.newJourney = response.data.data;
-            console.log("newJourney", this.newJourney);
             this.$emit("new-journey-event", this.newJourney);
             this.setMessageStatus("success");
           });

@@ -1,41 +1,22 @@
 <template>
-  <div
-    class="login-container"
-    :class="{'slide-enter': transitionIn, 'slide-leave': transitionOut }"
-  >
+  <div class="login-container" :class="{ 'slide-enter': transitionIn, 'slide-leave': transitionOut }">
     <div class="d-flex p-4">
-      <img
-        :src="require('@/assets/logo-serviceflow-BRANCO.png')"
-        class="logo"
-        alt="logo-serviceflow"
-      />
+      <img :src="require('@/assets/logo-serviceflow-BRANCO.png')" class="logo" alt="logo-serviceflow" />
     </div>
 
     <div class="login-box">
       <form @submit.prevent="login">
         <div class="d-flex align-items-center justify-content-end">
           <label class="label" for="email">email</label>
-          <input
-            class="input"
-            type="email"
-            id="email"
-            name="email"
-            v-model="form.email"
-            required
-          />
+          <input class="input" type="email" id="email" name="email" v-model="form.email" required />
         </div>
         <div class="d-flex align-items-center justify-content-end mt-3">
           <label class="label" for="password">password</label>
-          <input
-            class="input"
-            type="password"
-            id="password"
-            name="password"
-            v-model="form.password"
-            required
-          />
+          <input class="input" type="password" id="password" name="password" v-model="form.password" required />
         </div>
-        <button class="button-login mt-4" type="submit">ENTRAR</button>
+        <div class="d-flex align-items-center justify-content-center mt-3">
+          <button class="button-login mt-4" type="submit">ENTRAR</button>
+        </div>
       </form>
     </div>
   </div>
@@ -50,7 +31,7 @@ export default {
     return {
       responseData: null,
       transitionIn: false,
-      transitionOut: false, 
+      transitionOut: false,
       form: {
         email: null,
         password: null,
@@ -85,9 +66,9 @@ export default {
       }
     },
     startTransition() {
-      
+
       // if (this.$root.isLogged !== true) {
-        this.transitionIn = true;
+      this.transitionIn = true;
       // } else {
       //   this.transitionOut = true;
       // }
@@ -96,8 +77,8 @@ export default {
   mounted() {
     this.transitionOut = false;
     setTimeout(() => {
-    this.startTransition();
-  })
+      this.startTransition();
+    })
   },
 };
 </script>
@@ -112,6 +93,7 @@ export default {
   padding-right: 24px;
   text-align: left;
 }
+
 .button-login {
   border-radius: 20px;
   border-color: white;
@@ -126,12 +108,14 @@ export default {
   font-weight: 800;
   font-size: 1.2rem;
 }
+
 .button-login:hover {
   border-color: var(--orange);
   /* background-color: var(--purple-light); */
   color: var(--orange);
   /* width: 30%; */
 }
+
 .input {
   background: var(--purple);
   color: white;
@@ -140,14 +124,18 @@ export default {
   font-size: 1.2rem;
   border-style: solid;
 }
+
 .input:hover,
 .input:focus {
   background-color: var(--purple);
-  color: var(--orange);  /* Se desejar alterar a cor do texto ao focar */
+  color: var(--orange);
+  /* Se desejar alterar a cor do texto ao focar */
 }
+
 .input:focus-visible {
   border-color: none;
 }
+
 .login-box {
   display: flex;
   justify-content: center;

@@ -1,5 +1,5 @@
 <template>
-  <div class="text-input-container">
+  <div class="label-input-container">
     <label v-if="label" class="form-label" :for="name">{{ label }}</label>
     <input class="text-input" type="text" :name="name" :value="modelValue" :placeholder="placeholder"
     @input="$emit('update:modelValue', $event.target.value)"
@@ -28,12 +28,4 @@ export default {
   margin-top: 0.5rem;
 }
 
-.text-input-container {
-  margin-bottom: 1rem;
-  width: 100%;
-}
-
-label {
-  text-align: right;
-}
 </style>

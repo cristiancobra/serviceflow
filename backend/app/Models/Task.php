@@ -19,6 +19,7 @@ class Task extends Model
         'company_id',
         'account_id',
         'contact_id',
+        'opportunity_id',
         'project_id',
         'stage_id',
         'date_entered',

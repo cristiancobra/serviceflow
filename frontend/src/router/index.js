@@ -6,6 +6,8 @@ import CompanyShow from '../views/companies/CompanyShow.vue'
 import JourneysIndex from '../views/journeys/JourneysIndex.vue'
 import LeadsIndex from '../views/leads/LeadsIndex.vue'
 import LeadShow from '../views/leads/LeadShow.vue'
+import OpportunitiesIndex from '../views/opportunities/OpportunitiesIndex.vue'
+import OpportunityShow from '../views/opportunities/OpportunityShow.vue'
 import ServicesIndex from '../views/services/ServicesIndex.vue'
 import ServiceShow from '../views/services/ServiceShow.vue'
 import ProjectsIndex from '../views/projects/ProjectsIndex.vue'
@@ -58,6 +60,16 @@ const routes = [
     path: '/services/:id',
     name: 'serviceShow',
     component: ServiceShow
+  },
+  {
+    path: '/opportunities',
+    name: 'opportunitiesIndex',
+    component: OpportunitiesIndex
+  },
+  {
+    path: '/opportunities/:id',
+    name: 'opportunityShow',
+    component: OpportunityShow
   },
   {
     path: '/projects',

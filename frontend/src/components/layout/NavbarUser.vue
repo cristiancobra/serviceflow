@@ -1,6 +1,6 @@
 <template>
-  <div>
-  <nav class="navbar navbar-expand-lg sticky-top">
+  <div class="sticky-top">
+  <nav class="navbar navbar-expand-lg ">
     <a class="navbar-brand" href="#">
       <img :src="require('@/assets/logo-serviceflow-BRANCO.png')" class="logo" alt="logo-serviceflow" />
     </a>
@@ -35,6 +35,13 @@
           <li class="nav-item" @mouseover="toggleActive('services')" :class="{ active: activeItem === 'services' }">
             <font-awesome-icon icon="fas fa-coins" />
             <span class="router-link-text">SERVIÇOS</span>
+          </li>
+        </router-link>
+
+        <router-link to="/opportunities">
+          <li class="nav-item" @mouseover="toggleActive('opportunities')" :class="{ active: activeItem === 'opportunities' }">
+            <font-awesome-icon icon="fas fa-bullseye" />
+            <span class="router-link-text">OPORTUNIDADES</span>
           </li>
         </router-link>
 

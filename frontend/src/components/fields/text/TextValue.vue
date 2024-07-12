@@ -26,11 +26,3 @@ mounted() {
 }
 };
 </script>
-
-    
-  <style scoped>
-label {
-  text-align: right;
-}
-</style>
-  

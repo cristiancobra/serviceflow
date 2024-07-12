@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-5">
+  <div class="label-input-container">
     <label class="form-label" :for="name">{{ label }}</label>
     <select class="form-select" :id="name" :name="name" @input="updateInput" v-model="localValue">
       <option v-if="fieldNull" :value=null>{{ fieldNull }}</option>
@@ -76,10 +76,6 @@ export default {
 </script>
 
 <style scoped>
-label {
-  text-align: right;
-}
-
 .input-field {
   margin-bottom: 1rem;
 }

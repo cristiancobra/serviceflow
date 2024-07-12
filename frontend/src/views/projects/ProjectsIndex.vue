@@ -11,9 +11,7 @@
       <ProjectCreateForm @new-project-event="addProjectCreated($event)" @toogle-project-form=toggle() />
     </div>
 
-    <div class="row">
       <ProjectsList template="index"/>
-    </div>
   </div>
 </template>
 

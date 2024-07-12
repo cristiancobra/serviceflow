@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-1 main-container">
+  <div class="main-container">
     <label class="form-label  ms-2" :for="name">{{ label }}</label>
       <TimeValue v-if="!editing" :id="name" :name="name" v-model="localValue" @click="startEditing" />
       <TimeInput v-else @update:modelValue="emitSave" @editing="cancelEditing" v-model="localValue" ref="editableInputRef" />

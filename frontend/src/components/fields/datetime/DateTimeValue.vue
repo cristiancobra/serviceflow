@@ -1,6 +1,5 @@
 <template>
   <div v-if="convertedDateTime" class="container-date">
-    <font-awesome-icon icon="fa-solid fa-calendar" :class="localClassIcon"/>
     <span class="default-text ps-1 pe-2"  :class="classText">
       {{ formatedDate }}
     </span>

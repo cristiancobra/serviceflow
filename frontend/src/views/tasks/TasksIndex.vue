@@ -1,19 +1,13 @@
 <template>
   <div class="container mb-5">
-    <TasksFilter
-      @filter-canceled="getTasksCanceled"
-      @filter-doing="getTasksDoing"
-      @filter-done="getTasksDone"
-      @filter-late="getTasksLate"
-      @filter-to-do="getTasksToDo"
-    />
+    <TasksFilter @filter-canceled="getTasksCanceled" @filter-doing="getTasksDoing" @filter-done="getTasksDone"
+      @filter-late="getTasksLate" @filter-to-do="getTasksToDo" />
 
     <ErrorMessage v-if="isError" :formResponse="formResponse" />
     <SuccessMessage v-if="isSuccess" :formResponse="formResponse" />
 
-    <div class="row">
-      <TasksList template="index" />
-    </div>
+    <TasksList template="index" />
+
   </div>
 </template>
 
@@ -66,7 +60,7 @@ export default {
     },
     getTasksDoing() {
       axios
-      .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=doing`) // Faz a requisição filtrando por status "doing"
+        .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=doing`) // Faz a requisição filtrando por status "doing"
         .then((response) => {
           this.filteredTasks = response.data.data;
         })
@@ -74,7 +68,7 @@ export default {
     },
     getTasksDone() {
       axios
-      .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=done`) // Faz a requisição filtrando por status "done"
+        .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=done`) // Faz a requisição filtrando por status "done"
         .then((response) => {
           this.filteredTasks = response.data.data;
         })
@@ -82,7 +76,7 @@ export default {
     },
     getTasksLate() {
       axios
-      .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-date`) // Faz a requisição filtrando por status "late"
+        .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-date`) // Faz a requisição filtrando por status "late"
         .then((response) => {
           this.filteredTasks = response.data.data;
         })
@@ -90,7 +84,7 @@ export default {
     },
     getTasksToDo() {
       axios
-      .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=to-do`) // Faz a requisição filtrando por status "to-do"
+        .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=to-do`) // Faz a requisição filtrando por status "to-do"
         .then((response) => {
           this.filteredTasks = response.data.data;
         })
@@ -112,6 +106,7 @@ export default {
   display: flex;
   justify-content: center;
 }
+
 .slot {
   border-width: 2px;
   border-style: solid;
@@ -123,6 +118,7 @@ export default {
   font-weight: 800;
   width: 120px;
 }
+
 .new {
   border-radius: 20px 20px 20px 20px;
   background-color: white;
@@ -132,12 +128,14 @@ export default {
   width: 60px;
   font-size: 16px;
 }
+
 .new:hover {
   background-color: #ff3eb5;
   color: white;
   margin-left: 50px;
   width: 60px;
 }
+
 .show {
   display: block;
   transition: display 2s;

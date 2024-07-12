@@ -17,7 +17,8 @@
           </router-link>
 
           <ProjectsSelectInput label="Nome do Projeto" v-model="task.project_id"
-            @update:modelValue="updateTask('project_id', $event)" fieldsToDisplay="name" autoSelect=false fieldNull="Nenhum"/>
+            @update:modelValue="updateTask('project_id', $event)" fieldsToDisplay="name" autoSelect=false
+            fieldNull="Nenhum" />
         </div>
         <div v-else class="">
           <ProjectsSelectInput label="Adicionar projeto" v-model="task.project_id"
@@ -57,8 +58,13 @@
             @save="updateTask('date_start', $event)" />
           <DateEditableInput name="date_due" label="Prazo:" v-model="task.date_due"
             @save="updateTask('date_due', $event)" />
-          <DateEditableInput name="date_conclusion" label="Conclusão:" v-model="task.date_conclusion"
+          <div class="d-flex">
+            <DateEditableInput name="date_conclusion" label="Conclusão:" v-model="task.date_conclusion"
             @save="updateTask('date_conclusion', $event)" />
+          <button v-if="showEndTaskButton" class="button-circular primary ms-3" @click="updateDateConclusion" title="Finalizar tarefa com data da última jornada">
+            <font-awesome-icon icon="fa-solid fa-check-square" />
+          </button>
+        </div>
         </div>
         <div class="row pt-5 pb-3">
           <div class="duration">
@@ -85,7 +91,8 @@
       </div>
 
       <div id="col-list" class="col pt-0">
-        <JourneysList :taskId="taskId" @update-task-duration="updateTaskDuration()" template="by-task"/>
+        <JourneysList template="by-task" :taskId="taskId" @update-task-duration="updateTaskDuration()"
+          @last-journey-end="updateEndTaskButtonVisibility" />
       </div>
     </div>
   </div>
@@ -125,11 +132,13 @@ export default {
   },
   data() {
     return {
-      journeysData: [],
+      // journeysData: [],
       journeysUrl: "",
+      journeyEnd: "",
       messageStatus: "",
       messageText: "",
       project: [],
+      showEndTaskButton: false,
       task: [],
       updatedField: [],
       taskId: "",
@@ -181,16 +190,31 @@ export default {
     setTaskId(taskId) {
       this.taskId = taskId;
     },
-    updateJourneys(updatedJourney) {
-      // Encontrar e atualizar a jornada na lista journeysData
-      const index = this.journeysData.findIndex(
-        (journey) => journey.id === updatedJourney.id
-      );
-
-      if (index !== -1) {
-        this.journeysData[index] = updatedJourney;
+    updateDateConclusion() {
+      if (this.journeyEnd) {
+        this.updateTask('date_conclusion', this.journeyEnd)
+        this.showEndTaskButton = false;
+      } else {
+        console.log('Nenhum item encontrado na lista de journeys');
       }
     },
+    updateEndTaskButtonVisibility(journeyEnd) {
+      this.journeyEnd = journeyEnd;
+      if (journeyEnd && this.task.date_conclusion === null) {
+        this.showEndTaskButton = true;
+      } else {
+        this.showEndTaskButton = false;
+      }
+    },
+    // updateJourneys(updatedJourney) {
+    //   const index = this.journeysData.findIndex(
+    //     (journey) => journey.id === updatedJourney.id
+    //   );
+
+    //   if (index !== -1) {
+    //     this.journeysData[index] = updatedJourney;
+    //   }
+    // },
     async updateTask(fieldName, editedValue) {
       const updatedField = {};
       updatedField[fieldName] = editedValue;

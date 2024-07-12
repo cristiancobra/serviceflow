@@ -1,17 +1,14 @@
 <template>
-  <div class="mb-1 main-container">
-    <label class="form-label  ms-2" :for="name">{{ label }}</label>
-    <div v-if="!editing" @click="startEditing">
-      <div class="container-date">
-        <font-awesome-icon icon="fa-solid fa-calendar" class="me-1" :class="localClassIcon" />
-        <span class="default-text" :class="classText">
-          {{ formatedDate }}
-        </span>
-        <font-awesome-icon icon="fa-solid fa-clock" class="ms-2 me-1" :class="localClassIcon" />
-        <span class="default-text" :class="classText">
-          {{ formatedTime }}
-        </span>
-      </div>
+  <div>
+    <label v-if="label" class="form-label  ms-2" :for="name">{{ label }}</label>
+    <div v-if="!editing" @click="startEditing" class="container-date">
+      <span class="default-text" :class="classText">
+        {{ formatedDate }}
+      </span>
+      <font-awesome-icon icon="fa-solid fa-clock" class="ms-2 me-1" :class="localClassIcon" />
+      <span class="default-text" :class="classText">
+        {{ formatedTime }}
+      </span>
     </div>
     <VueDatePicker v-else class="form-control" :id="name" :name="name" :label="label" v-model="localValue"
       :placeholder="placeholder" @update:modelValue="emitSave" />
@@ -106,10 +103,9 @@ export default {
   color: var(--primary);
 }
 
-.main-container {
+.container-date {
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
+  justify-content: end;
 }
 
 .show-label {

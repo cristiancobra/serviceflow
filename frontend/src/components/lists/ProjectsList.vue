@@ -1,18 +1,18 @@
 <template>
-  <div class="projects-container">
+  <div class="list-container">
     <div class="row align-items-start">
       <div class="col-1">
         <font-awesome-icon icon="fa-solid fa-project-diagram" class="icon" />
       </div>
-      <div class="col-7">
+      <div class="col-8">
         <h2 class="title">PROJETOS</h2>
       </div>
-      <div class="col-4 text-end">
+      <div class="col-3 d-flex justify-content-end">
         <button class="button button-new" @click="toggle()">+</button>
       </div>
     </div>
     <div class="row" v-bind:class="{ 'd-none': isActive }">
-      <ProjectCreateForm @new-project-event="addProjectCreated" @toogle-project-form=toggle() />
+      <ProjectCreateForm @new-project-event="addProjectCreated" @toggle-project-form=toggle() />
     </div>
     <div class="row">
       <div class="col-12 mb-3 mt-3">
@@ -54,8 +54,10 @@
 <script>
 import { formatDuration } from "@/utils/date/dateUtils";
 import { getDeadlineClass, getStatusClass, getPriorityClass, getStatusColor, getStatusIcon } from "@/utils/card/cardUtils";
-import { BACKEND_URL, PROJECT_URL, PROJECT_URL_PARAMETER, PROJECTS_PRIORIZED_URL } from "@/config/apiConfig";
+import { BACKEND_URL, PROJECT_URL_PARAMETER, PROJECTS_PRIORIZED_URL } from "@/config/apiConfig";
+import { fetchIndexData } from "@/utils/requests/httpUtils";
 import axios from "axios";
+import ProjectCreateForm from "../forms/ProjectCreateForm.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import DateTimeValue from "../fields/datetime/DateTimeValue.vue";
 
@@ -64,6 +66,7 @@ export default {
   components: {
     DateTimeEditableInput,
     DateTimeValue,
+    ProjectCreateForm,
   },
   props: {
     columns: {
@@ -76,6 +79,7 @@ export default {
   },
   data() {
     return {
+      isActive: true,
       projects: [],
       searchTerm: "",
     };
@@ -88,6 +92,7 @@ export default {
     getPriorityClass,
     getStatusIcon,
     addProjectCreated(newProject) {
+      this.toggle();
       this.projects.unshift(newProject);
     },
     getCombinedClasses(status, priority) {
@@ -126,18 +131,16 @@ export default {
         );
         const updatedProject = response.data.data;
         this.updateProjectsList(updatedProject, projectId);
-        console.log("updatedProjec", updatedProject)
       } catch (error) {
         console.error("Erro ao atualizar a tarefa:", error);
       }
     },
-    getProjects() {
-      axios
-        .get(`${BACKEND_URL}${PROJECT_URL}`)
-        .then((response) => {
-          this.projects = response.data.data;
-        })
-        .catch((error) => console.log(error));
+    async getProjects() {
+      try {
+        this.projects = await fetchIndexData(`projects`);
+      } catch (error) {
+        console.error("Erro ao acessar projetos:", error);
+      }
     },
     toggle() {
       this.isActive = !this.isActive;
@@ -175,23 +178,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.icon {
-  font-size: 1.8rem;
-  font-weight: 400;
-  color: var(--gray);
-}
-
-.projects-container {
-  border-style: solid;
-  border-width: 2px;
-  border-color: var(--orange);
-  border-radius: 14px;
-  padding: 1rem;
-}
-
-.title {
-  text-align: left;
-}
-</style>

@@ -12,9 +12,6 @@
       <input type="radio" :name="'status-' + uniqueId" :id="'doing-' + uniqueId" value="doing" v-model="modelValue" @change="emitStatusChange" required />
       <label class="label" :for="'doing-' + uniqueId" data-status="FAZENDO"></label>
 
-      <input type="radio" :name="'status-' + uniqueId" :id="'done-' + uniqueId" value="done" v-model="modelValue" @change="emitStatusChange" required />
-      <label class="label" :for="'done-' + uniqueId" data-status="FEITO"></label>
-
       <input type="radio" :name="'status-' + uniqueId" :id="'canceled-' + uniqueId" value="canceled" v-model="modelValue" @change="emitStatusChange" required />
       <label class="label" :for="'canceled-' + uniqueId" data-status="CANCELADO"></label>
     </div>
@@ -165,10 +162,6 @@ input[value="doing"]:checked+.label::after {
   background-color: var(--doing-color);
 }
 
-input[value="done"]:checked+.label::after {
-  background-color: var(--done-color);
-}
-
 input[value="canceled"]:checked+.label::after {
   background-color: var(--canceled-color);
 }
@@ -185,10 +178,6 @@ input[value="to-do"]:checked+.label {
 
 input[value="doing"]:checked+.label {
   color: var(--doing-color);
-}
-
-input[value="done"]:checked+.label {
-  color: var(--done-color);
 }
 
 input[value="canceled"]:checked+.label {

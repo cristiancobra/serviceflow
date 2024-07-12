@@ -26,16 +26,6 @@ class TaskController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -71,17 +61,6 @@ class TaskController extends Controller
             $query->orderBy('start', 'desc');
         }, 'project'])
             ->find($task->id));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Task  $task
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Task $task)
-    {
-        //
     }
 
     /**
@@ -190,7 +169,7 @@ class TaskController extends Controller
     public function getTasksByProjectId(Request  $request)
     {
 
-        $perPage = request()->get('per_page', 20); // Ajuste a quantidade de itens por página conforme necessário
+        $perPage = request()->get('per_page', 20);
 
         $tasks = Task::where('project_id', $request->project_id)
             ->with('project')
@@ -202,6 +181,24 @@ class TaskController extends Controller
         return TaskResource::collection($tasks);
     }
 
+       /**
+     * Display a listing of the resource by opportunity_id.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getTasksByOpportunityId(Request  $request)
+    {
+        $perPage = request()->get('per_page', 20);
+
+        $tasks = Task::where('opportunity_id', $request->opportunity_id)
+            // ->with('tasks')
+            ->orderBy('date_start', 'desc')
+            ->paginate($perPage);
+
+        $tasks->appends(['opportunity_id' => $request->opportunity_id]);
+
+        return TaskResource::collection($tasks);
+    }
 
     /**
      * Display a listing of the resource.
@@ -214,7 +211,7 @@ class TaskController extends Controller
             ->with('project')
             ->where('date_conclusion', null)
             ->orderBy('date_due', 'asc')
-            ->paginate(10);
+            ->paginate(20);
 
         return TaskResource::collection(
             $tasks
