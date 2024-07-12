@@ -14,7 +14,7 @@
         <div class="col-11 ps-3">
           <p class="title">
             <TextEditableField name="name" v-model="opportunity.name" placeholder="descrição detalhada da tarefa"
-              @save="updateProject('name', $event)" />
+              @save="updateOpportunity('name', $event)" />
           </p>
         </div>
       </div>
@@ -30,27 +30,27 @@
       <div id="col-infos" class="col">
         <div class="row">
           <TextEditor label="Descrição" name="description" v-model="opportunity.description"
-            @save="updateProject('description', $event)" />
+            @save="updateOpportunity('description', $event)" />
         </div>
 
         <div class="row mt-5">
           <DateEditableInput name="date_start" label="Início:" v-model="opportunity.date_start"
-            @save="updateProject('date_start', $event)" />
+            @save="updateOpportunity('date_start', $event)" />
           <DateEditableInput name="date_due" label="Prazo:" v-model="opportunity.date_due"
-            @save="updateProject('date_due', $event)" />
+            @save="updateOpportunity('date_due', $event)" />
           <DateEditableInput name="date_conclusion" label="Conclusão:" v-model="opportunity.date_conclusion"
-            @save="updateProject('date_conclusion', $event)" />
+            @save="updateOpportunity('date_conclusion', $event)" />
         </div>
 
         <div class="row">
           <div class="duration">
-            <PrioritySelectInput id="show" v-model="opportunity.priority" @update:modelValue="updateProject('priority', $event)" />
+            <PrioritySelectInput id="show" v-model="opportunity.priority" @update:modelValue="updateOpportunity('priority', $event)" />
           </div>
         </div>
 
         <div class="row mt-5">
           <div class="duration">
-            <StatusLinearRadioInput :status="opportunity.status" @status-change="updateProject('status', $event)" />
+            <StatusLinearRadioInput :status="opportunity.status" @status-change="updateOpportunity('status', $event)" />
           </div>
         </div>
 
@@ -64,7 +64,7 @@
       </div>
 
       <div id="col-list" class="col">
-        <TasksList template="opportunity" :opportunityId="opportunityId"  @update-opportunity-duration="updateProjectDuration()"/>
+        <TasksList template="opportunity" :opportunityId="opportunityId"  @update-opportunity-duration="updateOpportunityDuration()"/>
       </div>
     </div>
   </div>
@@ -74,7 +74,7 @@
 import axios from "axios";
 import { BACKEND_URL, PROJECT_URL_PARAMETER } from "@/config/apiConfig";
 import { convertDateTimeToLocal } from "@/utils/date/dateUtils";
-import { fetchShowData } from "@/utils/requests/httpUtils";
+import { fetchShowData, updateField } from "@/utils/requests/httpUtils";
 import { formatDateBr,formatDateTimeBr, formatDuration, getStatusClass, getStatusIcon } from "@/utils/card/cardUtils";
 import { provide, ref } from 'vue';
 import StatusLinearRadioInput from "@/components/forms/inputs/StatusLinearRadioInput.vue";
@@ -164,23 +164,24 @@ export default {
         this.journeysData[index] = updatedJourney;
       }
     },
-    async updateProject(fieldName, editedValue) {
-      const updatedField = {};
+    async updateOpportunity(fieldName, editedValue) {
+      this.opportunity = await updateField("opportunities", this.opportunityId, fieldName, editedValue);
+      // const updatedField = {};
 
-      updatedField[fieldName] = editedValue;
+      // updatedField[fieldName] = editedValue;
 
-      try {
-        const response = await axios.put(
-          `${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.opportunityId}`,
-          updatedField
-        );
+      // try {
+      //   const response = await axios.put(
+      //     `${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.opportunityId}`,
+      //     updatedField
+      //   );
 
-        this.opportunity = response.data.data;
-      } catch (error) {
-        console.error("Erro ao atualizar a tarefa:", error);
-      }
+      //   this.opportunity = response.data.data;
+      // } catch (error) {
+      //   console.error("Erro ao atualizar a tarefa:", error);
+      // }
     },
-    updateProjectDuration() {
+    updateOpportunityDuration() {
       axios
         .get(`${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.opportunityId}`)
         .then((response) => {

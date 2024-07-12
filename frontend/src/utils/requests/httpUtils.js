@@ -60,3 +60,29 @@ export const fetchShowData = async (model, id) => {
     }
   };
   
+
+  // update on field of a model
+export const updateField = async (model, id, fieldName, value) => {
+    if (!["tasks", "projects", "opportunities", "users"].includes(model)) {
+      throw new Error(`Invalid model: ${model}`);
+    }
+  
+    try {
+      const response = await axios.patch(
+        `${BACKEND_URL}${model}/${id}`,
+        { [fieldName]: value }
+      );
+  
+      const { data } = response.data;
+      return data;
+  
+    } catch (error) {
+      console.error("Error updating fieldName:", error);
+  
+      if (!error.response) {
+        throw new Error("Ocorreu um erro ao atualizar o campo. Tente novamente.");
+      } else {
+        throw error;
+      }
+    }
+  };

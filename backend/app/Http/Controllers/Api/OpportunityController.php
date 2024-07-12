@@ -50,7 +50,7 @@ class OpportunityController extends Controller
         }
     }
 
-        /**
+    /**
      * Display the specified resource.
      *
      * @param  \App\Models\Opportunity  $opportunity
@@ -65,5 +65,27 @@ class OpportunityController extends Controller
             },
             'company'
         ])->find($opportunity->id));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Opportunity  $opportunity
+     * @return \Illuminate\Http\Response
+     */
+    public function update(OpportunityRequest $request, Opportunity $opportunity)
+    {
+        try {
+            $opportunity->fill($request->validated());
+            $opportunity->save();
+
+            return OpportunityResource::make($opportunity);
+        } catch (ValidationException $validationException) {
+            return response()->json([
+                'message' => "Erro de validação",
+                'errors' => $validationException->errors(),
+            ], 422);
+        }
     }
 }

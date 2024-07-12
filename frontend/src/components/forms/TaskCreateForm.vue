@@ -29,11 +29,10 @@
 
               <div class="row mb-5 mt-5">
                 <div class="col-md-4">
-                  {{ currentOpportunity }}
-                  <div v-if="currentOpportunity">
+                  <div v-if="currentOpportunity && currentOpportunity.company">
                     <label for="company_id" class="form-label">Empresa cliente</label>
                     <input type="hidden" name="company_id" v-model="currentOpportunity.company_id" />
-                    <TextValue v-model="currentOpportunity.name" class="selected" />
+                    <TextValue v-model="currentOpportunity.company.name" class="selected" />
                   </div>
                   <div v-else>
                   <CompaniesSelectInput label="Empresa cliente" name="company_id" v-model="form.company_id"
@@ -112,14 +111,6 @@
                 </div>
               </div>
 
-              <div class="row mb-5 mt-5">
-                <div class="col">
-                  <PrioritySelectInput id="form" v-model="form.priority" @update:modelValue="updateFormPriority" />
-                </div>
-                <div class="col">
-                  <StatusLinearRadioInput :status="form.status" @status-change="updateFormStatus" />
-                </div>
-              </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                   @click="closeModal">Fechar</button>
@@ -149,9 +140,7 @@ import DateInput from "./inputs/date/DateInput";
 import LeadCreateForm from "./LeadCreateForm.vue";
 import LeadsSelectInput from "./selects/LeadsSelectInput.vue";
 import OpportunitiesSelectInput from "./selects/OpportunitiesSelectInput.vue";
-import PrioritySelectInput from "./inputs/PrioritySelectInput.vue";
 import ProjectsSelectInput from "./selects/ProjectsSelectInput.vue";
-import StatusLinearRadioInput from "./inputs/StatusLinearRadioInput.vue";
 // import SuccessMessage from "./messages/SuccessMessage.vue";
 import TextAreaInput from "./inputs/textarea/TextAreaInput";
 import TextInput from "./inputs/text/TextInput";
@@ -170,9 +159,7 @@ export default {
     LeadCreateForm,
     LeadsSelectInput,
     OpportunitiesSelectInput,
-    PrioritySelectInput,
     ProjectsSelectInput,
-    StatusLinearRadioInput,
     // SuccessMessage,
     TextAreaInput,
     TextInput,

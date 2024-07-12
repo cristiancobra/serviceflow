@@ -1,5 +1,5 @@
 <template>
-    <div class="container mb-5">
+    <div class="container mb-5 mt-5">
         <OpportunitiesList template="index" />
     </div>
   </template>
