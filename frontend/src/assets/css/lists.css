@@ -81,6 +81,35 @@
   line-height: 1.2;
 }
 
+
+.list-container .opportunity {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 16px 16px 16px 16px;
+  border-color: var(--green);
+  color: var(--green);
+  font-size: 0.8rem;
+  padding: 0.3rem 0.6rem 0rem 0.5rem;
+  line-height: 1.2;
+}
+
 .list-container .title {
   text-align: left;
+}
+
+.list-line {
+  margin-top: 0px;
+  padding: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  background-color: white;
+  text-align: left;
+  margin-right: 0;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-color: lightgray;
+  border-radius: 0px 0 0 0px;
 }

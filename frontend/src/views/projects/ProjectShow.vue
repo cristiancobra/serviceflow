@@ -3,36 +3,41 @@
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
 
-    <div class="card" v-bind:class="getStatusClass(project.status)">
-      <div class="row ms-1">
-        <div class="col-1 status" v-bind:class="getStatusClass(project.status)">
-          <font-awesome-icon :icon="getStatusIcon(project.status)" />
-          <p class="duration">
-            {{ formatDuration(project.duration_time) }}
-          </p>
+    <div class="header">
+      <div class="show-title">
+        <div class="row ms-1">
+          <div class="col-1 status">
+            <font-awesome-icon icon="fa-solid fa-folder-open" class="primary" />
+            <p class="duration">
+              {{ formatDuration(project.duration_time) }}
+            </p>
+          </div>
+          <div class="col-11 ps-3">
+            <p class="title">
+              <TextEditableField name="name" v-model="project.name" placeholder="descrição detalhada da tarefa"
+                @save="updateProject('name', $event)" />
+            </p>
+          </div>
         </div>
-        <div class="col-11 ps-3">
-          <p class="title">
-            <TextEditableField name="name" v-model="project.name" placeholder="descrição detalhada da tarefa"
-              @save="updateProject('name', $event)" />
-          </p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-3">
-          <SelectInput label="Responsável" name="user_id" v-model="project.user_id" :items="users"
-            fieldsToDisplay="name" />
+        <div class="row">
+          <div class="col-3">
+            <SelectInput label="Responsável" name="user_id" v-model="project.user_id" :items="users"
+              fieldsToDisplay="name" />
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="row pt-2">
-      <div id="col-infos" class="col">
-        <div class="row">
-          <TextEditor label="Descrição" name="description" v-model="project.description"
+    <div class="row pt-2" id="description">
+      <TextEditor label="Descrição" name="description" v-model="project.description"
             @save="updateProject('description', $event)" />
-        </div>
+    </div>
 
+    <div class="row pt-2">
+      <TasksList :tasks="project.tasks" /> 
+    </div>
+
+    <div class="row pt-2">
         <div class="row mt-5">
           <DateEditableInput name="date_start" label="Início:" v-model="project.date_start"
             @save="updateProject('date_start', $event)" />
@@ -44,7 +49,8 @@
 
         <div class="row">
           <div class="duration">
-            <PrioritySelectInput id="show" v-model="project.priority" @update:modelValue="updateProject('priority', $event)" />
+            <PrioritySelectInput id="show" v-model="project.priority"
+              @update:modelValue="updateProject('priority', $event)" />
           </div>
         </div>
 
@@ -61,13 +67,10 @@
             excluir
           </button>
         </div>
-      </div>
 
-      <div id="col-list" class="col">
-        <TasksList template="project" :projectId="projectId" @update-project-duration="updateProjectDuration()" />
       </div>
     </div>
-  </div>
+  
 </template>
 
 <script>

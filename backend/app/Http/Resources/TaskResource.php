@@ -40,7 +40,8 @@ class TaskResource extends JsonResource
 
 			 // Relationships
 			 "journeys" => JourneyResource::collection($this->whenLoaded('journeys')),
-			 'project' => new ProjectResource($this->whenLoaded('project')),
+			 "project" => new ProjectResource($this->whenLoaded('project')),
+			"opportunity" => new OpportunityResource($this->whenLoaded('opportunity')),
 			];
     }
 }

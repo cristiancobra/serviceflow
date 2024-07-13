@@ -3,10 +3,11 @@
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
 
-    <div class="card" v-bind:class="getStatusClass(opportunity.status)">
-      <div class="row ms-1">
-        <div class="col-1 status" v-bind:class="getStatusClass(opportunity.status)">
-          <font-awesome-icon :icon="getStatusIcon(opportunity.status)" />
+    <div class="header">
+      <div class="show-title">
+        <div class="row ms-1">
+          <div class="col-1 status">
+            <font-awesome-icon icon="fa-solid fa-bullseye" class="primary" />
           <p class="duration">
             {{ opportunity.duration_time }}
           </p>
@@ -25,6 +26,7 @@
         </div>
       </div>
     </div>
+  </div>
 
     <div class="row pt-2">
       <div id="col-infos" class="col">

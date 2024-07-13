@@ -184,14 +184,6 @@
   color: var(--gray);
 }
 
-.icon {
-  display: flex;
-  justify-content: start;
-  align-content: flex-start;
-  font-size: 1rem;
-  margin-top: 0.2rem;
-}
-
 .label {
   margin-top: 0px;
   margin-bottom: -0px;

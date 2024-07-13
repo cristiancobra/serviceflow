@@ -18,7 +18,10 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = Task::with('project')
+        $tasks = Task::with([
+            'project',
+            'opportunity'
+        ])
             ->orderBy('date_due', 'asc')
             ->paginate(50);
 
@@ -181,7 +184,7 @@ class TaskController extends Controller
         return TaskResource::collection($tasks);
     }
 
-       /**
+    /**
      * Display a listing of the resource by opportunity_id.
      *
      * @return \Illuminate\Http\Response
@@ -208,7 +211,10 @@ class TaskController extends Controller
     public function prioritizedTasks()
     {
         $tasks = Task::with('project')
-            ->with('project')
+            ->with([
+                'project',
+                'opportunity'
+            ])
             ->where('date_conclusion', null)
             ->orderBy('date_due', 'asc')
             ->paginate(20);

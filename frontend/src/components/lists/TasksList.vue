@@ -17,7 +17,7 @@
           placeholder="Digite para buscar" />
       </div>
     </div>
-    <div class="row cards" v-for="task in filteredTasks" v-bind:key="task.id">
+    <div class="row list-line" v-for="task in filteredTasks" v-bind:key="task.id">
       <div class="col-9 d-flex">
         <router-link :to="{ name: 'tasksShow', params: { id: task.id } }">
           <div class="d-flex">
@@ -27,13 +27,19 @@
             <p class="cards-title">
               {{ task.name }}
             </p>
-          <div v-if="task.project" class="project ms-2">
-            <font-awesome-icon icon="fa-solid fa-folder-open" class="primary ps-2" />
-            <p class="ps-1">
-              {{ task.project.name }}
-            </p>
-          </div>
-        </div>
+            <div v-if="task.project" class="project m-0 p-1 ps-2 pe-2 ms-2">
+              <font-awesome-icon icon="fa-solid fa-folder-open" />
+              <p class="m-0 p-0 ps-1">
+                {{ task.project.name }}
+              </p>
+            </div>
+            <div v-if="task.opportunity" class="opportunity m-0 p-1 ps-2 pe-2 ms-2">
+              <font-awesome-icon icon="fa-solid fa-bullseye" />
+              <p class="m-0 p-0 ps-1">
+                {{ task.opportunity.name }}
+              </p>
+              </div>
+            </div>
         </router-link>
       </div>
       <div class="col-3">

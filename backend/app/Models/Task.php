@@ -47,6 +47,14 @@ class Task extends Model
     }
 
     /**
+     * Get the opportunity from task
+     */
+    public function opportunity()
+    {
+        return $this->belongsTo(Opportunity::class);
+    }
+
+    /**
      * Get the project from task
      */
     public function project()

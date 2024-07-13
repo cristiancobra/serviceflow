@@ -4,32 +4,10 @@
     </AddMessage>
 
     <div class="header">
-      <div class="project" v-bind:class="project ? getStatusClass(project.status) : ''">
-        <div v-if="project">
-
-          <router-link :to="{ name: 'projectShow', params: { id: task.project_id } }">
-            <div class="status" v-bind:class="getStatusClass(project.status)">
-              <font-awesome-icon :icon="getStatusIcon(project.status)" />
-              <p class="duration">
-                {{ formatDuration(project.duration_time) }}
-              </p>
-            </div>
-          </router-link>
-
-          <ProjectsSelectInput label="Nome do Projeto" v-model="task.project_id"
-            @update:modelValue="updateTask('project_id', $event)" fieldsToDisplay="name" autoSelect=false
-            fieldNull="Nenhum" />
-        </div>
-        <div v-else class="">
-          <ProjectsSelectInput label="Adicionar projeto" v-model="task.project_id"
-            @update:modelValue="updateTask('project_id', $event)" fieldsToDisplay="name" autoSelect=false />
-        </div>
-      </div>
-
-      <div class="card" v-bind:class="getStatusClass(task.status)">
+      <div class="show-title">
         <div class="row ms-1">
-          <div class="col-1 status" v-bind:class="getStatusClass(task.status)">
-            <font-awesome-icon :icon="getStatusIcon(task.status)" />
+          <div class="col-1 status">
+            <font-awesome-icon icon="fa-solid fa-list-check" class="primary"/>
             <p class="duration">
               {{ formatDuration(task.duration_time) }}
             </p>
@@ -42,9 +20,19 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-6">
+          <div class="col-3">
             <UsersSelectInput label="Responsável" v-model="task.user_id"
               @update:modelValue="updateTask('user_id', $event)" fieldsToDisplay="name" autoSelect=false />
+          </div>
+          <div class="col-3">
+            <ProjectsSelectInput label="Nome do Projeto" v-model="task.project_id"
+              @update:modelValue="updateTask('project_id', $event)" fieldsToDisplay="name" autoSelect=false
+              fieldNull="Nenhum" />
+          </div>
+          <div class="col-3">
+            <OpportunitiesSelectInput label="Oportunidade" v-model="task.opportunity_id"
+              @update:modelValue="updateTask('opportunity_id', $event)" fieldsToDisplay="name" autoSelect=false
+              fieldNull="Nenhum" />
           </div>
         </div>
       </div>
@@ -60,11 +48,12 @@
             @save="updateTask('date_due', $event)" />
           <div class="d-flex">
             <DateEditableInput name="date_conclusion" label="Conclusão:" v-model="task.date_conclusion"
-            @save="updateTask('date_conclusion', $event)" />
-          <button v-if="showEndTaskButton" class="button-circular primary ms-3" @click="updateDateConclusion" title="Finalizar tarefa com data da última jornada">
-            <font-awesome-icon icon="fa-solid fa-check-square" />
-          </button>
-        </div>
+              @save="updateTask('date_conclusion', $event)" />
+            <button v-if="showEndTaskButton" class="button-circular primary ms-3" @click="updateDateConclusion"
+              title="Finalizar tarefa com data da última jornada">
+              <font-awesome-icon icon="fa-solid fa-check-square" />
+            </button>
+          </div>
         </div>
         <div class="row pt-5 pb-3">
           <div class="duration">
@@ -113,6 +102,7 @@ import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
 import DateEditableInput from "@/components/fields/datetime/DateTimeEditableInput";
 import JourneysList from "@/components/lists/JourneysList.vue";
+import OpportunitiesSelectInput from "@/components/forms/selects/OpportunitiesSelectInput.vue";
 import ProjectsSelectInput from "@/components/forms/selects/ProjectsSelectInput.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField";
 import TextEditor from "@/components/forms/inputs/TextEditor.vue";
@@ -123,6 +113,7 @@ export default {
   components: {
     DateEditableInput,
     JourneysList,
+    OpportunitiesSelectInput,
     PrioritySelectInput,
     ProjectsSelectInput,
     TextEditableField,
@@ -293,19 +284,6 @@ a:active {
   font-weight: 800;
   font-size: 1.2rem;
   text-align: center;
-}
-
-.card {
-  margin-bottom: 60px;
-  margin-top: 60px;
-  border-style: solid;
-  border-width: 2px;
-  border-color: gray;
-  border-radius: 6px;
-  padding: 10px;
-  padding-right: 20px;
-  min-height: 15vh;
-  width: 80%;
 }
 
 .done {

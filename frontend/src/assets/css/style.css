@@ -217,22 +217,6 @@ label {
   }
 }
 
-.list-line {
-  margin-top: 3px;
-  padding: 0px;
-  padding-top: 14px;
-  padding-bottom: 0px;
-  width: auto;
-  height: auto;
-  background-color: white;
-  text-align: left;
-  margin-right: 0;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-  border-color: #007e8b;
-  border-radius: 0px 0 0 0px;
-}
-
 .card-line {
   margin: 0.8rem;
   border-style: solid;
