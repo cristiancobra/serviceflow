@@ -126,7 +126,7 @@ class ProjectController extends Controller
     {
         $projects = Project::where('date_conclusion', null)
             ->orderBy('date_due', 'asc')
-            ->paginate(10);
+            ->paginate(20);
 
         return ProjectResource::collection(
             $projects

@@ -1,23 +1,33 @@
 <template>
   <div class="list-container mb-5 mt-0">
-    <div class="row align-items-start">
-      <div class="col-1">
-        <font-awesome-icon icon="fa-solid fa-tasks" class="icon" />
-      </div>
-      <div class="col-8">
+    <div class="row">
+      <div class="col-9 d-flex justify-content-left">
+        <font-awesome-icon icon="fa-solid fa-tasks" class="icon pe-3 primary" />
         <h2 class="title">TAREFAS</h2>
       </div>
-      <div class="col-3 d-flex justify-content-end">
-        <TaskCreateForm @new-task-event="addTaskCreated" />
+      <div class="col-3">
+        <div class="d-flex justify-content-end">
+          concluidas {{ completedTasks }} de {{ totalTasks }}
+          <font-awesome-icon icon="fa-solid fa-folder" class="ps-3 pe-3 primary" />
+        </div>
+        <div class="progress">
+          <div class="progress-bar" :style="{ width: percentage + '%' }" role="progressbar" :aria-valuenow="percentage"
+            aria-valuemin="0" aria-valuemax="100">
+            {{ percentage }}%
+          </div>
+        </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-12 mb-3 mt-3">
+    <div class="row mt-3 mb-4">
+      <div class="col-10">
         <input type="text" class="form-control search-container" v-model="searchTerm"
           placeholder="Digite para buscar" />
       </div>
+      <div class="col-2 d-flex justify-content-end">
+        <TaskCreateForm @new-task-event="addTaskCreated" />
+      </div>
     </div>
-    <div class="row list-line" v-for="task in filteredTasks" v-bind:key="task.id">
+    <div class="row list-line" :class="{ showTasks: true, 'd-none': isHidden }" v-for="task in filteredTasks" v-bind:key="task.id">
       <div class="col-9 d-flex">
         <router-link :to="{ name: 'tasksShow', params: { id: task.id } }">
           <div class="d-flex">
@@ -38,8 +48,8 @@
               <p class="m-0 p-0 ps-1">
                 {{ task.opportunity.name }}
               </p>
-              </div>
             </div>
+          </div>
         </router-link>
       </div>
       <div class="col-3">
@@ -83,8 +93,11 @@ export default {
       formatedDate: '',
       formatedTime: '',
       isActive: true,
+      percentage: 0,
       searchTerm: "",
       tasks: [],
+      totalTasks: 0,
+      completedTasks: 0,
     };
   },
   components: {
@@ -148,6 +161,10 @@ export default {
           return { ...task, editing: false }; // Adiciona a propriedade editing a cada task
         });
 
+        this.totalTasks = response.data.total_tasks;
+        this.completedTasks = response.data.completed_tasks;
+        this.percentage = Math.round((this.completedTasks / this.totalTasks) * 100);
+
         this.paginationData = {
           links: response.data.links,
           meta: response.data.meta,
@@ -167,6 +184,9 @@ export default {
         this.tasks = response.data.data.map(task => {
           return { ...task, editing: false }; // Adiciona a propriedade editing a cada task
         });
+
+        this.totalTasks = response.data.total_tasks;
+        this.completedTasks = response.data.completed_tasks;
 
         this.paginationData = {
           links: response.data.links,
@@ -261,6 +281,20 @@ export default {
 <style scoped>
 a {
   text-decoration: none;
+}
+
+.progress {
+  background-color: #e9ecef;
+  border-radius: 1.5rem;
+  height: 1.5rem;
+}
+
+.progress-bar {
+  background-color: var(--primary);
+  color: white;
+  text-align: center;
+  line-height: 1.5rem;
+  font-weight: 600;
 }
 
 .small-date {

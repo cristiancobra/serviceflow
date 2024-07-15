@@ -3,85 +3,72 @@
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
 
-    <div class="header">
-      <div class="show-title">
-        <div class="row ms-1">
-          <div class="col-1 status">
-            <font-awesome-icon icon="fa-solid fa-list-check" class="primary"/>
-            <p class="duration">
-              {{ formatDuration(task.duration_time) }}
-            </p>
+    <div class="show-title">
+      <div class="row ms-1">
+        <div class="col-1 status">
+          <font-awesome-icon icon="fa-solid fa-list-check" class="primary" />
+          <p class="duration">
+            {{ formatDuration(task.duration_time) }}
+          </p>
+        </div>
+        <div class="col-8 ps-3">
+          <p class="title">
+            <TextEditableField name="name" v-model="task.name" placeholder="descrição detalhada da tarefa"
+              @save="updateTask('name', $event)" />
+          </p>
+        </div>
+        <div class="col-3">
+          <div class="row">
+            <DateEditableInput class="d-flex justify-content-end" name="date_start" label="Início:"
+              v-model="task.date_start" @save="updateTask('date_start', $event)" />
           </div>
-          <div class="col-11 ps-3">
-            <p class="title">
-              <TextEditableField name="name" v-model="task.name" placeholder="descrição detalhada da tarefa"
-                @save="updateTask('name', $event)" />
-            </p>
+          <div class="row">
+            <DateEditableInput class="d-flex justify-content-end" name="date_due" label="Prazo:" v-model="task.date_due"
+              @save="updateTask('date_due', $event)" />
+          </div>
+          <div class="row">
+            <div class="d-flex justify-content-end">
+              <DateEditableInput name="date_conclusion" label="Conclusão:" v-model="task.date_conclusion"
+                @save="updateTask('date_conclusion', $event)" />
+              <button v-if="showEndTaskButton" class="button-circular primary ms-3" @click="updateDateConclusion"
+                title="Finalizar tarefa com data da última jornada">
+                <font-awesome-icon icon="fa-solid fa-check-square" />
+              </button>
+            </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col-3">
-            <UsersSelectInput label="Responsável" v-model="task.user_id"
-              @update:modelValue="updateTask('user_id', $event)" fieldsToDisplay="name" autoSelect=false />
-          </div>
-          <div class="col-3">
-            <ProjectsSelectInput label="Nome do Projeto" v-model="task.project_id"
-              @update:modelValue="updateTask('project_id', $event)" fieldsToDisplay="name" autoSelect=false
-              fieldNull="Nenhum" />
-          </div>
-          <div class="col-3">
-            <OpportunitiesSelectInput label="Oportunidade" v-model="task.opportunity_id"
-              @update:modelValue="updateTask('opportunity_id', $event)" fieldsToDisplay="name" autoSelect=false
-              fieldNull="Nenhum" />
-          </div>
+      </div>
+
+      <div class="row">
+        <div class="col-3">
+          <UsersSelectInput label="Responsável" v-model="task.user_id"
+            @update:modelValue="updateTask('user_id', $event)" fieldsToDisplay="name" autoSelect=false />
+        </div>
+        <div class="col-3">
+          <ProjectsSelectInput label="Nome do Projeto" v-model="task.project_id"
+            @update:modelValue="updateTask('project_id', $event)" fieldsToDisplay="name" autoSelect=false
+            fieldNull="Nenhum" />
+        </div>
+        <div class="col-3">
+          <OpportunitiesSelectInput label="Oportunidade" v-model="task.opportunity_id"
+            @update:modelValue="updateTask('opportunity_id', $event)" fieldsToDisplay="name" autoSelect=false
+            fieldNull="Nenhum" />
         </div>
       </div>
     </div>
-
-
     <div class="row pt-0">
-      <div id="col-infos" class="col">
-        <div class="row pt-5 pb-4">
-          <DateEditableInput name="date_start" label="Início:" v-model="task.date_start"
-            @save="updateTask('date_start', $event)" />
-          <DateEditableInput name="date_due" label="Prazo:" v-model="task.date_due"
-            @save="updateTask('date_due', $event)" />
-          <div class="d-flex">
-            <DateEditableInput name="date_conclusion" label="Conclusão:" v-model="task.date_conclusion"
-              @save="updateTask('date_conclusion', $event)" />
-            <button v-if="showEndTaskButton" class="button-circular primary ms-3" @click="updateDateConclusion"
-              title="Finalizar tarefa com data da última jornada">
-              <font-awesome-icon icon="fa-solid fa-check-square" />
-            </button>
-          </div>
-        </div>
-        <div class="row pt-5 pb-3">
-          <div class="duration">
-            <PrioritySelectInput v-if="task.priority" v-model="task.priority"
-              @update:modelValue="updateTask('priority', $event)" />
-          </div>
-        </div>
-        <div class="row pt-5 mb-5">
-          <div class="duration">
-            <StatusLinearRadioInput v-if="task.status" :status="task.status"
-              @status-change="updateTask('status', $event)" />
-          </div>
-        </div>
-        <div class="row mt-5 mb-5">
-          <TextEditor label="Descrição" name="description" v-model="task.description"
-            @save="updateTask('description', $event)" />
-        </div>
-        <div class="row pt-5">
-          <button class="col myButton delete" @click="deleteTask()">
-            excluir
-          </button>
-        </div>
-
-      </div>
-
-      <div id="col-list" class="col pt-0">
-        <JourneysList template="by-task" :taskId="taskId" @update-task-duration="updateTaskDuration()"
-          @last-journey-end="updateEndTaskButtonVisibility" />
+      <TextEditor label="Descrição" name="description" v-model="task.description"
+        @save="updateTask('description', $event)" />
+    </div>
+    <div class="row pt-0">
+      <JourneysList template="by-task" :taskId="taskId" @update-task-duration="updateTaskDuration()"
+        @last-journey-end="updateEndTaskButtonVisibility" />
+    </div>
+    <div class="row d-flex justify-content-end mt-2 mb-5 me-5">
+      <div class="col-1">
+        <button class="button delete" @click="deleteTask()">
+          excluir
+        </button>
       </div>
     </div>
   </div>
@@ -96,8 +83,6 @@ import { formatDateTimeBr } from "@/utils/date/dateUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
 import { getStatusClass } from "@/utils/card/cardUtils";
 import { getStatusIcon } from "@/utils/card/cardUtils";
-import StatusLinearRadioInput from "@/components/forms/inputs/StatusLinearRadioInput.vue";
-import PrioritySelectInput from "@/components/forms/inputs/PrioritySelectInput.vue";
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
 import DateEditableInput from "@/components/fields/datetime/DateTimeEditableInput";
@@ -114,11 +99,9 @@ export default {
     DateEditableInput,
     JourneysList,
     OpportunitiesSelectInput,
-    PrioritySelectInput,
     ProjectsSelectInput,
     TextEditableField,
     TextEditor,
-    StatusLinearRadioInput,
     UsersSelectInput,
   },
   data() {

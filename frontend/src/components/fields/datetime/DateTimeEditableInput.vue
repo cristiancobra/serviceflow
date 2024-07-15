@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <label v-if="label" class="form-label  ms-2" :for="name">{{ label }}</label>
+  <div class="d-flex">
+    <label v-if="label" class="form-label me-3" :for="name">{{ label }}</label>
     <div v-if="!editing" @click="startEditing" class="container-date">
       <span class="default-text" :class="classText">
         {{ formatedDate }}
@@ -113,27 +113,9 @@ export default {
   font-weight: 800;
 }
 
-.editable-content {
-  border: none;
-  padding: 5px;
-  cursor: pointer;
-  background: transparent;
-  text-align: left;
-}
-
-.editable-content[contenteditable="true"]:empty:before {
-  content: attr(placeholder);
-  color: #888;
-}
-
 .container-date {
   display: flex;
   align-items: left;
-  margin-top: 0.8rem;
-}
-
-.danger {
-  color: var(--red);
 }
 
 .icon {

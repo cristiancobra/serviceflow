@@ -2,75 +2,57 @@
   <div class="container mb-5">
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
-
-    <div class="header">
-      <div class="show-title">
-        <div class="row ms-1">
-          <div class="col-1 status">
-            <font-awesome-icon icon="fa-solid fa-folder-open" class="primary" />
-            <p class="duration">
-              {{ formatDuration(project.duration_time) }}
-            </p>
-          </div>
-          <div class="col-11 ps-3">
-            <p class="title">
-              <TextEditableField name="name" v-model="project.name" placeholder="descrição detalhada da tarefa"
-                @save="updateProject('name', $event)" />
-            </p>
-          </div>
+    <div class="show-title">
+      <div class="row ms-1">
+        <div class="col-1 status">
+          <font-awesome-icon icon="fa-solid fa-folder-open" class="primary" />
+          <p class="duration">
+            {{ formatDuration(project.duration_time) }}
+          </p>
         </div>
-        <div class="row">
-          <div class="col-3">
-            <SelectInput label="Responsável" name="user_id" v-model="project.user_id" :items="users"
-              fieldsToDisplay="name" />
+        <div class="col-8 ps-3">
+          <p class="title">
+            <TextEditableField name="name" v-model="project.name" placeholder="descrição detalhada da tarefa"
+              @save="updateProject('name', $event)" />
+          </p>
+        </div>
+        <div class="col-3">
+          <div class="row">
+            <DateEditableInput class="d-flex justify-content-end" name="date_start" label="Início:"
+              v-model="project.date_start" @save="updateProject('date_start', $event)" />
+          </div>
+          <div class="row">
+            <DateEditableInput class="d-flex justify-content-end" name="date_due" label="Prazo:"
+              v-model="project.date_due" @save="updateProject('date_due', $event)" />
+          </div>
+          <div class="row">
+            <DateEditableInput class="d-flex justify-content-end" name="date_conclusion" label="Conclusão:"
+              v-model="project.date_conclusion" @save="updateProject('date_conclusion', $event)" />
           </div>
         </div>
       </div>
+      <div class="row">
+        <div class="col-3">
+          <SelectInput label="Responsável" name="user_id" v-model="project.user_id" :items="users"
+            fieldsToDisplay="name" />
+        </div>
+      </div>
     </div>
-
-    <div class="row pt-2" id="description">
+    <div class="description-container">
       <TextEditor label="Descrição" name="description" v-model="project.description"
-            @save="updateProject('description', $event)" />
+        @save="updateProject('description', $event)" />
     </div>
-
     <div class="row pt-2">
-      <TasksList :tasks="project.tasks" /> 
+      <TasksList template="project" :projectId="projectId" @update-project-duration="updateProjectDuration()" />
     </div>
-
-    <div class="row pt-2">
-        <div class="row mt-5">
-          <DateEditableInput name="date_start" label="Início:" v-model="project.date_start"
-            @save="updateProject('date_start', $event)" />
-          <DateEditableInput name="date_due" label="Prazo:" v-model="project.date_due"
-            @save="updateProject('date_due', $event)" />
-          <DateEditableInput name="date_conclusion" label="Conclusão:" v-model="project.date_conclusion"
-            @save="updateProject('date_conclusion', $event)" />
-        </div>
-
-        <div class="row">
-          <div class="duration">
-            <PrioritySelectInput id="show" v-model="project.priority"
-              @update:modelValue="updateProject('priority', $event)" />
-          </div>
-        </div>
-
-        <div class="row mt-5">
-          <div class="duration">
-            <StatusLinearRadioInput :status="project.status" @status-change="updateProject('status', $event)" />
-          </div>
-        </div>
-
-
-
-        <div class="row mt-5 mb-5">
-          <button class="col myButton delete" @click="deleteProject()">
-            excluir
-          </button>
-        </div>
-
+    <div class="row d-flex justify-content-end mt-2 mb-5 me-5">
+      <div class="col-1">
+        <button class="button delete" @click="deleteProject()">
+          excluir
+        </button>
       </div>
     </div>
-  
+  </div>
 </template>
 
 <script>
@@ -83,8 +65,6 @@ import { formatDuration } from "@/utils/date/dateUtils";
 import { getStatusClass } from "@/utils/card/cardUtils";
 import { getStatusIcon } from "@/utils/card/cardUtils";
 import { provide, ref } from 'vue';
-import StatusLinearRadioInput from "@/components/forms/inputs/StatusLinearRadioInput.vue";
-import PrioritySelectInput from "@/components/forms/inputs/PrioritySelectInput.vue";
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
 import DateEditableInput from "@/components/fields/datetime/DateTimeEditableInput";
@@ -97,10 +77,8 @@ export default {
   components: {
     DateEditableInput,
     TasksList,
-    PrioritySelectInput,
     TextEditableField,
     TextEditor,
-    StatusLinearRadioInput,
   },
   data() {
     return {

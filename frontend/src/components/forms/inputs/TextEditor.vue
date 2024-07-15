@@ -2,28 +2,12 @@
   <div>
     <label class="show-label mb-3" :for="name">{{ label }}:</label>
     <div class="tiptap">
-      <div
-        v-if="!editing && modelValue === null"
-        @click="startEditing"
-        class="editable-content w-100"
-      >
+      <div v-if="!editing && modelValue === null" @click="startEditing" class="w-100">
         Clique para adicionar uma descrição...
       </div>
-
-      <div
-        v-else-if="!editing"
-        @click="startEditing"
-        class="editable-content w-100"
-        v-html="modelValue"
-      ></div>
-
-      <div v-else
-      class="editable-content"
-       @blur="cancelEditing"
-        @keydown.esc="cancelEditing"
-        >
+      <div v-else-if="!editing" @click="startEditing" class="w-100" v-html="modelValue"></div>
+      <div v-else @blur="cancelEditing" @keydown.esc="cancelEditing">
         <TiptapButtons v-if="editor" :editor="editor" />
-
         <EditorContent :editor="editor" @input="updateContent" />
       </div>
     </div>
@@ -133,6 +117,7 @@ export default {
   font-weight: 800;
   margin-bottom: 10px;
 }
+
 .tiptap p.is-editor-empty:first-child::before {
   color: #adb5bd;
   content: attr(data-placeholder);

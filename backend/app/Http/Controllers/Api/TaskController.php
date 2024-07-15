@@ -174,14 +174,26 @@ class TaskController extends Controller
 
         $perPage = request()->get('per_page', 20);
 
-        $tasks = Task::where('project_id', $request->project_id)
-            ->with('project')
+        $tasksQuery = Task::where('project_id', $request->project_id);
+
+        $totalTasksQuery = clone $tasksQuery;
+        $totalTasks = $totalTasksQuery->count();
+
+        $completedTasksQuery = clone $tasksQuery;
+        $completedTasks = $completedTasksQuery->whereNotNull('date_conclusion')->count();    
+
+        $tasks = $tasksQuery->with('project')
             ->orderBy('date_start', 'desc')
             ->paginate($perPage);
 
         $tasks->appends(['project_id' => $request->project_id]);
 
-        return TaskResource::collection($tasks);
+        // return TaskResource::collection($tasks);
+        return response()->json([
+            'data' => TaskResource::collection($tasks),
+            'total_tasks' => $totalTasks,
+            'completed_tasks' => $completedTasks,
+        ]);
     }
 
     /**
