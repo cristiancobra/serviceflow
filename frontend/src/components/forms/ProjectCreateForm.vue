@@ -2,10 +2,7 @@
     <div class="form-container">
         <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
         </AddMessage>
-
-
         <form @submit.prevent="submitForm">
-
             <div class='row'>
                 <div class='col-2'>
                     <label class='labels' for='name'>
@@ -17,7 +14,6 @@
                         placeholder='Digite um nome para seu projeto'>
                 </div>
             </div>
-
             <div class='row'>
                 <div class='col-2'>
                     <label class='labels' for='description'>
@@ -29,7 +25,6 @@
                         placeholder='Digite o nome do responsável por garantir a execução do projeto'>
                 </div>
             </div>
-
             <div class='row mt-5 mb-5'>
                 <div class="col">
                     <CompaniesSelectInput label="Empresa cliente" v-model="form.company_id" name="company_id"
@@ -55,13 +50,12 @@
 
             <div class="row mb-5 mt-5">
                 <div class="col-md-4">
-                    <TimeInput v-model="form.date_start" label="Início" name="date_start"
-                        placeholder="início do prazo" :autoFillNow="true" />
+                    <TimeInput v-model="form.date_start" label="Início" name="date_start" placeholder="início do prazo"
+                        :autoFillNow="true" />
                 </div>
 
                 <div class="col-md-4">
-                    <TimeInput v-model="form.date_due" label="Prazo final" name="date_due"
-                        placeholder="prazo final" />
+                    <TimeInput v-model="form.date_due" label="Prazo final" name="date_due" placeholder="prazo final" />
                 </div>
 
                 <div class="col-md-4">

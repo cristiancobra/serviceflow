@@ -1,6 +1,6 @@
 <template>
-  <div class="time-col">
-    <label v-if="label" :for="label" class="form-label">{{ label }}</label>
+  <div>
+    <label v-if="label" :for="label">{{ label }}</label>
     <VueDatePicker :name="name" :label="label" v-model="localValue" :placeholder="placeholder"
       @update:modelValue="emitSave" />
   </div>
@@ -52,13 +52,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-label {
-  text-align: right;
-}
-
-.time-col {
-  min-width: 200px;
-}
-</style>

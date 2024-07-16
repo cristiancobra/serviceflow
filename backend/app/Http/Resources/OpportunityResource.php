@@ -32,6 +32,7 @@ class OpportunityResource extends JsonResource
             // Relationships
             // 'journeys' => JourneyResource::collection($this->whenLoaded('journeys')),
             // 'project' => new ProjectResource($this->whenLoaded('project')),
+            'company' => new CompanyResource($this->whenLoaded('company')),
 			];
     }
 }

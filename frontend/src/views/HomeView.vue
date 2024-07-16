@@ -1,26 +1,20 @@
 <template>
   <div class="home pt-5 pb-5">
-    <div id="welcome">
-      <p>
+    <div>
+      <p class="text-center">
         Bem vindo, hoje é
         <span style="font-weight: bolder">
           {{ dateNow }}
         </span>
       </p>
     </div>
-    <div class="container mt-5">
-      <div class="row mb-5">
-        <ProjectsList template="priorized" />
-      </div>
-      <div class="row">
-        <TasksList template="priorized" />
-      </div>
+    <div class="container">
+      <TasksList template="priorized" />
     </div>
   </div>
 </template>
 
 <script>
-import ProjectsList from "../components/lists/ProjectsList.vue";
 import TasksList from "../components/lists/TasksList.vue";
 
 export default {
@@ -30,7 +24,6 @@ export default {
     };
   },
   components: {
-    ProjectsList,
     TasksList,
   },
   methods: {

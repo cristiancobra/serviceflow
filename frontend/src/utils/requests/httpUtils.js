@@ -18,8 +18,8 @@ export const fetchIndexData = async (model) => {
     }
   };
 
-  // fetches a single model to show page
-export const fetchShowData = async (model, id) => {
+  // fetches a single model to SHOW page
+export const show = async (model, id) => {
     if (!["tasks", "projects", "opportunities", "users"].includes(model)) {
       throw new Error(`Invalid model: ${model}`);
     }

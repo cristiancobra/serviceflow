@@ -1,11 +1,11 @@
 <template>
   <div class="d-flex">
     <label v-if="label" class="form-label me-3" :for="name">{{ label }}</label>
-    <div v-if="!editing" @click="startEditing" class="container-date">
+    <div v-if="!editing" @click="startEditing">
       <span class="default-text" :class="classText">
         {{ formatedDate }}
       </span>
-      <font-awesome-icon icon="fa-solid fa-clock" class="ms-2 me-1" :class="localClassIcon" />
+      <font-awesome-icon icon="fa-solid fa-clock" class="ms-2 me-1"/>
       <span class="default-text" :class="classText">
         {{ formatedTime }}
       </span>
@@ -31,7 +31,6 @@ export default {
       formatedDate: '',
       formatedTime: '',
       localValue: this.convertDateTimeToLocal(this.modelValue),
-      localClassIcon: '',
     };
   },
   props: {
@@ -75,12 +74,6 @@ export default {
     }
   },
   mounted() {
-    if (!this.classIcon) {
-      this.localClassIcon = 'icon';
-    } else {
-      this.localClassIcon = this.classIcon;
-    }
-
     this.displayLocal();
     document.addEventListener("keydown", this.cancelEditing);
   },
@@ -103,24 +96,8 @@ export default {
   color: var(--primary);
 }
 
-.container-date {
-  display: flex;
-  justify-content: end;
-}
-
 .show-label {
   text-align: left;
   font-weight: 800;
-}
-
-.container-date {
-  display: flex;
-  align-items: left;
-}
-
-.icon {
-  margin-right: 0.4rem;
-  margin-left: 1rem;
-  color: var(--primary);
 }
 </style>

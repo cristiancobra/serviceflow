@@ -1,6 +1,6 @@
 <template>
-  <div class="main-container">
-    <label class="form-label  ms-2" :for="name">{{ label }}</label>
+  <div>
+    <label v-if="label" class="ms-2" :for="name">{{ label }}</label>
       <TimeValue v-if="!editing" :id="name" :name="name" v-model="localValue" @click="startEditing" />
       <TimeInput v-else @update:modelValue="emitSave" @editing="cancelEditing" v-model="localValue" ref="editableInputRef" />
   </div>
@@ -57,34 +57,3 @@ export default {
  
 };
 </script>
-
-<style scoped>
-.form-label {
-  font-weight: 900;
-  padding-right: 1rem;
-}
-
-.main-container {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-}
-
-.show-label {
-  text-align: left;
-  font-weight: 800;
-}
-
-.editable-content {
-  border: none;
-  padding: 5px;
-  cursor: pointer;
-  background: transparent;
-  text-align: left;
-}
-
-.editable-content[contenteditable="true"]:empty:before {
-  content: attr(placeholder);
-  color: #888;
-}
-</style>

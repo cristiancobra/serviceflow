@@ -2,71 +2,54 @@
   <div class="container mb-5">
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
-
-    <div class="header">
-      <div class="show-title">
-        <div class="row ms-1">
-          <div class="col-1 status">
-            <font-awesome-icon icon="fa-solid fa-bullseye" class="primary" />
+    <div class="show-title">
+      <div class="row ms-1">
+        <div class="col-1 status">
+          <font-awesome-icon icon="fa-solid fa-bullseye" class="primary" />
           <p class="duration">
             {{ opportunity.duration_time }}
           </p>
         </div>
-        <div class="col-11 ps-3">
+        <div class="col-8 ps-3">
           <p class="title">
             <TextEditableField name="name" v-model="opportunity.name" placeholder="descrição detalhada da tarefa"
               @save="updateOpportunity('name', $event)" />
           </p>
         </div>
+        <div class="col-3">
+          <div class="row">
+            <DateEditableInput class="d-flex justify-content-end" name="date_start" label="Início:"
+              v-model="opportunity.date_start" @save="updateOpportunity('date_start', $event)" />
+          </div>
+          <div class="row">
+            <DateEditableInput class="d-flex justify-content-end" name="date_due" label="Prazo:"
+              v-model="opportunity.date_due" @save="updateOpportunity('date_due', $event)" />
+          </div>
+          <div class="row">
+            <DateEditableInput class="d-flex justify-content-end" name="date_conclusion" label="Conclusão:"
+              v-model="opportunity.date_conclusion" @save="updateOpportunity('date_conclusion', $event)" />
+          </div>
+        </div>
       </div>
       <div class="row">
         <div class="col-3">
-          <SelectInput label="Responsável" name="user_id" v-model="opportunity.user_id" :items="users"
-            fieldsToDisplay="name" />
+          <UsersSelectEditableField label="Responsável" name="user_id" v-model="opportunity.user_id"
+            @update:modelValue="updateOpportunity('user_id', $event)" />
         </div>
       </div>
     </div>
-  </div>
-
+    <div class="description-container">
+      <TextEditor label="Descrição" name="description" v-model="opportunity.description"
+        @save="updateOpportunity('description', $event)" />
+    </div>
     <div class="row pt-2">
-      <div id="col-infos" class="col">
-        <div class="row">
-          <TextEditor label="Descrição" name="description" v-model="opportunity.description"
-            @save="updateOpportunity('description', $event)" />
-        </div>
-
-        <div class="row mt-5">
-          <DateEditableInput name="date_start" label="Início:" v-model="opportunity.date_start"
-            @save="updateOpportunity('date_start', $event)" />
-          <DateEditableInput name="date_due" label="Prazo:" v-model="opportunity.date_due"
-            @save="updateOpportunity('date_due', $event)" />
-          <DateEditableInput name="date_conclusion" label="Conclusão:" v-model="opportunity.date_conclusion"
-            @save="updateOpportunity('date_conclusion', $event)" />
-        </div>
-
-        <div class="row">
-          <div class="duration">
-            <PrioritySelectInput id="show" v-model="opportunity.priority" @update:modelValue="updateOpportunity('priority', $event)" />
-          </div>
-        </div>
-
-        <div class="row mt-5">
-          <div class="duration">
-            <StatusLinearRadioInput :status="opportunity.status" @status-change="updateOpportunity('status', $event)" />
-          </div>
-        </div>
-
-
-
-        <div class="row mt-5 mb-5">
-          <button class="col myButton delete" @click="deleteProject()">
-            excluir
-          </button>
-        </div>
-      </div>
-
-      <div id="col-list" class="col">
-        <TasksList template="opportunity" :opportunityId="opportunityId"  @update-opportunity-duration="updateOpportunityDuration()"/>
+      <TasksList template="opportunity" :opportunityId="opportunityId" />
+    </div>
+    <div class="row d-flex justify-content-end mt-2 mb-5 me-5">
+      <div class="col-1">
+        <button class="button delete" @click="deleteOpportunity()">
+          excluir
+        </button>
       </div>
     </div>
   </div>
@@ -74,29 +57,27 @@
 
 <script>
 import axios from "axios";
-import { BACKEND_URL, PROJECT_URL_PARAMETER } from "@/config/apiConfig";
+import { BACKEND_URL, OPPORTUNITY_URL_PARAMETER, PROJECT_URL_PARAMETER } from "@/config/apiConfig";
 import { convertDateTimeToLocal } from "@/utils/date/dateUtils";
-import { fetchShowData, updateField } from "@/utils/requests/httpUtils";
-import { formatDateBr,formatDateTimeBr, formatDuration, getStatusClass, getStatusIcon } from "@/utils/card/cardUtils";
+import { show, updateField } from "@/utils/requests/httpUtils";
+import { formatDateBr, formatDateTimeBr, formatDuration, getStatusClass, getStatusIcon } from "@/utils/card/cardUtils";
 import { provide, ref } from 'vue';
-import StatusLinearRadioInput from "@/components/forms/inputs/StatusLinearRadioInput.vue";
-import PrioritySelectInput from "@/components/forms/inputs/PrioritySelectInput.vue";
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
 import DateEditableInput from "@/components/fields/datetime/DateTimeEditableInput";
 import TasksList from "@/components/lists/TasksList.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField";
 import TextEditor from "@/components/forms/inputs/TextEditor.vue";
+import UsersSelectEditableField from "@/components/fields/selects/UsersSelectEditableField.vue";
 
 export default {
   name: "ProjectShow",
   components: {
     DateEditableInput,
     TasksList,
-    PrioritySelectInput,
     TextEditableField,
     TextEditor,
-    StatusLinearRadioInput,
+    UsersSelectEditableField,
   },
   data() {
     return {
@@ -128,17 +109,17 @@ export default {
     translatePriority,
     convertDateTimeToLocal,
     async getOpportunity() {
-        this.opportunity = await fetchShowData("opportunities", this.opportunityId);
-        this.currentOpportunity = this.opportunity;
-        convertDateTimeToLocal(this.opportunity.date_start);
-        this.opportunityLoaded = true;
+      this.opportunity = await show("opportunities", this.opportunityId);
+      this.currentOpportunity = this.opportunity;
+      convertDateTimeToLocal(this.opportunity.date_start);
+      this.opportunityLoaded = true;
     },
     setOpportunityId(opportunityId) {
       this.opportunityId = opportunityId;
     },
-    async deleteProject() {
+    async deleteOpportunity() {
       axios
-        .delete(`${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.opportunityId}`)
+        .delete(`${BACKEND_URL}${OPPORTUNITY_URL_PARAMETER}${this.opportunityId}`)
         .then((response) => {
           this.data = response.data;
           this.isSuccess = true;

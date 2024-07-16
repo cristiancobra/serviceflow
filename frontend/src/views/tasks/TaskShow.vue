@@ -56,7 +56,7 @@
         </div>
       </div>
     </div>
-    <div class="row pt-0">
+    <div class="description-container">
       <TextEditor label="Descrição" name="description" v-model="task.description"
         @save="updateTask('description', $event)" />
     </div>

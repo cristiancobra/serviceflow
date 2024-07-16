@@ -1,6 +1,6 @@
 <template>
-  <div v-if="convertedDateTime" class="container-date">
-    <font-awesome-icon icon="fa-solid fa-clock" class="icon" />
+  <div v-if="convertedDateTime" class="m-0 p-0">
+    <font-awesome-icon icon="fa-solid fa-clock" class="" />
     {{ formatedTime }}
   </div>
 </template>
@@ -48,20 +48,3 @@ export default {
   },
 };
 </script>
-
-
-<style scoped>
-.container-date {
-  display: flex;
-  align-items: left;
-}
-
-.icon {
-  margin-right: 0.4rem;
-  color: var(--primary);
-}
-
-label {
-  text-align: right;
-}
-</style>

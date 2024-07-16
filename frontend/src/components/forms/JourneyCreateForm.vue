@@ -19,7 +19,7 @@
         <div class="row">
           <div class="col">
             <label for="details">Detalhes</label>
-            <textarea name="description" rows="5" cols="50" v-model="form.details" class="form-control"
+            <textarea name="description" rows="2" cols="50" v-model="form.details" class="form-control"
               id="details"></textarea>
           </div>
         </div>
@@ -29,21 +29,21 @@
       </div>
     </form>
     <div class="row mb-5">
-      <div class="col">
+      <div class="col d-flex justify-content-center">
         <button class="button me-3" @click="toggle()">
           <span class="icon-new">
             <font-awesome-icon icon="fa-solid fa-plus" />
           </span>
-          NOVA JORNADA
+          NOVA
         </button>
       </div>
-      <div class="col">
+      <div class="col d-flex justify-content-center">
         <form @submit.prevent="submitQuickForm">
           <button class="button">
             <span class="icon-new">
               <font-awesome-icon icon="fa-solid fa-bolt" />
             </span>
-            INICIAR AGORA
+            INICIAR
           </button>
         </form>
       </div>

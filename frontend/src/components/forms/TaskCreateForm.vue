@@ -35,6 +35,7 @@
                     <TextValue v-model="currentOpportunity.company.name" class="selected" />
                   </div>
                   <div v-else>
+                    {{ currentOpportunity }}
                   <CompaniesSelectInput label="Empresa cliente" name="company_id" v-model="form.company_id"
                     :fieldsToDisplay="['business_name', 'legal_name']" fieldNull="Não possui / minha empresa" />
                   </div>

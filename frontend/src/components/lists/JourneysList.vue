@@ -1,90 +1,51 @@
 <template>
-  <div class="journey-container mb-5 mt-0">
-
-    <div class="row align-items-start">
-      <div class="col-1">
-        <font-awesome-icon icon="fa-solid fa-clock" class="icon" />
-      </div>
-      <div class="col">
+  <div class="list-container mb-5 mt-0">
+    <div class="row">
+      <div class="col-9 d-flex justify-content-left">
+        <font-awesome-icon icon="fa-solid fa-clock" class="icon pe-3 primary" />
         <h2 class="title">JORNADAS</h2>
       </div>
     </div>
-
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
-
     <JourneyCreateForm @new-journey-event="addJourneyCreated" />
-
     <div id="list" v-if="journeys.length > 0">
       <div class="row">
         <PaginateNav :paginationData="paginationData" @update-data="updatePaginationList" />
       </div>
-
-      <div class="table-header">
-        <div class="offset-2 col-4">
-          INÍCIO
-        </div>
-        <div class="col-3">
-          FIM
-        </div>
-        <div class="col-3">
-          DURAÇÃO
-        </div>
-      </div>
       <div class="p-5" v-if="!journeys">
         Ainda não possui nenhuma jornada
       </div>
-      <div v-else class="row cards" v-for="journey in journeys" v-bind:key="journey.id"
+      <div v-else class="list-line" v-for="journey in journeys" v-bind:key="journey.id"
         :class="{ 'highlight': journey.id === newJourneyId }">
-
         <div v-if="journey.task && !taskId" class="col-7 taskCard">
           <router-link :to="{ name: 'tasksShow', params: { id: journey.task_id } }">
             {{ journey.task.name }}
           </router-link>
         </div>
-
-        <div class="col">
-          <div class="row">
-            <div class="col-1 d-flex justify-content-center align-items-center">
-              <font-awesome-icon icon="fa-solid fa-clock" />
-            </div>
-            <div id="start" class="col pt-1" :class="{ 'col-big': journey.editing && journey.editing.start }"
-              @click="editDateTime(journey, 'start')">
-              <DateEditableInput name="start" v-model="journey.start"
-                @save="updateJourney('start', $event, journey.id)" />
-            </div>
-            <div id="end" class="col pt-3" :class="{ 'col-big': journey.editing && journey.editing.end }"
-              @click="editDateTime(journey, 'end')">
-              <TimeEditableInput name="end" v-model="journey.end" @save="updateJourney('end', $event, journey.id)" />
-            </div>
-            <div id="duration" class="col pt-3">
-              <p class="time-bold">
-                {{ formatDuration(journey.duration) }}
-              </p>
-            </div>
-            <div class="col d-flex justify-content-end">
-              <button v-if="!journey.end" class="button-circular stop" @click="stopJourney(journey.id)">
-                <span class="stop">
-                  <font-awesome-icon icon="fa-solid fa-hand" />
-                </span>
-              </button>
-              <button class="button-circular delete" @click="deleteItem(journey)">
-                <span class="delete">
-                  <font-awesome-icon icon="fa-solid fa-trash-alt" />
-                </span>
-              </button>
-            </div>
-          </div>
-          <div class="row pt-2">
-            <div id="details" class="col">
-              <TextEditableField name="details" class="details" v-model="journey.details"
+        <div class="col d-flex justify-content-start"> 
+            <DateEditableInput name="start" v-model="journey.start"
+              @save="updateJourney('start', $event, journey.id)" />
+            <TimeEditableInput class="ps-5" name="end" v-model="journey.end" @save="updateJourney('end', $event, journey.id)" />
+            <p class="time-bold ps-5">
+              {{ formatDuration(journey.duration) }}
+            </p>
+            <TextEditableField name="details" class="details ps-5" v-model="journey.details"
                 @save="updateJourney('details', $event, journey.id)" />
-            </div>
-
+          <div class="col d-flex justify-content-end">
+            <button v-if="!journey.end" class="button-circular stop" @click="stopJourney(journey.id)">
+              <span class="stop">
+                <font-awesome-icon icon="fa-solid fa-hand" />
+              </span>
+            </button>
+            <button class="button-circular delete" @click="deleteItem(journey)">
+              <span class="delete">
+                <font-awesome-icon icon="fa-solid fa-trash-alt" />
+              </span>
+            </button>
           </div>
         </div>
       </div>
-
       <PaginateNav :paginationData="paginationData" @update-data="updatePaginationList" />
 
     </div>
@@ -254,18 +215,18 @@ export default {
         return null;
       }
     },
-    editDateTime(journey, field) {
-      if (!journey.editing) {
-        journey.editing = {};
-      }
-      journey.editing[field] = !journey.editing[field];
+    // editDateTime(journey, field) {
+    //   if (!journey.editing) {
+    //     journey.editing = {};
+    //   }
+    //   journey.editing[field] = !journey.editing[field];
 
-      if (journey.editing[field]) {
-        document.addEventListener('keydown', (event) => this.cancelEditDateTime(event, journey, field));
-      } else {
-        document.removeEventListener('keydown', (event) => this.cancelEditDateTime(event, journey, field));
-      }
-    },
+    //   if (journey.editing[field]) {
+    //     document.addEventListener('keydown', (event) => this.cancelEditDateTime(event, journey, field));
+    //   } else {
+    //     document.removeEventListener('keydown', (event) => this.cancelEditDateTime(event, journey, field));
+    //   }
+    // },
     async stopJourney(journeyId) {
       const fieldName = 'end';
       const now = new Date();
@@ -346,19 +307,19 @@ export default {
   color: white;
 }
 
-.icon {
+.icon-clock {
   font-size: 1.8rem;
   font-weight: 400;
   color: var(--gray);
 }
 
-.icon-new {
+.icon-clock-new {
   font-size: 26px;
   font-weight: 900;
   color: white;
 }
 
-icon-new:hover {
+icon-clock-new:hover {
   font-size: 2.5rem;
   text-align: center;
   font-weight: 400;
@@ -437,19 +398,6 @@ a:active {
   display: flex;
   justify-content: end;
   padding-top: 1rem;
-}
-
-.table-header {
-  display: flex;
-  justify-content: space-between;
-  text-align: center;
-  background-color: var(--purple);
-  color: white;
-  border-style: none;
-  border-radius: 12px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  margin-bottom: 16px;
 }
 
 .col-big {

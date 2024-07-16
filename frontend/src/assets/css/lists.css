@@ -67,6 +67,14 @@
   color: var(--gray);
 }
 
+.list-container .danger {
+  color: var(--red);
+}
+
+.list-container .done {
+  color: var(--done-color);
+}
+
 .list-container .project {
   display: flex;
   justify-content: center;
