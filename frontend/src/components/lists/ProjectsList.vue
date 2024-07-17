@@ -44,8 +44,8 @@
       <div class="col-3 line-list d-flex align-items-center justify-content-center">
         <DateTimeValue v-if="project.date_conclusion" v-model="project.date_conclusion" classText="done"
           classIcon='done' @save="updateProject('date_conclusion', $event, project.id)" />
-        <DateTimeEditableInput v-else v-model="project.date_due" :classText="getDeadlineClass(project)"
-          :classIcon='getDeadlineClass(project)' @save="updateProject('date_due', $event, project.id)" />
+        <DateTimeEditableInput v-else v-model="project.date_due" :classText="getDeadlineClass(project.date_due)"
+          :classIcon='getDeadlineClass(project.date_due)' @save="updateProject('date_due', $event, project.id)" />
       </div>
     </div>
   </div>
@@ -55,7 +55,7 @@
 import { formatDuration } from "@/utils/date/dateUtils";
 import { getDeadlineClass, getStatusClass, getPriorityClass, getStatusColor, getStatusIcon } from "@/utils/card/cardUtils";
 import { BACKEND_URL, PROJECT_URL_PARAMETER, PROJECTS_PRIORIZED_URL } from "@/config/apiConfig";
-import { fetchIndexData } from "@/utils/requests/httpUtils";
+import { indexData } from "@/utils/requests/httpUtils";
 import axios from "axios";
 import ProjectCreateForm from "../forms/ProjectCreateForm.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
@@ -137,7 +137,7 @@ export default {
     },
     async getProjects() {
       try {
-        this.projects = await fetchIndexData(`projects`);
+        this.projects = await indexData(`projects`);
       } catch (error) {
         console.error("Erro ao acessar projetos:", error);
       }

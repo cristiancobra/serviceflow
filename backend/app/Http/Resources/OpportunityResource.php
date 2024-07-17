@@ -17,8 +17,8 @@ class OpportunityResource extends JsonResource
         return [
             'id' => $this->id,
             'account_id' => $this->account_id,
+            'lead_id' => $this->lead_id,
             'user_id' => $this->user_id,
-            'contact_id' => $this->contact_id,
             'company_id' => $this->company_id,
             'name' => $this->name,
             'category' => $this->category,
@@ -26,6 +26,7 @@ class OpportunityResource extends JsonResource
             'date_due' => $this->date_due,
             'date_conclusion' => $this->date_conclusion,
             'description' => $this->description,
+            'source' => $this->source,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
 

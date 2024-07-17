@@ -33,7 +33,15 @@
       </div>
       <div class="row">
         <div class="col-3">
-          <UsersSelectEditableField label="Responsável" name="user_id" v-model="opportunity.user_id"
+          <companies-select-editable-field label="Empresa" name="company_id" v-model="opportunity.company_id"
+            @update:modelValue="updateOpportunity('company_id', $event)" />
+        </div>
+        <div class="col-3">
+          <leads-select-editable-field label="Cliente" name="lead_id" v-model="opportunity.lead_id"
+            @update:modelValue="updateOpportunity('lead_id', $event)" />
+        </div>
+        <div class="col-3">
+          <users-select-editable-field label="Responsável" name="user_id" v-model="opportunity.user_id"
             @update:modelValue="updateOpportunity('user_id', $event)" />
         </div>
       </div>
@@ -64,7 +72,9 @@ import { formatDateBr, formatDateTimeBr, formatDuration, getStatusClass, getStat
 import { provide, ref } from 'vue';
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
+import CompaniesSelectEditableField from '../../components/fields/selects/CompaniesSelectEditableField.vue';
 import DateEditableInput from "@/components/fields/datetime/DateTimeEditableInput";
+import LeadsSelectEditableField from '../../components/fields/selects/LeadsSelectEditableField.vue';
 import TasksList from "@/components/lists/TasksList.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField";
 import TextEditor from "@/components/forms/inputs/TextEditor.vue";
@@ -73,7 +83,9 @@ import UsersSelectEditableField from "@/components/fields/selects/UsersSelectEdi
 export default {
   name: "ProjectShow",
   components: {
+    CompaniesSelectEditableField,
     DateEditableInput,
+    LeadsSelectEditableField,
     TasksList,
     TextEditableField,
     TextEditor,

@@ -27,36 +27,47 @@
         <TaskCreateForm @new-task-event="addTaskCreated" />
       </div>
     </div>
-    <div class="row list-line" :class="{ showTasks: true, 'd-none': isHidden }" v-for="task in filteredTasks" v-bind:key="task.id">
-      <div class="col-9 d-flex">
-        <router-link :to="{ name: 'tasksShow', params: { id: task.id } }">
+    <div v-for="(filteredTasks, date) in groupedTasks" :key="date">
+      <p class="date-group" :class="getDeadlineClass(date)">
+        {{ formatDateGroup(date) }}
+      </p>
+      <div class="row list-line" :class="{ showTasks: true, 'd-none': isHidden }" v-for="task in filteredTasks"
+        v-bind:key="task.id">
+        <div class="col-9 d-flex">
           <div class="d-flex">
             <font-awesome-icon icon="fa-solid fa-user" class="primary pe-2" />
             <font-awesome-icon icon="fas fa-check-circle" class="pe-2"
               :class="isValidDate(task.date_conclusion) ? 'done' : 'canceled'" />
-            <p class="cards-title">
-              {{ task.name }}
-            </p>
-            <div v-if="task.project" class="project m-0 p-1 ps-2 pe-2 ms-2">
-              <font-awesome-icon icon="fa-solid fa-folder-open" />
-              <p class="m-0 p-0 ps-1">
-                {{ task.project.name }}
+            <router-link :to="{ name: 'tasksShow', params: { id: task.id } }"
+              class="d-inline-flex flex-wrap align-items-center">
+              <p class="cards-title">
+                {{ task.name }}
               </p>
-            </div>
-            <div v-if="task.opportunity" class="opportunity m-0 p-1 ps-2 pe-2 ms-2">
-              <font-awesome-icon icon="fa-solid fa-bullseye" />
-              <p class="m-0 p-0 ps-1">
-                {{ task.opportunity.name }}
-              </p>
-            </div>
+            </router-link>
+            <router-link v-if="task.project" :to="{ name: 'projectShow', params: { id: task.project.id } }">
+              <div class="project m-0 p-1 ps-2 pe-2 ms-2">
+                <font-awesome-icon icon="fa-solid fa-folder-open" />
+                <p class="m-0 p-0 ps-1">
+                  {{ task.project.name }}
+                </p>
+              </div>
+            </router-link>
+            <router-link v-if="task.opportunity" :to="{ name: 'opportunityShow', params: { id: task.opportunity.id } }">
+              <div class="opportunity m-0 p-1 ps-2 pe-2 ms-2">
+                <font-awesome-icon icon="fa-solid fa-bullseye" />
+                <p class="m-0 p-0 ps-1">
+                  {{ task.opportunity.name }}
+                </p>
+              </div>
+            </router-link>
           </div>
-        </router-link>
-      </div>
-      <div class="col-3">
-        <DateTimeValue v-if="isValidDate(task.date_conclusion)" v-model="task.date_conclusion" classText="done"
-          classIcon='done' @save="updateTask('date_conclusion', $event, task.id)" />
-        <DateTimeEditableInput v-else v-model="task.date_due" :classText="getDeadlineClass(task)"
-          :classIcon="getDeadlineClass(task)" @save="updateTask('date_due', $event, task.id)" />
+        </div>
+        <div class="col-3">
+          <DateTimeValue v-if="isValidDate(task.date_conclusion)" v-model="task.date_conclusion" classText="done"
+            classIcon='done' @save="updateTask('date_conclusion', $event, task.id)" />
+          <DateTimeEditableInput v-else v-model="task.date_due" :classText="getDeadlineClass(task.date_due)"
+            :classIcon="getDeadlineClass(task.date_due)" @save="updateTask('date_due', $event, task.id)" />
+        </div>
       </div>
     </div>
   </div>
@@ -67,7 +78,7 @@ import axios from "axios";
 import { convertUtcToLocal, formatDuration } from "@/utils/date/dateUtils";
 import { getStatusColor, getPriorityClass, getDeadlineClass, getStatusIcon } from "@/utils/card/cardUtils";
 import { BACKEND_URL, TASK_URL_PARAMETER, TASK_PRIORIZED_URL, TASK_BY_PROJECT_URL, TASK_BY_OPPORTUNITY_URL } from "@/config/apiConfig";
-import { fetchIndexData } from "@/utils/requests/httpUtils";
+import { index } from "@/utils/requests/httpUtils";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import DateTimeValue from "../fields/datetime/DateTimeValue.vue";
@@ -116,6 +127,17 @@ export default {
       this.toggle();
       this.tasks.unshift(newTask);
     },
+    formatDateGroup(date) {
+      const dateParts = date.split('-');
+      const day = parseInt(dateParts[2], 10);
+      const month = parseInt(dateParts[1], 10) - 1;
+      const year = parseInt(dateParts[0], 10);
+      const dateObject = new Date(year, month, day);
+      const weekday = dateObject.toLocaleDateString('pt-BR', { weekday: 'long' });
+      const formattedDate = `${day.toString().padStart(2, '0')}/${(month + 1).toString().padStart(2, '0')}`;
+
+      return `${formattedDate} - ${weekday}`;
+    },
     formatDateDue(date) {
       if (date === '1969-12-31 18:00:00' && date === '1969-12-31 21:00:00' && date === '1970-01-01 00:00:00') {
         return "";
@@ -144,7 +166,7 @@ export default {
     },
     async getTasks() {
       try {
-        this.tasks = await fetchIndexData(`tasks`);
+        this.tasks = await index(`tasks`);
         console.log("Tarefas:", this.tasks);
       } catch (error) {
         console.error("Erro ao acessar tarefas:", error);
@@ -257,6 +279,18 @@ export default {
         });
       }
     },
+    groupedTasks() {
+      return this.filteredTasks.reduce((groups, task) => {
+        if (task.date_due) {
+          const date = task.date_due.split(' ')[0];
+          if (!groups[date]) {
+            groups[date] = [];
+          }
+          groups[date].push(task);
+        }
+        return groups; // Sempre retorna groups
+      }, {});
+    },
   },
   mounted() {
     if (this.template === 'priorized') {
@@ -281,6 +315,15 @@ export default {
 <style scoped>
 a {
   text-decoration: none;
+}
+
+.date-group {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 1.2rem;
+  margin-bottom: 0.2rem;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
 }
 
 .progress {

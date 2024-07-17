@@ -8,14 +8,12 @@
       não possui
     </p>
   </div>
-  <SelectInput v-else :label="label" :name="name" v-model="localValue" :items="users" :fieldsToDisplay="fieldsToDisplay"
-    :fieldNull="fieldNullValue" @update:modelValue="updateInput" />
+  <SelectInput v-else :label="label" :name="name" v-model="localValue" :items="leads"
+    :fieldsToDisplay="fieldsToDisplay" :fieldNull="fieldNullValue" @update:modelValue="updateInput" />
 </template>
 
 <script>
-import { BACKEND_URL, USER_CURRENT_URL } from "@/config/apiConfig";
 import { index, show } from "@/utils/requests/httpUtils";
-import axios from "axios";
 import SelectInput from "@/components/forms/selects/SelectInput.vue";
 
 export default {
@@ -40,27 +38,27 @@ export default {
       fieldsToDisplay: "name",
       localValue: this.modelValue,
       selectedName: "",
-      users: [],
+      leads: [],
     };
   },
   methods: {
-    async getUsers() {
-      this.users = await index("users");
+    async getCompanies() {
+      this.leads = await index("leads");
     },
-    async getAuthenticatedUser() {
-      axios
-        .get(`${BACKEND_URL}${USER_CURRENT_URL}`)
-        .then((response) => {
-          this.autoSelectUser = response.data.data.id;
-          this.localValue = this.autoSelectUser;
-          this.$emit('update:modelValue', this.localValue);
-        })
-        .catch((error) => {
-          console.error("Erro ao buscar usuário:", error);
-        });
-    },
+    // async getAuthenticatedUser() {
+    //   axios
+    //     .get(`${BACKEND_URL}${USER_CURRENT_URL}`)
+    //     .then((response) => {
+    //       this.autoSelectUser = response.data.data.id;
+    //       this.localValue = this.autoSelectUser;
+    //       this.$emit('update:modelValue', this.localValue);
+    //     })
+    //     .catch((error) => {
+    //       console.error("Erro ao buscar usuário:", error);
+    //     });
+    // },
     async showName() {
-      const current = await show("users", this.modelValue);
+      const current = await show("leads", this.modelValue);
       this.selectedName = current.name;
     },
     startEditing() {
@@ -77,11 +75,11 @@ export default {
         this.showName();
       }
     },
-    autoSelectUser(newValue) {
-      if (newValue !== null) {
-        this.autoSelectUser = newValue;
-      }
-    }
+    // autoSelectUser(newValue) {
+    //   if (newValue !== null) {
+    //     this.autoSelectUser = newValue;
+    //   }
+    // }
   },
   mounted() {
     if (this.fieldNull) {
@@ -93,7 +91,7 @@ export default {
     if (this.modelValue) {
       this.showName();
     }
-    this.getUsers();
+    this.getCompanies();
   },
 };
 </script>

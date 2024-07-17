@@ -37,19 +37,6 @@ export default {
     };
   },
   methods: {
-    // getTasks() {
-    //   axios
-    //   .get(`${BACKEND_URL}${TASK_URL}`)
-    //     .then((response) => {
-    //       this.tasks = response.data.data;
-    //       this.filteredTasks = this.tasks;
-    //     })
-    //     .catch((error) => console.log(error));
-    // },
-    // addTaskCreated(newTask) {
-    //   this.toggle();
-    //   this.filteredTasks.unshift(newTask);
-    // },
     getTasksCanceled() {
       axios
         .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=canceled`) // Faz a requisição filtrando por status "done"

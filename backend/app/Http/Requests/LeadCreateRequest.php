@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class LeadCreateRequest extends FormRequest
 {
@@ -37,6 +38,18 @@ class LeadCreateRequest extends FormRequest
             'reason_for_initial_contact' => 'nullable',
             'comments' => 'nullable',
         ];
+    }
+
+    protected function prepareForValidation()
+    {
+        $user = Auth::user();
+        $this->merge([
+            'account_id' => $user->account_id,
+        ]);
+
+        $this->merge([
+            'user_id' => $user->id,
+        ]);
     }
 
     /**

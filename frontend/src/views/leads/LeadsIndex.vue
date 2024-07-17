@@ -1,39 +1,16 @@
 <template>
   <div class="container">
-
-    <LeadsFilter @toggle="toggle" />
-
-    <div v-bind:class="{ hidden: isActive }">
-      <LeadCreateForm @new-lead-event="addLeadCreated($event)" />
-    </div>
-
-    <template v-if="leads.length > 0">
-      <div class="row">
-        <LeadsList :leads="leads" />
-      </div>
-    </template>
-    <template v-else>
-      <NoLeadsMessage @new-lead-event="addLeadCreated($event)" />
-    </template>
-
+    <LeadsList template="index" />
   </div>
 </template>
 
 <script>
-import { BACKEND_URL, LEAD_URL } from "@/config/apiConfig";
-import axios from "axios";
-import LeadsFilter from "@/components/filters/LeadsFilter.vue";
 import LeadsList from "@/components/lists/LeadsList.vue";
-import NoLeadsMessage from '@/components/messages/NoLeadsMessage.vue';
-import LeadCreateForm from "@/components/forms/LeadCreateForm.vue";
 
 export default {
   name: "LeadsIndex",
   components: {
-    LeadsFilter,
-    LeadCreateForm,
     LeadsList,
-    NoLeadsMessage,
   },
   data() {
     return {
@@ -48,22 +25,6 @@ export default {
     toggle() {
       this.isActive = !this.isActive;
     },
-    getLeads() {
-      axios
-      .get(`${BACKEND_URL}${LEAD_URL}`)
-        .then((response) => {
-          this.leads = response.data.data;
-        })
-        .catch((error) => console.log(error));
-    },
-    addLeadCreated(newLead) {
-      this.leads.push(newLead.lead);
-      console.log("Novo lead adicionado:", newLead.lead);
-      !this.toggle();
-    },
-  },
-  mounted() {
-    this.getLeads();
   },
   computed: {
     leadsData() {
@@ -82,6 +43,7 @@ export default {
   display: flex;
   justify-content: center;
 }
+
 .slot {
   border-width: 2px;
   border-style: solid;
@@ -93,33 +55,40 @@ export default {
   font-weight: 800;
   width: 120px;
 }
+
 .done {
   background-color: white;
   border-color: #2cb48d;
   color: #2cb48d;
 }
+
 .done:hover {
   background-color: #2cb48d;
   color: white;
 }
+
 .doing {
   background-color: white;
   border-color: #e78d1f;
   color: #e78d1f;
 }
+
 .doing:hover {
   background-color: #e78d1f;
   color: white;
 }
+
 .late {
   background-color: white;
   border-color: #b1388d;
   color: #b1388d;
 }
+
 .late:hover {
   background-color: #b1388d;
   color: white;
 }
+
 .new {
   border-radius: 20px 20px 20px 20px;
   background-color: white;
@@ -128,15 +97,18 @@ export default {
   margin-left: 50px;
   font-size: 16px;
 }
+
 .new:hover {
   background-color: #ff3eb5;
   color: white;
   margin-left: 50px;
 }
+
 .hidden {
   display: none;
   transition: display 2s;
 }
+
 .show {
   display: block;
   transition: display 2s;

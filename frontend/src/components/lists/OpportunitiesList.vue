@@ -41,8 +41,8 @@
             <div class="col-3 line-list d-flex align-items-center justify-content-center">
                 <DateTimeValue v-if="opportunity.date_conclusion" v-model="opportunity.date_conclusion" classText="done"
                     classIcon='done' @save="updateProject('date_conclusion', $event, opportunity.id)" />
-                <DateTimeEditableInput v-else v-model="opportunity.date_due" :classText="getDeadlineClass(opportunity)"
-                    :classIcon='getDeadlineClass(opportunity)'
+                <DateTimeEditableInput v-else v-model="opportunity.date_due" :classText="getDeadlineClass(opportunity.date_due)"
+                    :classIcon='getDeadlineClass(opportunity.date_due)'
                     @save="updateProject('date_due', $event, opportunity.id)" />
             </div>
         </div>
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { fetchIndexData } from "@/utils/requests/httpUtils";
+import { index } from "@/utils/requests/httpUtils";
 import { getDeadlineClass } from "@/utils/card/cardUtils";
 import OpportunityCreateForm from "../forms/OpportunityCreateForm.vue";
 
@@ -74,7 +74,7 @@ export default {
         },
         async getOpportunities() {
             try {
-                this.filteredOpportunities = await fetchIndexData(`opportunities`);
+                this.filteredOpportunities = await index(`opportunities`);
                 console.log("Oportunidades:", this.opportunities);
             } catch (error) {
                 console.error("Erro ao acessar oportunidades:", error);

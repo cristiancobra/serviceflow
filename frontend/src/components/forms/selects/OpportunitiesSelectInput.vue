@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import { fetchIndexData } from "@/utils/requests/httpUtils";
+import { index } from "@/utils/requests/httpUtils";
 import SelectInput from "./SelectInput.vue";
 
 export default {
@@ -33,7 +33,7 @@ export default {
   methods: {
     async getOpportunities() {
       try {
-        this.opportunities = await fetchIndexData(`opportunities`);
+        this.opportunities = await index(`opportunities`);
         console.log("Oportunidades:", this.opportunities);
       } catch (error) {
         console.error("Erro ao acessar oportunidades:", error);

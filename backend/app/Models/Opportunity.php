@@ -15,7 +15,7 @@ class Opportunity extends Model
     protected $fillable = [
         'account_id',
         'user_id',
-        'contact_id',
+        'lead_id',
         'company_id',
         'name',
         'category',
@@ -23,6 +23,7 @@ class Opportunity extends Model
         'date_due',
         'date_conclusion',
         'description',
+        'source',
     ];
 
     public function company()

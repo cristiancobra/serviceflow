@@ -26,6 +26,7 @@ class OpportunityRequest extends FormRequest
     {
         return [
             'account_id' => 'required|exists:accounts,id',
+            'lead_id' => 'nullable|exists:leads,id',
             'user_id' => 'sometimes|exists:users,id',
             'company_id' => 'nullable|exists:companies,id',
             'name' => 'sometimes|string|max:255',
@@ -34,6 +35,7 @@ class OpportunityRequest extends FormRequest
             'date_due' => 'nullable|date|after_or_equal:date_start',
             'date_conclusion' => 'nullable|date',
             'description' => 'nullable|string',
+            'source' => 'nullable|string|max:255',
         ];
     }
 

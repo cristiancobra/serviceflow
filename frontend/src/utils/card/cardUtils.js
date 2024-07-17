@@ -24,9 +24,9 @@ export function getStatusClass(status) {
     }
 }
 
-export function getDeadlineClass(task) {
+export function getDeadlineClass(dateDue) {
     const today = new Date();
-    const dueDate = new Date(task.date_due);
+    const dueDate = new Date(dateDue);
 
     if (dueDate <= today) {
         return "danger";

@@ -9,6 +9,7 @@
       <div class="modal-dialog modal-xl">
         <div class="modal-content">
           <div class="modal-header">
+            <font-awesome-icon icon="fa-solid fa-tasks" class="icon pe-3 primary" />
             <h5 class="modal-title" id="taskModalLabel">Nova tarefa</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" @click="closeModal"
               aria-label="Close"></button>
@@ -26,44 +27,6 @@
                 <TextAreaInput label="Descrição:" name="description" v-model="form.description"
                   placeholder="Detalhamento da tarefa" :rows="5" />
               </div>
-
-              <div class="row mb-5 mt-5">
-                <div class="col-md-4">
-                  <div v-if="currentOpportunity && currentOpportunity.company">
-                    <label for="company_id" class="form-label">Empresa cliente</label>
-                    <input type="hidden" name="company_id" v-model="currentOpportunity.company_id" />
-                    <TextValue v-model="currentOpportunity.company.name" class="selected" />
-                  </div>
-                  <div v-else>
-                    {{ currentOpportunity }}
-                  <CompaniesSelectInput label="Empresa cliente" name="company_id" v-model="form.company_id"
-                    :fieldsToDisplay="['business_name', 'legal_name']" fieldNull="Não possui / minha empresa" />
-                  </div>
-                </div>
-                <div class="col-2 d-flex align-items-center justify-content-start">
-                  <button type="button" class="button-new" @click="toggleCompany()">
-                    + criar
-                  </button>
-                </div>
-
-                <div class="col-md-4">
-                  <LeadsSelectInput label="Contato" name="contact_id" v-model="form.contact_id" fieldsToDisplay="name"
-                    fieldNull="Não possui" />
-                </div>
-                <div class="col-2 d-flex align-items-center justify-content-start">
-                  <button type="button" class="button-new" @click="toggleLead()">
-                    + criar
-                  </button>
-                </div>
-              </div>
-
-              <div v-if="isActiveCompany">
-                <CompanyCreateForm @new-company-event="addCompanyCreated" />
-              </div>
-              <div v-if="isActiveLead">
-                <LeadCreateForm @new-lead-event="addLeadCreated" />
-              </div>
-
               <div class="row mb-5 mt-5">
                 <div class="col">
                   <div v-if="currentOpportunity">
@@ -134,12 +97,8 @@ import {
 // import { inject } from "vue";
 // import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import axios from "axios";
-import CompaniesSelectInput from "./selects/CompaniesSelectInput.vue";
-import CompanyCreateForm from "./CompanyCreateForm.vue";
 import DateInput from "./inputs/date/DateInput";
 // import ErrorMessage from "./messages/ErrorMesssage.vue";
-import LeadCreateForm from "./LeadCreateForm.vue";
-import LeadsSelectInput from "./selects/LeadsSelectInput.vue";
 import OpportunitiesSelectInput from "./selects/OpportunitiesSelectInput.vue";
 import ProjectsSelectInput from "./selects/ProjectsSelectInput.vue";
 // import SuccessMessage from "./messages/SuccessMessage.vue";
@@ -153,12 +112,8 @@ export default {
   emits: ["new-task-event"],
   components: {
     // AddMessage,
-    CompaniesSelectInput,
-    CompanyCreateForm,
     DateInput,
     // ErrorMessage,
-    LeadCreateForm,
-    LeadsSelectInput,
     OpportunitiesSelectInput,
     ProjectsSelectInput,
     // SuccessMessage,
