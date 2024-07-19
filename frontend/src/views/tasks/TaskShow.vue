@@ -41,18 +41,16 @@
 
       <div class="row">
         <div class="col-3">
-          <UsersSelectInput label="Responsável" v-model="task.user_id"
-            @update:modelValue="updateTask('user_id', $event)" fieldsToDisplay="name" autoSelect=false />
+          <users-select-editable-field label="Responsável" name="user_id" v-model="task.user_id"
+            @update:modelValue="updateTask('user_id', $event)" />
         </div>
         <div class="col-3">
-          <ProjectsSelectInput label="Nome do Projeto" v-model="task.project_id"
-            @update:modelValue="updateTask('project_id', $event)" fieldsToDisplay="name" autoSelect=false
-            fieldNull="Nenhum" />
+          <projects-select-editable-field label="Projeto" v-model="task.project_id"
+            @update:modelValue="updateTask('project_id', $event)" fieldNull="Nenhum" />
         </div>
         <div class="col-3">
-          <OpportunitiesSelectInput label="Oportunidade" v-model="task.opportunity_id"
-            @update:modelValue="updateTask('opportunity_id', $event)" fieldsToDisplay="name" autoSelect=false
-            fieldNull="Nenhum" />
+          <opportunities-select-editable-field label="Oportunidade" v-model="task.opportunity_id"
+            @update:modelValue="updateTask('opportunity_id', $event)" fieldNull="Nenhum" />
         </div>
       </div>
     </div>
@@ -64,12 +62,12 @@
       <JourneysList template="by-task" :taskId="taskId" @update-task-duration="updateTaskDuration()"
         @last-journey-end="updateEndTaskButtonVisibility" />
     </div>
-    <div class="row d-flex justify-content-end mt-2 mb-5 me-5">
-      <div class="col-1">
-        <button class="button delete" @click="deleteTask()">
-          excluir
-        </button>
-      </div>
+    <div class="d-flex justify-content-end">
+      <task-clone-form :task="task" />
+      <button class="button delete" @click="deleteTask()">
+        <font-awesome-icon icon="fa-solid fa-trash" class="" />
+        excluir
+      </button>
     </div>
   </div>
 </template>
@@ -86,23 +84,26 @@ import { getStatusIcon } from "@/utils/card/cardUtils";
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
 import DateEditableInput from "@/components/fields/datetime/DateTimeEditableInput";
+import { show } from "@/utils/requests/httpUtils.js";
 import JourneysList from "@/components/lists/JourneysList.vue";
-import OpportunitiesSelectInput from "@/components/forms/selects/OpportunitiesSelectInput.vue";
-import ProjectsSelectInput from "@/components/forms/selects/ProjectsSelectInput.vue";
+import OpportunitiesSelectEditableField from '../../components/fields/selects/OpportunitiesSelectEditableField.vue';
+import ProjectsSelectEditableField from "@/components/fields/selects/ProjectsSelectEditableField.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField";
 import TextEditor from "@/components/forms/inputs/TextEditor.vue";
-import UsersSelectInput from "@/components/forms/selects/UsersSelectInput.vue";
+import UsersSelectEditableField from "@/components/fields/selects/UsersSelectEditableField.vue";
+import TaskCloneForm from '../../components/forms/TaskCloneForm.vue';
 
 export default {
   name: "TaskShow",
   components: {
     DateEditableInput,
     JourneysList,
-    OpportunitiesSelectInput,
-    ProjectsSelectInput,
+    OpportunitiesSelectEditableField,
+    ProjectsSelectEditableField,
     TextEditableField,
     TextEditor,
-    UsersSelectInput,
+    UsersSelectEditableField,
+    TaskCloneForm
   },
   data() {
     return {
@@ -125,21 +126,14 @@ export default {
     formatDuration,
     getStatusClass,
     getStatusIcon,
+    show,
     translateStatus,
     translatePriority,
     convertUtcToLocal,
     async getTask() {
-      try {
-        const response = await axios.get(
-          `${BACKEND_URL}${TASK_URL_PARAMETER}${this.taskId}`
-        );
-
-        this.task = response.data.data;
-        this.project = this.task.project;
-        this.taskLoaded = true; // Marque a tarefa como carregada
-      } catch (error) {
-        console.error("Erro ao acessar tarefa:", error);
-      }
+      this.task = await show("tasks", this.taskId);
+      this.project = this.task.project;
+      this.taskLoaded = true; // Marque a tarefa como carregada
     },
     async deleteTask() {
       axios
@@ -160,6 +154,12 @@ export default {
           this.isError = true;
           this.isSuccess = false;
         });
+    },
+    async reloadTask(newId) {
+      this.task = await show("tasks", newId);
+      console.log("taskReload", this.task);
+      this.project = this.task.project;
+      this.taskLoaded = true; // Marque a tarefa como carregada
     },
     setTaskId(taskId) {
       this.taskId = taskId;
@@ -213,6 +213,14 @@ export default {
         })
         .catch((error) => console.log(error));
     },
+  },
+  watch: {
+    '$route.params.id': {
+      immediate: true,
+      handler(newId) {
+        this.reloadTask(newId);
+      }
+    }
   },
   async mounted() {
     this.setTaskId(this.$route.params.id);

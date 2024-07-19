@@ -9,13 +9,13 @@
       </p>
     </div>
     <div class="container">
-      <TasksList template="priorized" />
+      <TasksHomeList />
     </div>
   </div>
 </template>
 
 <script>
-import TasksList from "../components/lists/TasksList.vue";
+import TasksHomeList from "../components/lists/TasksHomeList.vue";
 
 export default {
   data() {
@@ -24,7 +24,7 @@ export default {
     };
   },
   components: {
-    TasksList,
+    TasksHomeList,
   },
   methods: {
     getDateNow() {

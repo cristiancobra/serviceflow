@@ -52,7 +52,6 @@ export default {
   },
   watch: {
     modelValue(newValue) {
-      console.log("watch value", newValue);
       this.localValue = this.convertDateTimeToLocal(newValue);
     },
   },

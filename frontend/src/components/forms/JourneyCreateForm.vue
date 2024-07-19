@@ -5,7 +5,7 @@
 
     <div class="row errorBox" v-bind:class="{ 'd-none': datesError }"></div>
     <form @submit.prevent="submitForm">
-      <div class="row form" v-bind:class="{ 'd-none': isActive }">
+      <div class="form" v-bind:class="{ 'd-none': isActive }">
         <div class="row mt-0">
           <div class="col">
             <label for="start">Início</label>
@@ -28,16 +28,14 @@
           </div>
       </div>
     </form>
-    <div class="row mb-5">
-      <div class="col d-flex justify-content-center">
+    <div class="row mb-4">
+      <div class="col d-flex justify-content-end">
         <button class="button me-3" @click="toggle()">
           <span class="icon-new">
             <font-awesome-icon icon="fa-solid fa-plus" />
           </span>
           NOVA
         </button>
-      </div>
-      <div class="col d-flex justify-content-center">
         <form @submit.prevent="submitQuickForm">
           <button class="button">
             <span class="icon-new">

@@ -135,15 +135,6 @@
   background-color: var(--high);
 }
 
-.cards-title {
-  text-align: left;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: black;
-  padding: 0;
-  margin: 0;
-}
-
 .cards-project {
   font-weight: 400;
 }

@@ -10,6 +10,10 @@
   padding-right: 2.5rem;
 }
 
+.list-container .black {
+  color: black;
+}
+
 .list-container .col-user {
   display: flex;
   text-align: center;
@@ -75,18 +79,22 @@
   color: var(--done-color);
 }
 
+.list-container .name {
+    text-align: left;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: black;
+    padding: 0;
+    margin: 0;  
+}
+
 .list-container .project {
   display: flex;
   justify-content: center;
   flex-direction: row;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 16px 16px 16px 16px;
-  border-color: var(--primary);
   color: var(--primary);
   font-size: 0.8rem;
-  padding: 0.3rem 0.6rem 0rem 0.5rem;
-  line-height: 1.2;
+  font-weight: 600;
 }
 
 
@@ -94,14 +102,9 @@
   display: flex;
   justify-content: center;
   flex-direction: row;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 16px 16px 16px 16px;
-  border-color: var(--green);
   color: var(--green);
   font-size: 0.8rem;
-  padding: 0.3rem 0.6rem 0rem 0.5rem;
-  line-height: 1.2;
+  font-weight: 600;
 }
 
 .list-container .title {

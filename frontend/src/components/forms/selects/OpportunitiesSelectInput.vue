@@ -34,7 +34,6 @@ export default {
     async getOpportunities() {
       try {
         this.opportunities = await index(`opportunities`);
-        console.log("Oportunidades:", this.opportunities);
       } catch (error) {
         console.error("Erro ao acessar oportunidades:", error);
       }

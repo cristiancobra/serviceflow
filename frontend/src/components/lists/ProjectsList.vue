@@ -55,7 +55,7 @@
 import { formatDuration } from "@/utils/date/dateUtils";
 import { getDeadlineClass, getStatusClass, getPriorityClass, getStatusColor, getStatusIcon } from "@/utils/card/cardUtils";
 import { BACKEND_URL, PROJECT_URL_PARAMETER, PROJECTS_PRIORIZED_URL } from "@/config/apiConfig";
-import { indexData } from "@/utils/requests/httpUtils";
+import { index } from "@/utils/requests/httpUtils";
 import axios from "axios";
 import ProjectCreateForm from "../forms/ProjectCreateForm.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
@@ -137,7 +137,7 @@ export default {
     },
     async getProjects() {
       try {
-        this.projects = await indexData(`projects`);
+        this.projects = await index(`projects`);
       } catch (error) {
         console.error("Erro ao acessar projetos:", error);
       }

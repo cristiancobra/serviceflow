@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button type="button" class="button button-new d-flex justify-content-center" @click="showModal"
+    <button type="button" class="button button-new d-flex justify-content-center"
       data-bs-toggle="modal" data-bs-target="#taskModal">
       <font-awesome-icon icon="fa-solid fa-plus" class="" />
     </button>
@@ -11,7 +11,7 @@
           <div class="modal-header">
             <font-awesome-icon icon="fa-solid fa-tasks" class="icon pe-3 primary" />
             <h5 class="modal-title" id="taskModalLabel">Nova tarefa</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" @click="closeModal"
+            <button type="button" class="btn-close" data-bs-dismiss="modal"
               aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -23,11 +23,11 @@
                 </div>
               </div>
 
-              <div class="row mt-5">
+              <div class="row mt-4">
                 <TextAreaInput label="Descrição:" name="description" v-model="form.description"
                   placeholder="Detalhamento da tarefa" :rows="5" />
               </div>
-              <div class="row mb-5 mt-5">
+              <div class="row mb-4 mt-4">
                 <div class="col">
                   <div v-if="currentOpportunity">
                     <label for="opportunity" class="form-label">Oportunidade</label>
@@ -52,13 +52,13 @@
                 </div>
               </div>
 
-              <div class="row mb-5 mt-5">
+              <div class="row mb-4 mt-4">
                 <div class="col">
                   <UsersSelectInput label="Responsável" v-model="form.user_id" fieldsToDisplay="name" autoSelect=true />
                 </div>
               </div>
 
-              <div class="row mb-5 mt-5">
+              <div class="row mb-4 mt-4">
                 <div class="col-md-4">
                   <DateInput v-model="form.date_start" label="Início" name="date_start" placeholder="início do prazo"
                     :autoFillNow="true" @update="updateForm" />
@@ -76,8 +76,7 @@
               </div>
 
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                  @click="closeModal">Fechar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                 <button type="submit" class="button-new" data-bs-dismiss="modal">criar</button>
               </div>
             </form>
@@ -89,14 +88,8 @@
 </template>
 
 <script>
-import {
-  BACKEND_URL,
-  TASK_URL,
-  TASK_STATUS_URL,
-} from "@/config/apiConfig";
 // import { inject } from "vue";
 // import AddMessage from "@/components/forms/messages/AddMessage.vue";
-import axios from "axios";
 import DateInput from "./inputs/date/DateInput";
 // import ErrorMessage from "./messages/ErrorMesssage.vue";
 import OpportunitiesSelectInput from "./selects/OpportunitiesSelectInput.vue";
@@ -182,21 +175,16 @@ export default {
       this.status = "to-do";
       this.priority = "medium";
     },
-    getTasksStatus() {
-      axios
-        .get(`${BACKEND_URL}${TASK_STATUS_URL}`)
-        .then((response) => {
-          this.allStatus = response.data;
-        })
-        .catch((error) => console.log(error));
-    },
+    // getTasksStatus() {
+    //   axios
+    //     .get(`${BACKEND_URL}${TASK_STATUS_URL}`)
+    //     .then((response) => {
+    //       this.allStatus = response.data;
+    //     })
+    //     .catch((error) => console.log(error));
+    // },
     async submitForm() {
-      try {
-        const response = await axios.post(
-          `${BACKEND_URL}${TASK_URL}`,
-          this.form
-        );
-        this.newTask = response.data.data;
+      this.newTask = await this.submitFormCreate('tasks', this.form);
         this.$emit("new-task-event", this.newTask);
         // this.isSuccess = true;
         this.messageStatus = "success";
@@ -206,21 +194,6 @@ export default {
         // this.successMessage(this.data);
         this.toggleTaskForm();
         this.clearForm();
-      } catch (error) {
-        console.error(error);
-        if (error.response && error.response.status === 422) {
-          this.isError = true;
-          // this.isSuccess = false;
-          this.messageStatus = "error";
-          this.messageText = "Erro ao criar tarefa. Verifique os campos.";
-          this.formResponse = error.response.data;
-          console.log(error.response.data);
-        }
-        if (!error.response) {
-          this.formResponse =
-            "Ocorreu um erro ao enviar o formulário. Tente novamente.";
-        }
-      }
     },
     toggleCompany() {
       this.isActiveCompany = !this.isActiveCompany;
@@ -255,7 +228,7 @@ export default {
     },
   },
   mounted() {
-    this.getTasksStatus();
+    // this.getTasksStatus();
   },
 };
 </script>

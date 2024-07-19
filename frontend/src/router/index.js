@@ -77,7 +77,7 @@ const routes = [
     component: ProjectsIndex
   },
   {
-    path: '/project/:id',
+    path: '/projects/:id',
     name: 'projectShow',
     component: ProjectShow
   },
@@ -87,8 +87,8 @@ const routes = [
     component: TasksIndex
   },
   {
-    path: '/task/:id',
-    name: 'tasksShow',
+    path: '/tasks/:id',
+    name: 'taskShow',
     component: TaskShow
   },
 ]

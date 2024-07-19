@@ -77,7 +77,7 @@
     </div>
   </nav>
   <div v-if="openJourney" class="second-line">
-    <router-link v-if="openJourney" :to="{ name: 'tasksShow', params: { id: openJourney.task_id } }">
+    <router-link v-if="openJourney" :to="{ name: 'taskShow', params: { id: openJourney.task_id } }">
       <div class="col-12">
         <p class="task-doing">
           <font-awesome-icon icon="fas fa-clock alert" />

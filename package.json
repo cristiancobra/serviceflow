@@ -5,9 +5,8 @@
     "build:prod": "vue-cli-service build --mode production",
     "lint": "vue-cli-service lint"
   },
-
   "dependencies": {
+    "dompurify": "^3.1.6",
     "vue-inputmask": "^0.2.1"
-  }  
-
+  }
 }

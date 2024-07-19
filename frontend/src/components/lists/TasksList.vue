@@ -33,36 +33,42 @@
       </p>
       <div class="row list-line" :class="{ showTasks: true, 'd-none': isHidden }" v-for="task in filteredTasks"
         v-bind:key="task.id">
-        <div class="col-9 d-flex">
-          <div class="d-flex">
-            <font-awesome-icon icon="fa-solid fa-user" class="primary pe-2" />
-            <font-awesome-icon icon="fas fa-check-circle" class="pe-2"
-              :class="isValidDate(task.date_conclusion) ? 'done' : 'canceled'" />
-            <router-link :to="{ name: 'tasksShow', params: { id: task.id } }"
-              class="d-inline-flex flex-wrap align-items-center">
-              <p class="cards-title">
-                {{ task.name }}
-              </p>
-            </router-link>
-            <router-link v-if="task.project" :to="{ name: 'projectShow', params: { id: task.project.id } }">
-              <div class="project m-0 p-1 ps-2 pe-2 ms-2">
-                <font-awesome-icon icon="fa-solid fa-folder-open" />
-                <p class="m-0 p-0 ps-1">
-                  {{ task.project.name }}
-                </p>
-              </div>
-            </router-link>
-            <router-link v-if="task.opportunity" :to="{ name: 'opportunityShow', params: { id: task.opportunity.id } }">
-              <div class="opportunity m-0 p-1 ps-2 pe-2 ms-2">
-                <font-awesome-icon icon="fa-solid fa-bullseye" />
-                <p class="m-0 p-0 ps-1">
-                  {{ task.opportunity.name }}
-                </p>
-              </div>
-            </router-link>
-          </div>
+        <div class="col-1 d-flex justify-content-center">
+          <font-awesome-icon icon="fa-solid fa-user" class="primary pe-2" />
+          <font-awesome-icon icon="fas fa-check-circle" class="pe-2"
+            :class="isValidDate(task.date_conclusion) ? 'done' : 'canceled'" />
         </div>
-        <div class="col-3">
+
+        <div class="col-2 d-flex justify-content-left">
+          <router-link v-if="task.opportunity" :to="{ name: 'opportunityShow', params: { id: task.opportunity.id } }">
+            <div class="opportunity">
+              <font-awesome-icon icon="fa-solid fa-bullseye" />
+              <p class="m-0 p-0 ps-1">
+                {{ trimName(task.opportunity.name) }}
+              </p>
+            </div>
+          </router-link>
+          <router-link v-else-if="task.project" :to="{ name: 'projectShow', params: { id: task.project.id } }">
+            <div class="project">
+              <font-awesome-icon icon="fa-solid fa-folder-open" />
+              <p class="m-0 p-0 ps-1">
+                {{ trimName(task.project.name) }}
+              </p>
+            </div>
+          </router-link>
+        </div>
+
+        <div class="col-7">
+          <router-link :to="{ name: 'taskShow', params: { id: task.id } }"
+            class="d-inline-flex flex-wrap align-items-center black">
+            <font-awesome-icon icon="fa-solid fa-tasks" />
+            <p class="name ps-2">
+              {{ task.name }}
+            </p>
+          </router-link>
+        </div>
+
+        <div class="col-2">
           <DateTimeValue v-if="isValidDate(task.date_conclusion)" v-model="task.date_conclusion" classText="done"
             classIcon='done' @save="updateTask('date_conclusion', $event, task.id)" />
           <DateTimeEditableInput v-else v-model="task.date_due" :classText="getDeadlineClass(task.date_due)"
@@ -146,6 +152,11 @@ export default {
     trimDescription(description) {
       if (description) {
         return description.substring(0, 110);
+      }
+    },
+    trimName(description) {
+      if (description) {
+        return description.substring(0, 50);
       }
     },
     getColumnClass(columns) {
