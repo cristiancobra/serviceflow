@@ -23,7 +23,7 @@ class TaskController extends Controller
             'opportunity'
         ])
             ->orderBy('date_due', 'asc')
-            ->paginate(50);
+            ->paginate(500);
 
         return TaskResource::collection($tasks);
     }
@@ -227,6 +227,7 @@ class TaskController extends Controller
                 'project',
                 'opportunity'
             ])
+            ->where('account_id', auth()->user()->account_id)
             ->where('date_conclusion', null)
             ->orderBy('date_due', 'asc')
             ->paginate(20);

@@ -30,6 +30,7 @@ class ProjectRequest extends FormRequest
         return [
             'account_id' => 'required|exists:accounts,id',
             'user_id' => 'sometimes|exists:users,id',
+            'opportunity_id' => 'nullable|exists:opportunities,id',
             'name' => 'sometimes|unique:projects|required',
             'type' => 'nullable|string|max:255',
             'budget' => 'nullable|numeric',

@@ -5,7 +5,7 @@
       <span class="default-text" :class="classText">
         {{ formatedDate }}
       </span>
-      <font-awesome-icon icon="fa-solid fa-clock" class="ms-2 me-1"/>
+      <font-awesome-icon icon="fa-solid fa-clock" class="ms-2 me-1" />
       <span class="default-text" :class="classText">
         {{ formatedTime }}
       </span>
@@ -48,7 +48,11 @@ export default {
       this.editing = true;
     },
     emitSave() {
-      if (this.convertDateTimeToLocal(this.modelValue) !== this.localValue) {
+      if (!this.localValue) {
+        // Se a data local for vazia, emita um valor null ou uma string vazia
+        this.$emit("save", null);
+        console.log('Emitindo save com valor nulo');
+      } else if (this.convertDateTimeToLocal(this.modelValue) !== this.localValue) {
         this.$emit("save", this.convertDateTimeForServer(this.localValue));
         console.log('Emitindo save:', this.convertDateTimeForServer(this.localValue));
         console.log('LocalValue:', this.localValue);

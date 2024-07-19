@@ -93,7 +93,7 @@
   justify-content: center;
   flex-direction: row;
   color: var(--primary);
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 600;
 }
 
@@ -103,7 +103,7 @@
   justify-content: center;
   flex-direction: row;
   color: var(--green);
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 600;
 }
 

@@ -23,15 +23,15 @@
             {{ journey.task.name }}
           </router-link>
         </div>
-        <div class="col d-flex justify-content-start"> 
-            <DateEditableInput name="start" v-model="journey.start"
-              @save="updateJourney('start', $event, journey.id)" />
-            <TimeEditableInput class="ps-5" name="end" v-model="journey.end" @save="updateJourney('end', $event, journey.id)" />
-            <p class="time-bold ps-5">
-              {{ formatDuration(journey.duration) }}
-            </p>
-            <TextEditableField name="details" class="details ps-5" v-model="journey.details"
-                @save="updateJourney('details', $event, journey.id)" />
+        <div class="col d-flex justify-content-start">
+          <DateEditableInput name="start" v-model="journey.start" @save="updateJourney('start', $event, journey.id)" />
+          <TimeEditableInput class="ps-5" name="end" v-model="journey.end"
+            @save="updateJourney('end', $event, journey.id)" />
+          <p class="time-bold ps-5">
+            {{ formatDuration(journey.duration) }}
+          </p>
+          <TextEditableField name="details" class="details ps-5" v-model="journey.details"
+            @save="updateJourney('details', $event, journey.id)" />
           <div class="col d-flex justify-content-end">
             <button v-if="!journey.end" class="button-circular stop" @click="stopJourney(journey.id)">
               <span class="stop">
@@ -201,7 +201,13 @@ export default {
         return null;
       }
 
-      const lastJourney = this.journeys[this.journeys.length - 1];
+      const sortedJourneys = [...this.journeys].sort((a, b) => {
+        if (a.end < b.end) return -1;
+        if (a.end > b.end) return 1;
+        return 0;
+      });
+
+      const lastJourney = sortedJourneys[sortedJourneys.length - 1];
 
       if (!lastJourney.end) {
         this.$emit('last-journey-end', null)

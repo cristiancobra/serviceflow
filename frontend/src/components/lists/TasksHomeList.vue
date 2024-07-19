@@ -27,7 +27,7 @@
             :class="isValidDate(task.date_conclusion) ? 'done' : 'canceled'" />
         </div>
 
-        <div class="col-4 d-flex justify-content-left">
+        <div class="col-3 d-flex justify-content-left">
           <router-link v-if="task.opportunity" :to="{ name: 'opportunityShow', params: { id: task.opportunity.id } }">
             <div class="opportunity">
               <font-awesome-icon icon="fa-solid fa-bullseye" />
@@ -46,7 +46,7 @@
           </router-link>
         </div>
 
-        <div class="col-5">
+        <div class="col-6">
           <router-link :to="{ name: 'taskShow', params: { id: task.id } }"
             class="d-inline-flex flex-wrap align-items-center black">
             <font-awesome-icon icon="fa-solid fa-tasks" />
@@ -71,8 +71,7 @@
 import axios from "axios";
 import { convertUtcToLocal, formatDuration } from "@/utils/date/dateUtils";
 import { getStatusColor, getPriorityClass, getDeadlineClass, getStatusIcon } from "@/utils/card/cardUtils";
-import { BACKEND_URL, TASK_URL_PARAMETER, TASK_PRIORIZED_URL, TASK_BY_PROJECT_URL, TASK_BY_OPPORTUNITY_URL } from "@/config/apiConfig";
-import { index } from "@/utils/requests/httpUtils";
+import { BACKEND_URL, TASK_URL_PARAMETER, TASK_PRIORIZED_URL } from "@/config/apiConfig";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import DateTimeValue from "../fields/datetime/DateTimeValue.vue";
@@ -158,60 +157,6 @@ export default {
       const priorityClass = getPriorityClass(priority);
 
       return `${statusClass} ${priorityClass}`;
-    },
-    async getTasks() {
-      try {
-        this.tasks = await index(`tasks`);
-      } catch (error) {
-        console.error("Erro ao acessar tarefas:", error);
-      }
-    },
-    async getTasksFromProject(page = 1) {
-
-      this.tasksUrl = `${BACKEND_URL}${TASK_BY_PROJECT_URL}project_id=${this.projectId}&per_page=10&page=${page}`;
-
-      try {
-        const response = await axios.get(this.tasksUrl);
-
-        this.tasks = response.data.data.map(task => {
-          return { ...task, editing: false }; // Adiciona a propriedade editing a cada task
-        });
-
-        this.totalTasks = response.data.total_tasks;
-        this.completedTasks = response.data.completed_tasks;
-        this.percentage = Math.round((this.completedTasks / this.totalTasks) * 100);
-
-        this.paginationData = {
-          links: response.data.links,
-          meta: response.data.meta,
-        };
-
-      } catch (error) {
-        console.error("Erro ao acessar tarefas:", error);
-      }
-    },
-    async getTasksFromOpportunity(page = 1) {
-
-      this.tasksUrl = `${BACKEND_URL}${TASK_BY_OPPORTUNITY_URL}opportunity_id=${this.opportunityId}&per_page=10&page=${page}`;
-
-      try {
-        const response = await axios.get(this.tasksUrl);
-
-        this.tasks = response.data.data.map(task => {
-          return { ...task, editing: false }; // Adiciona a propriedade editing a cada task
-        });
-
-        this.totalTasks = response.data.total_tasks;
-        this.completedTasks = response.data.completed_tasks;
-
-        this.paginationData = {
-          links: response.data.links,
-          meta: response.data.meta,
-        };
-
-      } catch (error) {
-        console.error("Erro ao acessar tarefas:", error);
-      }
     },
     getTasksPriorized() {
       axios

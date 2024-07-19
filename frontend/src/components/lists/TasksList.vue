@@ -27,53 +27,48 @@
         <TaskCreateForm @new-task-event="addTaskCreated" />
       </div>
     </div>
-    <div v-for="(filteredTasks, date) in groupedTasks" :key="date">
-      <p class="date-group" :class="getDeadlineClass(date)">
-        {{ formatDateGroup(date) }}
-      </p>
-      <div class="row list-line" :class="{ showTasks: true, 'd-none': isHidden }" v-for="task in filteredTasks"
-        v-bind:key="task.id">
-        <div class="col-1 d-flex justify-content-center">
-          <font-awesome-icon icon="fa-solid fa-user" class="primary pe-2" />
-          <font-awesome-icon icon="fas fa-check-circle" class="pe-2"
-            :class="isValidDate(task.date_conclusion) ? 'done' : 'canceled'" />
-        </div>
+    <div class="row list-line" :class="{ showTasks: true, 'd-none': isHidden }" v-for="task in filteredTasks"
+      v-bind:key="task.id">
+      <div class="col-1 d-flex justify-content-center">
+        <font-awesome-icon icon="fa-solid fa-user" class="primary pe-2" />
+        <font-awesome-icon icon="fas fa-check-circle" class="pe-2"
+          :class="isValidDate(task.date_conclusion) ? 'done' : 'canceled'" />
+      </div>
 
-        <div class="col-2 d-flex justify-content-left">
-          <router-link v-if="task.opportunity" :to="{ name: 'opportunityShow', params: { id: task.opportunity.id } }">
-            <div class="opportunity">
-              <font-awesome-icon icon="fa-solid fa-bullseye" />
-              <p class="m-0 p-0 ps-1">
-                {{ trimName(task.opportunity.name) }}
-              </p>
-            </div>
-          </router-link>
-          <router-link v-else-if="task.project" :to="{ name: 'projectShow', params: { id: task.project.id } }">
-            <div class="project">
-              <font-awesome-icon icon="fa-solid fa-folder-open" />
-              <p class="m-0 p-0 ps-1">
-                {{ trimName(task.project.name) }}
-              </p>
-            </div>
-          </router-link>
-        </div>
-
-        <div class="col-7">
-          <router-link :to="{ name: 'taskShow', params: { id: task.id } }"
-            class="d-inline-flex flex-wrap align-items-center black">
-            <font-awesome-icon icon="fa-solid fa-tasks" />
-            <p class="name ps-2">
-              {{ task.name }}
+      <div class="col-3 d-flex justify-content-left">
+        <router-link v-if="task.opportunity" :to="{ name: 'opportunityShow', params: { id: task.opportunity.id } }">
+          <div class="opportunity">
+            <font-awesome-icon icon="fa-solid fa-bullseye" />
+            <p class="m-0 p-0 ps-1">
+              {{ trimName(task.opportunity.name) }}
             </p>
-          </router-link>
-        </div>
+          </div>
+        </router-link>
+        <router-link v-else-if="task.project" :to="{ name: 'projectShow', params: { id: task.project.id } }">
+          <div class="project">
+            <font-awesome-icon icon="fa-solid fa-folder-open" />
+            <p class="m-0 p-0 ps-1">
+              {{ trimName(task.project.name) }}
+            </p>
+          </div>
+        </router-link>
+      </div>
 
-        <div class="col-2">
-          <DateTimeValue v-if="isValidDate(task.date_conclusion)" v-model="task.date_conclusion" classText="done"
-            classIcon='done' @save="updateTask('date_conclusion', $event, task.id)" />
-          <DateTimeEditableInput v-else v-model="task.date_due" :classText="getDeadlineClass(task.date_due)"
-            :classIcon="getDeadlineClass(task.date_due)" @save="updateTask('date_due', $event, task.id)" />
-        </div>
+      <div class="col-6">
+        <router-link :to="{ name: 'taskShow', params: { id: task.id } }"
+          class="d-inline-flex flex-wrap align-items-center black">
+          <font-awesome-icon icon="fa-solid fa-tasks" />
+          <p class="name ps-2">
+            {{ task.name }}
+          </p>
+        </router-link>
+      </div>
+
+      <div class="col-2 d-flex justify-content-end">
+        <DateTimeValue v-if="isValidDate(task.date_conclusion)" v-model="task.date_conclusion" classText="done"
+          classIcon='done' @save="updateTask('date_conclusion', $event, task.id)" />
+        <DateTimeEditableInput v-else v-model="task.date_due" :classText="getDeadlineClass(task.date_due)"
+          :classIcon="getDeadlineClass(task.date_due)" @save="updateTask('date_due', $event, task.id)" />
       </div>
     </div>
   </div>
@@ -83,7 +78,7 @@
 import axios from "axios";
 import { convertUtcToLocal, formatDuration } from "@/utils/date/dateUtils";
 import { getStatusColor, getPriorityClass, getDeadlineClass, getStatusIcon } from "@/utils/card/cardUtils";
-import { BACKEND_URL, TASK_URL_PARAMETER, TASK_PRIORIZED_URL, TASK_BY_PROJECT_URL, TASK_BY_OPPORTUNITY_URL } from "@/config/apiConfig";
+import { BACKEND_URL, TASK_URL_PARAMETER, TASK_BY_PROJECT_URL, TASK_BY_OPPORTUNITY_URL } from "@/config/apiConfig";
 import { index } from "@/utils/requests/httpUtils";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
@@ -230,15 +225,6 @@ export default {
         console.error("Erro ao acessar tarefas:", error);
       }
     },
-    getTasksPriorized() {
-      axios
-        .get(`${BACKEND_URL}${TASK_PRIORIZED_URL}`)
-        .then((response) => {
-          this.tasks = response.data.data;
-          // this.filteredTasks = this.tasks; // Inicialmente, as tarefas filtradas são iguais a todas as tarefas
-        })
-        .catch((error) => console.log(error));
-    },
     isValidDate(date) {
       if (date != '1969-12-31 18:00:00'
         && date != '1969-12-31 21:00:00'
@@ -304,18 +290,12 @@ export default {
     },
   },
   mounted() {
-    if (this.template === 'priorized') {
-      this.getTasksPriorized();
-    }
-
     if (this.template === 'index') {
       this.getTasks();
     }
-
     if (this.template === 'project') {
       this.getTasksFromProject();
     }
-
     if (this.template === 'opportunity') {
       this.getTasksFromOpportunity();
     }

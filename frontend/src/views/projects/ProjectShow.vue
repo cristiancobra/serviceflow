@@ -33,6 +33,10 @@
       </div>
       <div class="row">
         <div class="col-3">
+          <opportunities-select-editable-field label="Oportunidade" v-model="project.opportunity_id"
+            @update:modelValue="updateProject('opportunity_id', $event)" fieldNull="Nenhum" />
+        </div>
+        <div class="col-3">
           <SelectInput label="Responsável" name="user_id" v-model="project.user_id" :items="users"
             fieldsToDisplay="name" />
         </div>
@@ -68,6 +72,7 @@ import { provide, ref } from 'vue';
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
 import DateEditableInput from "@/components/fields/datetime/DateTimeEditableInput";
+import OpportunitiesSelectEditableField from '../../components/fields/selects/OpportunitiesSelectEditableField.vue';
 import TasksList from "@/components/lists/TasksList.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField";
 import TextEditor from "@/components/forms/inputs/TextEditor.vue";
@@ -76,6 +81,7 @@ export default {
   name: "ProjectShow",
   components: {
     DateEditableInput,
+    OpportunitiesSelectEditableField,
     TasksList,
     TextEditableField,
     TextEditor,

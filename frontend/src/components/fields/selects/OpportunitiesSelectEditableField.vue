@@ -8,7 +8,7 @@
       não possui
     </p>
   </div>
-  <SelectInput v-else :label="label" :name="name" v-model="localValue" :items="projects"
+  <SelectInput v-else :label="label" :name="name" v-model="localValue" :items="opportunities"
     :fieldsToDisplay="fieldsToDisplay" :fieldNull="fieldNullValue" @update:modelValue="updateInput" />
 </template>
 
@@ -38,12 +38,12 @@ export default {
       fieldsToDisplay: "name",
       localValue: this.modelValue,
       selectedName: "",
-      projects: [],
+      opportunities: [],
     };
   },
   methods: {
     async getProjects() {
-      this.projects = await index("projects");
+      this.opportunities = await index("opportunities");
     },
     // async getAuthenticatedUser() {
     //   axios
@@ -58,8 +58,8 @@ export default {
     //     });
     // },
     async showName() {
-      const current = await show("projects", this.modelValue);
-      this.selectedName = current.legal_name;
+      const current = await show("opportunities", this.modelValue);
+      this.selectedName = current.name;
     },
     startEditing() {
       this.editing = true;
