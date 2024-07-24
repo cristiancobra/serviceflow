@@ -36,14 +36,6 @@
               </p>
             </div>
           </router-link>
-          <router-link v-else-if="task.project" :to="{ name: 'projectShow', params: { id: task.project.id } }">
-            <div class="project">
-              <font-awesome-icon icon="fa-solid fa-folder-open" />
-              <p class="m-0 p-0 ps-1">
-                {{ trimName(task.project.name) }}
-              </p>
-            </div>
-          </router-link>
         </div>
 
         <div class="col-6">
