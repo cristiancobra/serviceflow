@@ -27,18 +27,26 @@
             :class="isValidDate(task.date_conclusion) ? 'done' : 'canceled'" />
         </div>
 
-        <div class="col-3 d-flex justify-content-left">
+        <div class="col-4 d-flex justify-content-left">
           <router-link v-if="task.opportunity" :to="{ name: 'opportunityShow', params: { id: task.opportunity.id } }">
-            <div class="opportunity">
-              <font-awesome-icon icon="fa-solid fa-bullseye" />
-              <p class="m-0 p-0 ps-1">
+            <div class="d-flex">
+              <font-awesome-icon icon="fa-solid fa-bullseye" class="icon-opportunity" />
+              <p class="m-0 p-0 ps-1 bold">
                 {{ trimName(task.opportunity.name) }}
+              </p>
+            </div>
+          </router-link>
+          <router-link v-else-if="task.project" :to="{ name: 'projectShow', params: { id: task.project.id } }">
+            <div class="d-flex">
+              <font-awesome-icon icon="fa-solid fa-folder-open" class="icon-project" />
+              <p class="m-0 p-0 ps-1 bold">
+                {{ trimName(task.project.name) }}
               </p>
             </div>
           </router-link>
         </div>
 
-        <div class="col-6">
+        <div class="col-5">
           <router-link :to="{ name: 'taskShow', params: { id: task.id } }"
             class="d-inline-flex flex-wrap align-items-center black">
             <font-awesome-icon icon="fa-solid fa-tasks" />

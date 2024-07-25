@@ -95,28 +95,16 @@
 
 <script>
 import axios from "axios";
-import { BACKEND_URL, LOGOUT_URL, JOURNEY_CHECK_OPEN } from "@/config/apiConfig";
+import { BACKEND_URL, LOGOUT_URL } from "@/config/apiConfig";
+import { mapState } from 'vuex';
 
 export default {
   data() {
     return {
       activeItem: null,
-      openJourney: false,
     };
   },
-  created() {
-    this.checkOpenJourneys();
-  },
   methods: {
-    async checkOpenJourneys() {
-      try {
-        const response = await axios.get(`${BACKEND_URL}${JOURNEY_CHECK_OPEN}`);
-        this.openJourney = response.data.openJourney;
-        console.log('Jornadas abertas:', this.openJourney);
-      } catch (error) {
-        console.error('Erro ao verificar jornadas abertas:', error);
-      }
-    },
     async logout() {
       try {
         axios.defaults.withCredentials = true;
@@ -142,6 +130,9 @@ export default {
         this.activeItem = item;
       }
     },
+  },
+  computed: {
+    ...mapState(['openJourney']),
   },
 };
 </script>

@@ -13,6 +13,7 @@ import './assets/css/show.css';
 import "./assets/css/style.css"
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap"
+import store from './store';
 import VueMask from '@devindex/vue-mask'; // vue mask
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
@@ -35,6 +36,7 @@ import Paginate from "vuejs-paginate-next";
 
 createApp(App)
 .use(router)
+.use(store)
 .use(VueMask)
 .use(VueDatePicker)
 .use(Paginate)

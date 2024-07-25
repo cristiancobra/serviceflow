@@ -18,8 +18,8 @@
       </div>
       <div v-else class="list-line" v-for="journey in journeys" v-bind:key="journey.id"
         :class="{ 'highlight': journey.id === newJourneyId }">
-        <div v-if="journey.task && !taskId" class="col-7 taskCard">
-          <router-link :to="{ name: 'tasksShow', params: { id: journey.task_id } }">
+        <div v-if="journey.task && !taskId" class="col-4 taskCard">
+          <router-link :to="{ name: 'taskShow', params: { id: journey.task_id } }">
             {{ journey.task.name }}
           </router-link>
         </div>
@@ -61,6 +61,7 @@ import { formatDateBr } from "@/utils/date/dateUtils";
 import { formatTimeToLocal } from "@/utils/date/dateUtils";
 import { convertDateTimeForServer } from "@/utils/date/dateUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
+import { mapMutations } from 'vuex';
 import DateEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import TimeEditableInput from "@/components/forms/inputs/time/TimeEditableInput.vue";
 import JourneyCreateForm from "@/components/forms/JourneyCreateForm.vue";
@@ -221,23 +222,13 @@ export default {
         return null;
       }
     },
-    // editDateTime(journey, field) {
-    //   if (!journey.editing) {
-    //     journey.editing = {};
-    //   }
-    //   journey.editing[field] = !journey.editing[field];
-
-    //   if (journey.editing[field]) {
-    //     document.addEventListener('keydown', (event) => this.cancelEditDateTime(event, journey, field));
-    //   } else {
-    //     document.removeEventListener('keydown', (event) => this.cancelEditDateTime(event, journey, field));
-    //   }
-    // },
+    ...mapMutations(['setOpenJourney']),
     async stopJourney(journeyId) {
       const fieldName = 'end';
       const now = new Date();
       const endValue = this.convertDateTimeForServer(now);
       this.updateJourney(fieldName, endValue, journeyId);
+      this.$store.commit('setOpenJourney', null);
     },
     async updateJourney(fieldName, editedValue, journeyId) {
       const editedJourney = {
@@ -280,7 +271,6 @@ export default {
     if (this.template === "index") {
       this.getJourneys();
     }
-    console.log("Journeys", this.journeys);
   },
 };
 </script>

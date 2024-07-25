@@ -25,6 +25,7 @@
 <script>
 import axios from "axios";
 import { API_SANCTUM_URL, BACKEND_URL, LOGIN_URL } from "@/config/apiConfig";
+import { mapActions } from 'vuex';
 
 export default {
   data() {
@@ -55,6 +56,7 @@ export default {
         const token = response.data.access_token;
 
         localStorage.setItem("access_token", token);
+        this.checkOpenJourneys(); 
 
         setTimeout(() => {
           this.$router.push({ name: "home" });
@@ -65,6 +67,7 @@ export default {
         this.$router.push({ name: "login" });
       }
     },
+    ...mapActions(['checkOpenJourneys']),
     startTransition() {
 
       // if (this.$root.isLogged !== true) {

@@ -34,7 +34,7 @@
         <router-link :to="{ name: 'projectShow', params: { id: project.id } }">
           <div class="row title">
             <div class="col">
-              <p class="cards-title">
+              <p class="name ps-2">
                 {{ project.name }}
               </p>
             </div>

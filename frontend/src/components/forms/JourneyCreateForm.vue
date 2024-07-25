@@ -53,6 +53,7 @@
 import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import { BACKEND_URL, JOURNEY_URL } from "@/config/apiConfig";
 import { convertDateTimeForServer } from "@/utils/date/dateUtils";
+import { mapMutations } from 'vuex';
 import axios from "axios";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
@@ -109,6 +110,7 @@ export default {
         this.isFirstStartChange = false;
       }
     },
+    ...mapMutations(['setOpenJourney']),
     setMessageStatus(status) {
       this.messageStatus = status;
 
@@ -135,6 +137,10 @@ export default {
             this.clearForm();
             this.toggle();
             this.setMessageStatus("success");
+            if (this.newJourney.end == null) {
+              console.log('form-end', this.form.end);
+              this.setOpenJourney(this.newJourney.task);
+            }
           });
       } catch (error) {
         this.setMessageStatus("error");
@@ -151,6 +157,7 @@ export default {
             this.newJourney = response.data.data;
             this.$emit("new-journey-event", this.newJourney);
             this.setMessageStatus("success");
+            this.setOpenJourney(this.newJourney.task);
           });
       } catch (error) {
         this.setMessageStatus("error");

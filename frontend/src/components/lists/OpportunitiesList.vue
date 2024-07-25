@@ -31,7 +31,7 @@
                 <router-link :to="{ name: 'opportunityShow', params: { id: opportunity.id } }">
                     <div class="row title">
                         <div class="col">
-                            <p class="cards-title">
+                            <p class="name ps-2">
                                 {{ opportunity.name }}
                             </p>
                         </div>
@@ -41,7 +41,8 @@
             <div class="col-3 line-list d-flex align-items-center justify-content-center">
                 <DateTimeValue v-if="opportunity.date_conclusion" v-model="opportunity.date_conclusion" classText="done"
                     classIcon='done' @save="updateProject('date_conclusion', $event, opportunity.id)" />
-                <DateTimeEditableInput v-else v-model="opportunity.date_due" :classText="getDeadlineClass(opportunity.date_due)"
+                <DateTimeEditableInput v-else v-model="opportunity.date_due"
+                    :classText="getDeadlineClass(opportunity.date_due)"
                     :classIcon='getDeadlineClass(opportunity.date_due)'
                     @save="updateProject('date_due', $event, opportunity.id)" />
             </div>
