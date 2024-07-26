@@ -1,21 +1,9 @@
 <template>
   <div class="list-container mb-5 mt-0">
     <div class="row">
-      <div class="col-9 d-flex justify-content-left">
+      <div class="col d-flex justify-content-left">
         <font-awesome-icon icon="fa-solid fa-tasks" class="icon pe-3 primary" />
         <h2 class="title">TAREFAS</h2>
-      </div>
-      <div class="col-3">
-        <div class="d-flex justify-content-end">
-          concluidas {{ completedTasks }} de {{ totalTasks }}
-          <font-awesome-icon icon="fa-solid fa-folder" class="ps-3 pe-3 primary" />
-        </div>
-        <div class="progress">
-          <div class="progress-bar" :style="{ width: percentage + '%' }" role="progressbar" :aria-valuenow="percentage"
-            aria-valuemin="0" aria-valuemax="100">
-            {{ percentage }}%
-          </div>
-        </div>
       </div>
     </div>
     <div class="row mt-3 mb-4">
@@ -34,19 +22,27 @@
         <font-awesome-icon icon="fas fa-check-circle" class="pe-2"
           :class="isValidDate(task.date_conclusion) ? 'done' : 'canceled'" />
       </div>
-
-      <div class="col-3 d-flex justify-content-left">
-        <router-link v-if="task.opportunity" :to="{ name: 'opportunityShow', params: { id: task.opportunity.id } }">
-          <div class="opportunity">
-            <font-awesome-icon icon="fa-solid fa-bullseye" />
-            <p class="m-0 p-0 ps-1">
-              {{ trimName(task.opportunity.name) }}
-            </p>
-          </div>
-        </router-link>
-      </div>
-
-      <div class="col-6">
+      <div v-if="task.opportunity" class="col-4 d-flex justify-content-left">
+          <router-link :to="{ name: 'opportunityShow', params: { id: task.opportunity.id } }">
+            <div class="d-flex">
+              <font-awesome-icon icon="fa-solid fa-bullseye" />
+              <p class="m-0 p-0 ps-1 bold" >
+                {{ trimName(task.opportunity.name) }}
+              </p>
+            </div>
+          </router-link>
+        </div>
+        <div v-else-if="task.project" class="col-4 d-flex justify-content-left">
+          <router-link :to="{ name: 'projectShow', params: { id: task.project.id } }">
+            <div class="d-flex">
+              <font-awesome-icon icon="fa-solid fa-folder-open"  />
+              <p class="m-0 p-0 ps-1 bold">
+                {{ trimName(task.project.name) }}
+              </p>
+            </div>
+          </router-link>
+        </div>
+      <div class="col-8">
         <router-link :to="{ name: 'taskShow', params: { id: task.id } }"
           class="d-inline-flex flex-wrap align-items-center black">
           <font-awesome-icon icon="fa-solid fa-tasks" />
@@ -55,7 +51,6 @@
           </p>
         </router-link>
       </div>
-
       <div class="col-2 d-flex justify-content-end">
         <DateTimeValue v-if="isValidDate(task.date_conclusion)" v-model="task.date_conclusion" classText="done"
           classIcon='done' @save="updateTask('date_conclusion', $event, task.id)" />
@@ -69,7 +64,7 @@
 <script>
 import axios from "axios";
 import { convertUtcToLocal, formatDuration } from "@/utils/date/dateUtils";
-import { getStatusColor, getPriorityClass, getDeadlineClass, getStatusIcon } from "@/utils/card/cardUtils";
+import { getColorForName,  getStatusColor, getPriorityClass, getDeadlineClass, getStatusIcon } from "@/utils/card/cardUtils";
 import { BACKEND_URL, TASK_URL_PARAMETER, TASK_BY_PROJECT_URL, TASK_BY_OPPORTUNITY_URL } from "@/config/apiConfig";
 import { index } from "@/utils/requests/httpUtils";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
@@ -112,6 +107,7 @@ export default {
   methods: {
     convertUtcToLocal,
     formatDuration,
+    getColorForName,
     getStatusColor,
     getPriorityClass,
     getDeadlineClass,

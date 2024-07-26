@@ -30,16 +30,16 @@
         <div class="col-4 d-flex justify-content-left">
           <router-link v-if="task.opportunity" :to="{ name: 'opportunityShow', params: { id: task.opportunity.id } }">
             <div class="d-flex">
-              <font-awesome-icon icon="fa-solid fa-bullseye" class="icon-opportunity" />
-              <p class="m-0 p-0 ps-1 bold">
+              <font-awesome-icon icon="fa-solid fa-bullseye" :class="getColorClassForName(task.opportunity.name)" />
+              <p class="m-0 p-0 ps-1 bold" :class="getColorClassForName(task.opportunity.name)">
                 {{ trimName(task.opportunity.name) }}
               </p>
             </div>
           </router-link>
           <router-link v-else-if="task.project" :to="{ name: 'projectShow', params: { id: task.project.id } }">
             <div class="d-flex">
-              <font-awesome-icon icon="fa-solid fa-folder-open" class="icon-project" />
-              <p class="m-0 p-0 ps-1 bold">
+              <font-awesome-icon icon="fa-solid fa-folder-open" :class="getColorClassForName(task.project.name)" />
+              <p class="m-0 p-0 ps-1 bold" :style="{ color: getColorClassForName(task.project.name) }">
                 {{ trimName(task.project.name) }}
               </p>
             </div>
@@ -70,7 +70,7 @@
 <script>
 import axios from "axios";
 import { convertUtcToLocal, formatDuration } from "@/utils/date/dateUtils";
-import { getStatusColor, getPriorityClass, getDeadlineClass, getStatusIcon } from "@/utils/card/cardUtils";
+import { getColorClassForName, getStatusColor, getPriorityClass, getDeadlineClass, getStatusIcon } from "@/utils/card/cardUtils";
 import { BACKEND_URL, TASK_URL_PARAMETER, TASK_PRIORIZED_URL } from "@/config/apiConfig";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
@@ -108,6 +108,7 @@ export default {
   methods: {
     convertUtcToLocal,
     formatDuration,
+    getColorClassForName,
     getStatusColor,
     getPriorityClass,
     getDeadlineClass,
@@ -232,7 +233,7 @@ export default {
     },
   },
   mounted() {
-      this.getTasksPriorized();
+    this.getTasksPriorized();
   },
 };
 </script>

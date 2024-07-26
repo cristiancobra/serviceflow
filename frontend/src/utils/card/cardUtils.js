@@ -1,3 +1,17 @@
+const colors = [
+    "green",
+    "blue",
+    "red",
+    "orange",
+    "purple",
+    "gray",
+];
+
+export function getColorClassForName(name) {
+    const hash = Array.from(name).reduce((acc, char) => (acc + char.charCodeAt(0)), 0);
+    return colors[hash % colors.length];
+}
+
 export function getStatusColor(date) {
 
     if (date) {

@@ -4,7 +4,7 @@
     </AddMessage>
 
     <div class="show-title">
-      <div class="row ms-1">
+      <div class="row ms-0">
         <div class="col-1 status">
           <font-awesome-icon icon="fa-solid fa-list-check" class="primary" />
           <p class="duration">

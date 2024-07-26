@@ -182,8 +182,7 @@ class TaskController extends Controller
         $completedTasksQuery = clone $tasksQuery;
         $completedTasks = $completedTasksQuery->whereNotNull('date_conclusion')->count();    
 
-        $tasks = $tasksQuery->with('project')
-            ->orderBy('date_start', 'desc')
+        $tasks = $tasksQuery->orderBy('date_start', 'desc')
             ->paginate($perPage);
 
         $tasks->appends(['project_id' => $request->project_id]);

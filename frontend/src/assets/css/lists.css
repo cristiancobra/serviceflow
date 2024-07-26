@@ -97,17 +97,28 @@
     margin: 0;  
 }
 
-.list-container .icon-project {
-  color: var(--primary);
-  font-size: 0.9rem;
-  font-weight: 600;
+.list-container .green {
+  color: var(--green);
 }
 
+.list-container .orange {
+  color: var(--orange);
+}
 
-.list-container .icon-opportunity {
-  color: var(--done-color);
-  font-size: 0.9rem;
-  font-weight: 600;
+.list-container .purple {
+  color: var(--purple);
+}
+
+.list-container .blue {
+  color: var(--blue);
+}
+
+.list-container .gray {
+  color: var(--gray);
+}
+
+.list-container .red {
+  color: #b94646;
 }
 
 .list-container .title {
