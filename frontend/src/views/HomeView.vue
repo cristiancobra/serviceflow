@@ -1,6 +1,13 @@
 <template>
-  <div class="home pt-5 pb-5">
-    <div>
+  <div class="container">
+    <div class="row mt-5 mb-5">
+      <div class="col-4">
+        <div class="small-container">
+          <total-opportunities />
+        </div>
+      </div>
+    </div>
+    <div class="row">
       <p class="text-center">
         Bem vindo, hoje é
         <span style="font-weight: bolder">
@@ -8,22 +15,23 @@
         </span>
       </p>
     </div>
-    <div class="container">
-      <TasksHomeList />
-    </div>
+    <TasksHomeList />
   </div>
 </template>
 
 <script>
+import "../assets/css/dashboard.css";
+import TotalOpportunities from "../components/dashboard/totalOpportunities.vue";
 import TasksHomeList from "../components/lists/TasksHomeList.vue";
 
 export default {
   data() {
     return {
-      dateNow: "", // Inicializando a propriedade dateNow
+      dateNow: "",
     };
   },
   components: {
+    TotalOpportunities,
     TasksHomeList,
   },
   methods: {

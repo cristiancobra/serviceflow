@@ -88,4 +88,23 @@ class OpportunityController extends Controller
             ], 422);
         }
     }
+
+    /** 
+     * Count the number of opportunities with date_conclusion null
+     * 
+     * @return \Illuminate\Http\Response
+     * 
+     */
+    public function countOpenOpportunities()
+    {
+        try {
+            $totalOpportunities = Opportunity::whereNull('date_conclusion')->count();
+
+            return response()->json(['totalOpportunities' => $totalOpportunities]);
+        } catch (\Exception $e) {
+            \Log::error('Error counting open opportunities: ' . $e->getMessage());
+
+            return response()->json(['error' => 'Unable to count open opportunities'], 500);
+        }
+    }
 }

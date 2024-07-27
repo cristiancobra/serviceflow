@@ -51,6 +51,9 @@ Route::middleware('auth:sanctum')->group(function () {
 		->names('leads');
 
 	// OPPORTUNITIES
+	Route::get('opportunities/totalOpportunities', [OpportunityController::class, 'countOpenOpportunities'])
+		->name('opportunities.totalOpportunities');
+
 	Route::apiResource('opportunities', OpportunityController::class)->only([
 		'index', 'store', 'show', 'update', 'destroy'
 	])

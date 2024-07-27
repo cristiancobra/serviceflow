@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-10 d-flex justify-content-left">
         <font-awesome-icon icon="fa-solid fa-tasks" class="icon pe-3 primary" />
-        <h2 class="title">TAREFAS</h2>
+        <h2 class="title">AGENDA</h2>
       </div>
       <div class="col-2 d-flex justify-content-end">
         <TaskCreateForm @new-task-event="addTaskCreated" />

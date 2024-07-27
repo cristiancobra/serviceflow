@@ -12,8 +12,8 @@
       <ul class="navbar-nav ms-auto">
         <router-link to="/">
           <li class="nav-item" @mouseover="toggleActive('home')" :class="{ active: activeItem === 'home' }">
-            <font-awesome-icon icon="fas fa-home" />
-            <span class="router-link-text">PAINEL</span>
+            <font-awesome-icon icon="fas fa-calendar" />
+            <span class="router-link-text">AGENDA</span>
           </li>
         </router-link>
 
