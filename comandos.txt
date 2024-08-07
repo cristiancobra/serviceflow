@@ -22,7 +22,9 @@ FLUSH PRIVILEGES;
 # BACKUP BANCO DE DADOS servidor para local
 
 - Primeiro conectar via ssh
-mysqldump -u root -p serviceflow > /var/www/serviceflow/backups/serviceflow_07-06-2024.sql
+mysqldump -u root -p serviceflow > /var/www/serviceflow/backups/serviceflow_07-08-2024.sql
+
+- copiar localmente
 rsync -avz -e "ssh -i /home/cristiancobra/.ssh/desktop-cobra" root@206.189.230.115:/var/www/serviceflow/backups/ /home/cristiancobra/docker/serviceflow/backups/
 
 
