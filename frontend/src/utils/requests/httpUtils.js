@@ -82,7 +82,9 @@ export const validateModel = (model) => {
     "companies",
     "leads",
     "projects",
+    "proposals",
     "opportunities",
+    "services",
     "tasks",
     "users"
   ];

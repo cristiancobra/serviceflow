@@ -10,6 +10,7 @@ import OpportunitiesIndex from '../views/opportunities/OpportunitiesIndex.vue'
 import OpportunityShow from '../views/opportunities/OpportunityShow.vue'
 import ServicesIndex from '../views/services/ServicesIndex.vue'
 import ServiceShow from '../views/services/ServiceShow.vue'
+import store from '@/store'
 import ProjectsIndex from '../views/projects/ProjectsIndex.vue'
 import ProjectShow from '../views/projects/ProjectShow.vue'
 import TasksIndex from '../views/tasks/TasksIndex.vue'
@@ -99,14 +100,14 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = localStorage.getItem('access_token'); // Exemplo: verifique se há um token no armazenamento local
-
+  const isAuthenticated = store.state.isAuthenticated;
+  
   if (to.name !== 'login' && !isAuthenticated) {
-    next({ name: 'login' }); // Redirecione o usuário para a página de login
+    next({ name: 'login' });
   } else {
     next();
   }
-})
+});
 
 
 export default router

@@ -17,7 +17,11 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        return ServicesResource::collection(Service::all());
+        $services = Service::where('account_id', auth()->user()->account_id)
+            ->orderBy('name', 'asc')
+            ->paginate(500);
+
+        return ServicesResource::collection($services);
     }
 
     /**

@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\JourneyController;
 use App\Http\Controllers\Api\LeadController;
 use App\Http\Controllers\Api\OpportunityController;
 use App\Http\Controllers\Api\ProjectController;
+use App\Http\Controllers\Api\ProposalController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\Api\UserController;
@@ -30,6 +31,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	// logout
 	Route::post('/logout', [AuthController::class, 'logout']);
+
+	// Check token
+	Route::middleware('auth:sanctum')->get('/check-token', [AuthController::class, 'checkToken']);
 
 	// COMPANIES
 	Route::apiResource('companies', CompanyController::class)
@@ -67,6 +71,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	Route::apiResource('projects', ProjectController::class)
 		->names('projects');
+
+	// PROPOSALS
+	Route::get('/proposals-by-opportunity-id', [ProposalController::class, 'getProposalsByOpportunityId'])
+		->name('proposals.opportunity-id');
+
+	Route::apiResource('proposals', ProposalController::class)
+		->names('proposals');
 
 	// SERVICES
 	Route::apiResource('services', ServiceController::class)

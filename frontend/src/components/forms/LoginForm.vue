@@ -5,7 +5,7 @@
     </div>
 
     <div class="login-box">
-      <form @submit.prevent="login">
+      <form @submit.prevent="submit">
         <div class="d-flex align-items-center justify-content-end">
           <label class="label" for="email">email</label>
           <input class="input" type="email" id="email" name="email" v-model="form.email" required />
@@ -23,9 +23,8 @@
 </template>
 
 <script>
-import axios from "axios";
-import { API_SANCTUM_URL, BACKEND_URL, LOGIN_URL } from "@/config/apiConfig";
 import { mapActions } from 'vuex';
+import router from '@/router';
 
 export default {
   data() {
@@ -40,41 +39,29 @@ export default {
     };
   },
   methods: {
-    async login() {
+    async submit() {
       try {
         this.transitionOut = true;
-
-        axios.defaults.withCredentials = true;
-
-        await axios.get(API_SANCTUM_URL);
-
-        const response = await axios.post(
-          `${BACKEND_URL}${LOGIN_URL}`,
-          this.form
-        );
-
-        const token = response.data.access_token;
-
-        localStorage.setItem("access_token", token);
-        this.checkOpenJourneys(); 
+        await this.login(this.form);
+        await this.checkOpenJourneys();
 
         setTimeout(() => {
-          this.$router.push({ name: "home" });
+          router.push({ name: "home" });
           // this.$root.isLogged = true;
         }, 600);
       } catch (error) {
         console.error("Erro de login:", error);
-        this.$router.push({ name: "login" });
+        router.push({ name: "login" });
       }
     },
-    ...mapActions(['checkOpenJourneys']),
+    ...mapActions([
+      'checkOpenJourneys',
+      'login',
+    ]),
     startTransition() {
 
-      // if (this.$root.isLogged !== true) {
       this.transitionIn = true;
-      // } else {
-      //   this.transitionOut = true;
-      // }
+
     },
   },
   mounted() {

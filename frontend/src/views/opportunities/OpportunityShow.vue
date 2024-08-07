@@ -51,7 +51,10 @@
         @save="updateOpportunity('description', $event)" />
     </div>
     <div class="row pt-2">
-      <TasksList template="opportunity" :opportunityId="opportunityId" />
+      <proposals-list :opportunityId="opportunityId" />
+    </div>
+    <div class="row pt-2">
+      <tasks-list template="opportunity" :opportunityId="opportunityId" />
     </div>
     <div class="row d-flex justify-content-end mt-2 mb-5 me-5">
       <div class="col-1">
@@ -75,6 +78,7 @@ import { translatePriority } from "@/utils/translations/translationsUtils";
 import CompaniesSelectEditableField from '../../components/fields/selects/CompaniesSelectEditableField.vue';
 import DateEditableInput from "@/components/fields/datetime/DateTimeEditableInput";
 import LeadsSelectEditableField from '../../components/fields/selects/LeadsSelectEditableField.vue';
+import ProposalsList from "@/components/lists/ProposalsList.vue";
 import TasksList from "@/components/lists/TasksList.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField";
 import TextEditor from "@/components/forms/inputs/TextEditor.vue";
@@ -86,6 +90,7 @@ export default {
     CompaniesSelectEditableField,
     DateEditableInput,
     LeadsSelectEditableField,
+    ProposalsList,
     TasksList,
     TextEditableField,
     TextEditor,
