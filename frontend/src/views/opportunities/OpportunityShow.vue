@@ -126,6 +126,7 @@ export default {
     translatePriority,
     convertDateTimeToLocal,
     async getOpportunity() {
+      console.log(this.opportunityId);
       this.opportunity = await show("opportunities", this.opportunityId);
       this.currentOpportunity = this.opportunity;
       convertDateTimeToLocal(this.opportunity.date_start);

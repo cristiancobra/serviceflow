@@ -18,6 +18,16 @@ export default createStore({
     },
   },
   actions: {
+    async checkAuthentication({ commit }) {
+      try {
+        const response = await axios.get(`${BACKEND_URL}${CHECK_TOKEN_URL}`);
+        commit('setAuthenticated', response.status === 200);
+      } catch (error) {
+        commit('setAuthenticated', false);
+        console.error('Erro ao verificar autenticação:', error);
+        router.push({ name: 'login' });
+      }
+    },
     async checkOpenJourneys({ commit }) {
       try {
         const response = await axios.get(`${BACKEND_URL}${JOURNEY_CHECK_OPEN}`);
@@ -33,7 +43,6 @@ export default createStore({
         commit('setAuthenticated', response.status === 200);
       } catch (error) {
         commit('setAuthenticated', false);
-        localStorage.removeItem('access_token');
         console.error('Erro ao verificar validade do token:', error);
       }
     },
