@@ -229,7 +229,8 @@ class TaskController extends Controller
             ->where('account_id', auth()->user()->account_id)
             ->where('date_conclusion', null)
             ->orderBy('date_due', 'asc')
-            ->paginate(20);
+            // ->paginate(20);
+            ->get();
 
         return TaskResource::collection(
             $tasks

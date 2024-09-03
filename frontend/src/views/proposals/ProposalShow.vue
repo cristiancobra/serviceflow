@@ -6,14 +6,11 @@
           <font-awesome-icon icon="fa-solid fa-tools" class="primary big-icon" />
         </div>
         <div class="col">
-          <h2 class="title">SERVIÇO</h2>
+          <h2 class="title">PROPOSTA</h2>
         </div>
       </div>
-      <div class="row pb-5">
-        <div class="col title">
-          <TextEditableField name="name" v-model="service.name" placeholder="descrição detalhada do serviço"
-              @save="updateService('name', $event)" />
-        </div>
+      <div class="row pb-5" v-if="proposal.opportunity">
+        {{ proposal.opportunity.name }}
       </div>
       <div class="row">
         <div class="col-5">
@@ -23,20 +20,8 @@
           </p>
         </div>
         <div class="col-1 text-end">
-          <hours-decimal-editable-field name="labor_hours" v-model="service.labor_hours" placeholder="descrição detalhada do serviço"
-              @save="updateService('labor_hours', $event)" />
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-5">
-          <p>
-            <font-awesome-icon icon="fa fa-money-bill-alt" />
-            <span class="label"> Custo da hora de trabalho: </span>
-          </p>
-        </div>
-        <div class="col-1 text-end">
-          <money-editable-field name="labor_hourly_rate" v-model="service.labor_hourly_rate" placeholder="valor da hora de trabalho"
-              @save="updateService('labor_hourly_rate', $event)" />
+          <hours-decimal-editable-field name="total_hours" v-model="proposal.total_hours"
+            placeholder="descrição detalhada do serviço" @save="updateService('total_hours', $event)" />
         </div>
       </div>
       <div class="row">
@@ -47,7 +32,7 @@
           </p>
         </div>
         <div class="col-1 text-end">
-          <money-field name="labor_hourly_total" v-model="service.labor_hourly_total" />
+          <money-field name="total_operational_cost" v-model="proposal.total_operational_cost" />
         </div>
       </div>
       <div class="row">
@@ -58,8 +43,8 @@
           </p>
         </div>
         <div class="col-1 text-end">
-          <decimal-editable-field name="profit_percentage" v-model="service.profit_percentage" placeholder="percentual do lucro"
-              @save="updateService('profit_percentage', $event)" />
+          <decimal-editable-field name="profit_margin" v-model="proposal.profit_margin"
+            placeholder="percentual do lucro" @save="updateService('profit_margin', $event)" />
         </div>
       </div>
       <div class="row">
@@ -70,7 +55,7 @@
           </p>
         </div>
         <div class="col-1 text-end">
-          <money-field name="profit" v-model="service.profit" />
+          <money-field name="total_profit" v-model="proposal.total_profit" />
         </div>
       </div>
       <div class="row">
@@ -81,7 +66,7 @@
           </p>
         </div>
         <div class="col-1 text-end">
-          <money-field name="price" v-model="service.price" />
+          <money-field name="price" v-model="proposal.total_price" />
         </div>
       </div>
       <div class="row pt-5 ">
@@ -92,12 +77,36 @@
           </p>
         </div>
         <div class="col-1 text-end">
-          {{ formatDateBr(service.created_at) }}
+          {{ formatDateBr(proposal.created_at) }}
         </div>
       </div>
+      <div class="row pt-5">
+        <p class="title">
+          Itens da proposta
+        </p>
+      </div>
+      <div class="row service-item pt-1 pb-1" v-for="proposalItem in proposal.proposalItems"
+        v-bind:key="proposalItem.id">
+        <div class="col-1 offset-2 d-flex align-items-center justify-content-center">
+          <font-awesome-icon icon="fa-solid fa-coins" class="primary" />
+        </div>
+        <div class="col-7">
+          <p class="name ps-2">
+            {{ proposalItem.name }}
+          </p>
+        </div>
+        <div class="col">
+          {{ proposalItem.quantity }}
+        </div>
+        <div class="col text-end">
+          {{ proposalItem.total_price }}
+        </div>
+      </div>
+
+
       <div class="row mt-5 mb-5">
         <div>
-          <button class="offset-10 col-1 myButton delete" @click="deleteService()">
+          <button class="offset-10 col-1 myButton delete" @click="deleteProposal()">
             excluir
           </button>
         </div>
@@ -108,12 +117,8 @@
 
 
 <script>
-import { BACKEND_URL, SERVICE_URL } from "@/config/apiConfig";
-import { show, updateField } from "@/utils/requests/httpUtils";
-import axios from "axios";
+import { destroy, show, updateField } from "@/utils/requests/httpUtils";
 import DecimalEditableField from "@/components/fields/number/DecimalEditableField";
-import MoneyEditableField from "@/components/fields/number/MoneyEditableField";
-import TextEditableField from "@/components/fields/text/TextEditableField";
 import MoneyField from '../../components/fields/number/MoneyField.vue';
 import HoursDecimalEditableField from '../../components/fields/number/HoursDecimalEditableField.vue';
 
@@ -121,36 +126,25 @@ export default {
   name: "ServiceShow",
   data() {
     return {
-      service: [],
-      serviceId: "",
+      proposal: [],
+      proposalId: "",
     };
   },
   components: {
     DecimalEditableField,
     HoursDecimalEditableField,
-    MoneyEditableField,
-    TextEditableField,
     MoneyField,
   },
   methods: {
+    destroy,
     show,
     updateField,
-    async deleteService() {
-      axios
-        .delete(`${BACKEND_URL}${SERVICE_URL}${this.serviceId}`)
-        .then((response) => {
-          this.data = response.data.data;
-          // this.newLeadEvent(this.data);
-          const successMessage = "Serviço excluído com sucesso";
-          this.$router.push({ name: "servicesIndex", query: { successMessage } });
-        })
-        .catch((error) => {
-          console.error("Erro ao deletar serviço:", error);
-          // Lidar com o erro, se necessário
-        });
+    async deleteProposal() {
+      this.response = await destroy('proposals', this.proposalId);
+      // const successMessage = "Serviço excluído com sucesso";
+      // this.$router.push({ name: "proposalsIndex", query: { successMessage } });
     },
     formatDateBr(date) {
-      // Verifica se a data é válida
       if (!date) return "";
 
       const dateObj = new Date(date);
@@ -163,20 +157,19 @@ export default {
 
       return dateBr;
     },
-    async getService() {
-      this.service = await show('services', this.serviceId);
+    async getProposal() {
+      this.proposal = await show('proposals', this.proposalId);
     },
-    setServiceId(serviceId) {
-      this.serviceId = serviceId;
+    setProposalId(proposalId) {
+      this.proposalId = proposalId;
     },
     async updateService(fieldName, editedValue) {
-      this.service = await updateField("services", this.serviceId, fieldName, editedValue);
-      console.log(this.service);
+      this.proposal = await updateField("proposals", this.proposalId, fieldName, editedValue);
     },
   },
   async mounted() {
-    this.setServiceId(this.$route.params.id);
-    this.getService();
+    this.setProposalId(this.$route.params.id);
+    this.getProposal();
   },
 };
 </script>

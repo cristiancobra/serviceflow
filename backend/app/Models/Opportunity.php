@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Company;
 use App\Models\Project;
 use App\Models\Task;
 
 class Opportunity extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'account_id',
@@ -23,6 +24,7 @@ class Opportunity extends Model
         'date_due',
         'date_conclusion',
         'description',
+        'duration_time',
         'source',
     ];
 
@@ -39,5 +41,12 @@ class Opportunity extends Model
     public function tasks()
     {
         return $this->hasMany(Task::class);
+    }
+
+    // Update the Opportunity duration time duration_time
+    public function updateDuration()
+    {
+        $this->duration_time = $this->tasks->sum('duration_time');
+        $this->save();
     }
 }

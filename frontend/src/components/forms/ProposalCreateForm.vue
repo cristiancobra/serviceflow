@@ -51,6 +51,8 @@
                                         @update="updateForm" />
                                 </div>
                                 <div class="col-md-6">
+                                    <input type="number" class="form-control" v-model="form.validity_days" name="duration"
+                                        placeholder="validade da proposta em dias" />
                                 </div>
                             </div>
                             <div v-if="services.length === 0" class="row mb-4 mt-4">
@@ -67,7 +69,7 @@
                                 <div class="row ps-5" v-for="service in services" :key="service.id">
                                     <div class="col-2">
                                         <input type="number" min="0" :id="service.id"
-                                            v-model.number="service.quantidade" placeholder="0"
+                                            v-model.number="service.quantity" placeholder="0"
                                             class="form-control text-end" />
                                     </div>
                                     <div class="col-7">
@@ -121,7 +123,8 @@ export default {
                 description: null,
                 user_id: null,
                 date_start: null,
-                opportunity_id: this.opportunityId, 
+                opportunity_id: this.opportunityId,
+                validity_days: 30,
             },
             modal: true,
             services: [],
@@ -136,17 +139,17 @@ export default {
         },
         async getServices() {
             this.services = await this.index("services");
-            console.log("services", this.services);
         },
         showModal() {
             this.modal = true;
         },
         async submitForm() {
             this.form.services = this.services
-                .filter(service => service.quantidade > 0)
+                .filter(service => service.quantity > 0)
                 .map(service => ({
                     id: service.id,
-                    quantidade: service.quantidade,
+                    quantity: service.quantity,
+                    price: service.price,
                 }));
             const newProposal = await this.submitFormCreate("proposals", this.form);
             this.modal = false;
@@ -162,7 +165,6 @@ export default {
         }
     },
     mounted() {
-        console.log("modal", this.modal);
         this.getServices();
     },
 };

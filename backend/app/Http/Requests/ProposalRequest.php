@@ -37,7 +37,7 @@ class ProposalRequest extends FormRequest
             'services.*.name' => 'nullable|string',
             'services.*.labor_hours' => 'nullable|numeric',
             'services.*.labor_hourly_rate' => 'nullable|numeric',
-            'services.*.labor_hourly_rate_total' => 'nullable|numeric',
+            'services.*.labor_hourly_total' => 'nullable|numeric',
             'services.*.profit_percentage' => 'nullable|numeric',
             'services.*.profit' => 'nullable|numeric',
             'services.*.price' => 'nullable|numeric',

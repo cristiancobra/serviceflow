@@ -20,7 +20,7 @@ class ServicesResource extends JsonResource
 			"name" => $this->name,
             'labor_hours' => $this->labor_hours,
             'labor_hourly_rate' => $this->labor_hourly_rate,
-            'labor_hourly_rate_total' => $this->labor_hourly_rate_total,
+            'labor_hourly_total' => $this->labor_hourly_total,
             'profit_percentage' => $this->profit_percentage,
             "price" => $this->price,
             'observations' => $this->observations,

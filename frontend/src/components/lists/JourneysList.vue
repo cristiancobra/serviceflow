@@ -176,7 +176,7 @@ export default {
     },
     async getJourneysFromTask(newTaskId, page = 1) {
 
-      this.journeysUrl = `${BACKEND_URL}${JOURNEY_BY_TASK_URL_QUERY}task_id=${newTaskId}&per_page=10&page=${page}`;
+      this.journeysUrl = `${BACKEND_URL}${JOURNEY_BY_TASK_URL_QUERY}task_id=${newTaskId}&per_page=30&page=${page}`;
 
       try {
         const response = await axios.get(this.journeysUrl);

@@ -9,6 +9,7 @@ import './assets/css/forms.css';
 import './assets/css/lists.css';
 import './assets/css/modal.css';
 import './assets/css/projects.css';
+import './assets/css/proposals.css';
 import './assets/css/show.css';
 import "./assets/css/style.css"
 import "bootstrap/dist/css/bootstrap.min.css"

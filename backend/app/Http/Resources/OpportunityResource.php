@@ -26,6 +26,7 @@ class OpportunityResource extends JsonResource
             'date_due' => $this->date_due,
             'date_conclusion' => $this->date_conclusion,
             'description' => $this->description,
+            'duration_time' => $this->duration_time,
             'source' => $this->source,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

@@ -7,6 +7,16 @@
 //     return utcDate.toLocaleString();
 //   }
 
+export function convertDecimalToSeconds(decimalHours) {
+    const seconds = decimalHours * 3600;
+    return Math.round(seconds);
+}
+
+export function convertSecondsToDecimal(seconds) {
+    const hours = seconds / 3600;
+    return parseFloat(hours.toFixed(1));
+}
+
 export function convertUtcToLocal(utcDateString) {
     if (!utcDateString) return '--:--';
 

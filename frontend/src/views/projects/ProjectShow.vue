@@ -69,6 +69,7 @@ import { formatDuration } from "@/utils/date/dateUtils";
 import { getStatusClass } from "@/utils/card/cardUtils";
 import { getStatusIcon } from "@/utils/card/cardUtils";
 import { provide, ref } from 'vue';
+import { show, updateField } from "@/utils/requests/httpUtils";
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
 import DateEditableInput from "@/components/fields/datetime/DateTimeEditableInput";
@@ -107,6 +108,7 @@ export default {
   },
   emits: ["new-journey-event", "journey-updated", "journey-deleted"],
   methods: {
+    convertDateTimeToLocal,
     formatDateBr,
     formatDateTimeBr,
     formatDuration,
@@ -114,19 +116,13 @@ export default {
     getStatusIcon,
     translateStatus,
     translatePriority,
-    convertDateTimeToLocal,
+    updateField,
     async getProject() {
-      try {
-        const response = await axios.get(
-          `${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.projectId}`
-        );
-        this.project = response.data.data;
-        this.currentProject = this.project;
-        convertDateTimeToLocal(this.project.date_start);
-        this.projectLoaded = true; // Marque a tarefa como carregada
-      } catch (error) {
-        console.error("Erro ao acessar tarefa:", error);
-      }
+      this.project = await show('projects', this.projectId);
+      this.currentProject = this.project;
+      convertDateTimeToLocal(this.project.date_start);
+      this.projectLoaded = true;
+
     },
     setProjectId(projectId) {
       this.projectId = projectId;
@@ -162,20 +158,7 @@ export default {
       }
     },
     async updateProject(fieldName, editedValue) {
-      const updatedField = {};
-
-      updatedField[fieldName] = editedValue;
-
-      try {
-        const response = await axios.put(
-          `${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.projectId}`,
-          updatedField
-        );
-
-        this.project = response.data.data;
-      } catch (error) {
-        console.error("Erro ao atualizar a tarefa:", error);
-      }
+      this.project = await updateField("projects", this.projectId, fieldName, editedValue);
     },
     updateProjectDuration() {
       axios

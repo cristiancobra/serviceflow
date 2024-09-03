@@ -26,14 +26,26 @@ class Journey extends Model
         return $this->belongsTo(Task::class);
     }
 
+    // Update the Opportunity duration time duration_time
+    private function updateOpportunityDuration()
+    {
+        $task = $this->task;
 
-    public function updateTaskDuration()
+        if ($task) {
+            $task->updateOpportunityDuration();
+        }
+    }
+
+    // Update the task duration time duration_time
+
+    public function updateAssociatedTaskDuration()
     {
         $task = $this->task; // Assume que há um relacionamento 'task' definido na model
 
         if ($task) {
             $task->duration_time = $task->journeys->sum('duration');
             $task->save();
+            $task->updateAssociatedOpportunityDuration();
         }
     }
 }

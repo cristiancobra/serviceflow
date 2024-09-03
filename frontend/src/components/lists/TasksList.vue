@@ -168,7 +168,7 @@ export default {
     },
     async getTasksFromProject(page = 1) {
 
-      this.tasksUrl = `${BACKEND_URL}${TASK_BY_PROJECT_URL}project_id=${this.projectId}&per_page=10&page=${page}`;
+      this.tasksUrl = `${BACKEND_URL}${TASK_BY_PROJECT_URL}project_id=${this.projectId}&per_page=50&page=${page}`;
 
       try {
         const response = await axios.get(this.tasksUrl);
@@ -192,7 +192,7 @@ export default {
     },
     async getTasksFromOpportunity(page = 1) {
 
-      this.tasksUrl = `${BACKEND_URL}${TASK_BY_OPPORTUNITY_URL}opportunity_id=${this.opportunityId}&per_page=10&page=${page}`;
+      this.tasksUrl = `${BACKEND_URL}${TASK_BY_OPPORTUNITY_URL}opportunity_id=${this.opportunityId}&per_page=50&page=${page}`;
 
       try {
         const response = await axios.get(this.tasksUrl);

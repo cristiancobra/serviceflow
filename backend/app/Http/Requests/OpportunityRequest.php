@@ -35,6 +35,7 @@ class OpportunityRequest extends FormRequest
             'date_due' => 'nullable|date|after_or_equal:date_start',
             'date_conclusion' => 'nullable|date',
             'description' => 'nullable|string',
+            'duration_time' => 'nullable|integer',
             'source' => 'nullable|string|max:255',
         ];
     }

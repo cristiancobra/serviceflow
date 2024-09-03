@@ -1,18 +1,16 @@
 <template>
   <div>
-    <button type="button" class="button button-new d-flex justify-content-center"
-      data-bs-toggle="modal" data-bs-target="#taskModal">
+    <button type="button" class="button button-new d-flex justify-content-center" @click=openModal>
       <font-awesome-icon icon="fa-solid fa-plus" class="" />
     </button>
 
-    <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div v-if="isModalVisible" class="myModal">
       <div class="modal-dialog modal-xl">
         <div class="modal-content">
           <div class="modal-header">
             <font-awesome-icon icon="fa-solid fa-tasks" class="icon pe-3 primary" />
             <h5 class="modal-title" id="taskModalLabel">Nova tarefa</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"
-              aria-label="Close"></button>
+            <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <form @submit.prevent="submitForm">
@@ -76,8 +74,8 @@
               </div>
 
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                <button type="submit" class="button-new" data-bs-dismiss="modal">criar</button>
+                <button type="button" class="btn btn-secondary"  @click=closeModal>Fechar</button>
+                <button type="submit" class="button-new">criar</button>
               </div>
             </form>
           </div>
@@ -137,6 +135,7 @@ export default {
       },
       isActiveCompany: false,
       isActiveLead: false,
+      isModalVisible: false,
       leads: [],
       message: null,
       messageStatus: "",
@@ -157,14 +156,6 @@ export default {
       !this.toggleLead();
       this.form.contact_id = newLead.lead.id;
     },
-    // addCompanyCreated(newCompany) {
-    //   this.companies.push(newCompany.company);
-    //   this.getCompanies();
-    // },
-    updateForm(field, value) {
-      this.form[field] = value;
-    },
-
     clearForm() {
       this.form.name = "";
       this.form.description = "";
@@ -177,16 +168,14 @@ export default {
       this.status = "to-do";
       this.priority = "medium";
     },
-    // getTasksStatus() {
-    //   axios
-    //     .get(`${BACKEND_URL}${TASK_STATUS_URL}`)
-    //     .then((response) => {
-    //       this.allStatus = response.data;
-    //     })
-    //     .catch((error) => console.log(error));
-    // },
+    closeModal() {
+      this.isModalVisible = false;
+    },
+      openModal() {
+        this.isModalVisible = true;
+      },
     async submitForm() {
-      this.newTask = await this.submitFormCreate('tasks', this.form);
+        this.newTask = await this.submitFormCreate('tasks', this.form);
         this.$emit("new-task-event", this.newTask);
         // this.isSuccess = true;
         this.messageStatus = "success";
@@ -194,83 +183,78 @@ export default {
         this.isError = false;
         // this.newCompanyEvent(this.data);
         // this.successMessage(this.data);
-        this.toggleTaskForm();
+        this.closeModal();
         this.clearForm();
-    },
-    toggleCompany() {
-      this.isActiveCompany = !this.isActiveCompany;
+      },
+      toggleCompany() {
+        this.isActiveCompany = !this.isActiveCompany;
 
-      if (this.isActiveCompany) {
-        this.isActiveLead = false;
-      }
-    },
-    toggleLead() {
-      this.isActiveLead = !this.isActiveLead;
+        if (this.isActiveCompany) {
+          this.isActiveLead = false;
+        }
+      },
+      toggleLead() {
+        this.isActiveLead = !this.isActiveLead;
 
-      if (this.isActiveLead) {
-        this.isActiveCompany = false;
-      }
+        if (this.isActiveLead) {
+          this.isActiveCompany = false;
+        }
+      },
+      updateForm(field, value) {
+        this.form[field] = value;
+      },
+      updateFormPriority(newPriority) {
+        this.form.priority = newPriority;
+      },
+      updateFormStatus(newStatus) {
+        this.form.status = newStatus;
+      },
     },
-    toggleTaskForm() {
-      this.$emit("toggle-task-form"); // Emitir evento para o componente pai
+    watch: {
+      currentOpportunity(newValue) {
+        this.form.opportunity_id = newValue.id;
+      },
+      currentProject(newValue) {
+        this.form.project_id = newValue.id;
+      },
     },
-    updateFormPriority(newPriority) {
-      this.form.priority = newPriority;
-    },
-    updateFormStatus(newStatus) {
-      this.form.status = newStatus;
-    },
-  },
-  watch: {
-    currentOpportunity(newValue) {
-      this.form.opportunity_id = newValue.id;
-    },
-    currentProject(newValue) {
-      this.form.project_id = newValue.id;
-    },
-  },
-  mounted() {
-    // this.getTasksStatus();
-  },
-};
+  };
 </script>
 
 <style scoped>
+.modal.fade.show {
+  display: block;
+}
+
+.myModal {
+  position: fixed;
+  top: 0%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5); /* Escurecimento de fundo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+}
+
+.modal-dialog {
+  margin: 15px;
+}
+
+.modal-content {
+  margin-top: 5%;
+  padding: 2rem;
+  background-color: #fff; /* Cor de fundo branca para o conteúdo do modal */
+  border-radius: 0.3rem;
+}
+
 .radio-group {
   display: flex;
   gap: 10px;
   align-items: center;
 }
 
-/* status */
-.to-do {
-  border-radius: 16px 0px 0px 16px;
-  border-color: var(--gray);
-  color: var(--red);
-}
-
-.label-col {
-  display: flex;
-  justify-content: left;
-  align-items: center;
-}
-
-.selected {
-  width: 100%;
-  padding: 0.4rem;
-  font-size: 1rem;
-  border: 1px dashed var(--primary);
-  border-radius: 4px;
-  font-weight: 400;
-}
-
-.status {
-  display: inline-block;
-  padding: 8px 16px;
-  font-size: 16px;
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  cursor: pointer;
-  user-select: none;
-}
 </style>

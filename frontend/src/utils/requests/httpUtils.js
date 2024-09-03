@@ -1,6 +1,23 @@
 import axios from 'axios';
 import { BACKEND_URL } from "@/config/apiConfig";
 
+//delete a model
+export const destroy = async (model, id) => {
+  validateModel(model);
+  try {
+    const response = await axios.delete(
+      `${BACKEND_URL}${model}/${id}`
+    );
+    const { data } = response.data;
+    // const successMessage = "Serviço excluído com sucesso";
+    // this.$router.push({ name: "proposalsIndex", query: { successMessage } });
+    return data;
+  } catch (error) {
+    console.error("Erro ao deletar serviço:", error);
+    throw error;
+  }
+};
+
 // fetches all models to index page
 export const index = async (model) => {
   validateModel(model);

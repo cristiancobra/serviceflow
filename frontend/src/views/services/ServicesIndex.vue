@@ -1,9 +1,5 @@
 <template>
   <div>
-    <div class="row justify-content-end pt-5 pe-5">
-      <div class="slot openForm" @click="toggle()">+</div>
-    </div>
-
     <div v-bind:class="{ hidden: isActive }">
       <ServiceCreateForm @new-service-event="addServiceCreated($event)" />
     </div>
@@ -58,7 +54,6 @@ export default {
     },
     addServiceCreated(newService) {
       this.services.push(newService.service);
-      console.log("Novo service adicionado:", newService.service);
       !this.toggle();
     },
   },

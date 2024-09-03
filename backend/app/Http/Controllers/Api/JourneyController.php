@@ -57,7 +57,7 @@ class JourneyController extends Controller
             $journey = new Journey;
             $journey->fill($request->validated());
             $journey->save();
-            $journey->updateTaskDuration();
+            $journey->updateAssociatedTaskDuration();
 
             return new JourneyResource($journey);
         } catch (ValidationException $validationException) {
@@ -102,7 +102,7 @@ class JourneyController extends Controller
         try {
             $journey->fill($request->validated());
             $journey->save();
-            $journey->updateTaskDuration();
+            $journey->updateAssociatedTaskDuration();
             return JourneyResource::make($journey);
             
         } catch (ValidationException $validationException) {

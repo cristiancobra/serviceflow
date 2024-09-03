@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Service;
 use App\Http\Resources\ServicesResource;
 use App\Http\Resources\ServiceResource;
+use App\Http\Requests\ServiceRequest;
 use Illuminate\Http\Request;
 
 class ServiceController extends Controller
@@ -25,16 +26,6 @@ class ServiceController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -50,7 +41,7 @@ class ServiceController extends Controller
             // $service->user_id = 1;
             $service->labor_hours = $request->labor_hours;
             $service->labor_hourly_rate = $this->convertMoneyBrToDefault($request->labor_hourly_rate);
-            $service->labor_hourly_rate_total = $this->calculateLaborHourlyRateTotal($service);
+            $service->labor_hourly_total = $this->calculateLaborHourlyTotal($service);
             $service->profit_percentage = $request->profit_percentage;
             $service->profit = $this->calculateProfit($service);
             $service->price = $this->calculatePrice($service);
@@ -81,26 +72,38 @@ class ServiceController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Service  $service
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Service $service)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Service  $service
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Service $service)
+    public function update(ServiceRequest $request, Service $service)
     {
-        //
+        try {
+            $validatedData = $request->validated();
+            
+            $laborHours = $validatedData['labor_hours'] ?? $service->labor_hours;
+            $laborHours = $laborHours / 3600;
+            $laborHourlyRate = $validatedData['labor_hourly_rate'] ?? $service->labor_hourly_rate;
+            $laborHourlyTotal = $laborHours * $laborHourlyRate;
+            $validatedData['labor_hourly_total'] = $laborHourlyTotal;
+
+            $profitPercentage = $validatedData['profit_percentage'] ?? $service->profit_percentage;
+            $totalCost = $validatedData['labor_hourly_total']; // depois adicionar custos de terceiros
+            $validatedData['price'] = $totalCost / (1 - ($profitPercentage / 100));
+            $validatedData['profit'] = $validatedData['price'] - $totalCost;
+    
+            $service->fill($validatedData);
+            $service->save();
+
+            return ServiceResource::make($service);
+        } catch (ValidationException $validationException) {
+            return response()->json([
+                'message' => "Erro de validação",
+                'errors' => $validationException->errors(),
+            ], 422);
+        }
     }
 
     /**
@@ -134,47 +137,5 @@ class ServiceController extends Controller
         $valueFormatted = str_replace(',', '.', $valueWithoutPoints);
 
         return $valueFormatted;
-    }
-
-    private function calculateLaborHourlyRateTotal($service)
-    {
-        $hours = $service->labor_hours / 3600;
-        $total = $hours * $service->labor_hourly_rate;
-        $formattedTotal = number_format($total, 2, '.', '');
-        
-        return $formattedTotal;
-    }
-
-
-    private function calculatePrice($service)
-    {
-        return $service->labor_hourly_rate_total + $service->profit;
-    }
-
-    private function calculateProfit($service)
-    {
-        $divisionFactorPercentual = 100 - $service->profit_percentage;
-        $divisionFactorDecimal = $divisionFactorPercentual / 100;
-
-        $profit = $service->labor_hourly_rate_total / $divisionFactorDecimal - $service->labor_hourly_rate_total;
-        $profit = number_format($profit, 2);
-        
-        return $profit;
-    }
-
-    /**
-     * nao utilizada
-     */
-    private function formatLaborHours($request)
-    {
-        // $hours = $this->convertDecimalBrToDefault($request->labor_hours);
-
-        // if(!$request->minutes) {
-        //     return $hours;    
-        // }
-
-        // // $minutes = $this->convertDecimalBrToDefault($request->minutes);
-
-        // return $hours + $request->minutes;
     }
 }

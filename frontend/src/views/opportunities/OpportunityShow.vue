@@ -7,7 +7,7 @@
         <div class="col-1 status">
           <font-awesome-icon icon="fa-solid fa-bullseye" class="primary" />
           <p class="duration">
-            {{ opportunity.duration_time }}
+            {{ formatDuration(opportunity.duration_time) }}
           </p>
         </div>
         <div class="col-8 ps-3">
@@ -69,9 +69,9 @@
 <script>
 import axios from "axios";
 import { BACKEND_URL, OPPORTUNITY_URL_PARAMETER, PROJECT_URL_PARAMETER } from "@/config/apiConfig";
-import { convertDateTimeToLocal } from "@/utils/date/dateUtils";
+import { formatDuration,convertDateTimeToLocal } from "@/utils/date/dateUtils";
 import { show, updateField } from "@/utils/requests/httpUtils";
-import { formatDateBr, formatDateTimeBr, formatDuration, getStatusClass, getStatusIcon } from "@/utils/card/cardUtils";
+import { formatDateBr, formatDateTimeBr, getStatusClass, getStatusIcon } from "@/utils/card/cardUtils";
 import { provide, ref } from 'vue';
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
@@ -126,8 +126,8 @@ export default {
     translatePriority,
     convertDateTimeToLocal,
     async getOpportunity() {
-      console.log(this.opportunityId);
       this.opportunity = await show("opportunities", this.opportunityId);
+      console.log('duration_time', this.opportunity.duration_time);
       this.currentOpportunity = this.opportunity;
       convertDateTimeToLocal(this.opportunity.date_start);
       this.opportunityLoaded = true;
@@ -167,20 +167,6 @@ export default {
     },
     async updateOpportunity(fieldName, editedValue) {
       this.opportunity = await updateField("opportunities", this.opportunityId, fieldName, editedValue);
-      // const updatedField = {};
-
-      // updatedField[fieldName] = editedValue;
-
-      // try {
-      //   const response = await axios.put(
-      //     `${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.opportunityId}`,
-      //     updatedField
-      //   );
-
-      //   this.opportunity = response.data.data;
-      // } catch (error) {
-      //   console.error("Erro ao atualizar a tarefa:", error);
-      // }
     },
     updateOpportunityDuration() {
       axios

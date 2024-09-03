@@ -15,34 +15,48 @@
                 <ProposalCreateForm @new-proposal-event="addProposalCreated" :opportunityId="opportunityId" />
             </div>
         </div>
-        <div class="row" v-for="proposal in filteredProposals" v-bind:key="proposal.id">
-            <div class="col-1 d-flex align-items-center justify-content-center" id="col-user">
-                <font-awesome-icon icon="fa-solid fa-bullseye" class="primary big-icon" />
-            </div>
-            <div v-if="proposal.date_conclusion" class="col-1 status done">
-                <font-awesome-icon icon="fas fa-check-circle" style="font-size: 2rem;" class="done mb-3" />
-            </div>
-            <div v-else class="col-1 status canceled">
-                <font-awesome-icon icon="fas fa-check-circle" style="font-size: 2rem;" class="canceled" />
-            </div>
-            <div class="col cards">
-                <router-link :to="{ name: 'proposalShow', params: { id: proposal.id } }">
-                    <div class="row title">
-                        <div class="col">
-                            <p class="name ps-2">
-                                {{ proposal.name }}
-                            </p>
+        <div v-for="proposal in proposals" v-bind:key="proposal.id">
+            <router-link :to="{ name: 'proposalShow', params: { id: proposal.id } }">
+                <div class="row proposal-item pt-1 pb-1">
+                    <div class="col-1 d-flex align-items-center justify-content-center" id="col-user">
+                        <font-awesome-icon icon="fa-solid fa-file-invoice" class="primary big-icon" />
+                    </div>
+                    <div class="col">
+                        <div class="row title">
+                            <div class="col">
+                                {{ formatDateBr(proposal.date) }}
+                            </div>
+                            <div class="col-4">
+                                <p v-if="proposal.name" class="name ps-2">
+                                    {{ proposal.name }}
+                                </p>
+                                <p v-else class="name ps-2">
+                                    Sem nome
+                                </p>
+                            </div>
+                            <div class="col text-end">
+                                <money-field name="total_price" v-model="proposal.total_price" />
+                            </div>
                         </div>
                     </div>
-                </router-link>
-            </div>
-            <div class="col-3 line-list d-flex align-items-center justify-content-center">
-                <DateTimeValue v-if="proposal.date_conclusion" v-model="proposal.date_conclusion" classText="done"
-                    classIcon='done' @save="updateProject('date_conclusion', $event, proposal.id)" />
-                <DateTimeEditableInput v-else v-model="proposal.date_due"
-                    :classText="getDeadlineClass(proposal.date_due)" :classIcon='getDeadlineClass(proposal.date_due)'
-                    @save="updateProject('date_due', $event, proposal.id)" />
-            </div>
+                </div>
+                <div class="row service-item pt-1 pb-1" v-for="proposalItem in proposal.proposalItems" v-bind:key="proposalItem.id">
+                    <div class="col-1 offset-2 d-flex align-items-center justify-content-center">
+                        <font-awesome-icon icon="fa-solid fa-coins" class="primary" />
+                    </div>
+                    <div class="col-7">
+                        <p class="name ps-2">
+                            {{ proposalItem.name }}
+                        </p>
+                    </div>
+                    <div class="col">
+                        {{ proposalItem.quantity }}
+                    </div>
+                    <div class="col text-end">
+                        {{ proposalItem.total_price }}
+                    </div>
+                </div>
+            </router-link>
         </div>
     </div>
 </template>
@@ -50,12 +64,15 @@
 <script>
 import axios from "axios";
 import { BACKEND_URL, PROPOSALS_BY_OPPORTUNITY_URL } from "@/config/apiConfig";
+import { formatDateBr } from "@/utils/date/dateUtils";
 import { getDeadlineClass } from "@/utils/card/cardUtils";
 import ProposalCreateForm from "../forms/ProposalCreateForm.vue";
+import MoneyField from '../fields/number/MoneyField.vue';
 
 export default {
     components: {
         ProposalCreateForm,
+        MoneyField,
     },
     props: {
         opportunityId: {
@@ -72,10 +89,10 @@ export default {
         };
     },
     methods: {
+        formatDateBr,
         getDeadlineClass,
         addProposalCreated(newProposal) {
-            console.log("Nova proposta:", newProposal);
-            this.filteredProposals.unshift(newProposal);
+            this.proposals.unshift(newProposal);
         },
         async getProposalsFromOpportunity(page = 1) {
 

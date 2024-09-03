@@ -72,4 +72,13 @@ class Task extends Model
             'canceled',
         ];
 	}
+
+      // Update the Opportunity duration time duration_time
+    public function updateAssociatedOpportunityDuration() {
+        $opportunity = $this->opportunity;
+
+        if ($opportunity) {
+            $opportunity->updateDuration();
+        }
+    }
 }
