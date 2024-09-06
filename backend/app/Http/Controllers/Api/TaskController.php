@@ -22,7 +22,7 @@ class TaskController extends Controller
             'project',
             'opportunity'
         ])
-            ->orderBy('date_due', 'asc')
+            ->orderBy('date_due', 'desc')
             ->paginate(500);
 
         return TaskResource::collection($tasks);

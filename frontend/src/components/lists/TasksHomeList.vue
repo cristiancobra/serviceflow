@@ -49,7 +49,6 @@
         <div class="col-5">
           <router-link :to="{ name: 'taskShow', params: { id: task.id } }"
             class="d-inline-flex flex-wrap align-items-center black">
-            <font-awesome-icon icon="fa-solid fa-tasks" />
             <p class="name ps-2">
               {{ task.name }}
             </p>
@@ -70,7 +69,7 @@
 <script>
 import axios from "axios";
 import { convertUtcToLocal, formatDuration } from "@/utils/date/dateUtils";
-import { getColorClassForName, getStatusColor, getPriorityClass, getDeadlineClass, getStatusIcon } from "@/utils/card/cardUtils";
+import { getColorForName, getColorClassForName, getStatusColor, getPriorityClass, getDeadlineClass, getStatusIcon } from "@/utils/card/cardUtils";
 import { BACKEND_URL, TASK_URL_PARAMETER, TASK_PRIORIZED_URL } from "@/config/apiConfig";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
@@ -108,6 +107,7 @@ export default {
   methods: {
     convertUtcToLocal,
     formatDuration,
+    getColorForName,
     getColorClassForName,
     getStatusColor,
     getPriorityClass,

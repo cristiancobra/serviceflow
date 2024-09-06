@@ -54,7 +54,7 @@
       <proposals-list :opportunityId="opportunityId" />
     </div>
     <div class="row pt-2">
-      <tasks-list template="opportunity" :opportunityId="opportunityId" />
+      <tasks-list template="opportunity" :opportunityId="opportunityId" @update-opportunity-duration="updateOpportunityDuration()" />
     </div>
     <div class="row d-flex justify-content-end mt-2 mb-5 me-5">
       <div class="col-1">
@@ -68,7 +68,7 @@
 
 <script>
 import axios from "axios";
-import { BACKEND_URL, OPPORTUNITY_URL_PARAMETER, PROJECT_URL_PARAMETER } from "@/config/apiConfig";
+import { BACKEND_URL, OPPORTUNITY_URL_PARAMETER } from "@/config/apiConfig";
 import { formatDuration,convertDateTimeToLocal } from "@/utils/date/dateUtils";
 import { show, updateField } from "@/utils/requests/httpUtils";
 import { formatDateBr, formatDateTimeBr, getStatusClass, getStatusIcon } from "@/utils/card/cardUtils";
@@ -170,7 +170,7 @@ export default {
     },
     updateOpportunityDuration() {
       axios
-        .get(`${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.opportunityId}`)
+        .get(`${BACKEND_URL}${OPPORTUNITY_URL_PARAMETER}${this.opportunityId}`)
         .then((response) => {
           this.opportunity.duration_time = response.data.data.duration_time;
         })
