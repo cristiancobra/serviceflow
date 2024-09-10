@@ -108,9 +108,7 @@
 
 
 <script>
-import { BACKEND_URL, SERVICE_URL } from "@/config/apiConfig";
-import { show, updateField } from "@/utils/requests/httpUtils";
-import axios from "axios";
+import { destroy, show, updateField } from "@/utils/requests/httpUtils";
 import DecimalEditableField from "@/components/fields/number/DecimalEditableField";
 import MoneyEditableField from "@/components/fields/number/MoneyEditableField";
 import TextEditableField from "@/components/fields/text/TextEditableField";
@@ -133,21 +131,12 @@ export default {
     MoneyField,
   },
   methods: {
+    destroy,
     show,
     updateField,
     async deleteService() {
-      axios
-        .delete(`${BACKEND_URL}${SERVICE_URL}${this.serviceId}`)
-        .then((response) => {
-          this.data = response.data.data;
-          // this.newLeadEvent(this.data);
-          const successMessage = "Serviço excluído com sucesso";
-          this.$router.push({ name: "servicesIndex", query: { successMessage } });
-        })
-        .catch((error) => {
-          console.error("Erro ao deletar serviço:", error);
-          // Lidar com o erro, se necessário
-        });
+      this.response = await destroy('services', this.serviceId);
+      this.$router.push({ name: "serviceIndex" });
     },
     formatDateBr(date) {
       // Verifica se a data é válida

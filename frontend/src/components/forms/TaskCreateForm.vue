@@ -74,7 +74,7 @@
               </div>
 
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary"  @click=closeModal>Fechar</button>
+                <button type="button" class="btn btn-secondary" @click=closeModal>Fechar</button>
                 <button type="submit" class="button-new">criar</button>
               </div>
             </form>
@@ -171,90 +171,52 @@ export default {
     closeModal() {
       this.isModalVisible = false;
     },
-      openModal() {
-        this.isModalVisible = true;
-      },
+    openModal() {
+      this.isModalVisible = true;
+    },
     async submitForm() {
-        this.newTask = await this.submitFormCreate('tasks', this.form);
-        this.$emit("new-task-event", this.newTask);
-        // this.isSuccess = true;
-        this.messageStatus = "success";
-        this.messageText = "Tarefa criada com sucesso!";
-        this.isError = false;
-        // this.newCompanyEvent(this.data);
-        // this.successMessage(this.data);
-        this.closeModal();
-        this.clearForm();
-      },
-      toggleCompany() {
-        this.isActiveCompany = !this.isActiveCompany;
-
-        if (this.isActiveCompany) {
-          this.isActiveLead = false;
-        }
-      },
-      toggleLead() {
-        this.isActiveLead = !this.isActiveLead;
-
-        if (this.isActiveLead) {
-          this.isActiveCompany = false;
-        }
-      },
-      updateForm(field, value) {
-        this.form[field] = value;
-      },
-      updateFormPriority(newPriority) {
-        this.form.priority = newPriority;
-      },
-      updateFormStatus(newStatus) {
-        this.form.status = newStatus;
-      },
+      this.newTask = await this.submitFormCreate('tasks', this.form);
+      this.$emit("new-task-event", this.newTask);
+      // this.isSuccess = true;
+      this.messageStatus = "success";
+      this.messageText = "Tarefa criada com sucesso!";
+      this.isError = false;
+      // this.newCompanyEvent(this.data);
+      // this.successMessage(this.data);
+      this.closeModal();
+      this.clearForm();
     },
-    watch: {
-      currentOpportunity(newValue) {
-        this.form.opportunity_id = newValue.id;
-      },
-      currentProject(newValue) {
-        this.form.project_id = newValue.id;
-      },
+    toggleCompany() {
+      this.isActiveCompany = !this.isActiveCompany;
+
+      if (this.isActiveCompany) {
+        this.isActiveLead = false;
+      }
     },
-  };
+    toggleLead() {
+      this.isActiveLead = !this.isActiveLead;
+
+      if (this.isActiveLead) {
+        this.isActiveCompany = false;
+      }
+    },
+    updateForm(field, value) {
+      this.form[field] = value;
+    },
+    updateFormPriority(newPriority) {
+      this.form.priority = newPriority;
+    },
+    updateFormStatus(newStatus) {
+      this.form.status = newStatus;
+    },
+  },
+  watch: {
+    currentOpportunity(newValue) {
+      this.form.opportunity_id = newValue.id;
+    },
+    currentProject(newValue) {
+      this.form.project_id = newValue.id;
+    },
+  },
+};
 </script>
-
-<style scoped>
-.modal.fade.show {
-  display: block;
-}
-
-.myModal {
-  position: fixed;
-  top: 0%;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.5); /* Escurecimento de fundo */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1050;
-}
-
-.modal-dialog {
-  margin: 15px;
-}
-
-.modal-content {
-  margin-top: 5%;
-  padding: 2rem;
-  background-color: #fff; /* Cor de fundo branca para o conteúdo do modal */
-  border-radius: 0.3rem;
-}
-
-.radio-group {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-</style>

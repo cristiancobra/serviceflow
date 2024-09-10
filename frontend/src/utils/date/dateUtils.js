@@ -32,7 +32,7 @@ export function convertUtcToLocal(utcDateString) {
     const hours = localDate.getHours();
     const minutes = localDate.getMinutes();
 
-    // Formatar a data sem segundos
+    // Formatar a data e hora sem segundos
     const formattedDate = `${day}/${month}/${year} ${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
 
     return formattedDate;

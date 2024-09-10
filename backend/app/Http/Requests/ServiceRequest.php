@@ -55,5 +55,11 @@ class ServiceRequest extends FormRequest
                 'profit' => $this->input('labor_hourly_total') * ($this->input('profit_percentage') / 100),
             ]);
         }
+
+        if($this->has('labor_hourly_total') && $this->has('profit')) {
+            $this->merge([
+                'price' => $this->input('labor_hourly_total') + $this->input('profit'),
+            ]);
+        }
     }
 }

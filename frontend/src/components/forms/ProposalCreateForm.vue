@@ -47,7 +47,7 @@
                             <div class="row mb-4 mt-4">
                                 <div class="col-md-6">
                                     <DateInput class="text-start" v-model="form.date" label="Início"
-                                        name="date_start" placeholder="início do prazo" :autoFillNow="true"
+                                        name="date" placeholder="início do prazo" :autoFillNow="true"
                                         @update="updateForm" />
                                 </div>
                                 <div class="col-md-6">
@@ -122,7 +122,7 @@ export default {
                 name: null,
                 description: null,
                 user_id: null,
-                date_start: null,
+                date: null,
                 opportunity_id: this.opportunityId,
                 validity_days: 30,
             },

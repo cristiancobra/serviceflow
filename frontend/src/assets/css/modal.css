@@ -4,3 +4,41 @@
     /* max-width: 600px;
     width: 600px; */
 }
+
+.myModal {
+    position: fixed;
+    top: 0%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Escurecimento de fundo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+  }
+
+
+.myModal .modal-content {
+    margin-top: 5%;
+    padding: 2rem;
+    background-color: #fff;
+    /* Cor de fundo branca para o conteúdo do modal */
+    border-radius: 0.3rem;
+  }
+
+  .modal.fade.show {
+    display: block;
+  }
+  
+  .modal-dialog {
+    margin: 15px;
+  }
+    
+  .radio-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }

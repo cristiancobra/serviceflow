@@ -1,18 +1,19 @@
 <template>
-  <div class="list-container">
-    <div class="row align-items-start">
-      <div class="col-1">
+  <div class="list-container mb-5 mt-0">
+    <div class="row">
+      <div class="col d-flex justify-content-left">
         <font-awesome-icon icon="fa-solid fa-tools" class="icon" />
-      </div>
-      <div class="col-8">
         <h2 class="title">SERVIÇOS</h2>
       </div>
-      <div class="col-3 d-flex justify-content-end">
-        <button class="button button-new" @click="toggle()">+</button>
-      </div>
     </div>
-    <div class="row" v-bind:class="{ 'd-none': isActive }">
-      <service-create-form @new-service-event="addServiceCreated" @toggle-service-form=toggle() />
+    <div class="row mt-3 mb-4">
+      <div class="col-10">
+        <input type="text" class="form-control search-container" v-model="searchTerm"
+          placeholder="Digite para buscar" />
+      </div>
+      <div class="col-2 d-flex justify-content-end">
+        <service-create-form @new-service-event="addServiceCreated" />  
+      </div>
     </div>
     <div class="row" v-for="service in services" v-bind:key="service.id">
       <div class="col cards">
@@ -38,18 +39,17 @@
 import { BACKEND_URL, SERVICE_URL } from "@/config/apiConfig";
 import axios from "axios";
 import ServiceCreateForm from '../forms/ServiceCreateForm.vue';
-// import CopyContentClipboard from "../CopyContentClipboard.vue";
+import { index } from "@/utils/requests/httpUtils";
 
 export default {
   name: "ServicesList",
   components: {
     ServiceCreateForm
-    // CopyContentClipboard,
   },
-  props: ["services"],
   data() {
     return {
       isActive: true,
+      services: [],
       updatedservice: {
         id: null,
         name: null,
@@ -62,10 +62,21 @@ export default {
     };
   },
   methods: {
+    addServiceCreated(newService) {
+      this.toggle();
+      this.services.unshift(newService);
+    },
     formatLaborHours(seconds) {
       const hours = Math.floor(seconds / 3600);
       const minutes = Math.floor((seconds % 3600) / 60);
       return `${hours}:${String(minutes).padStart(2, "0")}`;
+    },
+    async getServices() {
+      const services = await index("services");
+      this.services = services;
+    },
+    toggle() {
+      this.isActive = !this.isActive;
     },
     saveservice(service, field) {
       if (service.activeField === field) {
@@ -92,6 +103,9 @@ export default {
       }
     },
   },
+  mounted() {
+    this.getServices();
+  }
 };
 </script>
 

@@ -127,7 +127,6 @@ export default {
     convertDateTimeToLocal,
     async getOpportunity() {
       this.opportunity = await show("opportunities", this.opportunityId);
-      console.log('duration_time', this.opportunity.duration_time);
       this.currentOpportunity = this.opportunity;
       convertDateTimeToLocal(this.opportunity.date_start);
       this.opportunityLoaded = true;

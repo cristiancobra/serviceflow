@@ -18,8 +18,7 @@ export default {
   },
   data() {
     return {
-      date: new Date(),
-      localValue: this.convertDateTimeToLocal(this.modelValue),
+      localValue: this.modelValue,
     };
   },
   props: {
@@ -27,6 +26,7 @@ export default {
     label: String,
     placeholder: String,
     modelValue: [String, Number],
+    autoFillNow: Boolean, 
   },
   methods: {
     convertDateTimeToLocal,
@@ -38,12 +38,18 @@ export default {
     },
   },
   mounted() {
-    const timestampAtual = Date.now();
-    this.date = timestampAtual;
-
-    if (!this.modelValue) {
+    if (this.autoFillNow) {
+      this.localValue = new Date(); // String no formato ISO 8601
+      this.emitSave();
+    }
+    if (!this.localValue) {
       this.localValue = "não informado";
     }
+
+    // if(this.modelValue) {
+    //   this.localValue = this.convertDateTimeToLocal(this.modelValue);
+    // }
+    
 
     document.addEventListener('keydown', this.cancelEditing);
   },

@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Service;
-use App\Http\Resources\ServicesResource;
 use App\Http\Resources\ServiceResource;
 use App\Http\Requests\ServiceRequest;
-use Illuminate\Http\Request;
 
 class ServiceController extends Controller
 {
@@ -22,7 +20,7 @@ class ServiceController extends Controller
             ->orderBy('name', 'asc')
             ->paginate(500);
 
-        return ServicesResource::collection($services);
+        return ServiceResource::collection($services);
     }
 
     /**
@@ -31,26 +29,32 @@ class ServiceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ServiceRequest $request)
     {
         try {
             $service = new Service;
 
-            $service->fill($request->all());
-            // $service->account_id = 1;
-            // $service->user_id = 1;
-            $service->labor_hours = $request->labor_hours;
-            $service->labor_hourly_rate = $this->convertMoneyBrToDefault($request->labor_hourly_rate);
-            $service->labor_hourly_total = $this->calculateLaborHourlyTotal($service);
-            $service->profit_percentage = $request->profit_percentage;
-            $service->profit = $this->calculateProfit($service);
-            $service->price = $this->calculatePrice($service);
+            $service->fill($request->validated());
+
             $service->save();
 
-            return response()->json([
-                'message' => "Serviço $service->name atualizado",
-                'service' => $service,
-            ]);
+            return ServiceResource::make($service);
+
+            // $service->fill($request->all());
+            // // $service->account_id = 1;
+            // // $service->user_id = 1;
+            // $service->labor_hours = $request->labor_hours;
+            // $service->labor_hourly_rate = $this->convertMoneyBrToDefault($request->labor_hourly_rate);
+            // $service->labor_hourly_total = $service->calculateLaborHourlyTotal($service);
+            // $service->profit_percentage = $request->profit_percentage;
+            // $service->profit = $service->calculateProfit($service);
+            // $service->price = $service->calculatePrice($service);
+            // $service->save();
+
+            // return response()->json([
+            //     'message' => "Serviço $service->name atualizado",
+            //     'service' => $service,
+            // ]);
 
         } catch (ValidationException $validationException) {
             return response()->json([
@@ -114,7 +118,11 @@ class ServiceController extends Controller
      */
     public function destroy(Service $service)
     {
-        //
+        $service->delete();
+
+        return response()->json([
+            'message' => "Serviço $service->name deletado",
+        ]);
     }
 
     private function convertDecimalBrToDefault($value)
