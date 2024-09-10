@@ -22,6 +22,7 @@ class ServiceResource extends JsonResource
             'labor_hourly_rate' => $this->labor_hourly_rate,
             'labor_hourly_total' => $this->labor_hourly_total,
             'profit_percentage' => $this->profit_percentage,
+            'profit' => $this->profit,
             "price" => $this->price,
             'observations' => $this->observations,
 			"created_at" => $this->created_at,
