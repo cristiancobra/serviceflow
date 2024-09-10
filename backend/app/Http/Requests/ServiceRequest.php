@@ -45,8 +45,9 @@ class ServiceRequest extends FormRequest
         ]);
 
         if ($this->has('labor_hours') && $this->has('labor_hourly_rate')) {
+            $labor_hours_in_hours = $this->input('labor_hours') / 3600;
             $this->merge([
-                'labor_hourly_total' => $this->input('labor_hours') * $this->input('labor_hourly_rate'),
+                'labor_hourly_total' => $labor_hours_in_hours * $this->input('labor_hourly_rate'),
             ]);
         }
 
