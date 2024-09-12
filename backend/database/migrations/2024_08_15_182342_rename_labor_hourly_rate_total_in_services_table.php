@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('services', function (Blueprint $table) {
-            $table->renameColumn('labor_hourly_total', 'labor_hourly_total');
+            $table->renameColumn('labor_hourly_rate_total', 'labor_hourly_total');
         });
     }
 
@@ -26,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('services', function (Blueprint $table) {
-            $table->renameColumn('labor_hourly_total', 'labor_hourly_total');
+            $table->renameColumn('labor_hourly_total', 'labor_hourly_rate_total');
         });
     }
 };
