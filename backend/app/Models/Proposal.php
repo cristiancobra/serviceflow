@@ -22,7 +22,6 @@ class Proposal extends Model
         'total_hours',
         'total_operational_cost',
         'total_third_party_cost',
-        'profit_margin',  // Pode ser null
         'total_profit',
         'total_discount',
         'total_price',

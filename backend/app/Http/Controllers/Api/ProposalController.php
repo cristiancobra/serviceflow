@@ -41,6 +41,7 @@ class ProposalController extends Controller
                     $proposalThirdPartyCost += $serviceModel->third_party_cost * $serviceData['quantity'];
                     $proposalTotalDiscount += $serviceData['quantity'] * $serviceModel['discount'];
                     $propoposalTotalPrice += $serviceData['quantity'] * $serviceData['price'];
+                    $proposalTotalOperationalCost = $proposalTotalHours / 3600 * $serviceModel->labor_hourly_rate;
 
                     // services data
                     $proposalItems[] = new ProposalItem([
@@ -48,23 +49,25 @@ class ProposalController extends Controller
                         'account_id' => $serviceModel->account_id,
                         'name' => $serviceModel->name,
                         'quantity' => $serviceData['quantity'],
-                        // 'price' => $serviceData['price'],
-                        'total_price' => $serviceData['quantity'] * $serviceData['price'],
+                        'price' => $serviceData['price'],
+                        'profit' => $serviceModel->profit,
+                        'profit_percentage' => $serviceModel->profit_percentage,
+                        'labor_hours' => $serviceModel->labor_hours,
                         'labor_hours_total' => $serviceData['quantity'] * $serviceModel->labor_hours,
                         'labor_hourly_rate' => $serviceModel->labor_hourly_rate,
+                        'labor_hourly_rate_total' => $serviceData['quantity'] * $serviceModel->labor_hourly_rate,
                         'total_price' => $serviceData['quantity'] * $serviceData['price'],
                         'total_profit' => $serviceData['quantity'] * $serviceModel->profit,
-                        'profit_percentage_total' => $serviceModel->profit,
                     ]);
                 }
             }
             $proposal->total_hours = $proposalTotalHours;
             $proposal->total_third_party_cost = $proposalThirdPartyCost;
-            $proposal->total_operational_cost = $proposal->total_hours * $proposal->hourly_rate;
+            $proposal->total_operational_cost = $proposalTotalOperationalCost;
             $proposal->total_profit = $proposal->total_price - $proposal->total_operational_cost - $proposal->total_third_party_cost;
             $proposal->total_discount = $proposalTotalDiscount;
             $proposal->total_price = $propoposalTotalPrice - $proposalTotalDiscount;
-            $proposal->profit_margin = ($proposal->total_profit / $proposal->total_price) * 100;
+            $proposal->total_profit = ($proposal->total_profit / $proposal->total_price) * 100;
             $proposal->save();
             
             foreach ($proposalItems as $proposalItem) {

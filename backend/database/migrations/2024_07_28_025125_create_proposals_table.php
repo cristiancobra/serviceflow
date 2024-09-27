@@ -25,7 +25,7 @@ return new class extends Migration
             $table->integer('total_hours');
             $table->decimal('total_operational_cost', 10, 2);
             $table->decimal('total_third_party_cost', 10, 2);
-            $table->decimal('profit_margin', 5, 2);
+            $table->decimal('total_profit', 5, 2);
             $table->decimal('total_profit', 10, 2);
             $table->decimal('total_discount', 10, 2);
             $table->decimal('total_price', 10, 2);

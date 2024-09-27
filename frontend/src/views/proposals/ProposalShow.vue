@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="list-container">
+    <div class="list-container mt-5">
       <div class="row align-items-start pb-5">
         <div class="col-1">
           <font-awesome-icon icon="fa-solid fa-tools" class="primary big-icon" />
@@ -43,8 +43,8 @@
           </p>
         </div>
         <div class="col-1 text-end">
-          <decimal-editable-field name="profit_margin" v-model="proposal.profit_margin"
-            placeholder="percentual do lucro" @save="updateService('profit_margin', $event)" />
+          <decimal-editable-field name="total_profit" v-model="proposal.total_profit"
+            placeholder="percentual do lucro" @save="updateService('total_profit', $event)" />
         </div>
       </div>
       <div class="row">

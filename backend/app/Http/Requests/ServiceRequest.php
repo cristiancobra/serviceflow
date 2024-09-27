@@ -53,14 +53,23 @@ class ServiceRequest extends FormRequest
 
         if($this->has('profit_percentage') && $this->has('labor_hourly_total')) {
             $this->merge([
-                'profit' => $this->input('labor_hourly_total') * ($this->input('profit_percentage') / 100),
+                'price' => $this->input('labor_hourly_total') / (1 - ($this->input('profit_percentage') / 100)),
             ]);
-        }
-
-        if($this->has('labor_hourly_total') && $this->has('profit')) {
             $this->merge([
-                'price' => $this->input('labor_hourly_total') + $this->input('profit'),
+                'profit' => $this->input('price') - $this->input('labor_hourly_total'),
             ]);
         }
+        
+        // if($this->has('profit_percentage') && $this->has('labor_hourly_total')) {
+        //     $this->merge([
+        //         'profit' => $this->input('labor_hourly_total') * ($this->input('profit_percentage') / 100),
+        //     ]);
+        // }
+
+        // if($this->has('labor_hourly_total') && $this->has('profit')) {
+        //     $this->merge([
+        //         'price' => $this->input('labor_hourly_total') + $this->input('profit'),
+        //     ]);
+        // }
     }
 }
