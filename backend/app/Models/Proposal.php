@@ -23,6 +23,7 @@ class Proposal extends Model
         'total_operational_cost',
         'total_third_party_cost',
         'total_profit',
+        'total_profit_percentage',
         'total_discount',
         'total_price',
         'validity_days'

@@ -15,15 +15,8 @@
                     </div>
                     <div class="modal-body">
                         <form @submit.prevent="submitForm">
-                            <div class="row">
-                                <div class="col-12">
-                                    <TextInput class="text-start" label="Título" name="name" v-model="form.name"
-                                        placeholder="título da oportunidade" />
-                                </div>
-                            </div>
-
                             <div class="row mb-4 mt-4">
-                                <TextAreaInput class="text-start" label="Descrição:" name="description"
+                                <TextAreaInput class="text-start" label="Detalhamento:" name="description"
                                     v-model="form.description" placeholder="Detalhamento da oportunidade" :rows="4" />
                             </div>
                             <div class="row mb-4 mt-4">
@@ -100,14 +93,12 @@ import { index } from "@/utils/requests/httpUtils";
 import { submitFormCreate } from "@/utils/requests/httpUtils";
 import DateInput from "@/components/forms/inputs/date/DateInput.vue";
 import TextAreaInput from "./inputs/textarea/TextAreaInput";
-import TextInput from "./inputs/text/TextInput";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
 
 export default {
     components: {
         DateInput,
         TextAreaInput,
-        TextInput,
         UsersSelectInput,
     },
     props: {

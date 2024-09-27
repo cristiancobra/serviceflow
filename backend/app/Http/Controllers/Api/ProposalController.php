@@ -64,12 +64,13 @@ class ProposalController extends Controller
             $proposal->total_hours = $proposalTotalHours;
             $proposal->total_third_party_cost = $proposalThirdPartyCost;
             $proposal->total_operational_cost = $proposalTotalOperationalCost;
-            $proposal->total_profit = $proposal->total_price - $proposal->total_operational_cost - $proposal->total_third_party_cost;
+            $proposal->total_profit = $propoposalTotalPrice - $proposalTotalOperationalCost - $proposalThirdPartyCost;
             $proposal->total_discount = $proposalTotalDiscount;
             $proposal->total_price = $propoposalTotalPrice - $proposalTotalDiscount;
-            $proposal->total_profit = ($proposal->total_profit / $proposal->total_price) * 100;
+            $proposal->total_profit_percentage = ($proposal->total_profit / $proposal->total_price) * 100;
+            // dd($proposal->total_profit_percentage);
             $proposal->save();
-            
+
             foreach ($proposalItems as $proposalItem) {
                 $proposalItem->proposal_id = $proposal->id;
                 $proposalItem->save();
@@ -110,7 +111,7 @@ class ProposalController extends Controller
         ], 404);
     }
 
-        /**
+    /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Proposal  $proposal
@@ -118,8 +119,8 @@ class ProposalController extends Controller
      */
     public function destroy(Proposal $proposal)
     {
-        foreach ($proposal->services as $service) {
-            $proposal->services()->updateExistingPivot($service->id, ['deleted_at' => now()]);
+        foreach ($proposal->proposalItems as $proposalItem) {
+            $proposalItem->delete();
         }
         $proposal->delete();
 
