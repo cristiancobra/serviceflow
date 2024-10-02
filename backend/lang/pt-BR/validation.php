@@ -166,9 +166,11 @@ return [
     */
 
     'attributes' => [
+        'cel_phone' => 'TELEFONE CELULAR',
         'email' => 'E-MAIL',
         'legal_name' => 'RAZÃO SOCIAL',
-        'cel_phone' => 'TELEFONE CELULAR',
+        'name' => 'NOME',
+        'price' => 'PREÇO',
     ],
 
 ];

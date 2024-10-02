@@ -26,12 +26,12 @@
                             <div class="col">
                                 {{ formatDateBr(proposal.date) }}
                             </div>
-                            <div class="col-4">
-                                <p v-if="proposal.name" class="name ps-2">
-                                    {{ proposal.name }}
+                            <div class="col-5 ">
+                                <p v-if="proposal.description" class="name ps-2">
+                                    {{ proposal.description }}
                                 </p>
                                 <p v-else class="name ps-2">
-                                    Sem nome
+                                    ---
                                 </p>
                             </div>
                             <div class="col text-end">
@@ -40,20 +40,20 @@
                         </div>
                     </div>
                 </div>
-                <div class="row service-item pt-1 pb-1" v-for="proposalItem in proposal.proposalItems" v-bind:key="proposalItem.id">
+                <div class="row service-item pt-1 pb-1" v-for="proposalService in proposal.proposalServices" v-bind:key="proposalService.id">
                     <div class="col-1 offset-2 d-flex align-items-center justify-content-center">
                         <font-awesome-icon icon="fa-solid fa-coins" class="primary" />
                     </div>
                     <div class="col-7">
                         <p class="name ps-2">
-                            {{ proposalItem.name }}
+                            {{ proposalService.name }}
                         </p>
                     </div>
                     <div class="col">
-                        {{ proposalItem.quantity }}
+                        {{ proposalService.quantity }}
                     </div>
                     <div class="col text-end">
-                        {{ proposalItem.total_price }}
+                        {{ proposalService.total_price }}
                     </div>
                 </div>
             </router-link>

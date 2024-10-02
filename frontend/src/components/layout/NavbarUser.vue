@@ -1,95 +1,108 @@
 <template>
   <div class="sticky-top">
-  <nav class="navbar navbar-expand-lg ">
-    <a class="navbar-brand" href="#">
-      <img :src="require('@/assets/logo-serviceflow-BRANCO.png')" class="logo" alt="logo-serviceflow" />
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <router-link to="/">
-          <li class="nav-item" @mouseover="toggleActive('home')" :class="{ active: activeItem === 'home' }">
-            <font-awesome-icon icon="fas fa-calendar" />
-            <span class="router-link-text">AGENDA</span>
-          </li>
-        </router-link>
+    <nav class="navbar navbar-expand-lg ">
+      <a class="navbar-brand" href="#">
+        <img :src="require('@/assets/logo-serviceflow-BRANCO.png')" class="logo" alt="logo-serviceflow" />
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <router-link to="/">
+            <li class="nav-item" @mouseover="toggleActive('home')" :class="{ active: activeItem === 'home' }">
+              <font-awesome-icon icon="fas fa-calendar" />
+              <span class="router-link-text">AGENDA</span>
+            </li>
+          </router-link>
 
-        <router-link to="/leads">
-          <li class="nav-item" @mouseover="toggleActive('contacts')" :class="{ active: activeItem === 'contacts' }">
-            <font-awesome-icon icon="fas fa-user" />
-            <span class="router-link-text">CONTATOS</span>
-          </li>
-        </router-link>
+          <router-link to="/leads">
+            <li class="nav-item" @mouseover="toggleActive('contacts')" :class="{ active: activeItem === 'contacts' }">
+              <font-awesome-icon icon="fas fa-user" />
+              <span class="router-link-text">CONTATOS</span>
+            </li>
+          </router-link>
 
-        <router-link to="/companies">
-          <li class="nav-item" @mouseover="toggleActive('companies')" :class="{ active: activeItem === 'companies' }">
-            <font-awesome-icon icon="fas fa-briefcase" />
-            <span class="router-link-text">EMPRESAS</span>
-          </li>
-        </router-link>
+          <router-link to="/companies">
+            <li class="nav-item" @mouseover="toggleActive('companies')" :class="{ active: activeItem === 'companies' }">
+              <font-awesome-icon icon="fas fa-briefcase" />
+              <span class="router-link-text">EMPRESAS</span>
+            </li>
+          </router-link>
 
-        <router-link to="/services">
-          <li class="nav-item" @mouseover="toggleActive('services')" :class="{ active: activeItem === 'services' }">
-            <font-awesome-icon icon="fas fa-coins" />
-            <span class="router-link-text">SERVIÇOS</span>
-          </li>
-        </router-link>
+          <router-link to="/opportunities">
+            <li class="nav-item" @mouseover="toggleActive('opportunities')"
+              :class="{ active: activeItem === 'opportunities' }">
+              <font-awesome-icon icon="fas fa-bullseye" />
+              <span class="router-link-text">OPORTUNIDADES</span>
+            </li>
+          </router-link>
 
-        <router-link to="/opportunities">
-          <li class="nav-item" @mouseover="toggleActive('opportunities')" :class="{ active: activeItem === 'opportunities' }">
-            <font-awesome-icon icon="fas fa-bullseye" />
-            <span class="router-link-text">OPORTUNIDADES</span>
-          </li>
-        </router-link>
+          <router-link to="/projects">
+            <li class="nav-item" @mouseover="toggleActive('projects')" :class="{ active: activeItem === 'projects' }">
+              <font-awesome-icon icon="fas fa-project-diagram" />
+              <span class="router-link-text">PROJETOS</span>
+            </li>
+          </router-link>
 
-        <router-link to="/projects">
-          <li class="nav-item" @mouseover="toggleActive('projects')" :class="{ active: activeItem === 'projects' }">
-            <font-awesome-icon icon="fas fa-project-diagram" />
-            <span class="router-link-text">PROJETOS</span>
-          </li>
-        </router-link>
+          <router-link to="/tasks">
+            <li class="nav-item" @mouseover="toggleActive('tasks')" :class="{ active: activeItem === 'tasks' }">
+              <font-awesome-icon icon="fas fa-tasks" />
+              <span class="router-link-text">TAREFAS</span>
+            </li>
+          </router-link>
 
-        <router-link to="/tasks">
-          <li class="nav-item" @mouseover="toggleActive('tasks')" :class="{ active: activeItem === 'tasks' }">
-            <font-awesome-icon icon="fas fa-tasks" />
-            <span class="router-link-text">TAREFAS</span>
+          <router-link to="/journeys">
+            <li class="nav-item" @mouseover="toggleActive('journeys')" :class="{ active: activeItem === 'journeys' }">
+              <font-awesome-icon icon="fas fa-clock" />
+              <span class="router-link-text">JORNADAS</span>
+            </li>
+          </router-link>
+          <li class="nav-item" @mouseover="showSubmenu = true" @mouseleave="showSubmenu = false"
+            :class="{ active: activeItem === 'configuracoes' }">
+            <font-awesome-icon icon="fas fa-cogs" />
+            <span class="router-link-text">CONFIGURAÇÕES</span>
+            <ul class="submenu" v-show="showSubmenu">
+              <router-link to="/services">
+                <li class="nav-item" @mouseover="toggleActive('services')"
+                  :class="{ active: activeItem === 'services' }">
+                  <font-awesome-icon icon="fas fa-coins" />
+                  <span class="router-link-text">SERVIÇOS</span>
+                </li>
+              </router-link>
+              <router-link to="/costs">
+                <li class="nav-item" @mouseover="toggleActive('costs')" :class="{ active: activeItem === 'costs' }">
+                  <font-awesome-icon icon="fas fa-dollar-sign" />
+                  <span class="router-link-text">CUSTOS</span>
+                </li>
+              </router-link>
+            </ul>
           </li>
-        </router-link>
-
-        <router-link to="/journeys">
-          <li class="nav-item" @mouseover="toggleActive('journeys')" :class="{ active: activeItem === 'journeys' }">
-            <font-awesome-icon icon="fas fa-clock" />
-            <span class="router-link-text">JORNADAS</span>
-          </li>
-        </router-link>
-
-        <router-link to="/logout">
-          <li class="nav-item" @click="logout" @mouseover="toggleActive('submitLogout')"
-            :class="{ active: activeItem === 'logout' }">
-            <font-awesome-icon icon="fas fa-sign-out" />
-            <span class="router-link-text">SAIR</span>
-          </li>
-        </router-link>
-      </ul>
-    </div>
-  </nav>
-  <div v-if="openJourney" class="second-line">
-    <router-link v-if="openJourney" :to="{ name: 'taskShow', params: { id: openJourney.task_id } }">
-      <div class="col-12">
-        <p class="task-doing">
-          <font-awesome-icon icon="fas fa-clock alert" />
-          fazendo: 
-          <span style="font-weight: normal;">
-            {{ openJourney.name }}
-          </span>
-        </p>
+          <router-link to="/logout">
+            <li class="nav-item" @click="logout" @mouseover="toggleActive('submitLogout')"
+              :class="{ active: activeItem === 'logout' }">
+              <font-awesome-icon icon="fas fa-sign-out" />
+              <span class="router-link-text">SAIR</span>
+            </li>
+          </router-link>
+        </ul>
       </div>
-    </router-link>
+    </nav>
+    <div v-if="openJourney" class="second-line">
+      <router-link v-if="openJourney" :to="{ name: 'taskShow', params: { id: openJourney.task_id } }">
+        <div class="col-12">
+          <p class="task-doing">
+            <font-awesome-icon icon="fas fa-clock alert" />
+            fazendo:
+            <span style="font-weight: normal;">
+              {{ openJourney.name }}
+            </span>
+          </p>
+        </div>
+      </router-link>
+    </div>
   </div>
-</div>
 </template>
 
 
@@ -101,22 +114,17 @@ export default {
   data() {
     return {
       activeItem: null,
+      showSubmenu: false,
     };
   },
   methods: {
     ...mapActions(['logout']),
     async submitLogout() {
-        await this.logout();
+      await this.logout();
+      this.toggleActive('logout');
     },
     toggleActive(item) {
-      const navItem = document.querySelector(".nav-item");
-
-      if (
-        !navItem.classList.contains("router-link-active") &&
-        !navItem.classList.contains("router-link-exact-active")
-      ) {
-        this.activeItem = item;
-      }
+      this.activeItem = item;
     },
   },
   computed: {
@@ -126,7 +134,6 @@ export default {
 </script>
 
 <style>
-
 .alert {
   color: red !important;
   background-color: #fff3cd;
@@ -161,6 +168,7 @@ nav a {
   margin: 0 4px 0 4px;
   font-weight: 200;
   font-size: 1rem;
+  color: white;
 }
 
 .nav-item a {
@@ -172,9 +180,7 @@ nav a {
   /* color: var(--purple); */
 }
 
-.nav-item:hover a {
-  
-}
+.nav-item:hover a {}
 
 .nav-item.active:hover {
   border-width: 1px;
@@ -197,6 +203,7 @@ nav a {
 
 .nav-item .router-link-text {
   /* display: none; */
+  color: white;
   transition: display 0.3s ease;
 }
 
@@ -214,13 +221,26 @@ nav a.router-link-exact-active {
 nav a.router-link-exact-active:hover {
   border-style: none;
 }
+
 .second-line {
   background-color: var(--orange-light);
 }
+
 .second-line a {
   text-decoration: none;
   color: black;
 }
+
+.submenu {
+  display: none;
+  position: absolute;
+  background-color: var(--primary);
+}
+
+.nav-item:hover .submenu {
+  display: block;
+}
+
 .task-doing {
   padding: 0.4rem 2rem;
   text-align: right;

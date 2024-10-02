@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ProposalItem extends Model
+class ProposalService extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
-    protected $table = 'proposal_items';
+    protected $table = 'proposal_services';
 
     protected $fillable = [
         'id',

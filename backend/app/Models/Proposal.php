@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Opportunity;
-use App\Models\ProposalItem;
+use App\Models\ProposalCost;
+use App\Models\ProposalService;
 
 class Proposal extends Model
 {
@@ -34,8 +35,13 @@ class Proposal extends Model
         return $this->belongsTo(Opportunity::class);
     }
 
-    public function proposalItems()
+    public function proposalServices()
     {
-        return $this->hasMany(ProposalItem::class);
+        return $this->hasMany(ProposalService::class);
+    }
+
+    public function proposalCosts()
+    {
+        return $this->hasMany(ProposalCost::class);
     }
 }

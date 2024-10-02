@@ -59,7 +59,7 @@
                   </div>
                   <div class="col">
                     <input class="form-control" type="text" name="labor_hourly_rate" v-model="form.labor_hourly_rate"
-                      v-mask-decimal.br="2" @input="updateLaborHourlyRate" />
+                      v-mask-decimal.br="2" />
                   </div>
                 </div>
                 <div class="row">

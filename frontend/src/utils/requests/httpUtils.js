@@ -56,16 +56,20 @@ export const submitFormCreate = async (model, form) => {
     );
 
     const { data } = response.data;
-    return data;
+
+    return { data, error: null };
 
   } catch (error) {
     console.error("Error submitting form:", error);
 
-    if (!error.response) {
-      throw new Error("Ocorreu um erro ao enviar o formulário. Tente novamente.");
+    let errorData;
+    if (!error.response || !error.response.data.errors) {
+      errorData = { form: ["Ocorreu um erro ao enviar o formulário. Tente novamente."] };
     } else {
-      throw error;
+      errorData = error.response.data.errors;
     }
+
+    return { data: null, error: errorData };
   }
 };
 
@@ -97,6 +101,7 @@ export const updateField = async (model, id, fieldName, value) => {
 export const validateModel = (model) => {
   const VALID_MODELS = [
     "companies",
+    "costs",
     "leads",
     "projects",
     "proposals",

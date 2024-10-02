@@ -2,8 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CompanyController;
+use App\Http\Controllers\Api\CostController;
 use App\Http\Controllers\Api\JourneyController;
 use App\Http\Controllers\Api\LeadController;
 use App\Http\Controllers\Api\OpportunityController;
@@ -35,10 +37,17 @@ Route::middleware('auth:sanctum')->group(function () {
 	// Check token
 	Route::middleware('auth:sanctum')->get('/check-token', [AuthController::class, 'checkToken']);
 
+	// ACCOUNTS
+	Route::apiResource('accounts', AccountController::class)
+		->names('accounts');
+
 	// COMPANIES
 	Route::apiResource('companies', CompanyController::class)
 		->names('companies');
 
+	// COSTS
+	Route::apiResource('costs', CostController::class)
+		->names('costs');
 
 	// JOURNEYS
 	Route::get('/journeys-by-task-id', [JourneyController::class, 'getJourneysByTaskId'])
@@ -73,8 +82,11 @@ Route::middleware('auth:sanctum')->group(function () {
 		->names('projects');
 
 	// PROPOSALS
-	Route::get('/proposals-by-opportunity-id', [ProposalController::class, 'getProposalsByOpportunityId'])
+	Route::get('proposals/proposals-by-opportunity-id', [ProposalController::class, 'getProposalsByOpportunityId'])
 		->name('proposals.opportunity-id');
+
+	Route::get('/proposals/{proposal}/pdf', [ProposalController::class, 'exportPdf'])
+		->name('proposals.exportPdf');
 
 	Route::apiResource('proposals', ProposalController::class)
 		->names('proposals');

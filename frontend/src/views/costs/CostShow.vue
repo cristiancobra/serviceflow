@@ -5,62 +5,27 @@
         <font-awesome-icon icon="fa-solid fa-tools" class="primary big-icon" />
       </div>
       <div class="col">
-        <h2 class="title">SERVIÇO</h2>
+        <h2 class="title">CUSTO DE PRODUÇÃO</h2>
       </div>
     </div>
     <div class="row pb-5">
       <div class="col title">
-        <TextEditableField name="name" v-model="service.name" placeholder="descrição detalhada do serviço"
+        <TextEditableField name="name" v-model="cost.name" placeholder="descrição detalhada do serviço"
           @save="updateService('name', $event)" />
       </div>
     </div>
     <div class="row">
-      <div class="col-9 d-flex justify-content-end">
+      <div class="col-10 d-flex justify-content-end">
         <p>
           <font-awesome-icon icon="fa fa-clock" />
-          <span class="label"> Custo operacional</span>
+          <span class="label"> Custo total</span>
         </p>
       </div>
-      <div class="col-1  d-flex justify-content-end">
-        <hours-decimal-editable-field name="labor_hours" v-model="service.labor_hours"
-          placeholder="quantidade total de horas" @save="updateService('labor_hours', $event)" />
-        h
-      </div>
-      <div class="col-1 text-end">
-        <money-editable-field name="labor_hourly_rate" v-model="service.labor_hourly_rate"
-          placeholder="valor da hora de trabalho" @save="updateService('labor_hourly_rate', $event)" />
-      </div>
-      <div class="col-1 text-end">
-        <money-field name="labor_hourly_total" v-model="service.labor_hourly_total" />
+      <div class="col-2 text-end">
+        <money-field name="price" v-model="cost.price" />
       </div>
     </div>
-    <div class="row">
-      <div class="col-9 d-flex justify-content-end">
-        <p>
-          <font-awesome-icon icon="fas fa-percent" />
-          <span class="label"> Percentual de lucro: </span>
-        </p>
-      </div>
-      <div class="col-2  d-flex justify-content-end">
-        <decimal-editable-field name="profit_percentage" v-model="service.profit_percentage"
-          placeholder="percentual do lucro" @save="updateService('profit_percentage', $event)" />
-          %
-      </div>
-      <div class="col-1 text-end">
-        <money-field name="profit" v-model="service.profit" />
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-9 d-flex justify-content-end">
-        <p>
-          <font-awesome-icon icon="fas fa-dollar-sign" />
-          <span class="label"> Preço: </span>
-        </p>
-      </div>
-      <div class="col-3 text-end">
-        <money-field name="price" v-model="service.price" />
-      </div>
-    </div>
+ 
     <div class="row pt-5 ">
       <div class="col-5">
         <p>
@@ -69,7 +34,7 @@
         </p>
       </div>
       <div class="col-1 text-end">
-        {{ formatDateBr(service.created_at) }}
+        {{ formatDateBr(cost.created_at) }}
       </div>
     </div>
     <div class="row mt-5 mb-5">
@@ -85,24 +50,17 @@
 
 <script>
 import { destroy, show, updateField } from "@/utils/requests/httpUtils";
-import DecimalEditableField from "@/components/fields/number/DecimalEditableField";
-import MoneyEditableField from "@/components/fields/number/MoneyEditableField";
 import TextEditableField from "@/components/fields/text/TextEditableField";
 import MoneyField from '../../components/fields/number/MoneyField.vue';
-import HoursDecimalEditableField from '../../components/fields/number/HoursDecimalEditableField.vue';
 
 export default {
-  name: "ServiceShow",
   data() {
     return {
-      service: [],
-      serviceId: "",
+      cost: [],
+      costId: "",
     };
   },
   components: {
-    DecimalEditableField,
-    HoursDecimalEditableField,
-    MoneyEditableField,
     TextEditableField,
     MoneyField,
   },
@@ -111,8 +69,8 @@ export default {
     show,
     updateField,
     async deleteService() {
-      this.response = await destroy('services', this.serviceId);
-      this.$router.push({ name: "serviceIndex" });
+      this.response = await destroy('costs', this.costId);
+      this.$router.push({ name: "costIndex" });
     },
     formatDateBr(date) {
       // Verifica se a data é válida
@@ -128,20 +86,21 @@ export default {
 
       return dateBr;
     },
-    async getService() {
-      this.service = await show('services', this.serviceId);
+    async getCost() {
+      this.cost = await show('costs', this.costId);
+      console.log(this.cost);
     },
-    setServiceId(serviceId) {
-      this.serviceId = serviceId;
+    setCostId(costId) {
+      this.costId = costId;
     },
     async updateService(fieldName, editedValue) {
-      this.service = await updateField("services", this.serviceId, fieldName, editedValue);
-      console.log(this.service);
+      this.cost = await updateField("costs", this.costId, fieldName, editedValue);
+      console.log(this.cost);
     },
   },
   async mounted() {
-    this.setServiceId(this.$route.params.id);
-    this.getService();
+    this.setCostId(this.$route.params.id);
+    this.getCost();
   },
 };
 </script>

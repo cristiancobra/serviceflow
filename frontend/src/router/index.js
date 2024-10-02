@@ -3,6 +3,8 @@ import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 import CompaniesIndex from '../views/companies/CompaniesIndex.vue'
 import CompanyShow from '../views/companies/CompanyShow.vue'
+import CostsIndex from '../views/costs/CostsIndex.vue'
+import CostShow from '../views/costs/CostShow.vue'
 import JourneysIndex from '../views/journeys/JourneysIndex.vue'
 import LeadsIndex from '../views/leads/LeadsIndex.vue'
 import LeadShow from '../views/leads/LeadShow.vue'
@@ -32,6 +34,16 @@ const routes = [
     path: '/companies/:id',
     name: 'companyShow',
     component: CompanyShow
+  },
+  {
+    path: '/costs',
+    name: 'costsIndex',
+    component: CostsIndex
+  },
+  {
+    path: '/costs/:id',
+    name: 'costShow',
+    component: CostShow
   },
   {
     path: '/leads',

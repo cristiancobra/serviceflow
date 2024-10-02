@@ -1,122 +1,137 @@
 <template>
-  <div class="container">
-    <div class="list-container mt-5">
-      <div class="row align-items-start pb-5">
-        <div class="col-1">
-          <font-awesome-icon icon="fa-solid fa-tools" class="primary big-icon" />
-        </div>
-        <div class="col">
-          <h2 class="title">PROPOSTA</h2>
-        </div>
+  <div class="list-container mt-5">
+    <div class="row align-items-start pb-5">
+      <div class="col-1">
+        <font-awesome-icon icon="fa-solid fa-tools" class="primary big-icon" />
       </div>
-      <div class="row pb-5" v-if="proposal.opportunity">
-        {{ proposal.opportunity.name }}
+      <div class="col">
+        <h2 class="title">PROPOSTA</h2>
       </div>
-      <div class="row">
-        <div class="col-5">
-          <p>
-            <font-awesome-icon icon="fa fa-clock" />
-            <span class="label"> Horas de trabalho: </span>
-          </p>
-        </div>
-        <div class="col-1 text-end">
-          <hours-decimal-editable-field name="total_hours" v-model="proposal.total_hours"
-            placeholder="descrição detalhada do serviço" @save="updateService('total_hours', $event)" />
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-5">
-          <p>
-            <font-awesome-icon icon="fa fa-calendar-check" />
-            <span class="label"> Total de horas de trabalho: </span>
-          </p>
-        </div>
-        <div class="col-1 text-end">
-          <money-field name="total_operational_cost" v-model="proposal.total_operational_cost" />
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-5">
-          <p>
-            <font-awesome-icon icon="fas fa-percent" />
-            <span class="label"> Percentual de lucro: </span>
-          </p>
-        </div>
-        <div class="col-1 text-end">
-          <decimal-editable-field name="total_profit" v-model="proposal.total_profit"
-            placeholder="percentual do lucro" @save="updateService('total_profit', $event)" />
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-5">
-          <p>
-            <font-awesome-icon icon="fas fa-money-bill" />
-            <span class="label"> Lucro: </span>
-          </p>
-        </div>
-        <div class="col-1 text-end">
-          <money-field name="total_profit" v-model="proposal.total_profit" />
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-5">
-          <p>
-            <font-awesome-icon icon="fas fa-dollar-sign" />
-            <span class="label"> Preço: </span>
-          </p>
-        </div>
-        <div class="col-1 text-end">
-          <money-field name="price" v-model="proposal.total_price" />
-        </div>
-      </div>
-      <div class="row pt-5 ">
-        <div class="col-5">
-          <p>
-            <font-awesome-icon icon="fa fa-calendar-alt" />
-            <span class="label"> Data de criação: </span>
-          </p>
-        </div>
-        <div class="col-1 text-end">
-          {{ formatDateBr(proposal.created_at) }}
-        </div>
-      </div>
-      <div class="row pt-5">
-        <p class="title">
-          Itens da proposta
+    </div>
+    <div class="row pb-5" v-if="proposal.opportunity">
+      {{ proposal.opportunity.name }}
+    </div>
+    <div class="row">
+      <div class="col-9 d-flex justify-content-end">
+        <p>
+          <font-awesome-icon icon="fa fa-clock" />
+          <span class="label"> Custo operacional</span>
         </p>
       </div>
-      <div class="row service-item pt-1 pb-1" v-for="proposalItem in proposal.proposalItems"
-        v-bind:key="proposalItem.id">
-        <div class="col-1 offset-2 d-flex align-items-center justify-content-center">
-          <font-awesome-icon icon="fa-solid fa-coins" class="primary" />
-        </div>
-        <div class="col-7">
-          <p class="name ps-2">
-            {{ proposalItem.name }}
-          </p>
-        </div>
-        <div class="col">
-          {{ proposalItem.quantity }}
-        </div>
-        <div class="col text-end">
-          {{ proposalItem.total_price }}
-        </div>
+      <div class="col-1  d-flex justify-content-end">
+        <hours-decimal-editable-field name="total_hours" v-model="proposal.total_hours"
+          placeholder="quantidade total de horas" @save="updateService('total_hours', $event)" />
+        h
       </div>
-
-
-      <div class="row mt-5 mb-5">
-        <div>
-          <button class="offset-10 col-1 myButton delete" @click="deleteProposal()">
-            excluir
-          </button>
-        </div>
+      <div class="col-1 text-end">
+        <money-field name="total_operational_cost" v-model="proposal.total_operational_cost" />
       </div>
+    </div>
+    <div class="row">
+      <div class="col-9 d-flex justify-content-end">
+        <p>
+          <font-awesome-icon icon="fa fa-clock" />
+          <span class="label"> Custos de propdução</span>
+        </p>
+      </div>
+      <div class="col-2 text-end">
+        <money-field name="total_third_party_cost" v-model="proposal.total_third_party_cost" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-9 d-flex justify-content-end">
+        <p>
+          <font-awesome-icon icon="fas fa-percent" />
+          <span class="label"> Lucro: </span>
+        </p>
+      </div>
+      <div class="col-1 d-flex justify-content-center">
+        <decimal-editable-field name="total_profit_percentage" v-model="proposal.total_profit_percentage	"
+          placeholder="percentual do lucro" @save="updateService('total_profit_percentage', $event)" />
+        %
+      </div>
+      <div class="col-1 text-end">
+        <money-field name="total_profit" v-model="proposal.total_profit" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-9 d-flex justify-content-end">
+        <p>
+          <font-awesome-icon icon="fas fa-dollar-sign" />
+          <span class="label"> Preço: </span>
+        </p>
+      </div>
+      <div class="col-2 text-end">
+        <money-field name="price" v-model="proposal.total_price" />
+      </div>
+    </div>
+    <div class="row pt-5 ">
+      <div class="col-5">
+        <p>
+          <font-awesome-icon icon="fa fa-calendar-alt" />
+          <span class="label"> Data de criação: </span>
+        </p>
+      </div>
+      <div class="col-1 text-end">
+        {{ formatDateBr(proposal.created_at) }}
+      </div>
+    </div>
+    <div class="row pt-5">
+      <p class="title">
+        Itens da proposta
+      </p>
+    </div>
+    <div class="row service-item pt-1 pb-1" v-for="proposalService in proposal.proposalServices" v-bind:key="proposalService.id">
+      <div class="col-1 d-flex align-items-center justify-content-center">
+        <font-awesome-icon icon="fa-solid fa-coins" class="primary" />
+      </div>
+      <div class="col-8">
+        <p class="name ps-2">
+          {{ proposalService.name }}
+        </p>
+      </div>
+      <div class="col-1">
+        {{ proposalService.quantity }}
+      </div>
+      <div class="col-2 text-end">
+        {{ proposalService.total_price }}
+      </div>
+    </div>
+    <div class="row pt-5">
+      <p class="title">
+        Custos de produção
+      </p>
+    </div>
+    <div class="row service-item pt-1 pb-1" v-for="proposalCost in proposal.proposalCosts" v-bind:key="proposalCost.id">
+      <div class="col-1 d-flex align-items-center justify-content-center">
+        <font-awesome-icon icon="fa-solid fa-coins" class="primary" />
+      </div>
+      <div class="col-8">
+        <p class="name ps-2">
+          {{ proposalCost.name }}
+        </p>
+      </div>
+      <div class="col-1">
+        {{ proposalCost.quantity }}
+      </div>
+      <div class="col-2 text-end">
+        {{ proposalCost.total_price }}
+      </div>
+    </div>
+    <div class="row mt-5 mb-5">
+      <button class="button delete" @click="deleteProposal()">
+        excluir
+      </button>
+      <button class="button-new delete" @click="exportPDF()">
+        Gerar PDF
+      </button>
     </div>
   </div>
 </template>
 
 
 <script>
+import { BACKEND_URL } from "@/config/apiConfig";
 import { destroy, show, updateField } from "@/utils/requests/httpUtils";
 import DecimalEditableField from "@/components/fields/number/DecimalEditableField";
 import MoneyField from '../../components/fields/number/MoneyField.vue';
@@ -156,6 +171,10 @@ export default {
       const dateBr = `${day}/${month}/${year}`;
 
       return dateBr;
+    },
+    exportPDF() {
+      const url = `${BACKEND_URL}proposals/${this.proposal.id}/pdf`;
+      window.open(url, '_blank');
     },
     async getProposal() {
       this.proposal = await show('proposals', this.proposalId);
@@ -231,29 +250,5 @@ a:active {
   margin-right: 180px;
   margin-bottom: 60px;
   margin-top: 60px;
-}
-
-.myButton {
-  border-width: 2px;
-  border-style: solid;
-  border-color: white;
-  border-radius: 20px 20px 20px 20px;
-  padding: 10px 15px 10px 15px;
-  /* margin: 0 4px 0 4px; */
-  color: white;
-  font-weight: 800;
-  /* width: 120px; */
-}
-
-.delete {
-  background-color: #ffa1a1;
-  border-color: #c82333;
-  color: #c82333;
-}
-
-.delete:hover {
-  background-color: #c82333;
-  border-color: #c82333;
-  color: white;
 }
 </style>

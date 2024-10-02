@@ -39,13 +39,12 @@
                             </div>
                             <div class="row mb-4 mt-4">
                                 <div class="col-md-6">
-                                    <DateInput class="text-start" v-model="form.date" label="Início"
-                                        name="date" placeholder="início do prazo" :autoFillNow="true"
-                                        @update="updateForm" />
+                                    <DateInput class="text-start" v-model="form.date" label="Início" name="date"
+                                        placeholder="início do prazo" :autoFillNow="true" @update="updateForm" />
                                 </div>
                                 <div class="col-md-6">
-                                    <input type="number" class="form-control" v-model="form.validity_days" name="duration"
-                                        placeholder="validade da proposta em dias" />
+                                    <input type="number" class="form-control" v-model="form.validity_days"
+                                        name="duration" placeholder="validade da proposta em dias" />
                                 </div>
                             </div>
                             <div v-if="services.length === 0" class="row mb-4 mt-4">
@@ -61,9 +60,8 @@
                                 </div>
                                 <div class="row ps-5" v-for="service in services" :key="service.id">
                                     <div class="col-2">
-                                        <input type="number" min="0" :id="service.id"
-                                            v-model.number="service.quantity" placeholder="0"
-                                            class="form-control text-end" />
+                                        <input type="number" min="0" :id="service.id" v-model.number="service.quantity"
+                                            placeholder="0" class="form-control text-end" />
                                     </div>
                                     <div class="col-7">
                                         <label :for="service.id">
@@ -72,6 +70,32 @@
                                     </div>
                                     <div class="col-3 text-end">
                                         R$ {{ service.price }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="costs.length === 0" class="row mb-4 mt-4">
+                                <p>
+                                    Você ainda não possui custos cadastrados.
+                                </p>
+                            </div>
+                            <div v-else class="row mb-4 mt-4">
+                                <div class="row mb-3">
+                                    <p class="label">
+                                        Custos:
+                                    </p>
+                                </div>
+                                <div class="row ps-5" v-for="cost in costs" :key="cost.id">
+                                    <div class="col-2">
+                                        <input type="number" min="0" :id="cost.id" v-model.number="cost.quantity"
+                                            placeholder="0" class="form-control text-end" />
+                                    </div>
+                                    <div class="col-7">
+                                        <label :for="cost.id">
+                                            {{ cost.name }}
+                                        </label>
+                                    </div>
+                                    <div class="col-3 text-end">
+                                        R$ {{ cost.price }}
                                     </div>
                                 </div>
                             </div>
@@ -109,6 +133,7 @@ export default {
     },
     data() {
         return {
+            costs: [],
             form: {
                 name: null,
                 description: null,
@@ -128,6 +153,9 @@ export default {
         closeModal() {
             this.modal = false;
         },
+        async getCosts() {
+            this.costs = await this.index("costs");
+        },
         async getServices() {
             this.services = await this.index("services");
         },
@@ -142,20 +170,28 @@ export default {
                     quantity: service.quantity,
                     price: service.price,
                 }));
-            const newProposal = await this.submitFormCreate("proposals", this.form);
-            this.modal = false;
-            this.$emit("new-proposal-event", newProposal);
-            // this.isSuccess = true;
-            // this.messageStatus = "success";
-            // this.messageText = "Tarefa criada com sucesso!";
-            // this.isError = false;
-            // this.newCompanyEvent(this.data);
-            // this.successMessage(this.data);
-            // this.toggleTaskForm();
-            // this.clearForm();
-        }
+
+            this.form.costs = this.costs
+                .filter(cost => cost.price > 0)
+                .map(cost => ({
+                    id: cost.id,
+                    quantity: cost.quantity,
+                    price: cost.price,
+                }));
+
+            const { data, error } = await this.submitFormCreate("proposals", this.form);
+
+            if (data) {
+                this.isModalVisible = false;
+                this.$emit("new-proposal-event", data);
+            }
+            if (error) {
+                this.errors = error;
+            }
+        },
     },
     mounted() {
+        this.getCosts();
         this.getServices();
     },
 };

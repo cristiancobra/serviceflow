@@ -10,4 +10,19 @@ class Account extends Model
 {
     use HasFactory;
     use SoftDeletes;
+
+
+protected $fillable = [
+    'name',
+    'slug',
+    'owner_id',
+    'logo',
+    'subscription_status',
+    'expiration_date',
+    'is_active',
+    'deleted_at',
+    'created_at',
+    'updated_at',
+]; 
+
 }

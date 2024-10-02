@@ -4,7 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\OpportunityResource;
-use App\Http\Resources\ProposalItemResource;
+use App\Http\Resources\ProposalServiceResource;
+use App\Http\Resources\ProposalCostResource;
 
 class ProposalResource extends JsonResource
 {
@@ -31,8 +32,9 @@ class ProposalResource extends JsonResource
             'total_discount' => $this->total_discount,
             'total_price' => $this->total_price,
 
-             // Relationships
-             'proposalItems' => ProposalItemResource::collection($this->whenLoaded('proposalItems')),
+            // Relationships
+            'proposalServices' => ProposalServiceResource::collection($this->whenLoaded('proposalServices')),
+            'proposalCosts' => ProposalCostResource::collection($this->whenLoaded('proposalCosts')),
             'opportunity' => new OpportunityResource($this->whenLoaded('opportunity')),
         ];
     }
