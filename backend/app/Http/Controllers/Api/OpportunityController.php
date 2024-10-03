@@ -21,7 +21,7 @@ class OpportunityController extends Controller
             'project',
             'tasks',
         ])
-            ->orderBy('date_due', 'asc')
+            ->orderBy('created_at', 'desc')
             ->paginate(50);
 
         return OpportunityResource::collection($opportunities);

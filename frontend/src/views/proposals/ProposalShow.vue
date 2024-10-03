@@ -46,7 +46,7 @@
         </p>
       </div>
       <div class="col-1 d-flex justify-content-center">
-        <decimal-editable-field name="total_profit_percentage" v-model="proposal.total_profit_percentage	"
+        <decimal-editable-field name="total_profit_percentage" v-model="proposal.total_profit_percentage"
           placeholder="percentual do lucro" @save="updateService('total_profit_percentage', $event)" />
         %
       </div>
@@ -81,7 +81,8 @@
         Itens da proposta
       </p>
     </div>
-    <div class="row service-item pt-1 pb-1" v-for="proposalService in proposal.proposalServices" v-bind:key="proposalService.id">
+    <div class="row service-item pt-1 pb-1" v-for="proposalService in proposal.proposalServices"
+      v-bind:key="proposalService.id">
       <div class="col-1 d-flex align-items-center justify-content-center">
         <font-awesome-icon icon="fa-solid fa-coins" class="primary" />
       </div>
@@ -156,8 +157,10 @@ export default {
     updateField,
     async deleteProposal() {
       this.response = await destroy('proposals', this.proposalId);
-      // const successMessage = "Serviço excluído com sucesso";
-      // this.$router.push({ name: "proposalsIndex", query: { successMessage } });
+      this.$router.push({
+        name: "proposalShow",
+        params: { id: this.proposalId }
+      });
     },
     formatDateBr(date) {
       if (!date) return "";

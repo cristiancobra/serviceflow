@@ -72,6 +72,7 @@ export default {
         addOpportunityCreated(newOpportunity) {
             console.log("Nova oportunidade:", newOpportunity);
             this.filteredOpportunities.unshift(newOpportunity);
+            console.log("Oportunidades:", this.filteredOpportunities);
         },
         async getOpportunities() {
             try {

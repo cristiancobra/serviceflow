@@ -10,7 +10,8 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="taskModalLabel">Nova oportunidade</h5>
-                        <button type="button" class="btn-close"  data-bs-dismiss="modal" @click="closeModal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" @click="closeModal"
+                            aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form @submit.prevent="submitForm">
@@ -88,7 +89,8 @@
 
 
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="closeModal">Fechar</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                    @click="closeModal">Fechar</button>
                                 <button type="submit" class="button-new" data-bs-dismiss="modal">criar</button>
                             </div>
                         </form>
@@ -143,18 +145,17 @@ export default {
         showModal() {
             this.modal = true;
         },
-        async submitForm() {
-            const newOpportunity = await this.submitFormCreate("opportunities", this.form);
-            this.modal = false;
-            this.$emit("new-opportunity-event", newOpportunity);
-            // this.isSuccess = true;
-            // this.messageStatus = "success";
-            // this.messageText = "Tarefa criada com sucesso!";
-            // this.isError = false;
-            // this.newCompanyEvent(this.data);
-            // this.successMessage(this.data);
-            // this.toggleTaskForm();
-            // this.clearForm();
+        async submitForm() {            
+            const { data, error } = await this.submitFormCreate("opportunities", this.form);
+
+            if (data) {
+                // this.isModalVisible = false;
+                this.modal = false;
+                this.$emit("new-opportunity-event", data);
+            }
+            if (error) {
+                this.errors = error;
+            }
         }
     },
     mounted() {
