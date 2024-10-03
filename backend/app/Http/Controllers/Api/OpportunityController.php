@@ -89,6 +89,25 @@ class OpportunityController extends Controller
         }
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Opportunity  $opportunity
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Opportunity $opportunity)
+    {
+        try {
+            $opportunity->delete();
+
+            return response()->json(['message' => 'Opportunity deleted']);
+        } catch (\Exception $e) {
+            \Log::error('Error deleting opportunity: ' . $e->getMessage());
+
+            return response()->json(['error' => 'Unable to delete opportunity'], 500);
+        }
+    }
+
     /** 
      * Count the number of opportunities with date_conclusion null
      * 

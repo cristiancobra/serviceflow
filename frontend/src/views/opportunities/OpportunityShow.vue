@@ -70,7 +70,7 @@
 import axios from "axios";
 import { BACKEND_URL, OPPORTUNITY_URL_PARAMETER } from "@/config/apiConfig";
 import { formatDuration,convertDateTimeToLocal } from "@/utils/date/dateUtils";
-import { show, updateField } from "@/utils/requests/httpUtils";
+import { destroy, show, updateField } from "@/utils/requests/httpUtils";
 import { formatDateBr, formatDateTimeBr, getStatusClass, getStatusIcon } from "@/utils/card/cardUtils";
 import { provide, ref } from 'vue';
 import { translateStatus } from "@/utils/translations/translationsUtils";
@@ -135,24 +135,8 @@ export default {
       this.opportunityId = opportunityId;
     },
     async deleteOpportunity() {
-      axios
-        .delete(`${BACKEND_URL}${OPPORTUNITY_URL_PARAMETER}${this.opportunityId}`)
-        .then((response) => {
-          this.data = response.data;
-          this.isSuccess = true;
-          this.isError = false;
-          this.$router.push({
-            name: "opportunitysIndex",
-            query: { isSuccess: this.isSuccess },
-          });
-          this.messageStatus = "deleted";
-          this.messageText = "Jornada deletada com sucesso!";
-        })
-        .catch((error) => {
-          console.error("Erro ao deletar opportunity:", error);
-          this.isError = true;
-          this.isSuccess = false;
-        });
+      this.response = await destroy('opportunities', this.opportunityId);
+      this.$router.push({ name: "opportunitiesIndex" });
     },
     updateJourneys(updatedJourney) {
       // Encontrar e atualizar a jornada na lista journeysData
