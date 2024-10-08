@@ -68,7 +68,11 @@ Route::middleware('auth:sanctum')->group(function () {
 		->name('opportunities.totalOpportunities');
 
 	Route::apiResource('opportunities', OpportunityController::class)->only([
-		'index', 'store', 'show', 'update', 'destroy'
+		'index',
+		'store',
+		'show',
+		'update',
+		'destroy'
 	])
 		->names('opportunities');
 
@@ -82,6 +86,9 @@ Route::middleware('auth:sanctum')->group(function () {
 		->names('projects');
 
 	// PROPOSALS
+	Route::get('proposals/totalProposals', [ProposalController::class, 'countOpenProposals'])
+		->name('proposals.totalProposals');
+
 	Route::get('proposals/proposals-by-opportunity-id', [ProposalController::class, 'getProposalsByOpportunityId'])
 		->name('proposals.opportunity-id');
 

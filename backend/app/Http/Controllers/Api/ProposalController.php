@@ -179,6 +179,27 @@ class ProposalController extends Controller
         return $proposalTotalCost;
     }
 
+        /** 
+     * Count the number of opportunities with date_conclusion null
+     * 
+     * @return \Illuminate\Http\Response
+     * 
+     */
+    public function countOpenProposals()
+    {
+        try {
+            $totalProposals = Proposal::whereNull('accepted_at')
+            ->whereNull('rejected_at')
+            ->whereNull('canceled_at')
+            ->count();
+
+            return response()->json(['totalProposals' => $totalProposals]);
+        } catch (\Exception $e) {
+            \Log::error('Error counting open proposals: ' . $e->getMessage());
+
+            return response()->json(['error' => 'Unable to count open proposals'], 500);
+        }
+    }
 
 
     /**

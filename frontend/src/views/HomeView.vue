@@ -1,13 +1,6 @@
 <template>
   <div class="container">
-    <div class="row mt-5 mb-5">
-      <div class="col-4">
-        <div class="small-container">
-          <total-opportunities />
-        </div>
-      </div>
-    </div>
-    <div class="row">
+    <div class="row mt-4">
       <p class="text-center">
         Bem vindo, hoje é
         <span style="font-weight: bolder">
@@ -15,13 +8,26 @@
         </span>
       </p>
     </div>
+    <div class="row mt-3 mb-4">
+      <div class="col-2">
+        <div class="small-container">
+          <total-opportunities-open />
+        </div>
+      </div>
+      <div class="col-2">
+        <div class="small-container">
+          <total-proposal-open />
+        </div>
+      </div>
+    </div>
     <TasksHomeList />
   </div>
 </template>
 
 <script>
 import "../assets/css/dashboard.css";
-import TotalOpportunities from "../components/dashboard/totalOpportunities.vue";
+import TotalOpportunitiesOpen from "../components/dashboard/totalOpportunitiesOpen.vue";
+import TotalProposalOpen from "../components/dashboard/totalProposalOpen.vue";
 import TasksHomeList from "../components/lists/TasksHomeList.vue";
 
 export default {
@@ -31,7 +37,8 @@ export default {
     };
   },
   components: {
-    TotalOpportunities,
+    TotalOpportunitiesOpen,
+    TotalProposalOpen,
     TasksHomeList,
   },
   methods: {

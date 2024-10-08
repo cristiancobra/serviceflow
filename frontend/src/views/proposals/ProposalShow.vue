@@ -11,6 +11,23 @@
         <select-status-button :status="proposal.status" @update:modelValue="updateProposal('status', $event)" />
       </div>
     </div>
+    <div class="row mt-1 mb-3">
+      <p class="mt-1 mb-1 text-end">
+        Rascunhada: {{ proposal.draft_at }}
+      </p>
+      <p class="mt-1 mb-1 text-end">
+        Enviada: {{ proposal.submitted_at }}
+      </p>
+      <p class="mt-1 mb-1 text-end">
+        Aceita: {{ proposal.accepted_at }}
+      </p>
+      <p class="mt-1 mb-1 text-end">
+        Rejeitada: {{ proposal.rejected_at }}
+      </p>
+      <p class="mt-1 mb-1 text-end">
+        Cancelada: {{ proposal.canceled_at }}
+      </p>
+    </div>
     <div class="row pb-5" v-if="proposal.opportunity">
       {{ proposal.opportunity.name }}
     </div>
