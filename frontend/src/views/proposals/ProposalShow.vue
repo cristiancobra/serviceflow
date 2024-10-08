@@ -4,8 +4,11 @@
       <div class="col-1">
         <font-awesome-icon icon="fa-solid fa-tools" class="primary big-icon" />
       </div>
-      <div class="col">
+      <div class="col-9">
         <h2 class="title">PROPOSTA</h2>
+      </div>
+      <div class="col-2 d-flex justify-content-center">
+        <select-status-button :status="proposal.status" @update:modelValue="updateProposal('status', $event)" />
       </div>
     </div>
     <div class="row pb-5" v-if="proposal.opportunity">
@@ -20,7 +23,7 @@
       </div>
       <div class="col-1  d-flex justify-content-end">
         <hours-decimal-editable-field name="total_hours" v-model="proposal.total_hours"
-          placeholder="quantidade total de horas" @save="updateService('total_hours', $event)" />
+          placeholder="quantidade total de horas" @save="updateProposal('total_hours', $event)" />
         h
       </div>
       <div class="col-1 text-end">
@@ -47,7 +50,7 @@
       </div>
       <div class="col-1 d-flex justify-content-center">
         <decimal-editable-field name="total_profit_percentage" v-model="proposal.total_profit_percentage"
-          placeholder="percentual do lucro" @save="updateService('total_profit_percentage', $event)" />
+          placeholder="percentual do lucro" @save="updateProposal('total_profit_percentage', $event)" />
         %
       </div>
       <div class="col-1 text-end">
@@ -137,9 +140,9 @@ import { destroy, show, updateField } from "@/utils/requests/httpUtils";
 import DecimalEditableField from "@/components/fields/number/DecimalEditableField";
 import MoneyField from '../../components/fields/number/MoneyField.vue';
 import HoursDecimalEditableField from '../../components/fields/number/HoursDecimalEditableField.vue';
+import SelectStatusButton from '../../components/buttons/SelectStatusButton.vue';
 
 export default {
-  name: "ServiceShow",
   data() {
     return {
       proposal: [],
@@ -150,6 +153,7 @@ export default {
     DecimalEditableField,
     HoursDecimalEditableField,
     MoneyField,
+    SelectStatusButton,
   },
   methods: {
     destroy,
@@ -185,7 +189,7 @@ export default {
     setProposalId(proposalId) {
       this.proposalId = proposalId;
     },
-    async updateService(fieldName, editedValue) {
+    async updateProposal(fieldName, editedValue) {
       this.proposal = await updateField("proposals", this.proposalId, fieldName, editedValue);
     },
   },

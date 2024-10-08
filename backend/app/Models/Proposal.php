@@ -27,7 +27,8 @@ class Proposal extends Model
         'total_profit_percentage',
         'total_discount',
         'total_price',
-        'validity_days'
+        'validity_days',
+        'status',
     ];
 
     public function opportunity()

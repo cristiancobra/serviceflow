@@ -16,12 +16,13 @@
             </div>
         </div>
         <div v-for="proposal in proposals" v-bind:key="proposal.id">
-            <router-link :to="{ name: 'proposalShow', params: { id: proposal.id } }">
-                <div class="row proposal-item pt-1 pb-1">
-                    <div class="col-1 d-flex align-items-center justify-content-center" id="col-user">
-                        <font-awesome-icon icon="fa-solid fa-file-invoice" class="primary big-icon" />
-                    </div>
-                    <div class="col">
+            <div class="row proposal-item pt-1 pb-1">
+                <div class="col-2 d-flex align-items-center justify-content-center" id="col-user">
+                    <select-status-button :status="proposal.status"
+                        @update:modelValue="updateProposal('status', proposal.id, $event)" />
+                </div>
+                <div class="col-10">
+                    <router-link :to="{ name: 'proposalShow', params: { id: proposal.id } }">
                         <div class="row title">
                             <div class="col">
                                 {{ formatDateBr(proposal.date) }}
@@ -38,25 +39,9 @@
                                 <money-field name="total_price" v-model="proposal.total_price" />
                             </div>
                         </div>
-                    </div>
+                    </router-link>
                 </div>
-                <div class="row service-item pt-1 pb-1" v-for="proposalService in proposal.proposalServices" v-bind:key="proposalService.id">
-                    <div class="col-1 offset-2 d-flex align-items-center justify-content-center">
-                        <font-awesome-icon icon="fa-solid fa-coins" class="primary" />
-                    </div>
-                    <div class="col-7">
-                        <p class="name ps-2">
-                            {{ proposalService.name }}
-                        </p>
-                    </div>
-                    <div class="col">
-                        {{ proposalService.quantity }}
-                    </div>
-                    <div class="col text-end">
-                        {{ proposalService.total_price }}
-                    </div>
-                </div>
-            </router-link>
+            </div>
         </div>
     </div>
 </template>
@@ -66,13 +51,16 @@ import axios from "axios";
 import { BACKEND_URL, PROPOSALS_BY_OPPORTUNITY_URL } from "@/config/apiConfig";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import { getDeadlineClass } from "@/utils/card/cardUtils";
+import { updateField } from "@/utils/requests/httpUtils";
 import ProposalCreateForm from "../forms/ProposalCreateForm.vue";
+import SelectStatusButton from "../buttons/SelectStatusButton.vue";
 import MoneyField from '../fields/number/MoneyField.vue';
 
 export default {
     components: {
         ProposalCreateForm,
         MoneyField,
+        SelectStatusButton,
     },
     props: {
         opportunityId: {
@@ -91,6 +79,7 @@ export default {
     methods: {
         formatDateBr,
         getDeadlineClass,
+        updateField,
         addProposalCreated(newProposal) {
             this.proposals.unshift(newProposal);
         },
@@ -101,9 +90,7 @@ export default {
             try {
                 const response = await axios.get(this.proposalsUrl);
 
-                this.proposals = response.data.data.map(proposal => {
-                    return { ...proposal, editing: false }; // Adiciona a propriedade editing a cada proposal
-                });
+                this.proposals = response.data.data;
 
                 this.paginationData = {
                     links: response.data.links,
@@ -114,12 +101,20 @@ export default {
                 console.error("Erro ao acessar propostas:", error);
             }
         },
+        async updateProposal(fieldName, proposalId, editedValue) {
+            const updatedProposal = await updateField("proposals", proposalId, fieldName, editedValue);
+            const proposalIndex = this.proposals.findIndex(proposal => proposal.id === proposalId);
+            if (proposalIndex !== -1) {
+                this.proposals[proposalIndex] = updatedProposal;
+            }
+        },
         toggleForm() {
             this.isActive = !this.isActive;
         },
     },
     mounted() {
         this.getProposalsFromOpportunity();
+        console.log(this.proposals);
     },
 };
 </script>

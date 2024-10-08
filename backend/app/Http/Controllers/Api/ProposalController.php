@@ -42,7 +42,7 @@ class ProposalController extends Controller
             $proposalTotalProfit = 0;
             $proposalTotalOperationalCost = 0;
 
-            foreach($proposalServices as $proposalService) {
+            foreach ($proposalServices as $proposalService) {
                 $proposalTotalHours += $proposalService->labor_hours_total;
                 // $proposalTotalDiscount += $proposalService->total_price * $proposalService->profit_percentage / 100;
                 $proposalTotalPrice += $proposalService->total_price;
@@ -63,7 +63,7 @@ class ProposalController extends Controller
             $proposal->total_discount = $proposalTotalDiscount;
             $proposal->total_price = $proposalTotalPrice + $proposalTotalCosts;
             $proposal->total_profit_percentage = ($proposal->total_profit / $proposal->total_price) * 100;
-            
+
             $proposal->save();
 
             foreach ($proposalServices as $proposalService) {
@@ -111,6 +111,37 @@ class ProposalController extends Controller
         return response()->json([
             'message' => 'Proposta não encontrada',
         ], 404);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \App\Http\Requests\ProposalRequest  $request
+     * @param  \App\Models\Proposal  $proposal
+     * @return \Illuminate\Http\Response
+     */
+    public function update(ProposalRequest $request, Proposal $proposal)
+    {
+        try {
+            $validatedData = $request->validated();
+
+            // Se o status foi alterado, atualize a coluna correspondente
+            if (isset($validatedData['status']) && $validatedData['status'] != $proposal->status) {
+                $proposal->status = $validatedData['status'];
+                $statusColumn = $validatedData['status'] . '_at';
+                $proposal->$statusColumn = now();
+            }
+    
+            $proposal->fill($validatedData);
+            $proposal->save();
+
+            return ProposalResource::make($proposal);
+        } catch (ValidationException $validationException) {
+            return response()->json([
+                'message' => "Erro de validação",
+                'errors' => $validationException->errors(),
+            ], 422);
+        }
     }
 
     /**

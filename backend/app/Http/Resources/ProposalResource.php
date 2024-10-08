@@ -31,6 +31,15 @@ class ProposalResource extends JsonResource
             'total_profit' => $this->total_profit,
             'total_discount' => $this->total_discount,
             'total_price' => $this->total_price,
+            'draft_at' => $this->draft_at,
+            'submitted_at' => $this->submitted_at,
+            'approved_at' => $this->approved_at,
+            'rejected_at' => $this->rejected_at,
+            'canceled_at' => $this->canceled_at,
+            'status' => $this->status,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            
 
             // Relationships
             'proposalServices' => ProposalServiceResource::collection($this->whenLoaded('proposalServices')),

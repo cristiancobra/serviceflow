@@ -28,9 +28,11 @@ class ProposalRequest extends FormRequest
             'name' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'user_id' => 'required|exists:users,id',
-            'date' => 'required|date',
+            'account_id' => 'required|exists:accounts,id',
+            'date' => 'sometimes|date',
             'opportunity_id' => 'nullable|exists:opportunities,id',
             'total_profit_percentage' => 'nullable|numeric',
+            'status' => 'nullable|string',
             // 'services' => 'nullable|array',
             // 'services.*.id' => 'required|exists:services,id',
             // 'services.*.quantity' => 'required|integer|min:0',
@@ -52,6 +54,10 @@ class ProposalRequest extends FormRequest
         $user = Auth::user();
         $this->merge([
             'account_id' => $user->account_id,
+        ]);
+
+        $this->merge([
+            'user_id' => $user->id,
         ]);
     }
 }

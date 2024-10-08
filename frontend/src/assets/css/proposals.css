@@ -17,6 +17,44 @@
     text-decoration: none;
 }
 
+.button-status {
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 20px 20px 20px 20px;
+    padding: 0.4rem;
+    padding-left: 0.8rem;
+    padding-right: 0.8rem;
+    width: 9rem;
+    font-weight: 800;
+    border-color: var(--purple-light);
+    background-color: var(--purple);
+    color: white;
+}
+
+.button-status.accepted {
+    border-color: var(--green-light);
+    background-color: var(--green);
+    color: white;
+}
+
+.button-status.canceled {
+    border-color: var(--canceled-color);
+    background-color: var(--canceled-color);
+    color: white;
+}
+
+.button-status.draft {
+    border-color: black;
+    background-color: white;
+    color: black;
+}
+
+.button-status.rejected {
+    border-color: var(--red-light);
+    background-color: var(--red);
+    color: white;
+}
+
 .service-item {
     border-bottom-style: solid;
     border-bottom-width: 1px;
