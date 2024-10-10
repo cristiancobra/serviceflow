@@ -5,10 +5,15 @@
   border-width: 2px;
   border-color: var(--primary);
   border-radius: 14px;
-  padding: 2rem;
-  padding-left: 2.5rem;
-  padding-right: 2.5rem;
-  margin: 2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  margin-bottom: 2rem;
+  margin-top: 0%;
+  margin-left: 5%;
+  margin-right: 5%;
+  width: 90%;
 }
 
 .list-container .black {

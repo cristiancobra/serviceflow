@@ -1,5 +1,5 @@
 <template>
-  <div class="list-container mb-5 mt-0">
+  <div class="list-container">
     <div class="row">
       <div class="col d-flex justify-content-left">
         <font-awesome-icon icon="fa-solid fa-tasks" class="icon pe-3 primary" />
@@ -22,24 +22,24 @@
         <font-awesome-icon icon="fas fa-check-circle" class="pe-2"
           :class="isValidDate(task.date_conclusion) ? 'done' : 'canceled'" />
       </div>
-  <div class="col-4 d-flex justify-content-left">
-          <router-link v-if="task.opportunity" :to="{ name: 'opportunityShow', params: { id: task.opportunity.id } }">
-            <div class="d-flex">
-              <font-awesome-icon icon="fa-solid fa-bullseye" :class="getColorClassForName(task.opportunity.name)" />
-              <p class="m-0 p-0 ps-1 bold" :class="getColorClassForName(task.opportunity.name)">
-                {{ trimName(task.opportunity.name) }}
-              </p>
-            </div>
-          </router-link>
-          <router-link v-else-if="task.project" :to="{ name: 'projectShow', params: { id: task.project.id } }">
-            <div class="d-flex">
-              <font-awesome-icon icon="fa-solid fa-folder-open" :class="getColorClassForName(task.project.name)" />
-              <p class="m-0 p-0 ps-1 bold" :style="{ color: getColorClassForName(task.project.name) }">
-                {{ trimName(task.project.name) }}
-              </p>
-            </div>
-          </router-link>
-        </div>
+      <div class="col-4 d-flex justify-content-left">
+        <router-link v-if="task.opportunity" :to="{ name: 'opportunityShow', params: { id: task.opportunity.id } }">
+          <div class="d-flex">
+            <font-awesome-icon icon="fa-solid fa-bullseye" :class="getColorClassForName(task.opportunity.name)" />
+            <p class="m-0 p-0 ps-1 bold" :class="getColorClassForName(task.opportunity.name)">
+              {{ trimName(task.opportunity.name) }}
+            </p>
+          </div>
+        </router-link>
+        <router-link v-else-if="task.project" :to="{ name: 'projectShow', params: { id: task.project.id } }">
+          <div class="d-flex">
+            <font-awesome-icon icon="fa-solid fa-folder-open" :class="getColorClassForName(task.project.name)" />
+            <p class="m-0 p-0 ps-1 bold" :style="{ color: getColorClassForName(task.project.name) }">
+              {{ trimName(task.project.name) }}
+            </p>
+          </div>
+        </router-link>
+      </div>
 
       <div class="col-5">
         <router-link :to="{ name: 'taskShow', params: { id: task.id } }"

@@ -1,8 +1,8 @@
 <template>
-  <div class="container mb-5">
+  <div class="mb-5">
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
-    <div class="show-title">
+    <div class="header-fixed">
       <div class="row ms-1">
         <div class="col-1 status">
           <font-awesome-icon icon="fa-solid fa-bullseye" class="primary" />
@@ -31,7 +31,20 @@
           </div>
         </div>
       </div>
-      <div class="row">
+      <div class="header-fixed-menu mt-3">
+        <button class="item-menu" @click="currentSection = 'info'" :class="{ active: currentSection === 'info' }">
+          Informações
+        </button>
+        <button class="item-menu" @click="currentSection = 'proposals'" :class="{ active: currentSection === 'proposals' }">
+          Propostas
+        </button>
+        <button class="item-menu" @click="currentSection = 'tasks'" :class="{ active: currentSection === 'tasks' }">
+          Tarefas
+        </button>
+      </div>
+    </div>
+    <div class="info-container" v-show="currentSection === 'info'">
+      <div class="list-container pt-4">
         <div class="col-3">
           <companies-select-editable-field label="Empresa" name="company_id" v-model="opportunity.company_id"
             @update:modelValue="updateOpportunity('company_id', $event)" />
@@ -44,17 +57,18 @@
           <users-select-editable-field label="Responsável" name="user_id" v-model="opportunity.user_id"
             @update:modelValue="updateOpportunity('user_id', $event)" />
         </div>
+        <div class="row pt-2">
+          <TextEditor label="Descrição" name="description" v-model="opportunity.description"
+          @save="updateOpportunity('description', $event)" />
+        </div>
       </div>
     </div>
-    <div class="description-container">
-      <TextEditor label="Descrição" name="description" v-model="opportunity.description"
-        @save="updateOpportunity('description', $event)" />
-    </div>
-    <div class="row pt-2">
+    <div class="info-container" v-show="currentSection === 'proposals'">
       <proposals-list :opportunityId="opportunityId" />
     </div>
-    <div class="row pt-2">
-      <tasks-list template="opportunity" :opportunityId="opportunityId" @update-opportunity-duration="updateOpportunityDuration()" />
+    <div class="info-container" v-show="currentSection === 'tasks'">
+      <tasks-list template="opportunity" :opportunityId="opportunityId"
+        @update-opportunity-duration="updateOpportunityDuration()" />
     </div>
     <div class="row d-flex justify-content-end mt-2 mb-5 me-5">
       <div class="col-1">
@@ -69,7 +83,7 @@
 <script>
 import axios from "axios";
 import { BACKEND_URL, OPPORTUNITY_URL_PARAMETER } from "@/config/apiConfig";
-import { formatDuration,convertDateTimeToLocal } from "@/utils/date/dateUtils";
+import { formatDuration, convertDateTimeToLocal } from "@/utils/date/dateUtils";
 import { destroy, show, updateField } from "@/utils/requests/httpUtils";
 import { formatDateBr, formatDateTimeBr, getStatusClass, getStatusIcon } from "@/utils/card/cardUtils";
 import { provide, ref } from 'vue';
@@ -98,6 +112,7 @@ export default {
   },
   data() {
     return {
+      currentSection: 'info',
       journeysData: [],
       journeysUrl: "",
       messageStatus: "",
@@ -223,42 +238,6 @@ a:active {
   text-align: center;
 }
 
-.card {
-  margin-bottom: 60px;
-  margin-top: 60px;
-  border-style: solid;
-  border-width: 2px;
-  border-color: gray;
-  border-radius: 6px;
-  padding: 10px;
-  padding-right: 20px;
-  min-height: 15vh;
-}
-
-.done {
-  background-color: var(--green-light);
-  border-color: var(--green);
-  color: var(--green);
-}
-
-.doing {
-  background-color: var(--blue-light);
-  border-color: var(--blue);
-  color: var(--blue);
-}
-
-.to-do {
-  background-color: var(--orange-light);
-  border-color: var(--orange);
-  color: var(--orange);
-}
-
-.wait {
-  background-color: var(--gray-light);
-  border-color: var(--gray);
-  color: var(--gray);
-}
-
 .status {
   text-align: center;
   font-size: 3rem;
@@ -272,39 +251,4 @@ a:active {
   color: black;
 }
 
-.container {
-  margin-left: 10vw;
-  margin-right: 10vw;
-}
-
-.myButton {
-  border-width: 2px;
-  border-style: solid;
-  border-color: white;
-  border-radius: 20px 20px 20px 20px;
-  padding: 10px 15px 10px 15px;
-  /* margin: 0 4px 0 4px; */
-  color: white;
-  font-weight: 800;
-  /* width: 120px; */
-}
-
-.delete {
-  background-color: #ffa1a1;
-  border-color: #c82333;
-  color: #c82333;
-}
-
-.delete:hover {
-  background-color: #c82333;
-  border-color: #c82333;
-  color: white;
-}
-
-.icon {
-  font-size: 1.2rem;
-  text-align: center;
-  font-weight: 400;
-  color: var(--green);
-}
 </style>

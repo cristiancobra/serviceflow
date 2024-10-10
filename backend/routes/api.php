@@ -38,6 +38,9 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::middleware('auth:sanctum')->get('/check-token', [AuthController::class, 'checkToken']);
 
 	// ACCOUNTS
+	Route::post('accounts/{account}/logo', [AccountController::class, 'uploadLogo'])
+		->name('accounts.uploadLogo');
+
 	Route::apiResource('accounts', AccountController::class)
 		->names('accounts');
 

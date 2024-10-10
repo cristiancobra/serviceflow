@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Account;
 use App\Models\Cost;
 use App\Models\Proposal;
 use App\Models\Service;
@@ -264,6 +265,12 @@ class ProposalController extends Controller
      */
     public function exportPdf(Proposal $proposal)
     {
+        $proposal->load([
+            'account',
+            'opportunity',
+            'proposalServices',
+        ]);
+
         $html = view('proposals.proposal', ['proposal' => $proposal])->render();
         $dompdf = new Dompdf();
         // Carregar o HTML no Dompdf

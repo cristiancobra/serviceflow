@@ -2,7 +2,7 @@
   <div class="container mb-5">
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
-    <div class="show-title">
+    <div class="header-fixed">
       <div class="row ms-1">
         <div class="col-1 status">
           <font-awesome-icon icon="fa-solid fa-folder-open" class="primary" />
@@ -42,11 +42,11 @@
         </div>
       </div>
     </div>
-    <div class="description-container">
+    <div class="info-container">
       <TextEditor label="Descrição" name="description" v-model="project.description"
         @save="updateProject('description', $event)" />
     </div>
-    <div class="row pt-2">
+    <div class="info-container">
       <TasksList template="project" :projectId="projectId" @update-project-duration="updateProjectDuration()" />
     </div>
     <div class="row d-flex justify-content-end mt-2 mb-5 me-5">

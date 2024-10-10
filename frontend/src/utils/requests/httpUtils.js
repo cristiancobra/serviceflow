@@ -100,6 +100,7 @@ export const updateField = async (model, id, fieldName, value) => {
 // validate model
 export const validateModel = (model) => {
   const VALID_MODELS = [
+    "accounts",
     "companies",
     "costs",
     "leads",

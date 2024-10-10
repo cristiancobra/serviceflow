@@ -3,7 +3,7 @@
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
 
-    <div class="show-title">
+    <div class="header-fixed">
       <div class="row ms-0">
         <div class="col-1 status">
           <font-awesome-icon icon="fa-solid fa-list-check" class="primary" />
@@ -38,27 +38,37 @@
           </div>
         </div>
       </div>
-
-      <div class="row">
-        <div class="col-3">
-          <users-select-editable-field label="Responsável" name="user_id" v-model="task.user_id"
-            @update:modelValue="updateTask('user_id', $event)" />
-        </div>
-        <div class="col-3">
-          <projects-select-editable-field label="Projeto" v-model="task.project_id"
-            @update:modelValue="updateTask('project_id', $event)" fieldNull="Nenhum" />
-        </div>
-        <div class="col-3">
-          <opportunities-select-editable-field label="Oportunidade" v-model="task.opportunity_id"
-            @update:modelValue="updateTask('opportunity_id', $event)" fieldNull="Nenhum" />
-        </div>
+      <div class="header-fixed-menu mt-3">
+        <button class="item-menu" @click="currentSection = 'info'" :class="{ active: currentSection === 'info' }">
+          Informações
+        </button>
+        <button class="item-menu" @click="currentSection = 'journeys'"
+          :class="{ active: currentSection === 'journeys' }">
+          Jornadas
+        </button>
       </div>
     </div>
-    <div class="description-container">
-      <TextEditor label="Descrição" name="description" v-model="task.description"
-        @save="updateTask('description', $event)" />
+    <div class="info-container" v-show="currentSection === 'info'">
+      <div class="description-container">
+        <TextEditor label="Descrição" name="description" v-model="task.description"
+          @save="updateTask('description', $event)" />
+      </div>
     </div>
-    <div class="row pt-0">
+    <div class="row">
+      <div class="col-3">
+        <users-select-editable-field label="Responsável" name="user_id" v-model="task.user_id"
+          @update:modelValue="updateTask('user_id', $event)" />
+      </div>
+      <div class="col-3">
+        <projects-select-editable-field label="Projeto" v-model="task.project_id"
+          @update:modelValue="updateTask('project_id', $event)" fieldNull="Nenhum" />
+      </div>
+      <div class="col-3">
+        <opportunities-select-editable-field label="Oportunidade" v-model="task.opportunity_id"
+          @update:modelValue="updateTask('opportunity_id', $event)" fieldNull="Nenhum" />
+      </div>
+    </div>
+    <div class="info-container" v-show="currentSection === 'journeys'">
       <JourneysList template="by-task" :taskId="taskId" @update-task-duration="updateTaskDuration()"
         @last-journey-end="updateEndTaskButtonVisibility" />
     </div>
@@ -107,6 +117,7 @@ export default {
   },
   data() {
     return {
+      currentSection: 'info',
       // journeysData: [],
       journeysUrl: "",
       journeyEnd: "",

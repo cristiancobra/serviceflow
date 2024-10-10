@@ -24,13 +24,13 @@ class AccountRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:accounts',
-            'owner_id' => 'required|integer|exists:users,id',
+            'name' => 'sometimes|string|max:255',
+            'slug' => 'sometimes|string|max:255|unique:accounts',
+            'owner_id' => 'sometimes|integer|exists:users,id',
             'logo' => 'image|max:2048',
-            'subscription_status' => 'required|string|max:255',
-            'expiration_date' => 'required|date',
-            'is_active' => 'required|boolean',
+            'subscription_status' => 'sometimes|string|max:255',
+            'expiration_date' => 'sometimes|date',
+            'is_active' => 'sometimes|boolean',
         ];
     }
 }

@@ -31,6 +31,11 @@ class Proposal extends Model
         'status',
     ];
 
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
+    }
+
     public function opportunity()
     {
         return $this->belongsTo(Opportunity::class);

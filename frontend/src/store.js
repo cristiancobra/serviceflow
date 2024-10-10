@@ -10,11 +10,14 @@ export default createStore({
     isAuthenticated: false,
   },
   mutations: {
-    setOpenJourney(state, openJourney) {
-      state.openJourney = openJourney;
+    setAccountId(state, accountId) {
+      state.accountId = accountId;
     },
     setAuthenticated(state, isAuthenticated) {
       state.isAuthenticated = isAuthenticated;
+    },
+    setOpenJourney(state, openJourney) {
+      state.openJourney = openJourney;
     },
   },
   actions: {
@@ -32,7 +35,6 @@ export default createStore({
       try {
         const response = await axios.get(`${BACKEND_URL}${JOURNEY_CHECK_OPEN}`);
         commit('setOpenJourney', response.data.openJourney);
-        console.log('Jornadas abertas:', response.data.openJourney);
       } catch (error) {
         console.error('Erro ao verificar jornadas abertas:', error);
       }
@@ -50,8 +52,9 @@ export default createStore({
       try {
         axios.defaults.withCredentials = true;
         await axios.get(API_SANCTUM_URL);
-        await axios.post(`${BACKEND_URL}${LOGIN_URL}`,credentials);
+        const response = await axios.post(`${BACKEND_URL}${LOGIN_URL}`,credentials);
         commit('setAuthenticated', true);
+        commit('setAccountId', response.data.user.account_id); 
         await this.dispatch('checkOpenJourneys');
         setTimeout(() => {
           router.push({ name: 'home' });

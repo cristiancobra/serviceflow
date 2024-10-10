@@ -140,12 +140,14 @@
       </div>
     </div>
     <div class="row mt-5 mb-5">
-      <button class="button delete" @click="deleteProposal()">
-        excluir
-      </button>
-      <button class="button-new delete" @click="exportPDF()">
-        Gerar PDF
-      </button>
+      <div class="col d-flex justify-content-end">
+        <button class="button delete me-5" @click="deleteProposal()">
+          excluir
+        </button>
+        <button class="button" @click="exportPDF()">
+          Gerar PDF
+        </button>
+      </div>
     </div>
   </div>
 </template>

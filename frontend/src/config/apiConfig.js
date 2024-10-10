@@ -2,6 +2,7 @@
 export const BACKEND_URL = process.env.VUE_APP_BACKEND_URL;
 export const API_SANCTUM_URL = process.env.VUE_APP_SANCTUM_URL;
 export const CHECK_TOKEN_URL = "check-token";
+export const ACCOUNT_URL = "accounts";
 export const COMPANY_URL = "companies";
 export const COMPANY_URL_PARAMENTER = "companies/";
 export const JOURNEY_URL = "journeys";

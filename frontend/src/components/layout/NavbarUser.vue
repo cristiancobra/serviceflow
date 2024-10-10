@@ -64,6 +64,12 @@
             <font-awesome-icon icon="fas fa-cogs" />
             <span class="router-link-text">CONFIGURAÇÕES</span>
             <ul class="submenu" v-show="showSubmenu">
+              <router-link :to="`/accounts/${accountId}`">
+                <li class="nav-item" @mouseover="toggleActive('account')" :class="{ active: activeItem === 'account' }">
+                  <font-awesome-icon icon="fas fa-user" />
+                  <span class="router-link-text">CONTA</span>
+                </li>
+              </router-link>
               <router-link to="/services">
                 <li class="nav-item" @mouseover="toggleActive('services')"
                   :class="{ active: activeItem === 'services' }">
@@ -128,7 +134,10 @@ export default {
     },
   },
   computed: {
-    ...mapState(['openJourney']),
+    ...mapState([
+      'accountId',
+      'openJourney'
+    ]),
   },
 };
 </script>
