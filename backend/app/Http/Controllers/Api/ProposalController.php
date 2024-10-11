@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Account;
 use App\Models\Cost;
 use App\Models\Proposal;
 use App\Models\Service;
@@ -132,7 +131,7 @@ class ProposalController extends Controller
                 $statusColumn = $validatedData['status'] . '_at';
                 $proposal->$statusColumn = now();
             }
-    
+
             $proposal->fill($validatedData);
             $proposal->save();
 
@@ -180,7 +179,7 @@ class ProposalController extends Controller
         return $proposalTotalCost;
     }
 
-        /** 
+    /** 
      * Count the number of opportunities with date_conclusion null
      * 
      * @return \Illuminate\Http\Response
@@ -190,9 +189,9 @@ class ProposalController extends Controller
     {
         try {
             $totalProposals = Proposal::whereNull('accepted_at')
-            ->whereNull('rejected_at')
-            ->whereNull('canceled_at')
-            ->count();
+                ->whereNull('rejected_at')
+                ->whereNull('canceled_at')
+                ->count();
 
             return response()->json(['totalProposals' => $totalProposals]);
         } catch (\Exception $e) {
@@ -270,16 +269,23 @@ class ProposalController extends Controller
             'opportunity',
             'proposalServices',
         ]);
-
-        $html = view('proposals.proposal', ['proposal' => $proposal])->render();
+        $logo = $this->userImageToBase64($proposal->account->logo);
+        $whatsappIcon = $this->systemImageToBase64('img/proposals/whatsapp-icon.png');
+        $emailIcon = $this->systemImageToBase64('img/proposals/email-icon.png');
+        $formatter = new \IntlDateFormatter('pt_BR', \IntlDateFormatter::FULL, \IntlDateFormatter::NONE);
+        $date = $formatter->format(new \DateTime);
+        $html = view('proposals.proposal', [
+            'proposal' => $proposal,
+            'logo' => $logo,
+            'whatsappIcon' => $whatsappIcon,
+            'emailIcon' => $emailIcon,
+            'today' => $date,
+        ])
+            ->render();
         $dompdf = new Dompdf();
-        // Carregar o HTML no Dompdf
         $dompdf->loadHtml($html);
-
-        // Renderizar o PDF
+        $dompdf->setPaper('A4');
         $dompdf->render();
-
-        // Enviar o PDF para o navegador
         $dompdf->stream("proposal-{$proposal->id}.pdf");
     }
 
@@ -304,5 +310,35 @@ class ProposalController extends Controller
         // $proposals->appends(['opportunity_id' => $request->opportunity_id]);
 
         return ProposalResource::collection($proposals);
+    }
+
+    /**
+     * convert image to base64 from users data
+     *
+     * @return \Illuminate\Http\Response
+     */
+    private function userImageToBase64($imagePath)
+    {
+        $imageCompletePath = public_path('storage/' . $imagePath);
+        $type = pathinfo($imageCompletePath, PATHINFO_EXTENSION);
+        $data = file_get_contents($imageCompletePath);
+        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+        return $base64;
+    }
+
+    /**
+     * convert image to base64
+     *
+     * @return \Illuminate\Http\Response
+     */
+    private function systemImageToBase64($imagePath)
+    {
+        $imageCompletePath = public_path($imagePath);
+        $type = pathinfo($imageCompletePath, PATHINFO_EXTENSION);
+        $data = file_get_contents($imageCompletePath);
+        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+        return $base64;
     }
 }

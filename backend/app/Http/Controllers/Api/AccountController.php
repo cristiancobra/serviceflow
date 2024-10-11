@@ -7,6 +7,7 @@ use App\Models\Account;
 use Illuminate\Http\Request;
 use App\Http\Requests\AccountRequest;
 use App\Http\Resources\AccountResource;
+use Illuminate\Support\Facades\Storage;
 
 class AccountController extends Controller
 {
@@ -64,10 +65,12 @@ class AccountController extends Controller
     public function uploadLogo(Request $request, Account $account)
     {
         if ($request->hasFile('logo')) {
+            if ($account->logo) {
+                Storage::disk('public')->delete($account->logo);
+            }
             $logo = $request->file('logo');
-            $fileName = time().'.'.$logo->getClientOriginalExtension();
-            $logo->move(public_path('img/logos'), $fileName);
-            $account->logo = 'img/logos/'.$fileName;
+            $path = $logo->store('img/accounts/logos', 'public');
+            $account->logo = $path;
             $account->save();
         }
 

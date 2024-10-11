@@ -11,18 +11,17 @@
                     <input type="email" id="email" v-model="account.email">
                 </div>
             </div>
-            <div class="row mt-5">
+            <div class="row mt-4 mb-5">
                 <div class="col">
                     <button type="submit">Submit</button>
                 </div>
             </div>
         </form>
-        <div>
-            <img :src="'/' + account.logo" alt="Logo">
-            {{ account.logo }}
+        <div class="mt-5">
+            <img :src="urlImageLogo" alt="Logo">
         </div>
         <form @submit.prevent="submitFormLogo">
-            <div class="row mt-5">
+            <div class="row mt-4">
                 <label for="logo">Logo:</label>
                 <input type="file" id="logo" ref="logo" @change="handleLogoUpload">
             </div>
@@ -37,7 +36,7 @@
 
 <script>
 import { show, submitFormCreate } from "@/utils/requests/httpUtils";
-import { BACKEND_URL, ACCOUNT_URL } from "@/config/apiConfig";
+import { BACKEND_URL, ACCOUNT_URL, IMAGES_PATH } from "@/config/apiConfig";
 import axios from "axios";
 
 export default {
@@ -59,7 +58,6 @@ export default {
         async getAccount() {
             let accountId = this.$route.params.id;
             this.account = await show('accounts', accountId);
-            console.log(this.account);
         },
         // submitForm() {
         //     let formData = new FormData();
@@ -93,6 +91,11 @@ export default {
                 console.error('There was an error uploading the logo:', error);
             }
         },
+    },
+    computed: {
+        urlImageLogo() {
+            return `${IMAGES_PATH}${this.account.logo}`;
+        }
     },
     mounted() {
         this.getAccount();
