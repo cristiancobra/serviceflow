@@ -178,6 +178,8 @@ nav a {
   font-weight: 200;
   font-size: 1rem;
   color: white;
+  list-style-type: none;
+  
 }
 
 .nav-item a {

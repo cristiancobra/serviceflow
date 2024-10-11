@@ -164,25 +164,6 @@
             <p><span class="label">Oportunidade:</span> {{ $proposal->opportunity->description }}</p>
         @endif
         <h2>SERVIÇOS:</h2>
-        <h2>SERVIÇOS:</h2>
-        <h2>SERVIÇOS:</h2>
-        <h2>SERVIÇOS:</h2>
-        <h2>SERVIÇOS:</h2>
-        <h2>SERVIÇOS:</h2>
-        <h2>SERVIÇOS:</h2>
-        <h2>SERVIÇOS:</h2>
-        <h2>SERVIÇOS:</h2>
-        <h2>SERVIÇOS:</h2>
-        <h2>SERVIÇOS:</h2>
-        <h2>SERVIÇOS:</h2>
-        <h2>SERVIÇOS:</h2>
-        <h2>SERVIÇOS:</h2>
-        <h2>SERVIÇOS:</h2>
-        <h2>SERVIÇOS:</h2>
-        <h2>SERVIÇOS:</h2>
-        <h2>SERVIÇOS:</h2>
-        <h2>SERVIÇOS:</h2>
-        <h2>SERVIÇOS:</h2>
         <table>
             <thead>
                 <tr>
