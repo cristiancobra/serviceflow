@@ -8,7 +8,7 @@
         </span>
       </p>
     </div>
-    <div class="row mt-3 mb-4">
+    <div class="row mt-3 mb-4 me-5 ms-3">
       <div class="col-2">
         <div class="small-container">
           <total-opportunities-open />

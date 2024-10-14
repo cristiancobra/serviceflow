@@ -43,6 +43,7 @@
                                         placeholder="início do prazo" :autoFillNow="true" @update="updateForm" />
                                 </div>
                                 <div class="col-md-6">
+                                    <label for="duration" class="form-label">Validade da proposta</label>
                                     <input type="number" class="form-control" v-model="form.validity_days"
                                         name="duration" placeholder="validade da proposta em dias" />
                                 </div>

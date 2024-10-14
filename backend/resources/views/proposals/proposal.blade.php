@@ -161,7 +161,7 @@
             <span class="label">Data:</span> {{ $proposal->date }}
         </p>
         @if (!empty($proposal->opportunity->description))
-            <p><span class="label">Oportunidade:</span> {{ $proposal->opportunity->description }}</p>
+            <p><span class="label">Oportunidade:</span> {!! $proposal->opportunity->description !!}</p>
         @endif
         <h2>SERVIÇOS:</h2>
         <table>

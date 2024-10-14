@@ -1,19 +1,10 @@
 <template>
-  <div class="container mb-5">
-    <JourneysFilter
-      @filter-canceled="getJourneysCanceled"
-      @filter-doing="getJourneysDoing"
-      @filter-done="getJourneysDone"
-      @filter-late="getJourneysLate"
-      @filter-to-do="getJourneysToDo"
-    />
-
+  <div class="mb-5">
+    <JourneysFilter @filter-canceled="getJourneysCanceled" @filter-doing="getJourneysDoing"
+      @filter-done="getJourneysDone" @filter-late="getJourneysLate" @filter-to-do="getJourneysToDo" />
     <ErrorMessage v-if="isError" :formResponse="formResponse" />
     <SuccessMessage v-if="isSuccess" :formResponse="formResponse" />
-
-    <div class="row">
-      <JourneysList @toggle="toggle" template="index" />
-    </div>
+    <JourneysList @toggle="toggle" template="index" />
   </div>
 </template>
 
@@ -53,6 +44,7 @@ export default {
   display: flex;
   justify-content: center;
 }
+
 .slot {
   border-width: 2px;
   border-style: solid;
@@ -64,6 +56,7 @@ export default {
   font-weight: 800;
   width: 120px;
 }
+
 .new {
   border-radius: 20px 20px 20px 20px;
   background-color: white;
@@ -73,12 +66,14 @@ export default {
   width: 60px;
   font-size: 16px;
 }
+
 .new:hover {
   background-color: #ff3eb5;
   color: white;
   margin-left: 50px;
   width: 60px;
 }
+
 .show {
   display: block;
   transition: display 2s;

@@ -11,31 +11,11 @@
             {{ formatDuration(task.duration_time) }}
           </p>
         </div>
-        <div class="col-8 ps-3">
+        <div class="col-10 ps-3">
           <p class="title">
             <TextEditableField name="name" v-model="task.name" placeholder="descrição detalhada da tarefa"
               @save="updateTask('name', $event)" />
           </p>
-        </div>
-        <div class="col-3">
-          <div class="row">
-            <DateEditableInput class="d-flex justify-content-end" name="date_start" label="Início:"
-              v-model="task.date_start" @save="updateTask('date_start', $event)" />
-          </div>
-          <div class="row">
-            <DateEditableInput class="d-flex justify-content-end" name="date_due" label="Prazo:" v-model="task.date_due"
-              @save="updateTask('date_due', $event)" />
-          </div>
-          <div class="row">
-            <div class="d-flex justify-content-end">
-              <DateEditableInput name="date_conclusion" label="Conclusão:" v-model="task.date_conclusion"
-                @save="updateTask('date_conclusion', $event)" />
-              <button v-if="showEndTaskButton" class="button-circular primary ms-3" @click="updateDateConclusion"
-                title="Finalizar tarefa com data da última jornada">
-                <font-awesome-icon icon="fa-solid fa-check-square" />
-              </button>
-            </div>
-          </div>
         </div>
       </div>
       <div class="header-fixed-menu mt-3">
@@ -49,23 +29,41 @@
       </div>
     </div>
     <div class="info-container" v-show="currentSection === 'info'">
-      <div class="description-container">
+      <div class="row">
+        <DateEditableInput class="d-flex justify-content-end" name="date_start" label="Início:"
+          v-model="task.date_start" @save="updateTask('date_start', $event)" />
+      </div>
+      <div class="row">
+        <DateEditableInput class="d-flex justify-content-end" name="date_due" label="Prazo:" v-model="task.date_due"
+          @save="updateTask('date_due', $event)" />
+      </div>
+      <div class="row">
+        <div class="d-flex justify-content-end">
+          <DateEditableInput name="date_conclusion" label="Conclusão:" v-model="task.date_conclusion"
+            @save="updateTask('date_conclusion', $event)" />
+          <button v-if="showEndTaskButton" class="button-circular primary ms-3" @click="updateDateConclusion"
+            title="Finalizar tarefa com data da última jornada">
+            <font-awesome-icon icon="fa-solid fa-check-square" />
+          </button>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-3">
+          <users-select-editable-field label="Responsável" name="user_id" v-model="task.user_id"
+            @update:modelValue="updateTask('user_id', $event)" />
+        </div>
+        <div class="col-4">
+          <projects-select-editable-field label="Projeto" v-model="task.project_id"
+            @update:modelValue="updateTask('project_id', $event)" fieldNull="Nenhum" />
+        </div>
+        <div class="col-5">
+          <opportunities-select-editable-field label="Oportunidade" v-model="task.opportunity_id"
+            @update:modelValue="updateTask('opportunity_id', $event)" fieldNull="Nenhum" />
+        </div>
+      </div>
+      <div class="mt-5">
         <TextEditor label="Descrição" name="description" v-model="task.description"
           @save="updateTask('description', $event)" />
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-3">
-        <users-select-editable-field label="Responsável" name="user_id" v-model="task.user_id"
-          @update:modelValue="updateTask('user_id', $event)" />
-      </div>
-      <div class="col-3">
-        <projects-select-editable-field label="Projeto" v-model="task.project_id"
-          @update:modelValue="updateTask('project_id', $event)" fieldNull="Nenhum" />
-      </div>
-      <div class="col-3">
-        <opportunities-select-editable-field label="Oportunidade" v-model="task.opportunity_id"
-          @update:modelValue="updateTask('opportunity_id', $event)" fieldNull="Nenhum" />
       </div>
     </div>
     <div class="info-container" v-show="currentSection === 'journeys'">

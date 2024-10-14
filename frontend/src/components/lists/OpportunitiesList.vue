@@ -1,5 +1,5 @@
 <template>
-    <div class="list-container mb-5 mt-0">
+    <div class="list-container">
         <div class="row align-items-start">
             <div class="col-1">
                 <font-awesome-icon icon="fa-solid fa-tasks" class="icon" />

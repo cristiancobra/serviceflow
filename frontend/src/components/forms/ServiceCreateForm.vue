@@ -124,9 +124,16 @@ export default {
       this.form.labor_hours = this.form.hours * 3600 + this.form.minutes * 60;
       this.form.labor_hourly_rate = parseFloat(this.form.labor_hourly_rate.replace(',', '.'));
 
-      const newService = await this.submitFormCreate("services", this.form);
-      this.isModalVisible = false;
-      this.$emit("new-service-event", newService);
+      // const newService = await this.submitFormCreate("services", this.form);
+      const { data, error } = await this.submitFormCreate("services", this.form);
+
+      if (data) {
+        this.isModalVisible = false;
+        this.$emit("new-service-event", data);
+      }
+      if (error) {
+        this.errors = error;
+      }
     },
     openModal() {
       this.isModalVisible = true;

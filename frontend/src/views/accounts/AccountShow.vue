@@ -102,6 +102,7 @@ export default {
             const { data, error } = await this.submitFormCreate("accounts", this.form);
 
             if (data) {
+                this.form = data;
                 // this.$emit("new-proposal-event", data);
             }
             if (error) {

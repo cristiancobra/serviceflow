@@ -22,7 +22,7 @@
         <font-awesome-icon icon="fas fa-check-circle" class="pe-2"
           :class="isValidDate(task.date_conclusion) ? 'done' : 'canceled'" />
       </div>
-      <div class="col-4 d-flex justify-content-left">
+      <div class="col-4 d-flex justify-content-left" v-if="task.opportunity || task.project">
         <router-link v-if="task.opportunity" :to="{ name: 'opportunityShow', params: { id: task.opportunity.id } }">
           <div class="d-flex">
             <font-awesome-icon icon="fa-solid fa-bullseye" :class="getColorClassForName(task.opportunity.name)" />

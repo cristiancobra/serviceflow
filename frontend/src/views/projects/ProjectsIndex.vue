@@ -1,5 +1,5 @@
 <template>
-  <div class="container mb-5">
+  <div>
     <div class="headers-line">
       <div class="col-1 slot done">concluidos</div>
       <div class="col-1 slot doing">andamento</div>
