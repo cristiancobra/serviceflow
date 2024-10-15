@@ -26,6 +26,12 @@ class AccountRequest extends FormRequest
         return [
             'name' => 'sometimes|string|max:255',
             'slug' => 'sometimes|string|max:255|unique:accounts',
+            'email' => 'sometimes|string|email|max:255',
+            'phone' => 'sometimes|string|max:255',
+            'address' => 'sometimes|string|max:255',
+            'address_city' => 'sometimes|string|max:255',
+            'cnpj' => 'nullable|numeric|digits:14',
+            'inscricao_municipal' => 'sometimes|string|max:255',
             'owner_id' => 'sometimes|integer|exists:users,id',
             'logo' => 'image|max:2048',
             'subscription_status' => 'sometimes|string|max:255',

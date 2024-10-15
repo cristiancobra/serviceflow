@@ -88,14 +88,12 @@ export default {
     },
     async getCost() {
       this.cost = await show('costs', this.costId);
-      console.log(this.cost);
     },
     setCostId(costId) {
       this.costId = costId;
     },
     async updateService(fieldName, editedValue) {
       this.cost = await updateField("costs", this.costId, fieldName, editedValue);
-      console.log(this.cost);
     },
   },
   async mounted() {

@@ -1,52 +1,40 @@
 <template>
     <div class="row m-5">
         <div class="col-8">
-            <form @submit.prevent="submitForm">
-                <div class="row me-5 w-50">
-                    <div class="col">
-                        <div class="row mt-4">
-                            <label for="name">Name:</label>
-                            <br>
-                            <input type="text" id="name" v-model="form.name">
-                        </div>
-                        <div class="row mt-4">
-                            <label for="email">Email:</label>
-                            <br>
-                            <input type="email" id="email" v-model="form.email">
-                        </div>
-                        <div class="row mt-4">
-                            <label for="cnpj">CNPJ:</label>
-                            <br>
-                            <input type="text" id="cnpj" v-model="form.cnpj">
-                        </div>
-                        <div class="row mt-4">
-                            <label for="inscricao_municipal">Inscrição municipal:</label>
-                            <br>
-                            <input type="text" id="inscricao_municipal" v-model="form.inscricao_municipal">
-                        </div>
-                        <div class="row mt-4">
-                            <label for="phone">Telefone:</label>
-                            <br>
-                            <input type="text" id="phone" v-model="form.phone">
-                        </div>
-                        <div class="row mt-4">
-                            <label for="address">Endereço:</label>
-                            <br>
-                            <textarea id="address" v-model="form.address"></textarea>
-                        </div>
-                        <div class="row mt-4">
-                            <label for="address_city">Cidade:</label>
-                            <br>
-                            <input type="text" id="address_city" v-model="form.address_city">
-                        </div>
+            <div class="row me-5 w-50">
+                <div class="col">
+                    <div class="row mt-4">
+                        <faIcon icon="user" />
+                        <TextEditableField name="name" v-model="account.name" placeholder="nome da conta"
+                            @save="updateAccount('name', $event)" />
+                    </div>
+                    <div class="row mt-4">
+                        <TextEditableField name="email" v-model="account.email" placeholder="email da conta"
+                            @save="updateAccount('email', $event)" />
+                    </div>
+                    <div class="row mt-4">
+                        <TextEditableField name="cnpj" v-model="account.cnpj" placeholder="cnpj da empresa"
+                            @save="updateAccount('cnpj', $event)" />
+                    </div>
+                    <div class="row mt-4">
+                        <TextEditableField name="inscricao_municipal" v-model="account.inscricao_municipal"
+                            placeholder="inscricao_municipal da empresa"
+                            @save="updateAccount('inscricao_municipal', $event)" />
+                    </div>
+                    <div class="row mt-4">
+                        <TextEditableField name="phone" v-model="account.phone" placeholder="telefone da empresa"
+                            @save="updateAccount('phone', $event)" />
+                    </div>
+                    <div class="row mt-4">
+                        <TextEditableField name="address" v-model="account.address" placeholder="Endereço da empresa"
+                            @save="updateAccount('address', $event)" />
+                    </div>
+                    <div class="row mt-4">
+                        <TextEditableField name="address_city" v-model="account.address_city"
+                            placeholder="Cidade da empresa" @save="updateAccount('address_city', $event)" />
                     </div>
                 </div>
-                <div class="row mt-4 mb-5">
-                    <div class="col">
-                        <button type="submit">Submit</button>
-                    </div>
-                </div>
-            </form>
+            </div>
         </div>
         <div class="col-4">
             <div class="mt-5">
@@ -68,14 +56,15 @@
 </template>
 
 <script>
-import { show, submitFormCreate } from "@/utils/requests/httpUtils";
+import { show, submitFormCreate, updateField } from "@/utils/requests/httpUtils";
 import { BACKEND_URL, ACCOUNT_URL, IMAGES_PATH } from "@/config/apiConfig";
 import axios from "axios";
+import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 
 export default {
     data() {
         return {
-            form: {
+            account: {
                 cnpj: '',
                 email: '',
                 inscricao_municipal: '',
@@ -88,6 +77,9 @@ export default {
             newLogo: null,
         }
     },
+    components: {
+        TextEditableField,
+    },
     methods: {
         submitFormCreate,
         handleLogoUpload() {
@@ -95,14 +87,14 @@ export default {
         },
         async getAccount() {
             let accountId = this.$route.params.id;
-            this.form = await show('accounts', accountId);
-            console.log(this.form);
+            this.account = await show('accounts', accountId);
+            console.log(this.account);
         },
         async submitForm() {
-            const { data, error } = await this.submitFormCreate("accounts", this.form);
+            const { data, error } = await this.submitFormCreate("accounts", this.account);
 
             if (data) {
-                this.form = data;
+                this.account = data;
                 // this.$emit("new-proposal-event", data);
             }
             if (error) {
@@ -119,15 +111,18 @@ export default {
 
             try {
                 const response = await axios.post(`${BACKEND_URL}${ACCOUNT_URL}/${accountId}/logo`, formData);
-                this.form.logo = response.data.data;
+                this.account.logo = response.data.data;
             } catch (error) {
                 console.error('There was an error uploading the logo:', error);
             }
         },
+        async updateAccount(fieldName, editedValue) {
+            this.account = await updateField("accounts", this.account.id, fieldName, editedValue);
+        },
     },
     computed: {
         urlImageLogo() {
-            return `${IMAGES_PATH}${this.form.logo}`;
+            return `${IMAGES_PATH}${this.account.logo}`;
         }
     },
     mounted() {
