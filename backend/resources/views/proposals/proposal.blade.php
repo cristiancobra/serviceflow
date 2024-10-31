@@ -10,8 +10,8 @@
         }
 
         p {
-            margin-top: 20px;
-            margin-bottom: 20px;
+            /* margin-top: 20px;
+            margin-bottom: 20px; */
             font-size: 14px;
             line-height: 1.5;
         }
@@ -27,49 +27,6 @@
             padding-top: 60px;
             color: #B1388D;
             font-size: 16px;
-        }
-
-        table {
-            table-layout: fixed;
-            width: 100%;
-        }
-
-        td {
-            padding-left: 10px;
-            padding-right: 10px;
-            padding-top: 20px;
-            padding-bottom: 20px;
-            border-style: solid;
-            border-width: 1px;
-            border-color: lightgray;
-        }
-
-        th {
-            background-color: #B1388D;
-            color: white;
-            padding: 10px;
-            font-size: 16px;
-        }
-
-        tr {
-            border-bottom-style: solid;
-            border-bottom-width: 1px;
-            border-bottom-color: #B1388D;
-        }
-
-        th,
-        td {
-            overflow: hidden;
-        }
-
-        th:first-child,
-        td:first-child {
-            width: 70%;
-        }
-
-        th:last-child,
-        td:last-child {
-            width: 30%;
         }
 
         .icons {
@@ -123,15 +80,109 @@
             text-align: right;
         }
 
-        .total {
-            font-weight: bold;
-            text-align: right;
-            color: white;
+        .table {
+            /* display: table; */
+            width: 100%;
         }
 
-        .money {
-            text-align: right;
+        .table-row {
+            width: 100%;
+            display: block;
         }
+
+        .table-head {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .table-footer {
+            margin-top: 30px;
+        }
+
+        .table-column-name {
+            display: block;
+            float: left;
+            padding: 6px;
+            width: 80%;
+            border-left-style: none;
+            border-right-style: none;
+            border-top-style: none;
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
+            border-bottom-color: gray;
+        }
+
+        .table-column-money {
+            display: block;
+            float: left;
+            padding: 6px;
+            text-align: right;
+            width: 20%;
+            border-left-style: none;
+            border-right-style: none;
+            border-top-style: none;
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
+            border-bottom-color: gray;
+        }
+
+        .table-column-total-label {
+            color: #B1388D;
+            background-color: white;
+            font-size: 16px;
+            display: block;
+            float: left;
+            text-align: right;
+            padding: 6px;
+            padding-top: 0px;
+            width: 80%;
+            font-weight: 700;
+        }
+
+        .table-column-total-invoice {
+            background-color: #B1388D;
+            color: white;
+            font-size: 16px;
+            text-align: right;
+            display: block;
+            float: left;
+            padding-right: 10px;
+            width: 20%;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        /* Clear floats after each row */
+        .table-row::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        .table-header-name {
+            background-color: #B1388D;
+            color: white;
+            font-size: 16px;
+            display: block;
+            float: left;
+            text-align: center;
+            width: 80%;
+            border-radius: 20px 0px 0px 20px;
+            font-weight: 700;
+        }
+
+        .table-header-price {
+            background-color: #B1388D;
+            color: white;
+            font-size: 16px;
+            text-align: center;
+            display: block;
+            float: left;
+            width: 24%;
+            border-radius: 0px 20px 20px 0px;
+            font-weight: 700;
+        }
+
     </style>
 </head>
 
@@ -158,41 +209,42 @@
             <span class="label">Cliente:</span> {{ $proposal->opportunity->company->legal_name }}
         </p>
         <p>
-            <span class="label">Data:</span> {{ $proposal->date }}
+            <span class="label">Data:</span> {{ $proposalDate }}
         </p>
         @if (!empty($proposal->opportunity->description))
             <p><span class="label">Oportunidade:</span> {!! $proposal->opportunity->description !!}</p>
         @endif
         <h2>SERVIÇOS:</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Preço</th>
-                </tr>
-            </thead>
-            <tbody>
+        <div class="table">
+            <div class="table-head">
+                <div class="table-row">
+                    <div class="table-header-name">Nome</div>
+                    <div class="table-header-price">Preço</div>
+                </div>
+            </div>
+            <div class="table-body">
                 @foreach ($proposal->ProposalServices as $proposalItem)
-                    <tr>
-                        <td>{{ $proposalItem->name }}</td>
-                        <td class="money">R$ {{ $proposalItem->price }}</td>
-                    </tr>
+                    <div class="table-row">
+                        <div class="table-column-name">{{ $proposalItem->name }}</div>
+                        <div class="table-column-money">R$ {{ $proposalItem->price }}</div>
+                    </div>
                 @endforeach
-                <tr>
-                    <th class="total">Total</th>
-                    <th class="money total">R$ {{ $proposal->total_price }}</th>
-                </tr>
-            </tbody>
-        </table>
-        <p>
-            <br>
-            <span class="label">Validade da proposta: </span> {{ $proposal->validity_days }} dias.
-        </p>
-        <p style="text-align:center;padding-top:50px">
-            <br>
-            {{ $proposal->account->address_city }}, {{ $today }}
-        </p>
-    </div>
+            </div>
+            <div class="table-footer">
+                <div class="table-row">
+                    <div class="table-column-total-label">Total:</div>
+                    <div class="table-column-total-invoice">R$ {{ $proposal->total_price }}</div>
+                </div>
+            </div>
+            <p>
+                <br>
+                <span class="label">Validade da proposta: </span> {{ $proposal->validity_days }} dias.
+            </p>
+            <p style="text-align:center;padding-top:50px">
+                <br>
+                {{ $proposal->account->address_city }}, {{ $today }}
+            </p>
+        </div>
 </body>
 
 </html>

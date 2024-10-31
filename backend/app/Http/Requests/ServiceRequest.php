@@ -51,14 +51,14 @@ class ServiceRequest extends FormRequest
             ]);
         }
 
-        if($this->has('profit_percentage') && $this->has('labor_hourly_total')) {
-            $this->merge([
-                'price' => $this->input('labor_hourly_total') / (1 - ($this->input('profit_percentage') / 100)),
-            ]);
-            $this->merge([
-                'profit' => $this->input('price') - $this->input('labor_hourly_total'),
-            ]);
-        }
+        // if($this->has('profit_percentage') && $this->has('labor_hourly_total')) {
+        //     $this->merge([
+        //         'price' => $this->input('labor_hourly_total') / (1 - ($this->input('profit_percentage') / 100)),
+        //     ]);
+        //     $this->merge([
+        //         'profit' => $this->input('price') - $this->input('labor_hourly_total'),
+        //     ]);
+        // }
         
         // if($this->has('profit_percentage') && $this->has('labor_hourly_total')) {
         //     $this->merge([

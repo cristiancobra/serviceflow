@@ -1,6 +1,6 @@
 <template>
-  <div class="main-container">
-    <label class="form-label" :for="name">{{ label }}</label>
+  <div>
+    <label v-if="label" class="form-label" :for="name">{{ label }}</label>
     <div v-if="!editing"  @click="startEditing">
       <div v-if="localValue">
         <p class="text-end">
@@ -11,11 +11,9 @@
         não informado
       </div>
     </div>
-    <div v-else>
-      <div class="text-input-container">
-        <input class="text-input text-end" type="text" :name="name" 
+    <div v-else class="">
+        <input class="input-money" type="text" :name="name" 
         v-model="localValue" :placeholder="placeholder" @keydown.esc="cancelEditing" @blur="emitSave" @keydown.enter.prevent="emitSave" />
-      </div>
     </div>
 
   </div>
@@ -46,7 +44,7 @@ export default {
       this.editing = true;
     },
     emitSave() {
-      this.$emit("save", this.convertBrToCurrency(this.localValue));
+      this.$emit("update", this.convertBrToCurrency(this.localValue));
       this.editing = false;
     },
     cancelEditing() {
@@ -59,14 +57,15 @@ export default {
       this.localValue = this.convertCurrencyToBr(newValue);
     },
   },
-  mounted() {
-    console.log(this.modelValue);
-    console.log(this.convertCurrencyToBr(this.modelValue));
-  },
 };
 </script>
 
 <style scoped>
+.input-money {
+  text-align: right;
+  width: 100%;
+}
+
 .main-container {
   display: flex;
   flex-direction: row;

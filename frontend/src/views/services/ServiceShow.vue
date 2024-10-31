@@ -47,7 +47,7 @@
           %
       </div>
       <div class="col-1 text-end">
-        <money-field name="profit" v-model="service.profit" />
+        <money-editable-field name="profit" v-model="service.profit" @update="updateService('profit', $event)" />
       </div>
     </div>
     <div class="row">
@@ -92,7 +92,6 @@ import MoneyField from '../../components/fields/number/MoneyField.vue';
 import HoursDecimalEditableField from '../../components/fields/number/HoursDecimalEditableField.vue';
 
 export default {
-  name: "ServiceShow",
   data() {
     return {
       service: [],
@@ -102,9 +101,9 @@ export default {
   components: {
     DecimalEditableField,
     HoursDecimalEditableField,
-    MoneyEditableField,
     TextEditableField,
     MoneyField,
+    MoneyEditableField,
   },
   methods: {
     destroy,
@@ -136,7 +135,6 @@ export default {
     },
     async updateService(fieldName, editedValue) {
       this.service = await updateField("services", this.serviceId, fieldName, editedValue);
-      console.log(this.service);
     },
   },
   async mounted() {

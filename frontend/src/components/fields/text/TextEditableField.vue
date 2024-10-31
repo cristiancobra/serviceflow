@@ -1,6 +1,6 @@
 <template>
   <div class="main-container">
-    <label class="form-label" :for="name">{{ label }}</label>
+    <label class="form-label me-2" :for="name">{{ label }}</label>
     <div v-if="!editing"  @click="startEditing">
       <div v-if="modelValue" class="">
         {{ modelValue }}

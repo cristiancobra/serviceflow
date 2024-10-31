@@ -29,11 +29,11 @@
     border-radius: 0.3rem;
   }
 
-  .modal.fade.show {
+  .myModal.fade.show {
     display: block;
   }
   
-  .modal-dialog {
+  .myModal-dialog {
     margin: 15px;
   }
     
@@ -41,4 +41,55 @@
     display: flex;
     gap: 10px;
     align-items: center;
+  }
+
+
+  .myModal-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-bottom: 1rem;
+  }
+
+  .myModal-icon {
+    font-size: 1.5rem;
+    color: var(--primary);
+  }
+
+  .myModal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-left: 1rem;
+    text-align: left;
+    color: var(--primary);
+  }
+
+  .myModal-button-close {
+    position: relative;
+    width: 1.5em;
+    height: 1.5em;
+    background: transparent;
+    border: 0;
+    padding: 2px;
+    cursor: pointer;
+    margin-left: auto;
+    color: black;
+  }
+  
+  .myModal-button-close:before, .myModal-button-close:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0.25em;
+    width: 1em;
+    height: 2px;
+    background-color: currentColor;
+  }
+  
+  .myModal-button-close:before {
+    transform: rotate(45deg);
+  }
+  
+  .myModal-button-close:after {
+    transform: rotate(-45deg);
   }

@@ -226,7 +226,7 @@ class ProposalController extends Controller
                     'labor_hours' => $serviceModel->labor_hours,
                     'labor_hours_total' => $serviceFormData['quantity'] * $serviceModel->labor_hours,
                     'labor_hourly_rate' => $serviceModel->labor_hourly_rate,
-                    'labor_hourly_rate_total' => $serviceFormData['quantity'] * $serviceModel->labor_hourly_rate,
+                    'labor_hourly_rate_total' => $serviceFormData['quantity'] * ($serviceModel->labor_hourly_rate  * ($serviceModel->labor_hours / 3600)),
                     'total_price' => $serviceFormData['quantity'] * $serviceModel->price,
                     'total_profit' => $serviceFormData['quantity'] * $serviceModel->profit,
                 ]);
@@ -273,13 +273,15 @@ class ProposalController extends Controller
         $whatsappIcon = $this->systemImageToBase64('img/proposals/whatsapp-icon.png');
         $emailIcon = $this->systemImageToBase64('img/proposals/email-icon.png');
         $formatter = new \IntlDateFormatter('pt_BR', \IntlDateFormatter::FULL, \IntlDateFormatter::NONE);
-        $date = $formatter->format(new \DateTime);
+        $today = $formatter->format(new \DateTime);
+        $proposalDate = (new \DateTime($proposal->date))->format('d/m/Y');
         $html = view('proposals.proposal', [
             'proposal' => $proposal,
             'logo' => $logo,
             'whatsappIcon' => $whatsappIcon,
             'emailIcon' => $emailIcon,
-            'today' => $date,
+            'today' => $today,
+            'proposalDate' => $proposalDate,
         ])
             ->render();
         $dompdf = new Dompdf();

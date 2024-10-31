@@ -85,20 +85,27 @@ class ServiceController extends Controller
     public function update(ServiceRequest $request, Service $service)
     {
         try {
-            $validatedData = $request->validated();
+            $serviceValidated = $request->validated();
             
-            $laborHours = $validatedData['labor_hours'] ?? $service->labor_hours;
+            $laborHours = $serviceValidated['labor_hours'] ?? $service->labor_hours;
             $laborHours = $laborHours / 3600;
-            $laborHourlyRate = $validatedData['labor_hourly_rate'] ?? $service->labor_hourly_rate;
+            $laborHourlyRate = $serviceValidated['labor_hourly_rate'] ?? $service->labor_hourly_rate;
             $laborHourlyTotal = $laborHours * $laborHourlyRate;
-            $validatedData['labor_hourly_total'] = $laborHourlyTotal;
-
-            $profitPercentage = $validatedData['profit_percentage'] ?? $service->profit_percentage;
-            $totalCost = $validatedData['labor_hourly_total']; // depois adicionar custos de terceiros
-            $validatedData['price'] = $totalCost / (1 - ($profitPercentage / 100));
-            $validatedData['profit'] = $validatedData['price'] - $totalCost;
+            $serviceValidated['labor_hourly_total'] = $laborHourlyTotal;
+            $operationalCost = $serviceValidated['labor_hourly_total'];
+            
+            if(isset($serviceValidated['profit_percentage'])) {
+                $serviceValidated['price'] = $operationalCost / (1 - ($serviceValidated['profit_percentage'] / 100));
+                $serviceValidated['profit'] = $serviceValidated['price'] - $operationalCost;
+            }
+            
+            if(isset($serviceValidated['profit'])) {
+                $serviceValidated['price'] = $operationalCost + $serviceValidated['profit'];
+                $serviceValidated['profit_percentage'] = ($serviceValidated['profit'] / $serviceValidated['price']) * 100;
+            }
+            // $profitPercentage = $serviceValidated['profit_percentage'] ?? $service->profit_percentage;
     
-            $service->fill($validatedData);
+            $service->fill($serviceValidated);
             $service->save();
 
             return ServiceResource::make($service);

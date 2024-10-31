@@ -22,13 +22,11 @@
 </template>
 
 <script>
-// import { convertDecimalToSeconds, convertSecondsToDecimal } from "@/utils/date/dateUtils";
-
 export default {
   data() {
     return {
       editing: false,
-      localValue: this.modelValue,
+      localValue: this.modelValue ? parseFloat(this.modelValue).toFixed(2) : '',
     };
   },
   props: {
@@ -43,17 +41,17 @@ export default {
       this.editing = true;
     },
     emitSave() {
-      this.$emit("save", this.localValue);
+      this.$emit("save", parseFloat(this.localValue).toFixed(2));
       this.editing = false;
     },
     cancelEditing() {
       this.editing = false;
-      this.localValue = this.modelValue
+      this.localValue = this.modelValue ? parseFloat(this.modelValue).toFixed(2) : '';
     },
   },
   watch: {
     modelValue(newValue) {
-      this.localValue = newValue;
+      this.localValue = newValue ? parseFloat(newValue).toFixed(2) : '';
     },
   },
 };

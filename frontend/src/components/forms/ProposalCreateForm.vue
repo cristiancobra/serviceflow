@@ -70,7 +70,7 @@
                                         </label>
                                     </div>
                                     <div class="col-3 text-end">
-                                        R$ {{ service.price }}
+                                        <money-editable-field :name="service.id" v-model="service.price" />
                                     </div>
                                 </div>
                             </div>
@@ -119,10 +119,12 @@ import { submitFormCreate } from "@/utils/requests/httpUtils";
 import DateInput from "@/components/forms/inputs/date/DateInput.vue";
 import TextAreaInput from "./inputs/textarea/TextAreaInput";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
+import MoneyEditableField from '../fields/number/MoneyEditableField.vue';
 
 export default {
     components: {
         DateInput,
+        MoneyEditableField,
         TextAreaInput,
         UsersSelectInput,
     },
@@ -173,7 +175,7 @@ export default {
                 }));
 
             this.form.costs = this.costs
-                .filter(cost => cost.price > 0)
+                .filter(cost => cost.quantity > 0)
                 .map(cost => ({
                     id: cost.id,
                     quantity: cost.quantity,

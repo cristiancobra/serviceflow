@@ -130,7 +130,7 @@ return [
     ],
     'starts_with' => 'The :attribute must start with one of the following: :values.',
     'doesnt_start_with' => 'The :attribute may not start with one of the following: :values.',
-    'string' => 'The :attribute must be a string.',
+    'string' => ':attribute precisa ser um texto válido.',
     'timezone' => 'The :attribute must be a valid timezone.',
     'unique' => 'Este :attribute já existe no sistema.',
     'uploaded' => 'The :attribute failed to upload.',

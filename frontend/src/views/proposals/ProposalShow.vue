@@ -106,16 +106,19 @@
       <div class="col-1 d-flex align-items-center justify-content-center">
         <font-awesome-icon icon="fa-solid fa-coins" class="primary" />
       </div>
-      <div class="col-8">
+      <div class="col-6">
         <p class="name ps-2">
           {{ proposalService.name }}
         </p>
       </div>
       <div class="col-1">
-        {{ proposalService.quantity }}
+        {{ proposalService.quantity }} x
       </div>
-      <div class="col-2 text-end">
-        {{ proposalService.total_price }}
+      <div class="col-2">
+        <money-field name="price" v-model="proposalService.price" />
+      </div>
+      <div class="col-2">
+        <money-field name="total_price" v-model="proposalService.total_price" />
       </div>
     </div>
     <div class="row pt-5">
@@ -127,16 +130,19 @@
       <div class="col-1 d-flex align-items-center justify-content-center">
         <font-awesome-icon icon="fa-solid fa-coins" class="primary" />
       </div>
-      <div class="col-8">
+      <div class="col-6">
         <p class="name ps-2">
           {{ proposalCost.name }}
         </p>
       </div>
       <div class="col-1">
-        {{ proposalCost.quantity }}
+        {{ proposalCost.quantity }} x
       </div>
-      <div class="col-2 text-end">
-        {{ proposalCost.total_price }}
+      <div class="col-2">
+        <money-field name="price" v-model="proposalCost.price" />
+      </div>
+      <div class="col-2">
+        <money-field name="total_price" v-model="proposalCost.total_price" />
       </div>
     </div>
     <div class="row mt-5 mb-5">
@@ -181,8 +187,7 @@ export default {
     async deleteProposal() {
       this.response = await destroy('proposals', this.proposalId);
       this.$router.push({
-        name: "proposalShow",
-        params: { id: this.proposalId }
+        name: "proposalsIndex",
       });
     },
     formatDateBr(date) {

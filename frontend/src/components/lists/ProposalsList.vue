@@ -114,7 +114,6 @@ export default {
     },
     mounted() {
         this.getProposalsFromOpportunity();
-        console.log(this.proposals);
     },
 };
 </script>

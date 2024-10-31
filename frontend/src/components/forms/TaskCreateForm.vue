@@ -175,16 +175,20 @@ export default {
       this.isModalVisible = true;
     },
     async submitForm() {
-      this.newTask = await this.submitFormCreate('tasks', this.form);
-      this.$emit("new-task-event", this.newTask);
-      // this.isSuccess = true;
-      this.messageStatus = "success";
-      this.messageText = "Tarefa criada com sucesso!";
-      this.isError = false;
-      // this.newCompanyEvent(this.data);
-      // this.successMessage(this.data);
-      this.closeModal();
-      this.clearForm();
+      const { data, error } = await this.submitFormCreate("tasks", this.form);
+
+      if (data) {
+        this.messageStatus = "success";
+        this.messageText = "Tarefa criada com sucesso!";
+        this.isError = false;
+        this.closeModal();
+        this.clearForm();
+        this.$emit("new-task-event", data);
+      }
+      if (error) {
+        this.errors = error;
+      }
+
     },
     toggleCompany() {
       this.isActiveCompany = !this.isActiveCompany;
