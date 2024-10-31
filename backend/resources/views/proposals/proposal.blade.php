@@ -107,7 +107,7 @@
             padding-right: 20px;
         }
 
-         tr {
+        tr {
             font-size: 14px;
             padding: 0px;
         }
@@ -144,12 +144,22 @@
     <footer class="footer">
         <span class="label">{{ $proposal->account->name }}</span>
         <br>
-        <span class="label">CNPJ</span>{{ $proposal->account->cnpj }}
+        @if ($proposal->account->cnpj)
+            <span class="label">CNPJ</span>{{ $proposal->account->cnpj }}
+        @endif
+        @if ($proposal->account->inscricao_municipal)
         <span class="label">Insc. Municipal</span>{{ $proposal->account->inscricao_municipal }}
+        @endif
+        @if ($proposal->account->phone)
         <img class="icons" src="{{ $whatsappIcon }}" alt="whatsapp-icon">{{ $proposal->account->phone }}
+        @endif
+        @if ($proposal->account->email)
         <img class="icons" src="{{ $emailIcon }}" alt="email-icon">{{ $proposal->account->email }}
+        @endif
+        @if ($proposal->account->address)
         <br>
         {{ $proposal->account->address }}
+        @endif
     </footer>
     <div class="content">
         <div>
