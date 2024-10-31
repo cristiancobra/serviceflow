@@ -17,12 +17,12 @@
         h1 {
             text-align: center;
             color: #B1388D;
-            margin-bottom: 60px;
+            margin-bottom: 40px;
             font-size: 22px;
         }
 
         h2 {
-            padding-top: 60px;
+            padding-top: 20px;
             color: #B1388D;
             font-size: 16px;
         }
@@ -94,24 +94,27 @@
         thead {
             background-color: #B1388D;
             color: white;
-            font-size: 16px;
         }
 
         th {
             border: 1px solid #B1388D;
-            padding: 6px;
-            padding-bottom: 16px;
+            padding: 0px;
         }
 
         td {
             border: 1px solid gray;
-            padding: 6px;
-            padding-bottom: 16px;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+         tr {
+            font-size: 14px;
+            padding: 0px;
         }
 
         .table-footer td {
             border: none;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 700;
         }
 
@@ -167,8 +170,7 @@
                 @endif
             </p>
             @if (!empty($proposal->opportunity->description))
-            <br>
-                <p><span class="label">Detalhamento:</span> {!! $proposal->opportunity->description !!}</p>
+                <p><br><span class="label">Detalhamento:</span> {!! $proposal->opportunity->description !!}</p>
             @endif
         </div>
         <div>
