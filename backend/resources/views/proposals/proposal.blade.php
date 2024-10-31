@@ -10,8 +10,6 @@
         }
 
         p {
-            /* margin-top: 20px;
-            margin-bottom: 20px; */
             font-size: 14px;
             line-height: 1.5;
         }
@@ -80,109 +78,59 @@
             text-align: right;
         }
 
-        .table {
-            /* display: table; */
-            width: 100%;
-        }
-
-        .table-row {
-            width: 100%;
-            display: block;
-        }
-
-        .table-head {
-            margin-top: 20px;
+        .table-container {
+            overflow: hidden;
+            border-radius: 20px;
+            border: 1px solid #B1388D;
+            margin-top: 30px;
             margin-bottom: 20px;
         }
 
-        .table-footer {
-            margin-top: 30px;
+        table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        .table-column-name {
-            display: block;
-            float: left;
-            padding: 6px;
-            width: 80%;
-            border-left-style: none;
-            border-right-style: none;
-            border-top-style: none;
-            border-bottom-style: solid;
-            border-bottom-width: 1px;
-            border-bottom-color: gray;
+        thead {
+            background-color: #B1388D;
+            color: white;
+            font-size: 16px;
         }
 
-        .table-column-money {
-            display: block;
-            float: left;
+        th {
+            border: 1px solid #B1388D;
             padding: 6px;
+            padding-bottom: 16px;
+        }
+
+        td {
+            border: 1px solid gray;
+            padding: 6px;
+            padding-bottom: 16px;
+        }
+
+        .table-footer td {
+            border: none;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .total-label {
+            width: 13cm;
+        }
+
+        .table-footer .total-label {
             text-align: right;
-            width: 20%;
-            border-left-style: none;
-            border-right-style: none;
-            border-top-style: none;
-            border-bottom-style: solid;
-            border-bottom-width: 1px;
-            border-bottom-color: gray;
-        }
-
-        .table-column-total-label {
             color: #B1388D;
-            background-color: white;
-            font-size: 16px;
-            display: block;
-            float: left;
-            text-align: right;
-            padding: 6px;
-            padding-top: 0px;
-            width: 80%;
-            font-weight: 700;
         }
 
-        .table-column-total-invoice {
+        .table-footer .total-invoice {
+            text-align: right;
             background-color: #B1388D;
             color: white;
-            font-size: 16px;
-            text-align: right;
-            display: block;
-            float: left;
             padding-right: 10px;
-            width: 20%;
-            border-radius: 20px;
-            font-weight: 700;
+            border-radius: 16px;
         }
-
-        /* Clear floats after each row */
-        .table-row::after {
-            content: "";
-            display: table;
-            clear: both;
-        }
-
-        .table-header-name {
-            background-color: #B1388D;
-            color: white;
-            font-size: 16px;
-            display: block;
-            float: left;
-            text-align: center;
-            width: 80%;
-            border-radius: 20px 0px 0px 20px;
-            font-weight: 700;
-        }
-
-        .table-header-price {
-            background-color: #B1388D;
-            color: white;
-            font-size: 16px;
-            text-align: center;
-            display: block;
-            float: left;
-            width: 24%;
-            border-radius: 0px 20px 20px 0px;
-            font-weight: 700;
-        }
-
     </style>
 </head>
 
@@ -201,41 +149,60 @@
         {{ $proposal->account->address }}
     </footer>
     <div class="content">
-        <h1>Proposta de prestação de serviço</h1>
-        <p>
-            <span class="label">Proposta:</span> {{ $proposal->id }}
-        </p>
-        <p>
-            <span class="label">Cliente:</span> {{ $proposal->opportunity->company->legal_name }}
-        </p>
-        <p>
-            <span class="label">Data:</span> {{ $proposalDate }}
-        </p>
-        @if (!empty($proposal->opportunity->description))
-            <p><span class="label">Oportunidade:</span> {!! $proposal->opportunity->description !!}</p>
-        @endif
-        <h2>SERVIÇOS:</h2>
-        <div class="table">
-            <div class="table-head">
-                <div class="table-row">
-                    <div class="table-header-name">Nome</div>
-                    <div class="table-header-price">Preço</div>
-                </div>
-            </div>
-            <div class="table-body">
-                @foreach ($proposal->ProposalServices as $proposalItem)
-                    <div class="table-row">
-                        <div class="table-column-name">{{ $proposalItem->name }}</div>
-                        <div class="table-column-money">R$ {{ $proposalItem->price }}</div>
-                    </div>
-                @endforeach
-            </div>
-            <div class="table-footer">
-                <div class="table-row">
-                    <div class="table-column-total-label">Total:</div>
-                    <div class="table-column-total-invoice">R$ {{ $proposal->total_price }}</div>
-                </div>
-            </div>
+        <div>
+            <h1>Proposta de prestação de serviço</h1>
+        </div>
+        <div>
+            <p>
+                <span class="label">Núm. Proposta:</span> {{ $proposal->id }}
+            </p>
+            <p>
+                <span class="label">Para:</span>
+                @if ($proposal->opportunity->company->business_name)
+                    {{ $proposal->opportunity->company->business_name }}
+                @elseif ($proposal->opportunity->company->legal_name)
+                    {{ $proposal->opportunity->company->legal_name }}
+                @else
+                    {{ $proposal->opportunity->contact->name }}
+                @endif
+            </p>
+            @if (!empty($proposal->opportunity->description))
+            <br>
+                <p><span class="label">Detalhamento:</span> {!! $proposal->opportunity->description !!}</p>
+            @endif
+        </div>
+        <div>
+            <h2>SERVIÇOS:</h2>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Qtde</th>
+                        <th>Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($proposal->ProposalServices as $proposalItem)
+                        <tr>
+                            <td>{{ $proposalItem->name }}</td>
+                            <td style="text-align: center">{{ $proposalItem->quantity }}</td>
+                            <td style="text-align: right">R$ {{ $proposalItem->price }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        <div class="table-footer">
+            <table>
+                <tr>
+                    <td class="total-label">Total:</td>
+                    <td class="total-invoice">R$ {{ $proposal->total_price }}</td>
+                </tr>
+            </table>
+        </div>
+        <div>
             <p>
                 <br>
                 <span class="label">Validade da proposta: </span> {{ $proposal->validity_days }} dias.
@@ -245,6 +212,7 @@
                 {{ $proposal->account->address_city }}, {{ $today }}
             </p>
         </div>
+    </div>
 </body>
 
 </html>

@@ -187,7 +187,8 @@ export default {
     async deleteProposal() {
       this.response = await destroy('proposals', this.proposalId);
       this.$router.push({
-        name: "proposalsIndex",
+        name: "opportunityShow",
+        params: { id: this.proposal.opportunity_id },
       });
     },
     formatDateBr(date) {
