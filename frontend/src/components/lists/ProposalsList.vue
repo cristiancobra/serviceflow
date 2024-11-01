@@ -51,7 +51,7 @@ import axios from "axios";
 import { BACKEND_URL, PROPOSALS_BY_OPPORTUNITY_URL } from "@/config/apiConfig";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import { getDeadlineClass } from "@/utils/card/cardUtils";
-import { updateField } from "@/utils/requests/httpUtils";
+import { index, updateField } from "@/utils/requests/httpUtils";
 import ProposalCreateForm from "../forms/ProposalCreateForm.vue";
 import SelectStatusButton from "../buttons/SelectStatusButton.vue";
 import MoneyField from '../fields/number/MoneyField.vue';
@@ -83,6 +83,7 @@ export default {
         addProposalCreated(newProposal) {
             this.proposals.unshift(newProposal);
         },
+
         async getProposalsFromOpportunity(page = 1) {
 
             this.proposalsUrl = `${BACKEND_URL}${PROPOSALS_BY_OPPORTUNITY_URL}opportunity_id=${this.opportunityId}&per_page=10&page=${page}`;
@@ -101,6 +102,9 @@ export default {
                 console.error("Erro ao acessar propostas:", error);
             }
         },
+        async getProposals() {
+            this.proposals = await index("proposals");
+        },
         async updateProposal(fieldName, proposalId, editedValue) {
             const updatedProposal = await updateField("proposals", proposalId, fieldName, editedValue);
             const proposalIndex = this.proposals.findIndex(proposal => proposal.id === proposalId);
@@ -113,7 +117,11 @@ export default {
         },
     },
     mounted() {
-        this.getProposalsFromOpportunity();
+        if(this.opportunityId) {
+            this.getProposalsFromOpportunity();
+        } else {
+            this.getProposals();
+        }
     },
 };
 </script>

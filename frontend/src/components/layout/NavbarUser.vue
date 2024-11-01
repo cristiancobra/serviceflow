@@ -39,6 +39,14 @@
             </li>
           </router-link>
 
+          <router-link to="/proposals">
+            <li class="nav-item" @mouseover="toggleActive('proposals')"
+              :class="{ active: activeItem === 'proposals' }">
+              <font-awesome-icon icon="fas fa-file-invoice-dollar" />
+              <span class="router-link-text">PROPOSTAS</span>
+            </li>
+          </router-link>
+
           <router-link to="/projects">
             <li class="nav-item" @mouseover="toggleActive('projects')" :class="{ active: activeItem === 'projects' }">
               <font-awesome-icon icon="fas fa-project-diagram" />

@@ -15,6 +15,27 @@ use Dompdf\Dompdf;
 
 class ProposalController extends Controller
 {
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $perPage = request()->get('per_page', 20);
+
+        $proposals = Proposal::with([
+            'proposalServices',
+            'proposalCosts',
+            'opportunity',
+        ])
+            ->orderBy('date', 'desc')
+            ->paginate($perPage);
+
+        return ProposalResource::collection($proposals);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -257,6 +278,23 @@ class ProposalController extends Controller
     }
 
     /**
+     * Configure name for proposal
+     */
+    public function configureName(Proposal $proposal)
+    {
+        $companyName = $proposal->opportunity->company->business_name
+            ?? $proposal->opportunity->company->legal_name
+            ?? $proposal->opportunity->contact->name;
+
+        $companyName = iconv('UTF-8', 'ASCII//TRANSLIT', $companyName);
+        $companyName = str_replace(' ', '-', $companyName);
+        $companyName = preg_replace('/[^A-Za-z0-9\-]/', '', $companyName);
+        $companyName = strtolower($companyName);
+        return $companyName;
+    }
+
+
+    /**
      * Export the specified resource to PDF.
      *
      * @param  \App\Models\Proposal  $proposal
@@ -284,11 +322,17 @@ class ProposalController extends Controller
             'proposalDate' => $proposalDate,
         ])
             ->render();
+
+        $companyName = $this->configureName($proposal);
+
+
+        $dateSuffix = (new \DateTime())->format('d-m-Y');
+
         $dompdf = new Dompdf();
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4');
         $dompdf->render();
-        $dompdf->stream("proposal-{$proposal->id}.pdf");
+        $dompdf->stream("proposta-{$companyName}-{$dateSuffix}.pdf", ["Attachment" => true]);
     }
 
 

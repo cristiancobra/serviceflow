@@ -16,7 +16,7 @@ import ServiceShow from '../views/services/ServiceShow.vue'
 import store from '@/store'
 import ProjectsIndex from '../views/projects/ProjectsIndex.vue'
 import ProjectShow from '../views/projects/ProjectShow.vue'
-// import ProposalsIndex from '@/views/proposals/ProposalsIndex.vue'
+import ProposalsIndex from '@/views/proposals/ProposalsIndex.vue'
 import ProposalShow from '@/views/proposals/ProposalShow.vue'
 import TasksIndex from '../views/tasks/TasksIndex.vue'
 import TaskShow from '../views/tasks/TaskShow.vue'
@@ -102,11 +102,11 @@ const routes = [
     name: 'projectShow',
     component: ProjectShow
   },
-  // {
-  //   path: '/proposals',
-  //   name: 'proposalsIndex',
-  //   component: ProposalsIndex
-  // },
+  {
+    path: '/proposals',
+    name: 'proposalsIndex',
+    component: ProposalsIndex
+  },
   {
     path: '/proposals/:id',
     name: 'proposalShow',
