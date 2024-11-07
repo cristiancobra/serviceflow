@@ -282,9 +282,10 @@ class ProposalController extends Controller
      */
     public function configureName(Proposal $proposal)
     {
+        // dd($proposal->opportunity->lead);
         $companyName = $proposal->opportunity->company->business_name
             ?? $proposal->opportunity->company->legal_name
-            ?? $proposal->opportunity->contact->name;
+            ?? "Marcelo";
 
         $companyName = iconv('UTF-8', 'ASCII//TRANSLIT', $companyName);
         $companyName = str_replace(' ', '-', $companyName);
@@ -309,6 +310,7 @@ class ProposalController extends Controller
             'opportunity',
             'proposalServices',
         ]);
+        $companyName = $this->configureName($proposal);
         $logo = $this->userImageToBase64($proposal->account->logo);
         $whatsappIcon = $this->systemImageToBase64('img/proposals/whatsapp-icon.png');
         $emailIcon = $this->systemImageToBase64('img/proposals/email-icon.png');
@@ -323,10 +325,9 @@ class ProposalController extends Controller
             'today' => $today,
             'proposalDate' => $proposalDate,
             'isVisibleQuantity' => $isVisibleQuantity,
+            'companyName' => $companyName,
         ])
             ->render();
-
-        $companyName = $this->configureName($proposal);
 
 
         $dateSuffix = (new \DateTime())->format('d-m-Y');

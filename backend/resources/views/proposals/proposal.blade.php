@@ -171,13 +171,7 @@
             </p>
             <p>
                 <span class="label">Para:</span>
-                @if ($proposal->opportunity?->company?->business_name)
-                    {{ $proposal->opportunity->company->business_name }}
-                @elseif ($proposal->opportunity?->company?->legal_name)
-                    {{ $proposal->opportunity->company->legal_name }}
-                @elseif ($proposal->opportunity?->lead?->name)
-                    {{ $proposal->opportunity->lead->name }}
-                @endif
+               {{ $companyName }}
             </p>
             @if (!empty($proposal->opportunity->description))
                 <p><br><span class="label">Detalhamento:</span> {!! $proposal->opportunity->description !!}</p>
