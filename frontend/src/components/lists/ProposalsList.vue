@@ -34,11 +34,14 @@
                                 <p v-else-if="proposal.opportunity?.company?.business_name" class="ps-2">
                                     {{ proposal.opportunity.company.business_name }}
                                 </p>
+                                <p v-else-if="proposal.opportunity?.company?.legal_name" class="ps-2">
+                                    {{ proposal.opportunity.company.legal_name }}
+                                </p>
                                 <p v-else-if="proposal.opportunity?.lead?.name" class="ps-2">
                                     {{ proposal.opportunity.lead.name }}
                                 </p>
                                 <p v-else class="ps-2">
-                                    ---
+                                    sem associação
                                 </p>
                             </div>
                             <div class="col-5 ">
@@ -120,7 +123,8 @@ export default {
             }
         },
         async getProposals() {
-            this.proposals = await index("proposals");            
+            this.proposals = await index("proposals");   
+            console.log("proposals", this.proposals);         
         },
         async updateProposal(fieldName, proposalId, editedValue) {
             const updatedProposal = await updateField("proposals", proposalId, fieldName, editedValue);

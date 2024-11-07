@@ -40,8 +40,8 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <LeadsSelectInput class="text-start" label="Contato" name="contact_id"
-                                        v-model="form.contact_id" fieldsToDisplay="name" fieldNull="Não possui" />
+                                    <LeadsSelectInput class="text-start" label="Contato" name="lead_id"
+                                        v-model="form.lead_id" fieldsToDisplay="name" fieldNull="Não possui" />
                                 </div>
                                 <div class="col-2 d-flex align-items-center justify-content-start">
                                     <button type="button" class="button-new" @click="toggleLead()">
@@ -125,7 +125,7 @@ export default {
                 name: null,
                 description: null,
                 company_id: null,
-                contact_id: null,
+                lead_id: null,
                 user_id: null,
                 project_id: null,
                 date_start: null,

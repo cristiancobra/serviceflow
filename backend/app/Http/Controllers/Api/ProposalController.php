@@ -360,6 +360,9 @@ class ProposalController extends Controller
 
         $proposals = Proposal::where('opportunity_id', $request->opportunity_id)
             ->with([
+                'opportunity',
+                'opportunity.company',
+                'opportunity.lead',
                 'proposalServices',
                 'proposalCosts',
             ])
