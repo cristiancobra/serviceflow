@@ -21,7 +21,7 @@ class LeadController extends Controller
     public function index()
     {
         $leads = Lead::orderBy('name', 'ASC')
-            ->paginate(20);
+            ->paginate(50);
         
         return LeadsResource::collection($leads);
     }
