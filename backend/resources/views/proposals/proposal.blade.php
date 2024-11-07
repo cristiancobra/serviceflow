@@ -175,7 +175,7 @@
                     {{ $proposal->opportunity->company->business_name }}
                 @elseif ($proposal->opportunity?->company?->legal_name)
                     {{ $proposal->opportunity->company->legal_name }}
-                @else
+                @elseif ($proposal->opportunity?->lead?->name)
                     {{ $proposal->opportunity->lead->name }}
                 @endif
             </p>
