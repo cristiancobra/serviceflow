@@ -32,6 +32,11 @@ class Opportunity extends Model
     {
         return $this->belongsTo(Company::class);
     }
+
+    public function lead()
+    {
+        return $this->belongsTo(Lead::class);
+    }
     
     public function project()
     {
