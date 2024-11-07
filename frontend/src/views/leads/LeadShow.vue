@@ -113,8 +113,7 @@
 </template>
 
 <script>
-import { BACKEND_URL, LEAD_URL } from "@/config/apiConfig";
-import axios from "axios";
+import { show, destroy } from '@/utils/requests/httpUtils';
 import { formatDateBr } from '@/utils/date/dateUtils'; 
 
 export default {
@@ -128,31 +127,17 @@ export default {
 
   methods: {
     formatDateBr,
-    getLead() {
-      axios
-        .get(`${BACKEND_URL}${LEAD_URL}${this.leadId}`)
-        .then((response) => {
-          this.lead = response.data.data;
-          console.log(this.lead);
-        })
-        .catch((error) => console.log(error));
+    async getLead() {
+      this.lead = await show('leads', this.leadId);
+
+
     },
     setLeadId(leadId) {
       this.leadId = leadId;
     },
     async deleteLead() {
-      axios
-        .delete(`${BACKEND_URL}${LEAD_URL}${this.leadId}`)
-        .then((response) => {
-          this.data = response.data;
-          // this.newLeadEvent(this.data);
-          const successMessage = "Lead excluído com sucesso";
-          this.$router.push({ name: "leadsIndex", query: { successMessage } });
-        })
-        .catch((error) => {
-          console.error("Erro ao deletar lead:", error);
-          // Lidar com o erro, se necessário
-        });
+      this.response = await destroy('leads', this.leadId);
+      this.$router.push({ name: "leadsIndex" });
     },
   },
   async mounted() {
