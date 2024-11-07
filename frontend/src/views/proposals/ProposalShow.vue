@@ -12,6 +12,11 @@
       </div>
     </div>
     <div class="row mt-1 mb-3">
+      <div class="col-6">
+        <opportunities-select-editable-field label="Oportunidade" v-model="proposal.opportunity_id"
+            @update:modelValue="updateTask('opportunity_id', $event)" fieldNull="Nenhum" />
+      </div>
+      <div class="col-6">
       <p class="mt-1 mb-1 text-end">
         Rascunhada: {{ proposal.draft_at }}
       </p>
@@ -27,6 +32,7 @@
       <p class="mt-1 mb-1 text-end">
         Cancelada: {{ proposal.canceled_at }}
       </p>
+    </div>
     </div>
     <div class="row pb-5" v-if="proposal.opportunity">
       {{ proposal.opportunity.name }}
@@ -173,6 +179,7 @@ import { destroy, show, updateField } from "@/utils/requests/httpUtils";
 import DecimalEditableField from "@/components/fields/number/DecimalEditableField";
 import MoneyField from '../../components/fields/number/MoneyField.vue';
 import HoursDecimalEditableField from '../../components/fields/number/HoursDecimalEditableField.vue';
+import OpportunitiesSelectEditableField from '../../components/fields/selects/OpportunitiesSelectEditableField.vue';
 import SelectStatusButton from '../../components/buttons/SelectStatusButton.vue';
 
 export default {
@@ -187,6 +194,7 @@ export default {
     DecimalEditableField,
     HoursDecimalEditableField,
     MoneyField,
+    OpportunitiesSelectEditableField,
     SelectStatusButton,
   },
   methods: {
