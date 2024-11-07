@@ -169,10 +169,12 @@
             <p>
                 <span class="label">Núm. Proposta:</span> {{ $proposal->id }}
             </p>
+            @if($companyName)
             <p>
                 <span class="label">Para:</span>
                {{ $companyName }}
             </p>
+            @endif
             @if (!empty($proposal->opportunity->description))
                 <p><br><span class="label">Detalhamento:</span> {!! $proposal->opportunity->description !!}</p>
             @endif

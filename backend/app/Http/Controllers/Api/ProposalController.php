@@ -280,18 +280,24 @@ class ProposalController extends Controller
     /**
      * Configure name for proposal
      */
-    public function configureName(Proposal $proposal)
+    public function configureFromName(Proposal $proposal)
     {
-        // dd($proposal->opportunity->lead);
-        $companyName = $proposal->opportunity->company->business_name
+        return $proposal->opportunity->company->business_name
             ?? $proposal->opportunity->company->legal_name
-            ?? "Marcelo";
+            ?? $proposal->opportunity->lead->name
+            ?? null;
+    }
 
-        $companyName = iconv('UTF-8', 'ASCII//TRANSLIT', $companyName);
-        $companyName = str_replace(' ', '-', $companyName);
-        $companyName = preg_replace('/[^A-Za-z0-9\-]/', '', $companyName);
-        $companyName = strtolower($companyName);
-        return $companyName;
+    /**
+     * Convert names to slug
+     */
+    public function convertToSlug($text)
+    {
+        $text = iconv('UTF-8', 'ASCII//TRANSLIT', $text);
+        $text = str_replace(' ', '-', $text);
+        $text = preg_replace('/[^A-Za-z0-9\-]/', '', $text);
+        $text = strtolower($text);
+        return $text;
     }
 
 
@@ -310,11 +316,12 @@ class ProposalController extends Controller
             'opportunity',
             'proposalServices',
         ]);
-        $companyName = $this->configureName($proposal);
-        $logo = $this->userImageToBase64($proposal->account->logo);
-        $whatsappIcon = $this->systemImageToBase64('img/proposals/whatsapp-icon.png');
-        $emailIcon = $this->systemImageToBase64('img/proposals/email-icon.png');
+        $companyName = $this->configureFromName($proposal);
+        $slugCompanyName = $this->convertToSlug($companyName);
         $formatter = new \IntlDateFormatter('pt_BR', \IntlDateFormatter::FULL, \IntlDateFormatter::NONE);
+        $logo = $this->userImageToBase64($proposal->account->logo);
+        $emailIcon = $this->systemImageToBase64('img/proposals/email-icon.png');
+        $whatsappIcon = $this->systemImageToBase64('img/proposals/whatsapp-icon.png');
         $today = $formatter->format(new \DateTime);
         $proposalDate = (new \DateTime($proposal->date))->format('d/m/Y');
         $html = view('proposals.proposal', [
@@ -336,7 +343,7 @@ class ProposalController extends Controller
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4');
         $dompdf->render();
-        $dompdf->stream("proposta-{$companyName}-{$dateSuffix}.pdf", ["Attachment" => true]);
+        $dompdf->stream("proposta-{$slugCompanyName}-{$dateSuffix}.pdf", ["Attachment" => true]);
     }
 
 
