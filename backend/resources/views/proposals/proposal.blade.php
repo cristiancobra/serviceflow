@@ -176,7 +176,7 @@
                 @elseif ($proposal->opportunity?->company?->legal_name)
                     {{ $proposal->opportunity->company->legal_name }}
                 @else
-                    {{ $proposal->opportunity?->contact->name }}
+                    {{ $proposal->opportunity->contact->name }}
                 @endif
             </p>
             @if (!empty($proposal->opportunity->description))
