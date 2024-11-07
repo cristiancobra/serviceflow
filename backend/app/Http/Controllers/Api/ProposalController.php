@@ -302,6 +302,8 @@ class ProposalController extends Controller
      */
     public function exportPdf(Proposal $proposal)
     {
+        $isVisibleQuantity = filter_var(request()->query('isVisibleQuantity', false), FILTER_VALIDATE_BOOLEAN);
+
         $proposal->load([
             'account',
             'opportunity',
@@ -320,6 +322,7 @@ class ProposalController extends Controller
             'emailIcon' => $emailIcon,
             'today' => $today,
             'proposalDate' => $proposalDate,
+            'isVisibleQuantity' => $isVisibleQuantity,
         ])
             ->render();
 

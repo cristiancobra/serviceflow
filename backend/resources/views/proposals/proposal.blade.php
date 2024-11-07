@@ -80,7 +80,7 @@
 
         .table-container {
             overflow: hidden;
-            border-radius: 20px;
+            border-radius: 16px;
             border: 1px solid #B1388D;
             margin-top: 30px;
             margin-bottom: 20px;
@@ -191,7 +191,9 @@
                 <thead>
                     <tr>
                         <th>Nome</th>
-                        <th>Qtde</th>
+                        @if($isVisibleQuantity)
+                            <th>Qtde</th>
+                        @endif
                         <th>Preço</th>
                     </tr>
                 </thead>
@@ -199,7 +201,9 @@
                     @foreach ($proposal->ProposalServices as $proposalItem)
                         <tr>
                             <td>{{ $proposalItem->name }}</td>
+                            @if($isVisibleQuantity)
                             <td style="text-align: center">{{ $proposalItem->quantity }}</td>
+                            @endif
                             <td style="text-align: right">R$ {{ $proposalItem->price }}</td>
                         </tr>
                     @endforeach

@@ -146,10 +146,18 @@
       </div>
     </div>
     <div class="row mt-5 mb-5">
-      <div class="col d-flex justify-content-end">
+      <div class="col-2 d-flex justify-content-start">
         <button class="button delete me-5" @click="deleteProposal()">
           excluir
         </button>
+      </div>
+      <div class="col-8 d-flex justify-content-end">
+        <div class="toggle-switch">
+          <input type="checkbox" id="toggle" class="toggle-checkbox" v-model="isVisibleQuantity">
+          <label for="toggle" class="toggle-label">quantidades</label>
+        </div>
+      </div>
+      <div class="col-2 d-flex justify-content-end">
         <button class="button" @click="exportPDF()">
           Gerar PDF
         </button>
@@ -172,6 +180,7 @@ export default {
     return {
       proposal: [],
       proposalId: "",
+      isVisibleQuantity: false,
     };
   },
   components: {
@@ -205,7 +214,8 @@ export default {
       return dateBr;
     },
     exportPDF() {
-      const url = `${BACKEND_URL}proposals/${this.proposal.id}/pdf`;
+      console.log(this.isVisibleQuantity);
+      const url = `${BACKEND_URL}proposals/${this.proposal.id}/pdf?isVisibleQuantity=${this.isVisibleQuantity}`;
       window.open(url, '_blank');
     },
     async getProposal() {
@@ -282,5 +292,52 @@ a:active {
   margin-right: 180px;
   margin-bottom: 60px;
   margin-top: 60px;
+}
+
+/* switch */
+.toggle-switch {
+  position: relative;
+  width: 60px;
+  height: 34px;
+  margin-right: 6px;
+  margin-top: 3px;
+}
+
+.toggle-checkbox {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-label {
+  position: absolute;
+  cursor: pointer;
+  background-color: #ccc;
+  border-radius: 34px;
+  width: 100%;
+  height: 100%;
+  transition: background-color 0.2s;
+  padding-left: 60px;
+  padding-top: 4px;
+}
+
+.toggle-label::before {
+  content: "";
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: white;
+  top: 4px;
+  left: 4px;
+  transition: transform 0.2s;
+}
+
+.toggle-checkbox:checked+.toggle-label {
+  background-color: var(--primary);
+}
+
+.toggle-checkbox:checked+.toggle-label::before {
+  transform: translateX(26px);
 }
 </style>
