@@ -27,9 +27,26 @@
                             <div class="col">
                                 {{ formatDateBr(proposal.date) }}
                             </div>
+                            <div class="col">
+                                <p v-if="!proposal.opportunity">
+                                sem oportunidade associada
+                                </p>
+                                <p v-else-if="proposal.opportunity?.company?.business_name" class="ps-2">
+                                    {{ proposal.opportunity.company.business_name }}
+                                </p>
+                                <p v-else-if="proposal.opportunity?.lead?.name" class="ps-2">
+                                    {{ proposal.opportunity.lead.name }}
+                                </p>
+                                <p v-else class="ps-2">
+                                    ---
+                                </p>
+                            </div>
                             <div class="col-5 ">
                                 <p v-if="proposal.description" class="name ps-2">
                                     {{ proposal.description }}
+                                </p>
+                                <p v-else-if="proposal.opportunity" class="name ps-2">
+                                    {{ proposal.opportunity.description }}
                                 </p>
                                 <p v-else class="name ps-2">
                                     ---
@@ -103,7 +120,7 @@ export default {
             }
         },
         async getProposals() {
-            this.proposals = await index("proposals");
+            this.proposals = await index("proposals");            
         },
         async updateProposal(fieldName, proposalId, editedValue) {
             const updatedProposal = await updateField("proposals", proposalId, fieldName, editedValue);
@@ -117,7 +134,7 @@ export default {
         },
     },
     mounted() {
-        if(this.opportunityId) {
+        if (this.opportunityId) {
             this.getProposalsFromOpportunity();
         } else {
             this.getProposals();

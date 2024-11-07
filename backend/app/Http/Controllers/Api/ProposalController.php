@@ -29,6 +29,8 @@ class ProposalController extends Controller
             'proposalServices',
             'proposalCosts',
             'opportunity',
+            'opportunity.company',
+            'opportunity.lead',
         ])
             ->orderBy('date', 'desc')
             ->paginate($perPage);
