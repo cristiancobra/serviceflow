@@ -8,6 +8,8 @@ export default createStore({
   state: {
     openJourney: false,
     isAuthenticated: false,
+    userData: null,
+    photo: null,
   },
   mutations: {
     setAccountId(state, accountId) {
@@ -18,6 +20,9 @@ export default createStore({
     },
     setOpenJourney(state, openJourney) {
       state.openJourney = openJourney;
+    },
+    setUserData(state, userData) {
+      state.userData = userData;
     },
   },
   actions: {
@@ -54,6 +59,7 @@ export default createStore({
         await axios.get(API_SANCTUM_URL);
         const response = await axios.post(`${BACKEND_URL}${LOGIN_URL}`,credentials);
         commit('setAuthenticated', true);
+        commit('setUserData', response.data.user);
         commit('setAccountId', response.data.user.account_id); 
         await this.dispatch('checkOpenJourneys');
         setTimeout(() => {
@@ -70,6 +76,7 @@ export default createStore({
       axios.defaults.withCredentials = true;
       await axios.post(`${BACKEND_URL}${LOGOUT_URL}`);
       commit('setAuthenticated', false);
+      commit('setUserData', null); 
       router.push({ name: 'login' });
     } catch (error) {
       console.error("Erro de logout:", error);

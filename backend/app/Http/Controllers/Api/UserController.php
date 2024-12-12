@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Resources\UsersResource;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -89,6 +90,28 @@ class UserController extends Controller
     public function currentUser()
     {
         $user = Auth::user();
+
+        return UsersResource::make($user);
+    }
+
+     /**
+     * Update user photo
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param \App\Models\User  $user
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updatePhoto(Request $request, User $user)
+    {
+        if ($request->hasFile('photo')) {
+            if ($user->photo) {
+                Storage::disk('public')->delete($user->photo);
+            }
+            $photo = $request->file('photo');
+            $path = $photo->store('img/users/photos', 'public');
+            $user->photo = $path;
+            $user->save();
+        }
 
         return UsersResource::make($user);
     }

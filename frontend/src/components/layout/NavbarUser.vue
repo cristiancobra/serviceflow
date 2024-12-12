@@ -40,8 +40,7 @@
           </router-link>
 
           <router-link to="/proposals">
-            <li class="nav-item" @mouseover="toggleActive('proposals')"
-              :class="{ active: activeItem === 'proposals' }">
+            <li class="nav-item" @mouseover="toggleActive('proposals')" :class="{ active: activeItem === 'proposals' }">
               <font-awesome-icon icon="fas fa-file-invoice-dollar" />
               <span class="router-link-text">PROPOSTAS</span>
             </li>
@@ -61,12 +60,6 @@
             </li>
           </router-link>
 
-          <router-link to="/journeys">
-            <li class="nav-item" @mouseover="toggleActive('journeys')" :class="{ active: activeItem === 'journeys' }">
-              <font-awesome-icon icon="fas fa-clock" />
-              <span class="router-link-text">JORNADAS</span>
-            </li>
-          </router-link>
           <li class="nav-item" @mouseover="showSubmenu = true" @mouseleave="showSubmenu = false"
             :class="{ active: activeItem === 'configuracoes' }">
             <font-awesome-icon icon="fas fa-cogs" />
@@ -102,6 +95,9 @@
           </router-link>
         </ul>
       </div>
+      <div>
+        <navbar-user-menu />
+      </div>
     </nav>
     <div v-if="openJourney" class="second-line">
       <router-link v-if="openJourney" :to="{ name: 'taskShow', params: { id: openJourney.task_id } }">
@@ -123,6 +119,7 @@
 <script>
 import { mapActions } from 'vuex';
 import { mapState } from 'vuex';
+import NavbarUserMenu from './NavbarUserMenu.vue';
 
 export default {
   data() {
@@ -130,6 +127,9 @@ export default {
       activeItem: null,
       showSubmenu: false,
     };
+  },
+  components: {
+    NavbarUserMenu,
   },
   methods: {
     ...mapActions(['logout']),
@@ -184,10 +184,10 @@ nav a {
   padding: 4px 15px 4px 15px;
   margin: 0 4px 0 4px;
   font-weight: 200;
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: white;
   list-style-type: none;
-  
+
 }
 
 .nav-item a {

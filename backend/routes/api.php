@@ -132,4 +132,7 @@ Route::middleware('auth:sanctum')->group(function () {
 		->names('users');
 
 	Route::get('/user', [UserController::class, 'currentUser']);
+
+	Route::post('users/{user}/photo', [UserController::class, 'updatePhoto'])
+	->name('users.updatePhoto');
 });
