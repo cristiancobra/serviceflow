@@ -94,24 +94,15 @@
             </li>
           </router-link>
         </ul>
-      </div>
-      <div>
-        <navbar-user-menu />
+        <div class="navbar-user-menu-container">
+          <navbar-user-menu />
+          <div class="play-container">
+            <font-awesome-icon v-if="openJourney" icon="fas fa-play" class="play" />
+            <font-awesome-icon v-else icon="fas fa-pause" class="off" />
+          </div>
+        </div>
       </div>
     </nav>
-    <div v-if="openJourney" class="second-line">
-      <router-link v-if="openJourney" :to="{ name: 'taskShow', params: { id: openJourney.task_id } }">
-        <div class="col-12">
-          <p class="task-doing">
-            <font-awesome-icon icon="fas fa-clock alert" />
-            fazendo:
-            <span style="font-weight: normal;">
-              {{ openJourney.name }}
-            </span>
-          </p>
-        </div>
-      </router-link>
-    </div>
   </div>
 </template>
 
@@ -144,8 +135,11 @@ export default {
   computed: {
     ...mapState([
       'accountId',
-      'openJourney'
+      'openJourney',
     ]),
+  },
+  mounted() {
+    console.log('openJourney', this.openJourney);
   },
 };
 </script>
@@ -210,6 +204,16 @@ nav a {
   margin: 0 4px 0 4px;
 }
 
+.navbar-user-menu-container {
+  position: relative;
+}
+
+.off {
+  font-size: 1.0rem;
+  z-index: 1;
+  color: var(--purple);
+}
+
 .logo {
   margin-left: 2rem;
   width: 146px;
@@ -241,15 +245,6 @@ nav a.router-link-exact-active:hover {
   border-style: none;
 }
 
-.second-line {
-  background-color: var(--orange-light);
-}
-
-.second-line a {
-  text-decoration: none;
-  color: black;
-}
-
 .submenu {
   display: none;
   position: absolute;
@@ -258,6 +253,39 @@ nav a.router-link-exact-active:hover {
 
 .nav-item:hover .submenu {
   display: block;
+}
+
+.play-container {
+  position: absolute;
+  top: 32px; /* Ajuste este valor conforme necessário */
+  left: 42%;
+  width: 22px;
+  height: 22px; /* Adicione altura para centralizar verticalmente */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  pointer-events: none; 
+  background-color: white;
+}
+
+.play {
+  font-size: 0.9rem;
+  padding-left: 0.1rem;
+  z-index: 1;
+  animation: colorChange 2s infinite;
+}
+
+@keyframes colorChange {
+  0% {
+    color: var(--green);
+  }
+  50% {
+    color: var(--green-light);
+  }
+  100% {
+    color: var(--green);
+  }
 }
 
 .task-doing {

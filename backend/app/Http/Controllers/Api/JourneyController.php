@@ -162,10 +162,7 @@ class JourneyController extends Controller
      */
     public function checkOpenJourney()
     {
-        $openJourney = Journey::whereNotNull('start')
-            ->whereNull('end')
-            ->with('task')
-            ->first();
+        $openJourney = Journey::getOpenJourney();
 
         if ($openJourney) {
             return response()->json([

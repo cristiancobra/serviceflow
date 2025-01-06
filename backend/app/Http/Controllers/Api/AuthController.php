@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Journey;
 
 class AuthController extends Controller
 {
@@ -19,13 +20,11 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            // A autenticação foi bem-sucedida
-            // $token = $user->createToken('access_token')->plainTextToken;
+            $user = Auth::user();
 
             return response()->json([
                 'message' => 'Login bem-sucedido',
-                // 'access_token' => $token,
-                'user' => Auth::user(),
+                'user' => $user,
             ]);
         }
 

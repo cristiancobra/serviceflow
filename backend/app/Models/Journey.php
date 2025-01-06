@@ -48,4 +48,12 @@ class Journey extends Model
             $task->updateAssociatedOpportunityDuration();
         }
     }
+
+    public static function getOpenJourney()
+    {
+        return self::whereNotNull('start')
+            ->whereNull('end')
+            ->with('task')
+            ->first();
+    }
 }

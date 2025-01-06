@@ -199,8 +199,10 @@
                             <td>{{ $proposalItem->name }}</td>
                             @if($isVisibleQuantity)
                             <td style="text-align: center">{{ $proposalItem->quantity }}</td>
-                            @endif
+                            <td style="text-align: right">R$ {{ $proposalItem->total_price }}</td>
+                            @else
                             <td style="text-align: right">R$ {{ $proposalItem->price }}</td>
+                            @endif
                         </tr>
                     @endforeach
                 </tbody>

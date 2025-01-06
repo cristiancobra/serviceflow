@@ -22,8 +22,9 @@
       <div class="row list-line" :class="{ showTasks: true, 'd-none': isHidden }" v-for="task in filteredTasks"
         v-bind:key="task.id">
         <div class="col-1 d-flex justify-content-center">
-          <font-awesome-icon icon="fa-solid fa-user" class="primary pe-2" />
-          <font-awesome-icon icon="fas fa-check-circle" class="pe-2"
+          <img v-if="userData.photo" :src="urlImagePhoto" :alt="userData.name" class="user-image" />
+          <font-awesome-icon v-else icon="fa-solid fa-user" class="primary pe-2" />
+          <font-awesome-icon icon="fas fa-check-circle" class="checked-icon"
             :class="isValidDate(task.date_conclusion) ? 'done' : 'canceled'" />
         </div>
 
@@ -70,10 +71,11 @@
 import axios from "axios";
 import { convertUtcToLocal, formatDuration } from "@/utils/date/dateUtils";
 import { getColorForName, getColorClassForName, getStatusColor, getPriorityClass, getDeadlineClass, getStatusIcon } from "@/utils/card/cardUtils";
-import { BACKEND_URL, TASK_URL_PARAMETER, TASK_PRIORIZED_URL } from "@/config/apiConfig";
+import { BACKEND_URL, IMAGES_PATH, TASK_URL_PARAMETER, TASK_PRIORIZED_URL } from "@/config/apiConfig";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import DateTimeValue from "../fields/datetime/DateTimeValue.vue";
+import { mapState } from "vuex";
 
 export default {
   name: "TasksList",
@@ -205,6 +207,12 @@ export default {
     },
   },
   computed: {
+    ...mapState({
+      userData: state => state.userData
+    }),
+    urlImagePhoto() {
+      return `${IMAGES_PATH}${this.userData.photo}`;
+    },
     filteredTasks() {
       if (this.searchTerm === "") {
         return this.tasks;
@@ -243,6 +251,11 @@ a {
   text-decoration: none;
 }
 
+.checked-icon {
+  font-size: 1.4rem;
+  padding-top: 0.2rem;
+}
+
 .date-group {
   font-size: 1rem;
   font-weight: 600;
@@ -269,5 +282,15 @@ a {
 .small-date {
   font-size: 0.8rem;
   font-weight: 400;
+}
+
+.user-image {
+    width: 30px;
+    height: 30px;
+    border-style: solid;
+    border-color: white;
+    border-width: 3px;
+    border-radius: 50%;
+    margin-right: 0px;
 }
 </style>

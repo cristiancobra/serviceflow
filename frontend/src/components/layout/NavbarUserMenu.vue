@@ -1,12 +1,20 @@
 <template>
-    <div class="user-menu">
+    <div class="user-menu" @mouseleave="closeDropdown">
         <div class="user-info" @click="toggleDropdown">
-            <img v-if="urlImagePhoto" :src="urlImagePhoto" alt="User Image" class="user-image" />
-            <font-awesome-icon v-else icon="fas fa-user" class="user-image" />
+            <img v-if="userData && userData.photo" :src="urlImagePhoto" alt="User Image" class="user-image" />
+            <font-awesome-icon v-else icon="fas fa-user" class="user-faicon" />
         </div>
         <div v-if="dropdownVisible" class="dropdown-menu">
-            <router-link :to="`/users/${userData.id}`" class="dropdown-item">CONTA</router-link>
-            <router-link to="/journeys" class="dropdown-item">JORNADAS</router-link>
+            <router-link v-if="openJourney" :to="{ name: 'taskShow', params: { id: openJourney.task_id } }" class="dropdown-item">
+                <font-awesome-icon icon="fas fa-play" class="play" />
+                {{ openJourney.name }}
+            </router-link>
+            <router-link :to="`/users/${userData.id}`" class="dropdown-item">
+                CONTA
+            </router-link>
+            <router-link to="/journeys" class="dropdown-item">
+                JORNADAS
+            </router-link>
         </div>
     </div>
 </template>
@@ -23,7 +31,9 @@ export default {
     },
     computed: {
         ...mapState({
-            userData: state => state.userData
+            userData: state => state.userData,
+            openJourney: state => state.openJourney,
+
         }),
         urlImagePhoto() {
             return `${IMAGES_PATH}${this.userData.photo}`;
@@ -32,10 +42,22 @@ export default {
     methods: {
         toggleDropdown() {
             this.dropdownVisible = !this.dropdownVisible;
-        }
+        },
+        closeDropdown() {
+            this.dropdownVisible = false;
+        },
+        handleClickOutside(event) {
+            if (!this.$el.contains(event.target)) {
+                this.closeDropdown();
+            }
+        },
     },
     mounted() {
-      console.log("userData", this.userData);
+        document.addEventListener('click', this.handleClickOutside);
+        console.log('openJourney', this.openJourney);
+    },
+    beforeUnmount() {
+        document.removeEventListener('click', this.handleClickOutside);
     },
 };
 </script>
@@ -56,24 +78,33 @@ export default {
 }
 
 .user-image {
-    width: 60px;
-    height: 60px;
+    width: 48px;
+    height: 50px;
+    border-style: solid;
+    border-color: white;
+    border-width: 2px;
+    border-radius: 50%;
+    margin-right: 0px;
+}
+
+.user-faicon {
     border-style: solid;
     border-color: white;
     border-width: 3px;
     border-radius: 50%;
-    margin-right: 0px;
+    font-size: 1.8rem;
+    padding: 0.6rem;
 }
 
 .dropdown-menu {
     position: absolute;
     top: 100%;
-    left: 0;
+    right: 0;
     background-color: var(--primary);
     border: 1px solid #ccc;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     z-index: 1000;
-    display: block; 
+    display: block;
 }
 
 .dropdown-item {
@@ -85,5 +116,6 @@ export default {
 
 .dropdown-item:hover {
     background-color: #f0f0f0;
+    color: var(--primary);
 }
 </style>
