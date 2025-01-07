@@ -59,7 +59,7 @@ export default {
     // },
     async showName() {
       const current = await show("projects", this.modelValue);
-      this.selectedName = current.legal_name;
+      this.selectedName = current.name;
     },
     startEditing() {
       this.editing = true;

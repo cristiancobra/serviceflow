@@ -21,6 +21,7 @@ class OpportunityController extends Controller
             'project',
             'tasks',
         ])
+            -> orderByRaw('date_canceled IS NULL DESC')
             ->orderByRaw('date_conclusion IS NULL DESC')
             ->orderBy('created_at', 'desc')
             ->paginate(50);

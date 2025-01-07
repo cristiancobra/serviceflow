@@ -180,7 +180,7 @@ class TaskController extends Controller
         $totalTasks = $totalTasksQuery->count();
 
         $completedTasksQuery = clone $tasksQuery;
-        $completedTasks = $completedTasksQuery->whereNotNull('date_conclusion')->count();    
+        $completedTasks = $completedTasksQuery->whereNotNull('date_conclusion')->count();
 
         $tasks = $tasksQuery->orderBy('date_start', 'desc')
             ->paginate($perPage);
@@ -226,6 +226,10 @@ class TaskController extends Controller
                 'project',
                 'opportunity'
             ])
+            // ->whereNull('date_canceled')
+            ->whereHas('opportunity', function ($query) {
+                $query->whereNull('date_canceled');
+            })
             ->where('account_id', auth()->user()->account_id)
             ->where('date_conclusion', null)
             ->orderBy('date_due', 'asc')
