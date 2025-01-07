@@ -23,6 +23,7 @@ class Opportunity extends Model
         'date_start',
         'date_due',
         'date_conclusion',
+        'date_canceled',
         'description',
         'duration_time',
         'source',

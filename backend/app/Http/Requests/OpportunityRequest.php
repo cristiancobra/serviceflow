@@ -34,6 +34,7 @@ class OpportunityRequest extends FormRequest
             'date_start' => 'nullable|date',
             'date_due' => 'nullable|date|after_or_equal:date_start',
             'date_conclusion' => 'nullable|date',
+            'date_canceled' => 'nullable|date',
             'description' => 'nullable|string',
             'duration_time' => 'nullable|integer',
             'source' => 'nullable|string|max:255',

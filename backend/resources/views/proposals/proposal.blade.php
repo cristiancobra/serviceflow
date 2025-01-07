@@ -148,17 +148,17 @@
             <span class="label">CNPJ</span>{{ $proposal->account->cnpj }}
         @endif
         @if ($proposal->account->inscricao_municipal)
-        <span class="label">Insc. Municipal</span>{{ $proposal->account->inscricao_municipal }}
+            <span class="label">Insc. Municipal</span>{{ $proposal->account->inscricao_municipal }}
         @endif
         @if ($proposal->account->phone)
-        <img class="icons" src="{{ $whatsappIcon }}" alt="whatsapp-icon">{{ $proposal->account->phone }}
+            <img class="icons" src="{{ $whatsappIcon }}" alt="whatsapp-icon">{{ $proposal->account->phone }}
         @endif
         @if ($proposal->account->email)
-        <img class="icons" src="{{ $emailIcon }}" alt="email-icon">{{ $proposal->account->email }}
+            <img class="icons" src="{{ $emailIcon }}" alt="email-icon">{{ $proposal->account->email }}
         @endif
         @if ($proposal->account->address)
-        <br>
-        {{ $proposal->account->address }}
+            <br>
+            {{ $proposal->account->address }}
         @endif
     </footer>
     <div class="content">
@@ -169,11 +169,11 @@
             <p>
                 <span class="label">Núm. Proposta:</span> {{ $proposal->id }}
             </p>
-            @if($companyName)
-            <p>
-                <span class="label">Para:</span>
-               {{ $companyName }}
-            </p>
+            @if ($companyName)
+                <p>
+                    <span class="label">Para:</span>
+                    {{ $companyName }}
+                </p>
             @endif
             @if (!empty($proposal->opportunity->description))
                 <p><br><span class="label">Detalhamento:</span> {!! $proposal->opportunity->description !!}</p>
@@ -187,7 +187,7 @@
                 <thead>
                     <tr>
                         <th>Nome</th>
-                        @if($isVisibleQuantity)
+                        @if ($isVisibleQuantity)
                             <th>Qtde</th>
                         @endif
                         <th>Preço</th>
@@ -197,11 +197,11 @@
                     @foreach ($proposal->ProposalServices as $proposalItem)
                         <tr>
                             <td>{{ $proposalItem->name }}</td>
-                            @if($isVisibleQuantity)
-                            <td style="text-align: center">{{ $proposalItem->quantity }}</td>
-                            <td style="text-align: right">R$ {{ $proposalItem->price }}</td>
+                            @if ($isVisibleQuantity)
+                                <td style="text-align: center">{{ $proposalItem->quantity }}</td>
+                                <td style="text-align: right">R$ {{ $proposalItem->price }}</td>
                             @else
-                            <td style="text-align: right">R$ {{ $proposalItem->total_price }}</td>
+                                <td style="text-align: right">R$ {{ $proposalItem->total_price }}</td>
                             @endif
                         </tr>
                     @endforeach

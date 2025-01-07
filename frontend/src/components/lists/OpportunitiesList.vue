@@ -24,7 +24,10 @@
             <div v-if="opportunity.date_conclusion" class="col-1 status done">
                 <font-awesome-icon icon="fas fa-check-circle" style="font-size: 2rem;" class="done mb-3" />
             </div>
-            <div v-else class="col-1 status canceled">
+            <div v-else-if="opportunity.date_canceled" class="col-1 status">
+                <font-awesome-icon icon="fas fa-x" style="font-size: 2rem;" class="canceled mb-3" />
+            </div>
+            <div v-else class="col-1 status">
                 <font-awesome-icon icon="fas fa-check-circle" style="font-size: 2rem;" class="canceled" />
             </div>
             <div class="col cards">

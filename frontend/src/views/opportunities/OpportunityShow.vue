@@ -11,9 +11,11 @@
           </p>
         </div>
         <div class="col-8 ps-3">
-          <p class="title">
+          <p class="title d-flex">
             <TextEditableField name="name" v-model="opportunity.name" placeholder="descrição detalhada da tarefa"
               @save="updateOpportunity('name', $event)" />
+              <font-awesome-icon v-if="opportunity.date_conclusion" icon="fa-solid fa-circle-check" class="done ps-2" />
+              <font-awesome-icon v-if="opportunity.date_canceled" icon="fa-solid fa-x" class="canceled ps-2" />
           </p>
         </div>
         <div class="col-3">
@@ -28,6 +30,10 @@
           <div class="row">
             <DateEditableInput class="d-flex justify-content-end" name="date_conclusion" label="Conclusão:"
               v-model="opportunity.date_conclusion" @save="updateOpportunity('date_conclusion', $event)" />
+          </div>
+          <div class="row">
+            <DateEditableInput class="d-flex justify-content-end" name="date_conclusion" label="Cancelado:"
+              v-model="opportunity.date_canceled" @save="updateOpportunity('date_canceled', $event)" />
           </div>
         </div>
       </div>
