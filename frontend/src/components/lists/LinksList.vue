@@ -17,7 +17,10 @@
         </div>
         <div v-for="link in localLinks" :key="link.id" class="row mt-3 mb-4"
             :class="{ 'highlight': link.id === newLinkId }">
-            <div class="col-5">
+            <div class="col-1 justify-content-center">
+                <font-awesome-icon icon="fa-solid fa-link" class="icon pe-3 primary" />
+            </div>
+            <div class="col-3">
                 <a :href="link.url" target="_blank">{{ link.title }}</a>
             </div>
             <div class="col-6">

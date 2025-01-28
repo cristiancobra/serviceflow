@@ -67,7 +67,7 @@ class OpportunityController extends Controller
             },
             'company',
             'lead',
-            'link',
+            'links',
         ])->find($opportunity->id));
     }
 
