@@ -1,30 +1,59 @@
 <template>
-  <div class="container-message disappear" :class="messageStatus">
-
-      <p class="icon">
-        <font-awesome-icon icon="fa-solid fa-circle-check" />
-      </p>
-      {{ messageText }}
+  <div class="container-message" :class="[messageStatus, 'disappear']" v-if="messageStatus">
+    <p class="icon">
+      <font-awesome-icon :icon="icon" />
+    </p>
+    <span>{{ messageText }}</span>
+    <button @click="closeMessage" class="close-btn">x</button>
   </div>
 </template>
 
 <script>
 export default {
+  data() {
+    return {
+      messageTimeout: null,
+    };
+  },
   props: [
     "messageStatus",
     "messageText"
   ],
-  methods: {
-    closeMessage() {
-      this.$refs.errorMessage.classList.add("highlight");
-
-      // Remove a classe de destaque e adiciona a classe para desaparecer suavemente após 5 segundos
-      setTimeout(() => {
-        this.$refs.errorMessage.classList.remove("highlight");
-        this.$refs.errorMessage.classList.add("fade-out");
-      }, 5000);
-    },
+  computed: {
+    icon() {
+      if (this.messageStatus === 'success') {
+        return 'fa-solid fa-circle-check';
+      } else if (this.messageStatus === 'error') {
+        return 'fa-solid fa-circle-exclamation';
+      } else {
+        return 'fa-solid fa-info-circle';
+      }
+    }
   },
+  watch: {
+    messageStatus(newStatus) {
+      if (newStatus) {
+        this.clearMessageTimeout();
+        this.messageTimeout = setTimeout(() => {
+          this.$emit('update:messageStatus', '');
+        }, 3500);
+      }
+    }
+  },
+  methods: {
+    clearMessageTimeout() {
+      if (this.messageTimeout) {
+        clearTimeout(this.messageTimeout);
+      }
+    },
+    closeMessage() {
+      this.clearMessageTimeout();
+      this.$emit('update:messageStatus', '');
+    }
+  },
+  beforeUnmount() {
+    this.clearMessageTimeout();
+  }
 };
 </script>
 
@@ -36,7 +65,6 @@ li {
 .container-message {
   position: fixed;
   top: 40px;
-  /* ajuste conforme necessário */
   right: 40px;
   display: flex;
   text-align: left;
@@ -46,38 +74,39 @@ li {
   border-radius: 6px;
   padding: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  /* Reduz a intensidade do sombreamento */
   z-index: 9999;
-  transition: opacity 5s ease;
-  /* Transição de 5 segundos */
+  transition: opacity 6s ease;
 }
 
-.container-message.highlight {
-  opacity: 1;
-  /* Destaque o elemento */
+.container-message.success {
+  color: var(--green);
+  border-color: var(--green);
+  background-color: var(--green-light);
 }
 
-.container-message.fade-out {
-  opacity: 0;
-  /* Faz o elemento desaparecer */
-}
-
-.deleted {
+.container-message.error {
   color: var(--red);
   border-color: var(--red);
   background-color: var(--red-light);
 }
 
-.success {
-  color: var(--green);
-  border-color: var(--green);
-  background-color: var(--green-light);
+.icon {
+  margin-right: 10px;
+  margin-left: 10px;
+}
 
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  margin-left: auto;
+  color: inherit; 
 }
 
 .disappear {
   animation-name: fadeOut;
-  animation-duration: 5000ms;
+  animation-duration: 3000ms;
   animation-fill-mode: forwards;
 }
 
@@ -95,14 +124,6 @@ li {
   100% {
     display: none;
     opacity: 0;
-    transform: rotateX(90deg);
   }
-}
-
-
-.icon {
-  font-size: 2rem;
-  text-align: center;
-  padding-right: 1rem;
 }
 </style>

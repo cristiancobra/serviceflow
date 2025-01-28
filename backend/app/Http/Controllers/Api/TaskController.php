@@ -62,7 +62,11 @@ class TaskController extends Controller
 
         return TaskResource::make(Task::with(['journeys' => function ($query) {
             $query->orderBy('start', 'desc');
-        }, 'project'])
+        },
+            'links',
+            'project',
+            'opportunity'
+        ])
             ->find($task->id));
     }
 

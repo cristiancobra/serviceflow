@@ -1,8 +1,9 @@
 <template>
-  <div>
-  <NavbarUser v-if="showNavbar"/>
-  <router-view />
-
+  <div class="app-container">
+    <NavbarUser v-if="showNavbar" />
+    <div class="main">
+      <router-view />
+    </div>
   </div>
 </template>
 
@@ -40,3 +41,15 @@ export default {
   },
 };
 </script>
+
+<style>
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.router-view {
+  flex: 1;
+}
+</style>

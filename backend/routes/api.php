@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\CostController;
 use App\Http\Controllers\Api\JourneyController;
 use App\Http\Controllers\Api\LeadController;
+use App\Http\Controllers\Api\LinkController;
 use App\Http\Controllers\Api\OpportunityController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\ProposalController;
@@ -66,6 +67,10 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::apiResource('leads', LeadController::class)
 		->names('leads');
 
+	// LINKS
+	Route::apiResource('links', LinkController::class)
+		->names('links');	
+
 	// OPPORTUNITIES
 	Route::get('opportunities/totalOpportunities', [OpportunityController::class, 'countOpenOpportunities'])
 		->name('opportunities.totalOpportunities');
@@ -91,6 +96,9 @@ Route::middleware('auth:sanctum')->group(function () {
 	// PROPOSALS
 	Route::get('proposals/totalProposals', [ProposalController::class, 'countOpenProposals'])
 		->name('proposals.totalProposals');
+
+	Route::get('proposals/report', [ProposalController::class, 'report'])
+		->name('proposals.report');
 
 	Route::get('proposals/proposals-by-opportunity-id', [ProposalController::class, 'getProposalsByOpportunityId'])
 		->name('proposals.opportunity-id');

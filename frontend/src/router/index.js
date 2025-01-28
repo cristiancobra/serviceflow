@@ -6,6 +6,7 @@ import CompaniesIndex from '../views/companies/CompaniesIndex.vue'
 import CompanyShow from '../views/companies/CompanyShow.vue'
 import CostsIndex from '../views/costs/CostsIndex.vue'
 import CostShow from '../views/costs/CostShow.vue'
+import Financial from '../views/dashboards/FinancialView.vue'
 import JourneysIndex from '../views/journeys/JourneysIndex.vue'
 import LeadsIndex from '../views/leads/LeadsIndex.vue'
 import LeadShow from '../views/leads/LeadShow.vue'
@@ -21,6 +22,7 @@ import ProposalShow from '@/views/proposals/ProposalShow.vue'
 import TasksIndex from '../views/tasks/TasksIndex.vue'
 import TaskShow from '../views/tasks/TaskShow.vue'
 import UserShow from '@/views/users/UserShow.vue'
+
 
 const routes = [
   {
@@ -52,6 +54,11 @@ const routes = [
     path: '/costs/:id',
     name: 'costShow',
     component: CostShow
+  },
+  {
+    path: '/financial',
+    name: 'financial',
+    component: Financial
   },
   {
     path: '/leads',

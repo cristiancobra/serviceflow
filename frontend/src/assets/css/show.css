@@ -34,6 +34,7 @@
   .header-fixed-menu .item-menu {
     background-color: var(--secondary);
     color: var(--primary);
+    border-radius: 6px;
   }
   
   .header-fixed-menu .item-menu.active {

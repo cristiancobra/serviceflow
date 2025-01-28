@@ -1,7 +1,7 @@
 <template>
   <div class="">
-    <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
-    </AddMessage>
+    <AddMessage :messageStatus="messageStatus" :messageText="messageText"
+    @update:messageStatus="messageStatus = $event" />
 
     <div class="row errorBox" v-bind:class="{ 'd-none': datesError }"></div>
     <form @submit.prevent="submitForm">
@@ -24,8 +24,8 @@
           </div>
         </div>
         <div class="row d-flex justify-content-center">
-            <button type="submit mt-5" class="button-new orange">Enviar</button>
-          </div>
+          <button type="submit mt-5" class="button-new orange">Enviar</button>
+        </div>
       </div>
     </form>
     <div class="row mb-4">

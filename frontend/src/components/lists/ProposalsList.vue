@@ -23,24 +23,24 @@
                 </div>
                 <div class="col-10">
                     <router-link :to="{ name: 'proposalShow', params: { id: proposal.id } }">
-                        <div class="row title">
+                        <div class="row">
                             <div class="col">
                                 {{ formatDateBr(proposal.date) }}
                             </div>
                             <div class="col">
-                                <p v-if="!proposal.opportunity">
+                                <p class="name" v-if="!proposal.opportunity">
                                 sem oportunidade associada
                                 </p>
-                                <p v-else-if="proposal.opportunity?.company?.business_name" class="ps-2">
+                                <p class="group-name" v-else-if="proposal.opportunity?.company?.business_name">
                                     {{ proposal.opportunity.company.business_name }}
                                 </p>
-                                <p v-else-if="proposal.opportunity?.company?.legal_name" class="ps-2">
+                                <p class="group-name" v-else-if="proposal.opportunity?.company?.legal_name">
                                     {{ proposal.opportunity.company.legal_name }}
                                 </p>
-                                <p v-else-if="proposal.opportunity?.lead?.name" class="ps-2">
+                                <p class="group-name" v-else-if="proposal.opportunity?.lead?.name">
                                     {{ proposal.opportunity.lead.name }}
                                 </p>
-                                <p v-else class="ps-2">
+                                <p class="name" v-else>
                                     sem associação
                                 </p>
                             </div>

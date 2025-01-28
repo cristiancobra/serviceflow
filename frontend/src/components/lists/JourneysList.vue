@@ -8,7 +8,7 @@
     </div>
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
-    <JourneyCreateForm @new-journey-event="addJourneyCreated" />
+    <journey-create-form @new-journey-event="addJourneyCreated" />
     <div id="list" v-if="journeys.length > 0">
       <div class="row">
         <PaginateNav :paginationData="paginationData" @update-data="updatePaginationList" />

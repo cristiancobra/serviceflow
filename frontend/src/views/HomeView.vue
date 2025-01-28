@@ -1,14 +1,14 @@
 <template>
-  <div class="container">
-    <div class="row mt-4">
-      <p class="text-center">
+  <div>
+    <div class="mt-4">
+      <p class="text-end">
         Bem vindo, hoje é
         <span style="font-weight: bolder">
           {{ dateNow }}
         </span>
       </p>
     </div>
-    <div class="row mt-3 mb-4 me-5 ms-3">
+    <div class="row mt-2 mb-4 me-5 ms-3">
       <div class="col-2">
         <div class="small-container">
           <total-opportunities-open />
@@ -20,7 +20,7 @@
         </div>
       </div>
     </div>
-    <TasksHomeList />
+    <TasksList template="home" />
   </div>
 </template>
 
@@ -28,7 +28,7 @@
 import "../assets/css/dashboard.css";
 import TotalOpportunitiesOpen from "../components/dashboard/totalOpportunitiesOpen.vue";
 import TotalProposalOpen from "../components/dashboard/totalProposalOpen.vue";
-import TasksHomeList from "../components/lists/TasksHomeList.vue";
+import TasksList from "../components/lists/TasksList.vue";
 
 export default {
   data() {
@@ -39,7 +39,7 @@ export default {
   components: {
     TotalOpportunitiesOpen,
     TotalProposalOpen,
-    TasksHomeList,
+    TasksList,
   },
   methods: {
     getDateNow() {

@@ -1,8 +1,7 @@
 <template>
-  <div class="container mb-5">
+  <div class="mb-5">
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
-
     <div class="header-fixed">
       <div class="row ms-0">
         <div class="col-1 status">
@@ -11,16 +10,44 @@
             {{ formatDuration(task.duration_time) }}
           </p>
         </div>
-        <div class="col-10 ps-3">
-          <p class="title">
+        <div class="col-8 ps-3">
+          <p class="title d-flex">
             <TextEditableField name="name" v-model="task.name" placeholder="descrição detalhada da tarefa"
               @save="updateTask('name', $event)" />
           </p>
+        </div>
+        <div class="col-3">
+          <div class="row">
+            <DateEditableInput class="d-flex justify-content-end" name="date_start" label="Início:"
+              v-model="task.date_start" @save="updateTask('date_start', $event)" />
+          </div>
+          <div class="row">
+            <DateEditableInput class="d-flex justify-content-end" name="date_due" label="Prazo:" v-model="task.date_due"
+              @save="updateTask('date_due', $event)" />
+          </div>
+          <div class="row">
+            <div class="col d-flex justify-content-end">
+              <button v-if="!showEndTaskButton" class="button-circular primary me-3" @click="updateDateConclusion"
+                title="Finalizar tarefa com data da última jornada">
+                <font-awesome-icon icon="fa-solid fa-check-square" />
+              </button>
+              <DateEditableInput class="d-flex justify-content-end" name="date_conclusion" label="Conclusão:"
+                v-model="task.date_conclusion" @save="updateTask('date_conclusion', $event)" />
+            </div>
+          </div>
+          <div class="row">
+            <DateEditableInput class="d-flex justify-content-end" name="date_conclusion" label="Cancelado:"
+              v-model="task.date_canceled" @save="updateTask('date_canceled', $event)" />
+          </div>
         </div>
       </div>
       <div class="header-fixed-menu mt-3">
         <button class="item-menu" @click="currentSection = 'info'" :class="{ active: currentSection === 'info' }">
           Informações
+        </button>
+        <button class="item-menu" @click="currentSection = 'attachments'"
+          :class="{ active: currentSection === 'attachments' }">
+          Anexos
         </button>
         <button class="item-menu" @click="currentSection = 'journeys'"
           :class="{ active: currentSection === 'journeys' }">
@@ -28,26 +55,9 @@
         </button>
       </div>
     </div>
+
     <div class="info-container" v-show="currentSection === 'info'">
-      <div class="row">
-        <DateEditableInput class="d-flex justify-content-end" name="date_start" label="Início:"
-          v-model="task.date_start" @save="updateTask('date_start', $event)" />
-      </div>
-      <div class="row">
-        <DateEditableInput class="d-flex justify-content-end" name="date_due" label="Prazo:" v-model="task.date_due"
-          @save="updateTask('date_due', $event)" />
-      </div>
-      <div class="row">
-        <div class="d-flex justify-content-end">
-          <DateEditableInput name="date_conclusion" label="Conclusão:" v-model="task.date_conclusion"
-            @save="updateTask('date_conclusion', $event)" />
-          <button v-if="showEndTaskButton" class="button-circular primary ms-3" @click="updateDateConclusion"
-            title="Finalizar tarefa com data da última jornada">
-            <font-awesome-icon icon="fa-solid fa-check-square" />
-          </button>
-        </div>
-      </div>
-      <div class="row mt-5">
+      <div class="list-container d-flex pt-4">
         <div class="col-3">
           <users-select-editable-field label="Responsável" name="user_id" v-model="task.user_id"
             @update:modelValue="updateTask('user_id', $event)" />
@@ -61,13 +71,18 @@
             @update:modelValue="updateTask('opportunity_id', $event)" fieldNull="Nenhum" />
         </div>
       </div>
-      <div class="mt-5">
+      <div class="list-container d-flex pt-4">
         <TextEditor label="Descrição" name="description" v-model="task.description"
           @save="updateTask('description', $event)" />
       </div>
     </div>
+
+    <div class="info-container" v-show="currentSection === 'attachments'">
+      <links-list :links="task.links" :taskId="taskId" />
+    </div>
+
     <div class="info-container" v-show="currentSection === 'journeys'">
-      <JourneysList template="by-task" :taskId="taskId" @update-task-duration="updateTaskDuration()"
+      <journeys-list template="by-task" :taskId="taskId" @update-task-duration="updateTaskDuration()"
         @last-journey-end="updateEndTaskButtonVisibility" />
     </div>
     <div class="d-flex justify-content-end">
@@ -100,6 +115,7 @@ import TextEditableField from "@/components/fields/text/TextEditableField";
 import TextEditor from "@/components/forms/inputs/TextEditor.vue";
 import UsersSelectEditableField from "@/components/fields/selects/UsersSelectEditableField.vue";
 import TaskCloneForm from '../../components/forms/TaskCloneForm.vue';
+import LinksList from '../../components/lists/LinksList.vue';
 
 export default {
   name: "TaskShow",
@@ -111,7 +127,8 @@ export default {
     TextEditableField,
     TextEditor,
     UsersSelectEditableField,
-    TaskCloneForm
+    TaskCloneForm,
+    LinksList
   },
   data() {
     return {

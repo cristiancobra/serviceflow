@@ -1,23 +1,41 @@
 <template>
-  <div class="login-container" :class="{ 'slide-enter': transitionIn, 'slide-leave': transitionOut }">
-    <div class="d-flex p-4">
-      <img :src="require('@/assets/logo-serviceflow-BRANCO.png')" class="logo" alt="logo-serviceflow" />
+  <div>
+    <div class="login-container" :class="{ 'slide-enter': transitionIn, 'slide-leave': transitionOut }">
+      <div class="d-flex p-4">
+        <img :src="require('@/assets/logo-serviceflow-BRANCO.png')" class="logo" alt="logo-serviceflow" />
+      </div>
+      <div class="login-box">
+        <form @submit.prevent="submit">
+          <div class="d-flex align-items-center justify-content-end">
+            <label class="label" for="email">email</label>
+            <input class="input" type="email" id="email" name="email" v-model="form.email" required />
+          </div>
+          <div class="d-flex align-items-center justify-content-end mt-3">
+            <label class="label" for="password">password</label>
+            <input class="input" type="password" id="password" name="password" v-model="form.password" required />
+          </div>
+          <div class="d-flex align-items-center justify-content-center mt-3">
+            <button class="button-login mt-4" type="submit">ENTRAR</button>
+          </div>
+        </form>
+      </div>
     </div>
+    <div class="background-login">
+      <div class="row">
+        <div class="col-2">
+          <div class="small-container-fake">
+            <font-awesome-icon icon="fa-solid fa-bullseye" class="icon-fake"/>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="small-container-fake">
+            <font-awesome-icon icon="fa-solid fa-file-invoice" class="icon-fake"/>
+          </div>
+        </div>
+      </div>
+      <div class="list-container-fake">
 
-    <div class="login-box">
-      <form @submit.prevent="submit">
-        <div class="d-flex align-items-center justify-content-end">
-          <label class="label" for="email">email</label>
-          <input class="input" type="email" id="email" name="email" v-model="form.email" required />
-        </div>
-        <div class="d-flex align-items-center justify-content-end mt-3">
-          <label class="label" for="password">password</label>
-          <input class="input" type="password" id="password" name="password" v-model="form.password" required />
-        </div>
-        <div class="d-flex align-items-center justify-content-center mt-3">
-          <button class="button-login mt-4" type="submit">ENTRAR</button>
-        </div>
-      </form>
+      </div>
     </div>
   </div>
 </template>
@@ -84,6 +102,14 @@ export default {
   text-align: left;
 }
 
+.background-login {
+  padding-top: 9%;
+  padding-left: 2%;
+  padding-right: 2%;
+  position: relative;
+  z-index: 1;
+}
+
 .button-login {
   border-radius: 20px;
   border-color: white;
@@ -106,6 +132,7 @@ export default {
   /* width: 30%; */
 }
 
+
 .input {
   background: var(--purple);
   color: white;
@@ -127,6 +154,7 @@ export default {
 }
 
 .login-box {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -151,6 +179,7 @@ export default {
   padding-bottom: 20%;
   z-index: 1000;
   transform: translateX(-130%);
+  
 }
 
 /* slides  */

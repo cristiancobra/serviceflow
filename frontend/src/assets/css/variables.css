@@ -1,29 +1,35 @@
 :root {
-    --background-light:rgb(248, 249, 250);
-    --blue: #3498db;
-    --blue-light: #d1ecf8;
-    --green: #2CB48D;
-    --green-light: #e5f9e0;
-    --orange: #d37f17;
-    --orange-light: #faf2e0;
-    --purple: #B1388D;
-    --purple-light: #DFBAD9;
-    --gray-light: #DCDCDC;
-    --gray: #808080;
-    --red: #e85c5c;
-    --red-light: rgb(251, 226, 226);
-  
-    --canceled-color: #808080;
-    --done-color: #2CB48D;
-    --doing-color: #3498db;
-    --wait-color: #808080;
-    --primary: #B1388D;
-    --to-do-color: #E78D1F;
+  --background-light: rgb(235, 235, 235);
+  --background-container-color:  rgb(256, 256, 256);
 
-    --low: #E78D1F;
-    --low-light: #faf2e0;
-    --medium: #3498db;
-    --medium-light: #d1ecf8;
-    --high: #e85c5c;
-    --high-light: rgb(251, 226, 226);
-  }
+  --blue: #3498db;
+  --blue-light: #d1ecf8;
+  --green: #2CB48D;
+  --green-light: #e5f9e0;
+  --orange: #d37f17;
+  --orange-light: #faf2e0;
+  --purple: #B1388D;
+  --purple-light: #DFBAD9;
+  --gray-light: #DCDCDC;
+  --gray: #808080;
+  --red: #e85c5c;
+  --red-light: rgb(251, 226, 226);
+
+  --canceled-color: #808080;
+  --done-color: #2CB48D;
+  --doing-color: #3498db;
+  --wait-color: #808080;
+  --primary: #B1388D;
+  --to-do-color: #E78D1F;
+
+  --low: #E78D1F;
+  --low-light: #faf2e0;
+  --medium: #3498db;
+  --medium-light: #d1ecf8;
+  --high: #e85c5c;
+  --high-light: rgb(251, 226, 226);
+
+  
+  --box-shadow-value: 0 0 16px 0 rgba(0, 0, 0, 0.16);
+
+}

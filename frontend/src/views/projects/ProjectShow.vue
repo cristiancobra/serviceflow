@@ -1,5 +1,5 @@
 <template>
-  <div class="container mb-5">
+  <div>
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
     <div class="header-fixed">

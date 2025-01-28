@@ -1,5 +1,5 @@
 <template>
-  <div class="container mb-5">
+  <div>
     <TasksFilter @filter-canceled="getTasksCanceled" @filter-doing="getTasksDoing" @filter-done="getTasksDone"
       @filter-late="getTasksLate" @filter-to-do="getTasksToDo" />
 

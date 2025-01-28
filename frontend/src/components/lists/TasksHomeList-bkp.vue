@@ -45,6 +45,11 @@
               </p>
             </div>
           </router-link>
+          <div v-else class="d-flex">
+          <p class="m-0 p-0 ps-1 bold">
+            ----
+          </p>
+        </div>
         </div>
 
         <div class="col-5">

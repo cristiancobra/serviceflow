@@ -39,12 +39,39 @@
             </li>
           </router-link>
 
-          <router-link to="/proposals">
-            <li class="nav-item" @mouseover="toggleActive('proposals')" :class="{ active: activeItem === 'proposals' }">
-              <font-awesome-icon icon="fas fa-file-invoice-dollar" />
-              <span class="router-link-text">PROPOSTAS</span>
-            </li>
-          </router-link>
+
+          <li class="nav-item" @mouseover="showSubmenu = true" @mouseleave="showSubmenu = false"
+            :class="{ active: activeItem === 'financeiro' }">
+            <font-awesome-icon icon="fas fa-cogs" />
+            <span class="router-link-text">FINANCEIRO</span>
+            <ul class="submenu" v-show="showSubmenu">
+              <router-link to="/financial">
+                <li class="nav-item" @mouseover="toggleActive('financial-report')" :class="{ active: activeItem === 'financial-report' }">
+                  <font-awesome-icon icon="fas fa-chart-line" />
+                  <span class="router-link-text">RELATÓRIOS</span>
+                </li>
+              </router-link>
+              <router-link to="/proposals">
+                <li class="nav-item" @mouseover="toggleActive('proposals')" :class="{ active: activeItem === 'proposals' }">
+                  <font-awesome-icon icon="fas fa-file-invoice-dollar" />
+                  <span class="router-link-text">PROPOSTAS</span>
+                </li>
+              </router-link>
+              <router-link to="/services">
+                <li class="nav-item" @mouseover="toggleActive('services')"
+                  :class="{ active: activeItem === 'services' }">
+                  <font-awesome-icon icon="fas fa-coins" />
+                  <span class="router-link-text">SERVIÇOS</span>
+                </li>
+              </router-link>
+              <router-link to="/costs">
+                <li class="nav-item" @mouseover="toggleActive('costs')" :class="{ active: activeItem === 'costs' }">
+                  <font-awesome-icon icon="fas fa-dollar-sign" />
+                  <span class="router-link-text">CUSTOS</span>
+                </li>
+              </router-link>
+            </ul>
+          </li>
 
           <router-link to="/projects">
             <li class="nav-item" @mouseover="toggleActive('projects')" :class="{ active: activeItem === 'projects' }">
@@ -69,19 +96,6 @@
                 <li class="nav-item" @mouseover="toggleActive('account')" :class="{ active: activeItem === 'account' }">
                   <font-awesome-icon icon="fas fa-user" />
                   <span class="router-link-text">CONTA</span>
-                </li>
-              </router-link>
-              <router-link to="/services">
-                <li class="nav-item" @mouseover="toggleActive('services')"
-                  :class="{ active: activeItem === 'services' }">
-                  <font-awesome-icon icon="fas fa-coins" />
-                  <span class="router-link-text">SERVIÇOS</span>
-                </li>
-              </router-link>
-              <router-link to="/costs">
-                <li class="nav-item" @mouseover="toggleActive('costs')" :class="{ active: activeItem === 'costs' }">
-                  <font-awesome-icon icon="fas fa-dollar-sign" />
-                  <span class="router-link-text">CUSTOS</span>
                 </li>
               </router-link>
             </ul>

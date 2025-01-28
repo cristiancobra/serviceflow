@@ -18,6 +18,19 @@ export const destroy = async (model, id) => {
   }
 };
 
+// get total of a model
+export const getTotalProposals = async () => {
+  const url = `${BACKEND_URL}proposals/report`;
+  try {
+    const response = await axios.get(url);
+    const reports = response.data;
+    return reports;
+  } catch (error) {
+    console.error("Error fetching total proposals:", error);
+    throw error;
+  }
+};
+
 // fetches all models to index page
 export const index = async (model) => {
   validateModel(model);
@@ -104,6 +117,7 @@ export const validateModel = (model) => {
     "companies",
     "costs",
     "leads",
+    "links",
     "projects",
     "proposals",
     "opportunities",

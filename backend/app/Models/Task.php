@@ -47,6 +47,14 @@ class Task extends Model
     }
 
     /**
+     * Get the links from task
+     */
+    public function links()
+    {
+        return $this->hasMany(Link::class);
+    }
+
+    /**
      * Get the opportunity from task
      */
     public function opportunity()

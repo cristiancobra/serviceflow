@@ -51,12 +51,12 @@ label {
 
 /* button */
 .button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-width: 2px;
   border-style: solid;
   border-radius: 20px 20px 20px 20px;
-  padding: 0.4rem;
-  padding-left: 0.8rem;
-  padding-right: 0.8rem;
   width: 9rem;
   font-weight: 800;
   border-color: var(--purple-light);
@@ -167,6 +167,14 @@ label {
   transition: all 0.5s;
   text-align: left;
   font-weight: 800;
+}
+
+.main {
+  margin-left: 10%;
+  margin-right: 10%;
+  /* margin-bottom: 5vh; falta o rodape */
+  padding: 0%;
+  transition: all 0.5s;
 }
 
 .new {

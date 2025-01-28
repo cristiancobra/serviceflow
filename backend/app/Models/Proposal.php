@@ -12,14 +12,14 @@ use App\Models\ProposalService;
 class Proposal extends Model
 {
     use HasFactory, SoftDeletes;
-    
+
     protected $fillable = [
         'id',
         'account_id',
         'opportunity_id',
-        'name', 
-        'description', 
-        'date', 
+        'name',
+        'description',
+        'date',
         'total_hours',
         'total_operational_cost',
         'total_third_party_cost',
@@ -30,6 +30,8 @@ class Proposal extends Model
         'validity_days',
         'status',
     ];
+
+    // relationships
 
     public function account()
     {
@@ -49,5 +51,18 @@ class Proposal extends Model
     public function proposalCosts()
     {
         return $this->hasMany(ProposalCost::class);
+    }
+
+    // methods
+
+    public static function getTotalValue()
+    {
+        return self::where('status', 'accepted')
+            ->sum('total_price');
+    }
+
+    public static function getAcceptedCount()
+    {
+        return self::where('status', 'accepted')->count();
     }
 }

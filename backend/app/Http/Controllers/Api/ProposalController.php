@@ -374,6 +374,21 @@ class ProposalController extends Controller
         return ProposalResource::collection($proposals);
     }
 
+        /**
+     * Get the total value of all proposals.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function report()
+    {
+        $totalValue = Proposal::getTotalValue();    
+        $acceptedProposalsCount = Proposal::getAcceptedCount();
+        return response()->json([
+            'total' => $totalValue,
+            'acceptedProposalsCount' => $acceptedProposalsCount
+        ]);
+    }
+
     /**
      * convert image to base64 from users data
      *
