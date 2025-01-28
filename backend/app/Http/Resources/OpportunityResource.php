@@ -3,6 +3,9 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\CompanyResource;
+use App\Http\Resources\LeadsResource;
+use App\Http\Resources\LinksResource;
 
 class OpportunityResource extends JsonResource
 {
@@ -35,8 +38,9 @@ class OpportunityResource extends JsonResource
             // Relationships
             // 'journeys' => JourneyResource::collection($this->whenLoaded('journeys')),
             // 'project' => new ProjectResource($this->whenLoaded('project')),
-            'company' => new CompanyResource($this->whenLoaded('company')),
-            'lead' => new LeadResource($this->whenLoaded('lead')),
+            'companies' => new CompanyResource($this->whenLoaded('company')),
+            'leads' => new LeadsResource($this->whenLoaded('lead')),
+            'links' => new LinksResource($this->whenLoaded('link')),
 			];
     }
 }

@@ -27,8 +27,14 @@
     background-color: #fff;
     /* Cor de fundo branca para o conteúdo do modal */
     border-radius: 0.3rem;
-    width: 70vw;
+    width: 60vw;
   }
+
+  @media (max-width: 768px) {
+    .myModal .modal-content {
+        width: 90vw;
+    }
+}
 
   .myModal.fade.show {
     display: block;

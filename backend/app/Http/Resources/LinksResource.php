@@ -25,8 +25,10 @@ class LinksResource extends JsonResource
             'title' => $this->title,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'task' => new TaskResource($this->whenLoaded('task')),
+            
+            //relationships
             'opportunity' => new OpportunityResource($this->whenLoaded('opportunity')),
+            'task' => new TaskResource($this->whenLoaded('task')),
         ];
     }
 }

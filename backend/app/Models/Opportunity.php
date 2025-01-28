@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Company;
+use App\Models\Lead;
+use App\Models\Link;
 use App\Models\Project;
 use App\Models\Task;
 
@@ -37,6 +39,11 @@ class Opportunity extends Model
     public function lead()
     {
         return $this->belongsTo(Lead::class);
+    }
+
+    public function links()
+    {
+        return $this->hasMany(Link::class);
     }
     
     public function project()

@@ -14,8 +14,8 @@
           <p class="title d-flex">
             <TextEditableField name="name" v-model="opportunity.name" placeholder="descrição detalhada da tarefa"
               @save="updateOpportunity('name', $event)" />
-              <font-awesome-icon v-if="opportunity.date_conclusion" icon="fa-solid fa-circle-check" class="done ps-2" />
-              <font-awesome-icon v-if="opportunity.date_canceled" icon="fa-solid fa-x" class="canceled ps-2" />
+            <font-awesome-icon v-if="opportunity.date_conclusion" icon="fa-solid fa-circle-check" class="done ps-2" />
+            <font-awesome-icon v-if="opportunity.date_canceled" icon="fa-solid fa-x" class="canceled ps-2" />
           </p>
         </div>
         <div class="col-3">
@@ -41,14 +41,23 @@
         <button class="item-menu" @click="currentSection = 'info'" :class="{ active: currentSection === 'info' }">
           Informações
         </button>
-        <button class="item-menu" @click="currentSection = 'proposals'" :class="{ active: currentSection === 'proposals' }">
+
+        <button class="item-menu" @click="currentSection = 'proposals'"
+          :class="{ active: currentSection === 'proposals' }">
           Propostas
         </button>
+
+        <button class="item-menu" @click="currentSection = 'attachments'"
+          :class="{ active: currentSection === 'attachments' }">
+          Anexos
+        </button>
+
         <button class="item-menu" @click="currentSection = 'tasks'" :class="{ active: currentSection === 'tasks' }">
           Tarefas
         </button>
       </div>
     </div>
+
     <div class="info-container" v-show="currentSection === 'info'">
       <div class="list-container pt-4">
         <div class="col-3">
@@ -65,13 +74,19 @@
         </div>
         <div class="row pt-2">
           <TextEditor label="Descrição" name="description" v-model="opportunity.description"
-          @save="updateOpportunity('description', $event)" />
+            @save="updateOpportunity('description', $event)" />
         </div>
       </div>
     </div>
+
     <div class="info-container" v-show="currentSection === 'proposals'">
       <proposals-list :opportunityId="opportunityId" />
     </div>
+
+    <div class="info-container" v-show="currentSection === 'attachments'">
+      <links-list :links="opportunity.links" :opportunityId="opportunityId" />
+    </div>
+
     <div class="info-container" v-show="currentSection === 'tasks'">
       <tasks-list template="opportunity" :opportunityId="opportunityId"
         @update-opportunity-duration="updateOpportunityDuration()" />
@@ -98,6 +113,7 @@ import { translatePriority } from "@/utils/translations/translationsUtils";
 import CompaniesSelectEditableField from '../../components/fields/selects/CompaniesSelectEditableField.vue';
 import DateEditableInput from "@/components/fields/datetime/DateTimeEditableInput";
 import LeadsSelectEditableField from '../../components/fields/selects/LeadsSelectEditableField.vue';
+import LinksList from "@/components/lists/LinksList.vue";
 import ProposalsList from "@/components/lists/ProposalsList.vue";
 import TasksList from "@/components/lists/TasksList.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField";
@@ -110,6 +126,7 @@ export default {
     CompaniesSelectEditableField,
     DateEditableInput,
     LeadsSelectEditableField,
+    LinksList,
     ProposalsList,
     TasksList,
     TextEditableField,
@@ -256,5 +273,4 @@ a:active {
   padding-bottom: 0px;
   color: black;
 }
-
 </style>

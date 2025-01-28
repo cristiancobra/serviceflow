@@ -12,7 +12,7 @@
                     placeholder="Digite para buscar" />
             </div>
             <div class="col-2 d-flex justify-content-end">
-                <link-create-form @new-link-event="addLinkCreated" :task-id="taskId" />
+                <link-create-form @new-link-event="addLinkCreated" :task-id="taskId" :opportunity-id="opportunityId" />
             </div>
         </div>
         <div v-for="link in localLinks" :key="link.id" class="row mt-3 mb-4"
@@ -54,6 +54,10 @@ export default {
             type: Array,
             required: true,
             default: () => []
+        },
+        opportunityId: {
+            type: Number,
+            required: true
         },
         taskId: {
             type: Number,

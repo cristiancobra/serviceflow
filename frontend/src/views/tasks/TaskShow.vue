@@ -85,6 +85,7 @@
       <journeys-list template="by-task" :taskId="taskId" @update-task-duration="updateTaskDuration()"
         @last-journey-end="updateEndTaskButtonVisibility" />
     </div>
+    
     <div class="d-flex justify-content-end">
       <task-clone-form :task="task" />
       <button class="button delete" @click="deleteTask()">

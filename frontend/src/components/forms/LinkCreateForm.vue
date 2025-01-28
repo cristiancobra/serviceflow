@@ -48,6 +48,10 @@ export default {
     TextInput,
   },
   props: {
+    opportunityId: {
+      type: Number,
+      required: true
+    },
     taskId: {
       type: Number,
       required: true
@@ -58,7 +62,7 @@ export default {
       form: {
         title: "",
         url: "",
-        opportunity_id: null,
+        opportunity_id: this.opportunityId,
         task_id: this.taskId,
       },
       isModalVisible: false,
@@ -73,6 +77,7 @@ export default {
     clearForm() {
       this.form.title = "";
       this.form.url = "";
+      this.form.opportunity_id = this.opportunityId;
       this.form.task_id = this.taskId;
     },
     closeModal() {
@@ -83,6 +88,7 @@ export default {
     },
     async submitForm() {
       this.form.task_id = this.taskId; 
+      this.form.opportunity_id = this.opportunityId;
       
       const { data, error } = await this.submitFormCreate("links", this.form);
 

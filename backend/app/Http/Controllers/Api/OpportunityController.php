@@ -65,7 +65,9 @@ class OpportunityController extends Controller
             'tasks' => function ($query) {
                 $query->orderBy('date_start', 'desc');
             },
-            'company'
+            'company',
+            'lead',
+            'link',
         ])->find($opportunity->id));
     }
 
