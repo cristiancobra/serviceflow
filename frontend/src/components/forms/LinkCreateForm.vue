@@ -1,5 +1,8 @@
 <template>
   <div>
+    <AddMessage :messageStatus="messageStatus" :messageText="messageText"
+    @update:messageStatus="messageStatus = $event" />
+
     <button type="button" class="button button-new d-flex justify-content-center" @click="openModal">
       <font-awesome-icon icon="fa-solid fa-plus" class="" />
     </button>
@@ -39,12 +42,14 @@
 
 <script>
 import { submitFormCreate } from "@/utils/requests/httpUtils";
+import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import TextInput from "./inputs/text/TextInput";
 
 export default {
   name: "LinkCreateForm",
   emits: ["new-link-event"],
   components: {
+    AddMessage,
     TextInput,
   },
   props: {
@@ -66,6 +71,8 @@ export default {
         task_id: this.taskId,
       },
       isModalVisible: false,
+      messageStatus: "",
+      messageText: "",
     };
   },
   // inject: [
@@ -85,6 +92,19 @@ export default {
     },
     openModal() {
       this.isModalVisible = true;
+    },
+    setMessageStatus(status) {
+      this.messageStatus = status;
+
+      if (status === "error") {
+        this.messageText = "Erro ao adicionar LINK!";
+      } else if (status === "success") {
+        this.messageText = "LINK adicionado com sucesso!";
+      }
+
+      setTimeout(() => {
+        this.messageStatus = "";
+      }, 20000);
     },
     async submitForm() {
       this.form.task_id = this.taskId; 

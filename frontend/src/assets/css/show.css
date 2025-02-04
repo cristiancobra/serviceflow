@@ -22,7 +22,7 @@
     margin-bottom: 1rem;
     margin-top: 1rem;
     width: 90%;
-    height: 26%;
+    height: auto;
   }
 
   .header-fixed-menu {
@@ -35,9 +35,33 @@
     background-color: var(--secondary);
     color: var(--primary);
     border-radius: 6px;
+    font-size: 0.9rem;
   }
   
   .header-fixed-menu .item-menu.active {
     background-color: var(--primary);
     color: white;
+  }
+
+  .content-below-header {
+    padding-top: 3rem;
+  }
+
+  .show-duration {
+    font-weight: 800 !important;
+    font-size: 0.9rem !important;
+    text-align: center;
+  }
+
+  .show-title {
+    font-size: 24px;
+    font-weight: 900 !important;
+    padding-top: 10px;
+    padding-bottom: 0px;
+    color: black;
+  }
+
+  .show-title-icon {
+    font-size: 2rem;
+    color: var(--primary);
   }

@@ -4,14 +4,14 @@
     </AddMessage>
     <div class="header-fixed">
       <div class="row ms-1">
-        <div class="col-1 status">
-          <font-awesome-icon icon="fa-solid fa-bullseye" class="primary" />
-          <p class="duration">
+        <div class="col-1 d-flex align-items-start flex-column justify-content-center">
+          <font-awesome-icon icon="fa-solid fa-bullseye" class="show-title-icon " />
+          <p class="show-duration">
             {{ formatDuration(opportunity.duration_time) }}
           </p>
         </div>
         <div class="col-8 ps-3">
-          <p class="title d-flex">
+          <p class="show-title d-flex">
             <TextEditableField name="name" v-model="opportunity.name" placeholder="descrição detalhada da tarefa"
               @save="updateOpportunity('name', $event)" />
             <font-awesome-icon v-if="opportunity.date_conclusion" icon="fa-solid fa-circle-check" class="done ps-2" />
@@ -58,44 +58,46 @@
       </div>
     </div>
 
-    <div class="info-container" v-show="currentSection === 'info'">
-      <div class="list-container pt-4">
-        <div class="col-3">
-          <companies-select-editable-field label="Empresa" name="company_id" v-model="opportunity.company_id"
-            @update:modelValue="updateOpportunity('company_id', $event)" />
-        </div>
-        <div class="col-3">
-          <leads-select-editable-field label="Cliente" name="lead_id" v-model="opportunity.lead_id"
-            @update:modelValue="updateOpportunity('lead_id', $event)" />
-        </div>
-        <div class="col-3">
-          <users-select-editable-field label="Responsável" name="user_id" v-model="opportunity.user_id"
-            @update:modelValue="updateOpportunity('user_id', $event)" />
-        </div>
-        <div class="row pt-2">
-          <TextEditor label="Descrição" name="description" v-model="opportunity.description"
-            @save="updateOpportunity('description', $event)" />
+    <div class="content-below-header">
+      <div class="info-container" v-show="currentSection === 'info'">
+        <div class="list-container pt-4">
+          <div class="col-3">
+            <companies-select-editable-field label="Empresa" name="company_id" v-model="opportunity.company_id"
+              @update:modelValue="updateOpportunity('company_id', $event)" />
+          </div>
+          <div class="col-3">
+            <leads-select-editable-field label="Cliente" name="lead_id" v-model="opportunity.lead_id"
+              @update:modelValue="updateOpportunity('lead_id', $event)" />
+          </div>
+          <div class="col-3">
+            <users-select-editable-field label="Responsável" name="user_id" v-model="opportunity.user_id"
+              @update:modelValue="updateOpportunity('user_id', $event)" />
+          </div>
+          <div class="row pt-2">
+            <TextEditor label="Descrição" name="description" v-model="opportunity.description"
+              @save="updateOpportunity('description', $event)" />
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="info-container" v-show="currentSection === 'proposals'">
-      <proposals-list :opportunityId="opportunityId" />
-    </div>
+      <div class="info-container" v-show="currentSection === 'proposals'">
+        <proposals-list :opportunityId="opportunityId" />
+      </div>
 
-    <div class="info-container" v-show="currentSection === 'attachments'">
-      <links-list :links="opportunity.links" :opportunityId="opportunityId" />
-    </div>
+      <div class="info-container" v-show="currentSection === 'attachments'">
+        <links-list :links="opportunity.links" :opportunityId="opportunityId" />
+      </div>
 
-    <div class="info-container" v-show="currentSection === 'tasks'">
-      <tasks-list template="opportunity" :opportunityId="opportunityId"
-        @update-opportunity-duration="updateOpportunityDuration()" />
-    </div>
-    <div class="row d-flex justify-content-end mt-2 mb-5 me-5">
-      <div class="col-1">
-        <button class="button delete" @click="deleteOpportunity()">
-          excluir
-        </button>
+      <div class="info-container" v-show="currentSection === 'tasks'">
+        <tasks-list template="opportunity" :opportunityId="opportunityId"
+          @update-opportunity-duration="updateOpportunityDuration()" />
+      </div>
+      <div class="row d-flex justify-content-end mt-2 mb-5 me-5">
+        <div class="col-1">
+          <button class="button delete" @click="deleteOpportunity()">
+            excluir
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -255,22 +257,11 @@ a:active {
   text-decoration: none;
 }
 
-.duration {
-  font-weight: 800;
-  font-size: 1.2rem;
-  text-align: center;
-}
 
 .status {
   text-align: center;
   font-size: 3rem;
 }
 
-.title {
-  font-size: 24px;
-  font-weight: 900;
-  padding-top: 10px;
-  padding-bottom: 0px;
-  color: black;
-}
+
 </style>

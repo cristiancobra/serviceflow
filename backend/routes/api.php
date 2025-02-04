@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\CostController;
+use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\JourneyController;
 use App\Http\Controllers\Api\LeadController;
 use App\Http\Controllers\Api\LinkController;
@@ -52,6 +53,10 @@ Route::middleware('auth:sanctum')->group(function () {
 	// COSTS
 	Route::apiResource('costs', CostController::class)
 		->names('costs');
+
+	// INVOICES
+	Route::apiResource('invoices', InvoiceController::class)
+		->names('invoices');
 
 	// JOURNEYS
 	Route::get('/journeys-by-task-id', [JourneyController::class, 'getJourneysByTaskId'])

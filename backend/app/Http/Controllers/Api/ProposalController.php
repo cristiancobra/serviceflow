@@ -9,7 +9,7 @@ use App\Models\Proposal;
 use App\Models\Service;
 use App\Models\ProposalCost;
 use App\Models\ProposalService;
-use App\Http\Resources\ProposalResource;
+use App\Http\Resources\ProposalsResource;
 use App\Http\Requests\ProposalRequest;
 use Dompdf\Dompdf;
 
@@ -35,7 +35,7 @@ class ProposalController extends Controller
             ->orderBy('date', 'desc')
             ->paginate($perPage);
 
-        return ProposalResource::collection($proposals);
+        return ProposalsResource::collection($proposals);
     }
 
     /**
@@ -99,7 +99,7 @@ class ProposalController extends Controller
                 $proposalCost->save();
             }
 
-            return ProposalResource::make($proposal->load('proposalServices'));
+            return ProposalsResource::make($proposal->load('proposalServices'));
         } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",
@@ -122,6 +122,7 @@ class ProposalController extends Controller
     public function show(Proposal $proposal)
     {
         $proposal = Proposal::with([
+            'invoices',
             'proposalServices',
             'proposalCosts',
             'opportunity'
@@ -129,7 +130,7 @@ class ProposalController extends Controller
             ->find($proposal->id);
 
         if ($proposal) {
-            return ProposalResource::make($proposal);
+            return ProposalsResource::make($proposal);
         }
         return response()->json([
             'message' => 'Proposta não encontrada',
@@ -158,7 +159,7 @@ class ProposalController extends Controller
             $proposal->fill($validatedData);
             $proposal->save();
 
-            return ProposalResource::make($proposal);
+            return ProposalsResource::make($proposal);
         } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",
@@ -371,7 +372,7 @@ class ProposalController extends Controller
 
         // $proposals->appends(['opportunity_id' => $request->opportunity_id]);
 
-        return ProposalResource::collection($proposals);
+        return ProposalsResource::collection($proposals);
     }
 
         /**

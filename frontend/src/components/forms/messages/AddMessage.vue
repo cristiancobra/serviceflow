@@ -1,10 +1,10 @@
 <template>
   <div class="container-message" :class="[messageStatus, 'disappear']" v-if="messageStatus">
-    <p class="icon">
+    <p class="icon" :class="messageStatus">
       <font-awesome-icon :icon="icon" />
     </p>
     <span>{{ messageText }}</span>
-    <button @click="closeMessage" class="close-btn">x</button>
+    <button @click="closeMessage" class="close-button">x</button>
   </div>
 </template>
 
@@ -95,7 +95,15 @@ li {
   margin-left: 10px;
 }
 
-.close-btn {
+.icon.success {
+  color: var(--green);
+}
+
+.icon.error {
+  color: var(--red);
+}
+
+.close-button {
   background: none;
   border: none;
   font-size: 16px;

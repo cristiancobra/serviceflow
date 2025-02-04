@@ -5,13 +5,13 @@
     <div class="header-fixed">
       <div class="row ms-0">
         <div class="col-1 status">
-          <font-awesome-icon icon="fa-solid fa-list-check" class="primary" />
-          <p class="duration">
+          <font-awesome-icon icon="fa-solid fa-list-check" class="show-title-icon " />
+          <p class="show-duration">
             {{ formatDuration(task.duration_time) }}
           </p>
         </div>
         <div class="col-8 ps-3">
-          <p class="title d-flex">
+          <p class="show-title d-flex">
             <TextEditableField name="name" v-model="task.name" placeholder="descrição detalhada da tarefa"
               @save="updateTask('name', $event)" />
           </p>
@@ -56,42 +56,44 @@
       </div>
     </div>
 
-    <div class="info-container" v-show="currentSection === 'info'">
-      <div class="list-container d-flex pt-4">
-        <div class="col-3">
-          <users-select-editable-field label="Responsável" name="user_id" v-model="task.user_id"
-            @update:modelValue="updateTask('user_id', $event)" />
+    <div class="content-below-header">
+      <div class="info-container" v-show="currentSection === 'info'">
+        <div class="list-container d-flex pt-4">
+          <div class="col-3">
+            <users-select-editable-field label="Responsável" name="user_id" v-model="task.user_id"
+              @update:modelValue="updateTask('user_id', $event)" />
+          </div>
+          <div class="col-4">
+            <projects-select-editable-field label="Projeto" v-model="task.project_id"
+              @update:modelValue="updateTask('project_id', $event)" fieldNull="Nenhum" />
+          </div>
+          <div class="col-5">
+            <opportunities-select-editable-field label="Oportunidade" v-model="task.opportunity_id"
+              @update:modelValue="updateTask('opportunity_id', $event)" fieldNull="Nenhum" />
+          </div>
         </div>
-        <div class="col-4">
-          <projects-select-editable-field label="Projeto" v-model="task.project_id"
-            @update:modelValue="updateTask('project_id', $event)" fieldNull="Nenhum" />
-        </div>
-        <div class="col-5">
-          <opportunities-select-editable-field label="Oportunidade" v-model="task.opportunity_id"
-            @update:modelValue="updateTask('opportunity_id', $event)" fieldNull="Nenhum" />
+        <div class="list-container d-flex pt-4">
+          <TextEditor label="Descrição" name="description" v-model="task.description"
+            @save="updateTask('description', $event)" />
         </div>
       </div>
-      <div class="list-container d-flex pt-4">
-        <TextEditor label="Descrição" name="description" v-model="task.description"
-          @save="updateTask('description', $event)" />
+
+      <div class="info-container" v-show="currentSection === 'attachments'">
+        <links-list :links="task.links" :taskId="taskId" />
       </div>
-    </div>
 
-    <div class="info-container" v-show="currentSection === 'attachments'">
-      <links-list :links="task.links" :taskId="taskId" />
-    </div>
+      <div class="info-container" v-show="currentSection === 'journeys'">
+        <journeys-list template="by-task" :taskId="taskId" @update-task-duration="updateTaskDuration()"
+          @last-journey-end="updateEndTaskButtonVisibility" />
+      </div>
 
-    <div class="info-container" v-show="currentSection === 'journeys'">
-      <journeys-list template="by-task" :taskId="taskId" @update-task-duration="updateTaskDuration()"
-        @last-journey-end="updateEndTaskButtonVisibility" />
-    </div>
-    
-    <div class="d-flex justify-content-end">
-      <task-clone-form :task="task" />
-      <button class="button delete" @click="deleteTask()">
-        <font-awesome-icon icon="fa-solid fa-trash" class="" />
-        excluir
-      </button>
+      <div class="d-flex justify-content-end">
+        <task-clone-form :task="task" />
+        <button class="button delete" @click="deleteTask()">
+          <font-awesome-icon icon="fa-solid fa-trash" class="" />
+          excluir
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -298,12 +300,6 @@ a:active {
   text-decoration: none;
 }
 
-.duration {
-  font-weight: 800;
-  font-size: 1.2rem;
-  text-align: center;
-}
-
 .done {
   background-color: var(--green-light);
   border-color: var(--green);
@@ -352,14 +348,6 @@ a:active {
   min-height: 15vh;
 }
 
-.title {
-  font-size: 24px;
-  font-weight: 900;
-  padding-top: 10px;
-  padding-bottom: 0px;
-  color: black;
-}
-
 .container {
   margin-left: 10vw;
   margin-right: 10vw;
@@ -389,10 +377,4 @@ a:active {
   color: white;
 }
 
-.icon {
-  font-size: 1.2rem;
-  text-align: center;
-  font-weight: 400;
-  color: var(--green);
-}
 </style>

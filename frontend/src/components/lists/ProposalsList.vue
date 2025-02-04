@@ -17,19 +17,19 @@
         </div>
         <div v-for="proposal in proposals" v-bind:key="proposal.id">
             <div class="row proposal-item pt-1 pb-1">
-                <div class="col-2 d-flex align-items-center justify-content-center" id="col-user">
+                <div class="col-2 d-flex align-items-start justify-content-center" id="col-user">
                     <select-status-button :status="proposal.status"
                         @update:modelValue="updateProposal('status', proposal.id, $event)" />
                 </div>
                 <div class="col-10">
                     <router-link :to="{ name: 'proposalShow', params: { id: proposal.id } }">
                         <div class="row">
-                            <div class="col">
+                            <div class="col-2">
                                 {{ formatDateBr(proposal.date) }}
                             </div>
-                            <div class="col">
+                            <div class="col-4">
                                 <p class="name" v-if="!proposal.opportunity">
-                                sem oportunidade associada
+                                    sem oportunidade associada
                                 </p>
                                 <p class="group-name" v-else-if="proposal.opportunity?.company?.business_name">
                                     {{ proposal.opportunity.company.business_name }}
@@ -55,7 +55,7 @@
                                     ---
                                 </p>
                             </div>
-                            <div class="col text-end">
+                            <div class="col-1 text-end">
                                 <money-field name="total_price" v-model="proposal.total_price" />
                             </div>
                         </div>
@@ -72,9 +72,9 @@ import { BACKEND_URL, PROPOSALS_BY_OPPORTUNITY_URL } from "@/config/apiConfig";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import { getDeadlineClass } from "@/utils/card/cardUtils";
 import { index, updateField } from "@/utils/requests/httpUtils";
+import MoneyField from '../fields/number/MoneyField.vue';
 import ProposalCreateForm from "../forms/ProposalCreateForm.vue";
 import SelectStatusButton from "../buttons/SelectStatusButton.vue";
-import MoneyField from '../fields/number/MoneyField.vue';
 
 export default {
     components: {
@@ -123,8 +123,8 @@ export default {
             }
         },
         async getProposals() {
-            this.proposals = await index("proposals");   
-            console.log("proposals", this.proposals);         
+            this.proposals = await index("proposals");
+            console.log("proposals", this.proposals);
         },
         async updateProposal(fieldName, proposalId, editedValue) {
             const updatedProposal = await updateField("proposals", proposalId, fieldName, editedValue);

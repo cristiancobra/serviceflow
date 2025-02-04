@@ -25,6 +25,14 @@
                                         fieldsToDisplay="name" autoSelect=true />
                                 </div>
                                 <div class="col">
+                                    <label for="installment_quantity" class="form-label">
+                                        Quantidade de Parcelas
+                                    </label>
+                                    <input type="number" id="installment_quantity" name="installment_quantity"
+                                        v-model="form.installment_quantity" min="1" max="99" step="1"
+                                        class="form-control" />
+                                </div>
+                                <div class="col">
                                     <div v-if="currentProject" class="d-flex justify-content-start">
                                         <label for="project" class="form-label">Projeto</label>
                                         <input type="hidden" id="project" name="project_id"
@@ -144,6 +152,7 @@ export default {
                 date: null,
                 opportunity_id: this.opportunityId,
                 validity_days: 30,
+                installment_quantity: 1,
             },
             modal: true,
             services: [],

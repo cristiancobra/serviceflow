@@ -85,6 +85,11 @@
   color: var(--primary);
 }
 
+.list-container .icon-fake {
+  font-size: 1.5rem;
+  color: var(--gray);
+}
+
 .list-container .danger {
   color: var(--red);
 }

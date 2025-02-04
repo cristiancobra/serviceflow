@@ -17,19 +17,19 @@
         </div>
         <div v-for="link in localLinks" :key="link.id" class="row mt-3 mb-4"
             :class="{ 'highlight': link.id === newLinkId }">
-            <div class="col-1 justify-content-center">
-                <font-awesome-icon icon="fa-solid fa-link" class="icon pe-3 primary" />
-            </div>
-            <div class="col-3">
-                <a :href="link.url" target="_blank">{{ link.title }}</a>
-            </div>
             <div class="col-6">
-                <a :href="link.url" target="_blank">{{ link.url }}</a>
+                <font-awesome-icon icon="fa-solid fa-link" class="icon pe-3 primary" />
+                <a class="link-name" :href="link.url" target="_blank">{{ link.title }}</a>
+            </div>
+            <div class="col-5">
+                <a class="link-url" :href="link.url" target="_blank">{{ link.url }}</a>
             </div>
             <div class="col-1 d-flex justify-content-center">
-                <button class="button delete" @click="confirmDeleteLink(link.id)">
+                <button class="button-circular delete" @click="confirmDeleteLink(link.id)">
                     <font-awesome-icon icon="fa-solid fa-trash" class="" />
-                    excluir
+                </button>
+                <button class="button-circular ms-2" @click="copyLink(link.url)">
+                    <font-awesome-icon icon="fa-solid fa-copy" class="" />
                 </button>
             </div>
         </div>
@@ -109,5 +109,17 @@ export default {
     100% {
         background-color: transparent;
     }
+}
+
+.link-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.link-url {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--secondary-color);
 }
 </style>

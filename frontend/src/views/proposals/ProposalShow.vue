@@ -14,25 +14,25 @@
     <div class="row mt-1 mb-3">
       <div class="col-6">
         <opportunities-select-editable-field label="Oportunidade" v-model="proposal.opportunity_id"
-            @update:modelValue="updateTask('opportunity_id', $event)" fieldNull="Nenhum" />
+          @update:modelValue="updateTask('opportunity_id', $event)" fieldNull="Nenhum" />
       </div>
       <div class="col-6">
-      <p class="mt-1 mb-1 text-end">
-        Rascunhada: {{ proposal.draft_at }}
-      </p>
-      <p class="mt-1 mb-1 text-end">
-        Enviada: {{ proposal.submitted_at }}
-      </p>
-      <p class="mt-1 mb-1 text-end">
-        Aceita: {{ proposal.accepted_at }}
-      </p>
-      <p class="mt-1 mb-1 text-end">
-        Rejeitada: {{ proposal.rejected_at }}
-      </p>
-      <p class="mt-1 mb-1 text-end">
-        Cancelada: {{ proposal.canceled_at }}
-      </p>
-    </div>
+        <p class="mt-1 mb-1 text-end">
+          Rascunhada: {{ proposal.draft_at }}
+        </p>
+        <p class="mt-1 mb-1 text-end">
+          Enviada: {{ proposal.submitted_at }}
+        </p>
+        <p class="mt-1 mb-1 text-end">
+          Aceita: {{ proposal.accepted_at }}
+        </p>
+        <p class="mt-1 mb-1 text-end">
+          Rejeitada: {{ proposal.rejected_at }}
+        </p>
+        <p class="mt-1 mb-1 text-end">
+          Cancelada: {{ proposal.canceled_at }}
+        </p>
+      </div>
     </div>
     <div class="row pb-5" v-if="proposal.opportunity">
       {{ proposal.opportunity.name }}
@@ -80,6 +80,7 @@
         <money-field name="total_profit" v-model="proposal.total_profit" />
       </div>
     </div>
+
     <div class="row">
       <div class="col-9 d-flex justify-content-end">
         <p>
@@ -91,6 +92,19 @@
         <money-field name="price" v-model="proposal.total_price" />
       </div>
     </div>
+
+    <div class="row">
+      <div class="col-9 d-flex justify-content-end">
+        <p>
+          <font-awesome-icon icon="fas fa-credit-card" />
+          <span class="label"> Parcelamento: </span>
+        </p>
+      </div>
+      <div class="col-2 text-end">
+        {{ proposal.installment_quantity }}
+      </div>
+    </div>
+
     <div class="row pt-5 ">
       <div class="col-5">
         <p>
@@ -107,6 +121,7 @@
         Itens da proposta
       </p>
     </div>
+
     <div class="row service-item pt-1 pb-1" v-for="proposalService in proposal.proposalServices"
       v-bind:key="proposalService.id">
       <div class="col-1 d-flex align-items-center justify-content-center">
@@ -127,11 +142,13 @@
         <money-field name="total_price" v-model="proposalService.total_price" />
       </div>
     </div>
+
     <div class="row pt-5">
       <p class="title">
         Custos de produção
       </p>
     </div>
+
     <div class="row service-item pt-1 pb-1" v-for="proposalCost in proposal.proposalCosts" v-bind:key="proposalCost.id">
       <div class="col-1 d-flex align-items-center justify-content-center">
         <font-awesome-icon icon="fa-solid fa-coins" class="primary" />
@@ -151,6 +168,30 @@
         <money-field name="total_price" v-model="proposalCost.total_price" />
       </div>
     </div>
+
+    <div class="row pt-5">
+      <div class="col-10">
+        <p class="title">
+          Faturamento
+        </p>
+      </div>
+      <div class="col-2 d-flex justify-content-end">
+          <invoice-create-form v-if="proposal.status == 'accepted'" @new-invoice-event="addInvoiceCreated"
+            :proposal="proposal" />
+          <font-awesome-icon v-if="proposal.status != 'accepted'" icon="fa-solid fa-file-invoice" class="icon-fake" />
+      </div>
+    </div>
+    
+    <div class="row service-item pt-1 pb-1" v-for="invoice in proposal.invoices" v-bind:key="invoice.id">
+      <div class="col-2">
+        {{ invoice.date_due }}
+      </div>
+      <div class="col-2">
+        <money-field name="price" v-model="invoice.price" />
+      </div>
+    </div>
+
+
     <div class="row mt-5 mb-5">
       <div class="col-2 d-flex justify-content-start">
         <button class="button delete me-5" @click="deleteProposal()">
@@ -179,6 +220,7 @@ import { destroy, show, updateField } from "@/utils/requests/httpUtils";
 import DecimalEditableField from "@/components/fields/number/DecimalEditableField";
 import MoneyField from '../../components/fields/number/MoneyField.vue';
 import HoursDecimalEditableField from '../../components/fields/number/HoursDecimalEditableField.vue';
+import InvoiceCreateForm from "../../components/forms/InvoiceCreateForm.vue";
 import OpportunitiesSelectEditableField from '../../components/fields/selects/OpportunitiesSelectEditableField.vue';
 import SelectStatusButton from '../../components/buttons/SelectStatusButton.vue';
 
@@ -193,6 +235,7 @@ export default {
   components: {
     DecimalEditableField,
     HoursDecimalEditableField,
+    InvoiceCreateForm,
     MoneyField,
     OpportunitiesSelectEditableField,
     SelectStatusButton,

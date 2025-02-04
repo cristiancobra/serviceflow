@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Opportunity;
+use App\Models\Account;
+use App\Models\Invoice;
 use App\Models\ProposalCost;
 use App\Models\ProposalService;
 
@@ -27,6 +29,7 @@ class Proposal extends Model
         'total_profit_percentage',
         'total_discount',
         'total_price',
+        'installment_quantity',
         'validity_days',
         'status',
     ];
@@ -36,6 +39,11 @@ class Proposal extends Model
     public function account()
     {
         return $this->belongsTo(Account::class);
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
     }
 
     public function opportunity()
