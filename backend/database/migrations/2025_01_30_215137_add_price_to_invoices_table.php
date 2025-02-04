@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('invoices', function (Blueprint $table) {
-            $table->decimal('price', 10, 2)->after('id'); // Adiciona a coluna 'price' após a coluna 'id'
+            // $table->decimal('price', 10, 2)->after('id'); // Adiciona a coluna 'price' após a coluna 'id'
         });
     }
 
