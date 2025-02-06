@@ -15,6 +15,12 @@
             <TextEditableField name="name" v-model="task.name" placeholder="descrição detalhada da tarefa"
               @save="updateTask('name', $event)" />
           </p>
+            <p  class="opportunity" v-if="task.opportunity">
+              <router-link :to="'/opportunities/' + task.opportunity.id">
+                <font-awesome-icon icon="fa-solid fa-search" class="primary" />
+              </router-link>
+              {{ task.opportunity.name }}
+            </p>
         </div>
         <div class="col-3">
           <div class="row">
@@ -377,4 +383,9 @@ a:active {
   color: white;
 }
 
+.opportunity {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--gray);
+}
 </style>

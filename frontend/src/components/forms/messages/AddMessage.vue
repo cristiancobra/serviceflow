@@ -25,6 +25,8 @@ export default {
         return 'fa-solid fa-circle-check';
       } else if (this.messageStatus === 'error') {
         return 'fa-solid fa-circle-exclamation';
+      } else if (this.messageStatus === 'deleted') {
+        return 'fa-solid fa-trash';
       } else {
         return 'fa-solid fa-info-circle';
       }
@@ -73,6 +75,7 @@ li {
   border-width: 2px;
   border-radius: 6px;
   padding: 1rem;
+  padding-right: 2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   z-index: 9999;
   transition: opacity 6s ease;
@@ -85,6 +88,12 @@ li {
 }
 
 .container-message.error {
+  color: var(--red);
+  border-color: var(--red);
+  background-color: var(--red-light);
+}
+
+.container-message.deleted {
   color: var(--red);
   border-color: var(--red);
   background-color: var(--red-light);
@@ -106,15 +115,21 @@ li {
 .close-button {
   background: none;
   border: none;
-  font-size: 16px;
+  font-size: 20px;
+  font-weight: 600;
   cursor: pointer;
   margin-left: auto;
   color: inherit; 
+  box-shadow: none;
+  position: absolute;
+  top: 0px;
+  right: -4px;
+
 }
 
 .disappear {
   animation-name: fadeOut;
-  animation-duration: 3000ms;
+  animation-duration: 5000ms;
   animation-fill-mode: forwards;
 }
 

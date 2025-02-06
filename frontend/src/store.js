@@ -10,13 +10,23 @@ export default createStore({
     isAuthenticated: false,
     userData: null,
     photo: null,
+    messageStatus: null,
+    messageText: null,
   },
   mutations: {
+    clearMessage(state) {
+      state.messageStatus = null;
+      state.messageText = null;
+    },
     setAccountId(state, accountId) {
       state.accountId = accountId;
     },
     setAuthenticated(state, isAuthenticated) {
       state.isAuthenticated = isAuthenticated;
+    },
+    setMessage(state, { status, text }) {
+      state.messageStatus = status;
+      state.messageText = text;
     },
     setOpenJourney(state, openJourney) {
       state.openJourney = openJourney;
@@ -82,5 +92,15 @@ export default createStore({
       console.error("Erro de logout:", error);
     }
     },
+    setMessage({ commit }, message) {
+      commit('setMessage', message);
+    },
+    clearMessage({ commit }) {
+      commit('clearMessage');
+    },
+  },
+  getters: {
+    messageStatus: state => state.messageStatus,
+    messageText: state => state.messageText,
   },
 });

@@ -1,5 +1,7 @@
 <template>
   <div>
+    <add-message v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
+    </add-message>
     <div class="headers-line">
       <div class="col-1 slot done">concluidos</div>
       <div class="col-1 slot doing">andamento</div>
@@ -16,12 +18,15 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import ProjectsList from "@/components/lists/ProjectsList.vue";
 import ProjectCreateForm from "@/components/forms/ProjectCreateForm.vue";
 
 export default {
   name: "ProjectsIndex",
   components: {
+    AddMessage,
     ProjectCreateForm,
     ProjectsList,
   },
@@ -41,6 +46,18 @@ export default {
         date_due: null,
       },
     };
+  },
+  computed: {
+    ...mapGetters(['messageStatus', 'messageText']),
+  },
+  watch: {
+    messageStatus(newStatus) {
+      if (newStatus) {
+        setTimeout(() => {
+          this.$store.dispatch('clearMessage');
+        }, 5000);
+      }
+    },
   },
 };
 </script>

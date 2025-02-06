@@ -1,7 +1,5 @@
 <template>
   <div>
-    <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
-    </AddMessage>
     <div class="header-fixed">
       <div class="row ms-1">
         <div class="col-1 status">
@@ -51,7 +49,7 @@
     </div>
     <div class="row d-flex justify-content-end mt-2 mb-5 me-5">
       <div class="col-1">
-        <button class="button delete" @click="deleteProject()">
+        <button class="button delete" @click="confirmDeleteProject()">
           excluir
         </button>
       </div>
@@ -117,6 +115,11 @@ export default {
     translateStatus,
     translatePriority,
     updateField,
+    confirmDeleteProject() {
+      if (window.confirm('Tem certeza que deseja excluir este projeto?')) {
+        this.deleteProject();
+      }
+    },
     async getProject() {
       this.project = await show('projects', this.projectId);
       this.currentProject = this.project;
@@ -128,24 +131,23 @@ export default {
       this.projectId = projectId;
     },
     async deleteProject() {
-      axios
-        .delete(`${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.projectId}`)
-        .then((response) => {
-          this.data = response.data;
-          this.isSuccess = true;
-          this.isError = false;
-          this.$router.push({
-            name: "projectsIndex",
-            query: { isSuccess: this.isSuccess },
-          });
-          this.messageStatus = "deleted";
-          this.messageText = "Jornada deletada com sucesso!";
-        })
-        .catch((error) => {
-          console.error("Erro ao deletar project:", error);
-          this.isError = true;
-          this.isSuccess = false;
+      try {
+        const response = await axios.delete(`${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.projectId}`);
+        this.data = response.data;
+        this.$store.dispatch('setMessage', {
+          status: 'deleted',
+          text: 'Projeto excluído com sucesso!',
         });
+        this.$router.push({
+          name: "projectsIndex",
+        });
+      } catch (error) {
+        console.error("Erro ao deletar project:", error);
+        this.$store.dispatch('setMessage', {
+        status: 'error',
+        text: 'Erro ao deletar projeto.',
+      });
+      }
     },
     updateJourneys(updatedJourney) {
       // Encontrar e atualizar a jornada na lista journeysData

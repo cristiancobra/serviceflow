@@ -86,7 +86,17 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        //
+        try {
+            $project->delete();
+            return response()->json([
+                'message' => 'Projeto deletado com sucesso',
+            ]);
+        } catch (ValidationException $validationException) {
+            return response()->json([
+                'message' => "Erro de validação",
+                'errors' => $validationException->errors(),
+            ], 422);
+        }
     }
 
     /**

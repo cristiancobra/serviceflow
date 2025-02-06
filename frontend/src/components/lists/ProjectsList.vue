@@ -1,5 +1,7 @@
 <template>
   <div class="list-container">
+    <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
+    </AddMessage>
     <div class="row align-items-start">
       <div class="col-1">
         <font-awesome-icon icon="fa-solid fa-project-diagram" class="icon" />
@@ -81,6 +83,8 @@ export default {
     return {
       isActive: true,
       projects: [],
+      messageStatus: "",
+      messageText: "",
       searchTerm: "",
     };
   },
