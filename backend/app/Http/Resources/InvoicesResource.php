@@ -19,7 +19,7 @@ class InvoicesResource extends JsonResource
             'id' => $this->id,
             'proposal_id' => $this->proposal_id,
             'user_id' => $this->user_id,
-            'date_due' => $this->due_date,
+            'date_due' => $this->date_due,
             'price' => $this->price,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

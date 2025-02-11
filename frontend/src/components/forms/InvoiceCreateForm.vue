@@ -1,12 +1,16 @@
 <template>
   <div>
-    <button v-if="!isSubmitDisabled" type="button" class="button" @click=openModal>
+    <button v-if="installmentStatus === 'notIssued'" type="button" class="button p-2" @click="openModal">
       <font-awesome-icon icon="fa-solid fa-file-invoice" class="me-2" />
       GERAR {{ proposal.installment_quantity }} FATURAS
     </button>
-    <div v-else class="button disabled">
+    <div v-else-if="installmentStatus === 'issued'" class="button disabled p-2">
       <font-awesome-icon icon="fa-solid fa-circle-check" class="me-0" />
       FATURAS GERADAS
+    </div>
+    <div v-else-if="installmentStatus === 'pending'" class="button delete p-2">
+      <font-awesome-icon icon="fa-solid fa-circle-check" class="me-0" />
+      APROVAÇÃO PENDENTE
     </div>
 
     <div v-if="isModalVisible" class="myModal">
@@ -140,7 +144,7 @@ export default {
       isActiveCompany: false,
       isActiveLead: false,
       isModalVisible: false,
-      isSubmitDisabled: false,
+      installmentStatus: false,
       leads: [],
       localProposal: this.proposal,
       message: null,
@@ -152,9 +156,13 @@ export default {
     };
   },
   watch: {
+    'proposal.status': function() {
+      this.checkInvoices();
+    },
     proposal: {
       immediate: true,
       handler(newProposal) {
+        this.form.proposal_id = newProposal.id;
         if (newProposal) {
           this.form.prices = this.initializePrices();
         }
@@ -168,11 +176,6 @@ export default {
   },
   methods: {
     submitFormCreate,
-    addLeadCreated(newLead) {
-      this.leads.push(newLead.lead);
-      !this.toggleLead();
-      this.form.contact_id = newLead.lead.id;
-    },
     adjustPrices(changedIndex, newValue) {
       const totalPrice = this.proposal.total_price;
       const prices = [...this.form.prices]; // Cria uma cópia do array de preços
@@ -209,10 +212,14 @@ export default {
       this.form.prices = prices; // Atualiza o array de preços
     },
     checkInvoices() {
-      console.log("invoices", this.proposal.invoices);
-      console.log("length", this.proposal.invoices.length);
-      if (this.proposal.invoices.length > 0) {
-        this.isSubmitDisabled = true;
+      if(this.proposal.status !== "accepted") {
+        this.installmentStatus = "pending";
+      }
+      else if (this.proposal.invoices.length > 0) {
+        this.installmentStatus = 'issued';
+      }
+      else {
+        this.installmentStatus = "notIssued";
       }
     },
     clearForm() {
@@ -250,7 +257,7 @@ export default {
       if (totalCalculated > totalPrice) {
         const difference = totalCalculated - totalPrice;
         this.errorMessage = `A soma das parcelas excede o valor total da proposta em ${difference.toFixed(2)}. Ajuste os valores.`;
-        return; // Impede o envio do formulário
+        return;
       }
 
       const { data, error } = await this.submitFormCreate("invoices", this.form);
@@ -273,8 +280,9 @@ export default {
     },
   },
   mounted() {
+    console.log('installmentStatus1:', this.installmentStatus);
     this.checkInvoices();
-    console.log("isSubmitDisabled", this.isSubmitDisabled);
+    console.log('installmentStatus2:', this.installmentStatus);
   },
 };
 </script>

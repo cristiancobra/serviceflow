@@ -57,17 +57,12 @@
               </div>
 
               <div class="row mb-4 mt-4">
-                <div class="col-md-4">
+                <div class="col-md-6">
                   <DateInput v-model="form.date_start" label="Início" name="date_start" placeholder="início do prazo"
                     :autoFillNow="true" @update="updateForm" />
                 </div>
 
-                <div class="col-md-4">
-                  <DateInput v-model="form.date_due" label="Prazo final" name="date_due" placeholder="prazo final"
-                    @update="updateForm" />
-                </div>
-
-                <div class="col-md-4">
+                <div class="col-md-6">
                   <DateInput v-model="form.date_conclusion" label="Data de conclusão" name="date_conclusion"
                     placeholder="data quando a tarefa foi finalizada" @update="updateForm" />
                 </div>

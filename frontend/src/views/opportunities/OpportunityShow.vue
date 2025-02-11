@@ -10,31 +10,13 @@
             {{ formatDuration(opportunity.duration_time) }}
           </p>
         </div>
-        <div class="col-8 ps-3">
+        <div class="col-11 ps-3">
           <p class="show-title d-flex">
             <TextEditableField name="name" v-model="opportunity.name" placeholder="descrição detalhada da tarefa"
               @save="updateOpportunity('name', $event)" />
             <font-awesome-icon v-if="opportunity.date_conclusion" icon="fa-solid fa-circle-check" class="done ps-2" />
             <font-awesome-icon v-if="opportunity.date_canceled" icon="fa-solid fa-x" class="canceled ps-2" />
           </p>
-        </div>
-        <div class="col-3">
-          <div class="row">
-            <DateEditableInput class="d-flex justify-content-end" name="date_start" label="Início:"
-              v-model="opportunity.date_start" @save="updateOpportunity('date_start', $event)" />
-          </div>
-          <div class="row">
-            <DateEditableInput class="d-flex justify-content-end" name="date_due" label="Prazo:"
-              v-model="opportunity.date_due" @save="updateOpportunity('date_due', $event)" />
-          </div>
-          <div class="row">
-            <DateEditableInput class="d-flex justify-content-end" name="date_conclusion" label="Conclusão:"
-              v-model="opportunity.date_conclusion" @save="updateOpportunity('date_conclusion', $event)" />
-          </div>
-          <div class="row">
-            <DateEditableInput class="d-flex justify-content-end" name="date_conclusion" label="Cancelado:"
-              v-model="opportunity.date_canceled" @save="updateOpportunity('date_canceled', $event)" />
-          </div>
         </div>
       </div>
       <div class="header-fixed-menu mt-3">
@@ -60,23 +42,37 @@
 
     <div class="content-below-header">
       <div class="info-container" v-show="currentSection === 'info'">
-        <div class="list-container pt-4">
-          <div class="col-3">
+        <div class="list-container d-flex pt-4">
+          <div class="col-6">
             <companies-select-editable-field label="Empresa" name="company_id" v-model="opportunity.company_id"
               @update:modelValue="updateOpportunity('company_id', $event)" />
-          </div>
-          <div class="col-3">
             <leads-select-editable-field label="Cliente" name="lead_id" v-model="opportunity.lead_id"
               @update:modelValue="updateOpportunity('lead_id', $event)" />
-          </div>
-          <div class="col-3">
             <users-select-editable-field label="Responsável" name="user_id" v-model="opportunity.user_id"
               @update:modelValue="updateOpportunity('user_id', $event)" />
           </div>
-          <div class="row pt-2">
-            <TextEditor label="Descrição" name="description" v-model="opportunity.description"
-              @save="updateOpportunity('description', $event)" />
+          <div class="col-6">
+            <div class="row">
+              <DateEditableInput class="d-flex justify-content-end" name="date_start" label="Início:"
+                v-model="opportunity.date_start" @save="updateOpportunity('date_start', $event)" />
+            </div>
+            <div class="row mt-2">
+              <DateEditableInput class="d-flex justify-content-end" name="date_due" label="Prazo:"
+                v-model="opportunity.date_due" @save="updateOpportunity('date_due', $event)" />
+            </div>
+            <div class="row mt-2">
+              <DateEditableInput class="d-flex justify-content-end" name="date_conclusion" label="Conclusão:"
+                v-model="opportunity.date_conclusion" @save="updateOpportunity('date_conclusion', $event)" />
+            </div>
+            <div class="row mt-2">
+              <DateEditableInput class="d-flex justify-content-end" name="date_conclusion" label="Cancelado:"
+                v-model="opportunity.date_canceled" @save="updateOpportunity('date_canceled', $event)" />
+            </div>
           </div>
+        </div>
+        <div class="list-container pt-4">
+          <TextEditor label="Descrição" name="description" v-model="opportunity.description"
+            @save="updateOpportunity('description', $event)" />
         </div>
       </div>
 
@@ -262,6 +258,4 @@ a:active {
   text-align: center;
   font-size: 3rem;
 }
-
-
 </style>

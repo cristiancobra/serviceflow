@@ -42,8 +42,8 @@ class InvoiceController extends Controller
         try {
             $validated = $request->validated();
             $prices = $validated['prices'];
-            $dateDue = $validated['date_due']; // Armazena a data de vencimento em uma variável separada
-            unset($validated['prices'], $validated['date_due']); // Remove 'prices' e 'date_due' do array $validated
+            $dateDue = $validated['date_due'];
+            unset($validated['prices'], $validated['date_due']);
     
             $invoices = [];
             foreach ($prices as $index => $price) {
@@ -56,8 +56,8 @@ class InvoiceController extends Controller
                 $invoice->save();
                 $invoices[] = $invoice;
             }
-// dd($invoices);
-            return InvoicesResource::make($invoice->load('proposal', 'user'));
+
+            return InvoicesResource::collection($invoices);
         } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",
@@ -69,13 +69,19 @@ class InvoiceController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Invoice  $invoice
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Invoice $invoice)
     {
-        //
+        if($invoice) {
+            return InvoicesResource::make($invoice->load('proposal.opportunity', 'user'));
+        }
+        return response()->json([
+            'message' => 'Proposta não encontrada',
+        ], 404);
     }
+
 
     /**
      * Show the form for editing the specified resource.

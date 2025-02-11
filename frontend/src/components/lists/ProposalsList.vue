@@ -45,15 +45,7 @@
                                 </p>
                             </div>
                             <div class="col-5 ">
-                                <p v-if="proposal.description" class="name ps-2">
-                                    {{ proposal.description }}
-                                </p>
-                                <p v-else-if="proposal.opportunity" class="name ps-2">
-                                    {{ proposal.opportunity.description }}
-                                </p>
-                                <p v-else class="name ps-2">
-                                    ---
-                                </p>
+                                <p v-html="getShortDescription(proposal)" class="name ps-2"></p>
                             </div>
                             <div class="col-1 text-end">
                                 <money-field name="total_price" v-model="proposal.total_price" />
@@ -103,7 +95,21 @@ export default {
         addProposalCreated(newProposal) {
             this.proposals.unshift(newProposal);
         },
+        getShortDescription(proposal, maxLength = 50) {
+            let description = '';
+            if (proposal.description) {
+                description = proposal.description.trim();
+            } else if (proposal.opportunity) {
+                description = proposal.opportunity.description.trim();
+            } else {
+                return '---';
+            }
 
+            if (description.length > maxLength) {
+                return description.substring(0, maxLength) + '...';
+            }
+            return description;
+        },
         async getProposalsFromOpportunity(page = 1) {
 
             this.proposalsUrl = `${BACKEND_URL}${PROPOSALS_BY_OPPORTUNITY_URL}opportunity_id=${this.opportunityId}&per_page=10&page=${page}`;

@@ -10,6 +10,7 @@ import Financial from '../views/dashboards/FinancialView.vue'
 import JourneysIndex from '../views/journeys/JourneysIndex.vue'
 import LeadsIndex from '../views/leads/LeadsIndex.vue'
 import LeadShow from '../views/leads/LeadShow.vue'
+import InvoiceShow from '@/views/invoices/InvoiceShow.vue'
 import OpportunitiesIndex from '../views/opportunities/OpportunitiesIndex.vue'
 import OpportunityShow from '../views/opportunities/OpportunityShow.vue'
 import ServicesIndex from '../views/services/ServicesIndex.vue'
@@ -59,6 +60,11 @@ const routes = [
     path: '/financial',
     name: 'financial',
     component: Financial
+  },
+  {
+    path: '/invoices/:id',
+    name: 'invoiceShow',
+    component: InvoiceShow
   },
   {
     path: '/leads',

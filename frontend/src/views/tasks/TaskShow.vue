@@ -10,41 +10,17 @@
             {{ formatDuration(task.duration_time) }}
           </p>
         </div>
-        <div class="col-8 ps-3">
+        <div class="col-11 ps-3">
           <p class="show-title d-flex">
             <TextEditableField name="name" v-model="task.name" placeholder="descrição detalhada da tarefa"
               @save="updateTask('name', $event)" />
           </p>
-            <p  class="opportunity" v-if="task.opportunity">
-              <router-link :to="'/opportunities/' + task.opportunity.id">
-                <font-awesome-icon icon="fa-solid fa-search" class="primary" />
-              </router-link>
-              {{ task.opportunity.name }}
-            </p>
-        </div>
-        <div class="col-3">
-          <div class="row">
-            <DateEditableInput class="d-flex justify-content-end" name="date_start" label="Início:"
-              v-model="task.date_start" @save="updateTask('date_start', $event)" />
-          </div>
-          <div class="row">
-            <DateEditableInput class="d-flex justify-content-end" name="date_due" label="Prazo:" v-model="task.date_due"
-              @save="updateTask('date_due', $event)" />
-          </div>
-          <div class="row">
-            <div class="col d-flex justify-content-end">
-              <button v-if="!showEndTaskButton" class="button-circular primary me-3" @click="updateDateConclusion"
-                title="Finalizar tarefa com data da última jornada">
-                <font-awesome-icon icon="fa-solid fa-check-square" />
-              </button>
-              <DateEditableInput class="d-flex justify-content-end" name="date_conclusion" label="Conclusão:"
-                v-model="task.date_conclusion" @save="updateTask('date_conclusion', $event)" />
-            </div>
-          </div>
-          <div class="row">
-            <DateEditableInput class="d-flex justify-content-end" name="date_conclusion" label="Cancelado:"
-              v-model="task.date_canceled" @save="updateTask('date_canceled', $event)" />
-          </div>
+          <p class="opportunity" v-if="task.opportunity">
+            <router-link :to="'/opportunities/' + task.opportunity.id">
+              <font-awesome-icon icon="fa-solid fa-search" class="primary" />
+            </router-link>
+            {{ task.opportunity.name }}
+          </p>
         </div>
       </div>
       <div class="header-fixed-menu mt-3">
@@ -65,17 +41,37 @@
     <div class="content-below-header">
       <div class="info-container" v-show="currentSection === 'info'">
         <div class="list-container d-flex pt-4">
-          <div class="col-3">
+          <div class="col-6">
             <users-select-editable-field label="Responsável" name="user_id" v-model="task.user_id"
               @update:modelValue="updateTask('user_id', $event)" />
-          </div>
-          <div class="col-4">
             <projects-select-editable-field label="Projeto" v-model="task.project_id"
               @update:modelValue="updateTask('project_id', $event)" fieldNull="Nenhum" />
-          </div>
-          <div class="col-5">
             <opportunities-select-editable-field label="Oportunidade" v-model="task.opportunity_id"
               @update:modelValue="updateTask('opportunity_id', $event)" fieldNull="Nenhum" />
+          </div>
+          <div class="col-6">
+            <div class="row">
+              <DateEditableInput class="d-flex justify-content-end" name="date_start" label="Início:"
+                v-model="task.date_start" @save="updateTask('date_start', $event)" />
+            </div>
+            <div class="row mt-2">
+              <DateEditableInput class="d-flex justify-content-end" name="date_due" label="Prazo:"
+                v-model="task.date_due" @save="updateTask('date_due', $event)" />
+            </div>
+            <div class="row mt-2">
+              <div class="col d-flex justify-content-end">
+                <button v-if="showEndTaskButton" class="button-circular primary me-3" @click="updateDateConclusion"
+                  :title="endTaskTitle">
+                  <font-awesome-icon icon="fa-solid fa-check-square" />
+                </button>
+                <DateEditableInput class="d-flex justify-content-end" name="date_conclusion" label="Conclusão:"
+                  v-model="task.date_conclusion" @save="updateTask('date_conclusion', $event)" />
+              </div>
+            </div>
+            <div class="row mt-2">
+              <DateEditableInput class="d-flex justify-content-end" name="date_conclusion" label="Cancelado:"
+                v-model="task.date_canceled" @save="updateTask('date_canceled', $event)" />
+            </div>
           </div>
         </div>
         <div class="list-container d-flex pt-4">
@@ -149,12 +145,28 @@ export default {
       messageText: "",
       project: [],
       showEndTaskButton: false,
-      task: [],
+      task: {
+        date_conclusion: null,
+        journeys: [],
+      },
       updatedField: [],
       taskId: "",
     };
   },
-  emits: ["new-journey-event", "journey-updated", "journey-deleted"],
+  computed: {
+    showEndTask() {
+      return !this.task.date_conclusion && this.task.journeys.length > 0;
+    },
+    latestJourneyEnd() {
+      if (this.task.journeys.length === 0) return null;
+      const sortedJourneys = [...this.task.journeys].sort((a, b) => new Date(b.end) - new Date(a.end));
+      console.log("sortedJourneys", sortedJourneys);
+      return sortedJourneys[0].end;
+    },
+    endTaskTitle() {
+      return `Finalizar tarefa com data da última jornada ${this.latestJourneyEnd ? this.latestJourneyEnd : ''}`;
+    },
+  },
   methods: {
     formatDateBr,
     formatDateTimeBr,
@@ -209,6 +221,7 @@ export default {
     },
     updateEndTaskButtonVisibility(journeyEnd) {
       this.journeyEnd = journeyEnd;
+      console.log("journeyEnd", journeyEnd);
       if (journeyEnd && this.task.date_conclusion === null) {
         this.showEndTaskButton = true;
       } else {
@@ -258,6 +271,7 @@ export default {
     }
   },
   async mounted() {
+    console.log("showButon", this.showEndTaskButton);
     this.setTaskId(this.$route.params.id);
     this.getTask();
   },

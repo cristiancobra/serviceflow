@@ -11,6 +11,7 @@
         <select-status-button :status="proposal.status" @update:modelValue="updateProposal('status', $event)" />
       </div>
     </div>
+
     <div class="row mt-1 mb-3">
       <div class="col-6">
         <opportunities-select-editable-field label="Oportunidade" v-model="proposal.opportunity_id"
@@ -34,11 +35,25 @@
         </p>
       </div>
     </div>
-    <div class="row pb-5" v-if="proposal.opportunity">
-      {{ proposal.opportunity.name }}
+
+    <div v-if="proposal.opportunity" class="row pt-5">
+      <p class="title">
+        Descrição
+      </p>
+      <p class="row">
+        {{ proposal.opportunity.name }}
+      </p>
     </div>
+
+
+    <div class="row pt-5">
+      <p class="title">
+        Custos e margem de lucro
+      </p>
+    </div>
+
     <div class="row">
-      <div class="col-9 d-flex justify-content-end">
+      <div class="col-3 d-flex justify-content-start">
         <p>
           <font-awesome-icon icon="fa fa-clock" />
           <span class="label"> Custo operacional</span>
@@ -53,8 +68,9 @@
         <money-field name="total_operational_cost" v-model="proposal.total_operational_cost" />
       </div>
     </div>
+
     <div class="row">
-      <div class="col-9 d-flex justify-content-end">
+      <div class="col-3 d-flex justify-content-start">
         <p>
           <font-awesome-icon icon="fa fa-clock" />
           <span class="label"> Custos de propdução</span>
@@ -64,14 +80,15 @@
         <money-field name="total_third_party_cost" v-model="proposal.total_third_party_cost" />
       </div>
     </div>
+
     <div class="row">
-      <div class="col-9 d-flex justify-content-end">
+      <div class="col-3 d-flex justify-content-start">
         <p>
           <font-awesome-icon icon="fas fa-percent" />
           <span class="label"> Lucro: </span>
         </p>
       </div>
-      <div class="col-1 d-flex justify-content-center">
+      <div class="col-1 d-flex justify-content-end">
         <decimal-editable-field name="total_profit_percentage" v-model="proposal.total_profit_percentage"
           placeholder="percentual do lucro" @save="updateProposal('total_profit_percentage', $event)" />
         %
@@ -82,40 +99,42 @@
     </div>
 
     <div class="row">
-      <div class="col-9 d-flex justify-content-end">
+      <div class="col-4 d-flex justify-content-start">
         <p>
           <font-awesome-icon icon="fas fa-dollar-sign" />
           <span class="label"> Preço: </span>
         </p>
       </div>
-      <div class="col-2 text-end">
+      <div class="col-1 text-end">
         <money-field name="price" v-model="proposal.total_price" />
       </div>
     </div>
 
     <div class="row">
-      <div class="col-9 d-flex justify-content-end">
+      <div class="col-3 d-flex justify-content-start">
         <p>
           <font-awesome-icon icon="fas fa-credit-card" />
           <span class="label"> Parcelamento: </span>
         </p>
       </div>
       <div class="col-2 text-end">
-        {{ proposal.installment_quantity }}
+        <integer-editable-field v-model="proposal.installment_quantity" @save="updateProposal('installment_quantity', $event)"
+          placeholder="quantidade de parcelas" />
       </div>
     </div>
 
-    <div class="row pt-5 ">
-      <div class="col-5">
+    <div class="row pt-5 mb-5 ">
+      <div class="col-3">
         <p>
           <font-awesome-icon icon="fa fa-calendar-alt" />
           <span class="label"> Data de criação: </span>
         </p>
       </div>
-      <div class="col-1 text-end">
+      <div class="col-2 text-end">
         {{ formatDateBr(proposal.created_at) }}
       </div>
     </div>
+
     <div class="row pt-5">
       <p class="title">
         Itens da proposta
@@ -176,19 +195,22 @@
         </p>
       </div>
       <div class="col-2 d-flex justify-content-end">
-          <invoice-create-form v-if="proposal.status == 'accepted'" @new-invoice-event="addInvoiceCreated"
-            :proposal="proposal" />
-          <font-awesome-icon v-if="proposal.status != 'accepted'" icon="fa-solid fa-file-invoice" class="icon-fake" />
+        <invoice-create-form @new-invoice-event="addInvoiceCreated"
+          :proposal="proposal" />
       </div>
     </div>
-    
-    <div class="row service-item pt-1 pb-1" v-for="invoice in proposal.invoices" v-bind:key="invoice.id">
-      <div class="col-2">
-        {{ invoice.date_due }}
-      </div>
-      <div class="col-2">
-        <money-field name="price" v-model="invoice.price" />
-      </div>
+
+    <div class="row service-item pt-1 pb-1" v-for="invoice in proposal.invoices" :key="invoice.id">
+      <router-link :to="{ name: 'invoiceShow', params: { id: invoice.id } }" class="col-12">
+        <div class="row">
+          <div class="col-2">
+            {{ invoice.date_due }}
+          </div>
+          <div class="col-2">
+            <money-field name="price" v-model="invoice.price" />
+          </div>
+        </div>
+      </router-link>
     </div>
 
 
@@ -198,13 +220,13 @@
           excluir
         </button>
       </div>
-      <div class="col-8 d-flex justify-content-end">
+      <div class="col-6 d-flex justify-content-end">
         <div class="toggle-switch">
           <input type="checkbox" id="toggle" class="toggle-checkbox" v-model="isVisibleQuantity">
           <label for="toggle" class="toggle-label">quantidades</label>
         </div>
       </div>
-      <div class="col-2 d-flex justify-content-end">
+      <div class="col-4 d-flex justify-content-end">
         <button class="button" @click="exportPDF()">
           Gerar PDF
         </button>
@@ -220,6 +242,7 @@ import { destroy, show, updateField } from "@/utils/requests/httpUtils";
 import DecimalEditableField from "@/components/fields/number/DecimalEditableField";
 import MoneyField from '../../components/fields/number/MoneyField.vue';
 import HoursDecimalEditableField from '../../components/fields/number/HoursDecimalEditableField.vue';
+import IntegerEditableField from "@/components/fields/number/IntegerEditableField.vue";
 import InvoiceCreateForm from "../../components/forms/InvoiceCreateForm.vue";
 import OpportunitiesSelectEditableField from '../../components/fields/selects/OpportunitiesSelectEditableField.vue';
 import SelectStatusButton from '../../components/buttons/SelectStatusButton.vue';
@@ -227,7 +250,9 @@ import SelectStatusButton from '../../components/buttons/SelectStatusButton.vue'
 export default {
   data() {
     return {
-      proposal: [],
+      proposal: {
+        invoices: [],
+      },
       proposalId: "",
       isVisibleQuantity: false,
     };
@@ -235,6 +260,7 @@ export default {
   components: {
     DecimalEditableField,
     HoursDecimalEditableField,
+    IntegerEditableField,
     InvoiceCreateForm,
     MoneyField,
     OpportunitiesSelectEditableField,
@@ -244,6 +270,10 @@ export default {
     destroy,
     show,
     updateField,
+    addInvoiceCreated(newInvoices) {
+      console.log(newInvoices);
+      this.proposal.invoices.push(...newInvoices);
+    },
     async deleteProposal() {
       this.response = await destroy('proposals', this.proposalId);
       this.$router.push({
