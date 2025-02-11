@@ -59,15 +59,10 @@
     </div>
 
     <div class="row pt-5">
-      <div class="col-10">
+      <div class="col-12">
         <p class="title">
           Faturamento
         </p>
-      </div>
-      <div class="col-2 d-flex justify-content-end">
-          <invoice-create-form v-if="invoice.status == 'accepted'" @new-invoice-event="addInvoiceCreated"
-            :invoice="invoice" />
-          <font-awesome-icon v-if="invoice.status != 'accepted'" icon="fa-solid fa-file-invoice" class="icon-fake" />
       </div>
     </div>
     
@@ -111,7 +106,6 @@
 import { BACKEND_URL } from "@/config/apiConfig";
 import { destroy, show, updateField } from "@/utils/requests/httpUtils";
 import MoneyField from '../../components/fields/number/MoneyField.vue';
-import InvoiceCreateForm from "../../components/forms/InvoiceCreateForm.vue";
 
 export default {
   data() {
@@ -122,7 +116,6 @@ export default {
     };
   },
   components: {
-    InvoiceCreateForm,
     MoneyField,
   },
   methods: {

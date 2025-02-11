@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\InvoicesResource;
-use App\Http\Resources\OpportunityResource;
+use App\Http\Resources\OpportunitiesResource;
 use App\Http\Resources\ProposalServiceResource;
 use App\Http\Resources\ProposalCostResource;
 
@@ -47,7 +47,7 @@ class ProposalsResource extends JsonResource
             'invoices' => InvoicesResource::collection($this->whenLoaded('invoices')),
             'proposalServices' => ProposalServiceResource::collection($this->whenLoaded('proposalServices')),
             'proposalCosts' => ProposalCostResource::collection($this->whenLoaded('proposalCosts')),
-            'opportunity' => new OpportunityResource($this->whenLoaded('opportunity')),
+            'opportunity' => new OpportunitiesResource($this->whenLoaded('opportunity')),
         ];
     }
 }

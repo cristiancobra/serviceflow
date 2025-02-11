@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OpportunityRequest;
 use App\Models\Opportunity;
-use App\Http\Resources\OpportunityResource;
+use App\Http\Resources\OpportunitiesResource;
 
 class OpportunityController extends Controller
 {
@@ -26,14 +26,14 @@ class OpportunityController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(50);
 
-        return OpportunityResource::collection($opportunities);
+        return OpportunitiesResource::collection($opportunities);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return OpportunityResource
+     * @return OpportunitiesResource
      */
     public function store(OpportunityRequest $request)
     {
@@ -43,7 +43,7 @@ class OpportunityController extends Controller
 
             $opportunity->save();
 
-            return OpportunityResource::make($opportunity);
+            return OpportunitiesResource::make($opportunity);
         } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",
@@ -61,7 +61,7 @@ class OpportunityController extends Controller
     public function show(Opportunity $opportunity)
     {
 
-        return OpportunityResource::make(Opportunity::with([
+        return OpportunitiesResource::make(Opportunity::with([
             'tasks' => function ($query) {
                 $query->orderBy('date_start', 'desc');
             },
@@ -84,7 +84,7 @@ class OpportunityController extends Controller
             $opportunity->fill($request->validated());
             $opportunity->save();
 
-            return OpportunityResource::make($opportunity);
+            return OpportunitiesResource::make($opportunity);
         } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",

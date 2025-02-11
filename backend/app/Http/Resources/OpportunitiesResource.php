@@ -7,7 +7,7 @@ use App\Http\Resources\CompanyResource;
 use App\Http\Resources\LeadsResource;
 use App\Http\Resources\LinksResource;
 
-class OpportunityResource extends JsonResource
+class OpportunitiesResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

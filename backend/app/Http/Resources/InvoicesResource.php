@@ -2,6 +2,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\OpportunitiesResource;
 use App\Http\Resources\ProposalsResource;
 use App\Http\Resources\UsersResource;
 
@@ -23,6 +24,7 @@ class InvoicesResource extends JsonResource
             'price' => $this->price,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'opportunity' => new OpportunitiesResource($this->whenLoaded('opportunity')),
             'proposal' => new ProposalsResource($this->whenLoaded('proposal')),
             'user' => new UsersResource($this->whenLoaded('user')),
         ];
