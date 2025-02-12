@@ -1,53 +1,25 @@
 <template>
-  <div class="list-container mt-5">
-    <div class="row align-items-start pb-5">
-      <div class="col-1">
-        <font-awesome-icon icon="fa-solid fa-file-invoice" class="primary big-icon" />
+  <div class="page-container">
+    <div class="page-header">
+      <div class="title-container">
+        <font-awesome-icon icon="fa-solid fa-file-invoice" class="icon" />
+        <h1>FATURA</h1>
       </div>
-      <div class="col-9">
-        <h2 class="title">FATURA</h2>
-      </div>
-      <div class="col-2 d-flex justify-content-center">
-        
+      <div class="action-container">
+        {{ invoice.id }}
       </div>
     </div>
-    <div class="row mt-1 mb-3">
+
+    <div class="row mt-1 mb-5">
       <div class="col-6">
-        <p v-if="invoice.opportunity">
-        {{ invoice.opportunity.name }}
+        <p v-if="invoice.proposal && invoice.proposal.opportunity">
+          {{ invoice.proposal.opportunity.name }}
         </p>
       </div>
     </div>
-    <div class="row pb-5" v-if="invoice.opportunity">
-      {{ invoice.opportunity.name }}
-    </div>
 
-    <div class="row">
-      <div class="col-9 d-flex justify-content-end">
-        <p>
-          <font-awesome-icon icon="fas fa-dollar-sign" />
-          <span class="label"> Preço: </span>
-        </p>
-      </div>
-      <div class="col-2 text-end">
-        <money-field name="price" v-model="invoice.total_price" />
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-9 d-flex justify-content-end">
-        <p>
-          <font-awesome-icon icon="fas fa-credit-card" />
-          <span class="label"> Parcelamento: </span>
-        </p>
-      </div>
-      <div class="col-2 text-end">
-        {{ invoice.installment_quantity }}
-      </div>
-    </div>
-
-    <div class="row pt-5 ">
-      <div class="col-5">
+    <div class="row pt-0 ">
+      <div class="col-3 d-flex justify-content-start">
         <p>
           <font-awesome-icon icon="fa fa-calendar-alt" />
           <span class="label"> Data de criação: </span>
@@ -58,22 +30,51 @@
       </div>
     </div>
 
-    <div class="row pt-5">
+    <div class="row">
+      <div class="col-2 d-flex justify-content-start">
+        <font-awesome-icon icon="fas fa-credit-card" />
+        <span class="label"> Parcelamento: </span>
+      </div>
+      <div v-if="invoice && invoice.proposal" class="col-2 text-end">
+        {{ invoice.proposal.installment_quantity }}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-2 d-flex justify-content-start">
+        <p>
+          <font-awesome-icon icon="fas fa-dollar-sign" />
+          <span class="label"> Preço: </span>
+        </p>
+      </div>
+      <div class="col-2 text-end">
+        <money-field name="price" v-model="invoice.price" />
+      </div>
+    </div>
+
+    <div class="subtitle-container">
+      <font-awesome-icon icon="fas fa-coins" class="icon"  />
+      <h2>
+        Pagamentos recebidos
+      </h2>
+    </div>
+
+
+    <div v-if="!invoice.transactions" class="row pt-1 pb-1">
       <div class="col-12">
-        <p class="title">
-          Faturamento
+        <p>
+          Nenhum pagamento recebido
         </p>
       </div>
     </div>
-    
-    <div class="row service-item pt-1 pb-1" v-for="invoice in invoice.invoices" :key="invoice.id">
-      <router-link :to="{ name: 'invoiceShow', params: { id: invoice.id } }" class="col-12">
+    <div class="row service-item pt-1 pb-1" v-for="transaction in invoice.transactions" :key="transaction.id">
+      <router-link :to="{ name: 'transactionShow', params: { id: transaction.id } }" class="col-12">
         <div class="row">
           <div class="col-2">
-            {{ invoice.date_due }}
+            {{ transaction.date_due }}
           </div>
           <div class="col-2">
-            <money-field name="price" v-model="invoice.price" />
+            <money-field name="price" v-model="transaction.price" />
           </div>
         </div>
       </router-link>
@@ -86,13 +87,13 @@
           excluir
         </button>
       </div>
-      <div class="col-8 d-flex justify-content-end">
+      <div class="col-6 d-flex justify-content-end">
         <div class="toggle-switch">
           <input type="checkbox" id="toggle" class="toggle-checkbox" v-model="isVisibleQuantity">
           <label for="toggle" class="toggle-label">quantidades</label>
         </div>
       </div>
-      <div class="col-2 d-flex justify-content-end">
+      <div class="col-4 d-flex justify-content-end">
         <button class="button" @click="exportPDF()">
           Gerar PDF
         </button>
@@ -143,12 +144,12 @@ export default {
       return dateBr;
     },
     exportPDF() {
-      console.log(this.isVisibleQuantity);
       const url = `${BACKEND_URL}invoices/${this.invoice.id}/pdf?isVisibleQuantity=${this.isVisibleQuantity}`;
       window.open(url, '_blank');
     },
     async getInvoice() {
       this.invoice = await show('invoices', this.invoiceId);
+      console.log('getinoice', this.invoice);
     },
     setInvoiceId(invoiceId) {
       this.invoiceId = invoiceId;
@@ -157,7 +158,7 @@ export default {
       this.invoice = await updateField("invoices", this.invoiceId, fieldName, editedValue);
     },
   },
-  async mounted() {
+  mounted() {
     this.setInvoiceId(this.$route.params.id);
     this.getInvoice();
   },

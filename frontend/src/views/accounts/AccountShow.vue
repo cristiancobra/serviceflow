@@ -2,7 +2,7 @@
     <div class="">
         <AddMessage :messageStatus="messageStatus" :messageText="messageText"
             @update:messageStatus="messageStatus = $event" />
-        <div class="list-container d-flex">
+        <div class="page-container d-flex">
             <div class="col-8">
                 <div class="row me-5 w-50">
                     <div class="col">
@@ -63,6 +63,10 @@
                         </div>
                     </div>
                 </form>
+                <div class="row mt-4">
+                    <label for="primary_color">Primary Color</label>
+                    <input type="color" name="primary_color" id="primary_color" class="form-control" value="{{ old('primary_color', $account->primary_color) }}">
+                </div>
             </div>
         </div>
     </div>

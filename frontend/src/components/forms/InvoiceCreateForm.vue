@@ -280,9 +280,7 @@ export default {
     },
   },
   mounted() {
-    console.log('installmentStatus1:', this.installmentStatus);
     this.checkInvoices();
-    console.log('installmentStatus2:', this.installmentStatus);
   },
 };
 </script>

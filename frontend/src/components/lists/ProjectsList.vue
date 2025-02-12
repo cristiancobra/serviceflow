@@ -1,5 +1,5 @@
 <template>
-  <div class="list-container">
+  <div class="page-container">
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
     <div class="row align-items-start">

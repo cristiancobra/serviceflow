@@ -42,7 +42,7 @@
 
     <div class="content-below-header">
       <div class="info-container" v-show="currentSection === 'info'">
-        <div class="list-container d-flex pt-4">
+        <div class="page-container d-flex pt-4">
           <div class="col-6">
             <companies-select-editable-field label="Empresa" name="company_id" v-model="opportunity.company_id"
               @update:modelValue="updateOpportunity('company_id', $event)" />
@@ -70,7 +70,7 @@
             </div>
           </div>
         </div>
-        <div class="list-container pt-4">
+        <div class="page-container pt-4">
           <TextEditor label="Descrição" name="description" v-model="opportunity.description"
             @save="updateOpportunity('description', $event)" />
         </div>

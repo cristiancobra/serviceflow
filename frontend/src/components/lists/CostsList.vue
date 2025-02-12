@@ -1,5 +1,5 @@
 <template>
-  <div class="list-container mb-5 mt-0">
+  <div class="page-container mb-5 mt-0">
     <div class="row">
       <div class="col d-flex justify-content-left">
         <font-awesome-icon icon="fa-solid fa-tools" class="icon" />

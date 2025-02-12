@@ -1,5 +1,5 @@
 <template>
-    <div class="list-container">
+    <div class="page-container">
         <div class="row align-items-start">
             <div class="col-1">
                 <font-awesome-icon icon="fa-solid fa-tasks" class="icon" />

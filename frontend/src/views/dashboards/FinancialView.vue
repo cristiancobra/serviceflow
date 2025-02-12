@@ -1,5 +1,5 @@
 <template>
-  <div class="list-container">
+  <div class="page-container">
     <div class="row mt-3 mb-4">
       <div class="col-2">
           Propostas abertas:

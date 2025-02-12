@@ -1,13 +1,11 @@
 <template>
-  <div class="list-container mt-5">
-    <div class="row align-items-start pb-5">
-      <div class="col-1">
-        <font-awesome-icon icon="fa-solid fa-tools" class="primary big-icon" />
+  <div class="page-container">
+    <div class="page-header">
+      <div class="title-container">
+        <font-awesome-icon icon="fa-solid fa-tools" class="icon" />
+        <h1>PROPOSTA</h1>
       </div>
-      <div class="col-9">
-        <h2 class="title">PROPOSTA</h2>
-      </div>
-      <div class="col-2 d-flex justify-content-center">
+      <div class="action-container">
         <select-status-button :status="proposal.status" @update:modelValue="updateProposal('status', $event)" />
       </div>
     </div>
@@ -36,22 +34,51 @@
       </div>
     </div>
 
-    <div v-if="proposal.opportunity" class="row pt-5">
-      <p class="title">
+    <div class="subtitle-container">
+      <font-awesome-icon icon="fas fa-coins" class="icon" />
+      <h2>
         Descrição
-      </p>
-      <p class="row">
+      </h2>
+    </div>
+    <div v-if="proposal.opportunity" class="row">
+      <p>
         {{ proposal.opportunity.name }}
       </p>
     </div>
 
-
-    <div class="row pt-5">
-      <p class="title">
-        Custos e margem de lucro
-      </p>
+    <div class="subtitle-container">
+      <font-awesome-icon icon="fas fa-file-invoice" class="icon" />
+      <h2>
+        Itens da proposta
+      </h2>
+    </div>
+    <div class="row service-item pt-1 pb-1" v-for="proposalService in proposal.proposalServices"
+      v-bind:key="proposalService.id">
+      <div class="col-1 d-flex align-items-center justify-content-center">
+        <font-awesome-icon icon="fa-solid fa-coins" class="primary" />
+      </div>
+      <div class="col-6">
+        <p class="name ps-2">
+          {{ proposalService.name }}
+        </p>
+      </div>
+      <div class="col-1">
+        {{ proposalService.quantity }} x
+      </div>
+      <div class="col-2">
+        <money-field name="price" v-model="proposalService.price" />
+      </div>
+      <div class="col-2">
+        <money-field name="total_price" v-model="proposalService.total_price" />
+      </div>
     </div>
 
+    <div class="subtitle-container">
+      <font-awesome-icon icon="fas fa-dollar" class="icon" />
+      <h2>
+        Custos e margem de lucro
+      </h2>
+    </div>
     <div class="row">
       <div class="col-3 d-flex justify-content-start">
         <p>
@@ -118,8 +145,8 @@
         </p>
       </div>
       <div class="col-2 text-end">
-        <integer-editable-field v-model="proposal.installment_quantity" @save="updateProposal('installment_quantity', $event)"
-          placeholder="quantidade de parcelas" />
+        <integer-editable-field v-model="proposal.installment_quantity"
+          @save="updateProposal('installment_quantity', $event)" placeholder="quantidade de parcelas" />
       </div>
     </div>
 
@@ -132,33 +159,6 @@
       </div>
       <div class="col-2 text-end">
         {{ formatDateBr(proposal.created_at) }}
-      </div>
-    </div>
-
-    <div class="row pt-5">
-      <p class="title">
-        Itens da proposta
-      </p>
-    </div>
-
-    <div class="row service-item pt-1 pb-1" v-for="proposalService in proposal.proposalServices"
-      v-bind:key="proposalService.id">
-      <div class="col-1 d-flex align-items-center justify-content-center">
-        <font-awesome-icon icon="fa-solid fa-coins" class="primary" />
-      </div>
-      <div class="col-6">
-        <p class="name ps-2">
-          {{ proposalService.name }}
-        </p>
-      </div>
-      <div class="col-1">
-        {{ proposalService.quantity }} x
-      </div>
-      <div class="col-2">
-        <money-field name="price" v-model="proposalService.price" />
-      </div>
-      <div class="col-2">
-        <money-field name="total_price" v-model="proposalService.total_price" />
       </div>
     </div>
 
@@ -195,8 +195,7 @@
         </p>
       </div>
       <div class="col-2 d-flex justify-content-end">
-        <invoice-create-form @new-invoice-event="addInvoiceCreated"
-          :proposal="proposal" />
+        <invoice-create-form @new-invoice-event="addInvoiceCreated" :proposal="proposal" />
       </div>
     </div>
 

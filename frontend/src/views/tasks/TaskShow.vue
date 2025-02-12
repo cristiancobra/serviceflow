@@ -40,7 +40,7 @@
 
     <div class="content-below-header">
       <div class="info-container" v-show="currentSection === 'info'">
-        <div class="list-container d-flex pt-4">
+        <div class="page-container d-flex pt-4">
           <div class="col-6">
             <users-select-editable-field label="Responsável" name="user_id" v-model="task.user_id"
               @update:modelValue="updateTask('user_id', $event)" />
@@ -74,7 +74,7 @@
             </div>
           </div>
         </div>
-        <div class="list-container d-flex pt-4">
+        <div class="page-container d-flex pt-4">
           <TextEditor label="Descrição" name="description" v-model="task.description"
             @save="updateTask('description', $event)" />
         </div>
