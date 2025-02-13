@@ -16,11 +16,24 @@
   background-color:  var(--background-container-color);
 }
 
+.page-container .section-container {
+  margin-bottom: 7rem;
+  margin-top: 7rem;
+  /* flex: 2;
+  display: flex; */
+}
+
+.section-container .action-container {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+}
+
 .subtitle-container {
   flex: 12;
   display: flex;
   justify-content: start;
-  margin-top: 4rem;
+  margin-bottom: 1.5rem;
   color: var(--primary);
 }
 
@@ -54,6 +67,14 @@
   display: flex;
   justify-content: start;
   margin-top: 1rem;
+}
+
+.section-header {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
 }
 
 .title-container h1 {

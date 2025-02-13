@@ -62,6 +62,9 @@ export default {
 </script>
 
 <style scoped>
+label {
+  font-size: 1rem;
+}
 .main-container {
   display: flex;
   flex-direction: row;

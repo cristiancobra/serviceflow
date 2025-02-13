@@ -52,34 +52,39 @@
       </div>
     </div>
 
-    <div class="subtitle-container">
-      <font-awesome-icon icon="fas fa-coins" class="icon"  />
-      <h2>
-        Pagamentos recebidos
-      </h2>
-    </div>
+    <div class="section-container">
+      <div class="section-header">
+        <div class="subtitle-container">
+          <font-awesome-icon icon="fas fa-coins" class="icon" />
+          <h2>
+            Pagamentos recebidos
+          </h2>
+        </div>
+        <div class="action-container">
+          <transaction-create-form :invoice="invoice" @new-transaction-event="addTransactionCreated" />
+        </div>
+      </div>
 
-
-    <div v-if="!invoice.transactions" class="row pt-1 pb-1">
-      <div class="col-12">
-        <p>
-          Nenhum pagamento recebido
-        </p>
+      <div v-if="!invoice.transactions" class="row pt-1 pb-1">
+        <div class="col-12">
+          <p>
+            Nenhum pagamento recebido
+          </p>
+        </div>
+      </div>
+      <div class="row service-item pt-1 pb-1" v-for="transaction in invoice.transactions" :key="transaction.id">
+        <router-link :to="{ name: 'transactionShow', params: { id: transaction.id } }" class="col-12">
+          <div class="row">
+            <div class="col-2">
+              {{ transaction.date_due }}
+            </div>
+            <div class="col-2">
+              <money-field name="price" v-model="transaction.price" />
+            </div>
+          </div>
+        </router-link>
       </div>
     </div>
-    <div class="row service-item pt-1 pb-1" v-for="transaction in invoice.transactions" :key="transaction.id">
-      <router-link :to="{ name: 'transactionShow', params: { id: transaction.id } }" class="col-12">
-        <div class="row">
-          <div class="col-2">
-            {{ transaction.date_due }}
-          </div>
-          <div class="col-2">
-            <money-field name="price" v-model="transaction.price" />
-          </div>
-        </div>
-      </router-link>
-    </div>
-
 
     <div class="row mt-5 mb-5">
       <div class="col-2 d-flex justify-content-start">
@@ -107,6 +112,7 @@
 import { BACKEND_URL } from "@/config/apiConfig";
 import { destroy, show, updateField } from "@/utils/requests/httpUtils";
 import MoneyField from '../../components/fields/number/MoneyField.vue';
+import TransactionCreateForm from "../../components/forms/TransactionCreateForm.vue";
 
 export default {
   data() {
@@ -118,6 +124,7 @@ export default {
   },
   components: {
     MoneyField,
+    TransactionCreateForm,
   },
   methods: {
     destroy,

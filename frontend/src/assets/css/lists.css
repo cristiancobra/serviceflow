@@ -163,15 +163,37 @@
 
 .list-line {
   display: flex;
+  align-items: left;
   margin-top: 0px;
   padding: 0px;
   padding-top: 0px;
   padding-bottom: 0px;
-  background-color: white;
   text-align: left;
   margin-right: 0;
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-color: lightgray;
   border-radius: 0px 0 0 0px;
+}
+
+.list-line .checked-icon {
+  font-size: 1.8rem;
+  padding-top: 0.2rem;
+}
+
+.list-line .group-column {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  flex-direction: row;
+  padding: 1.8rem;
+  margin: 0rem;
+}
+
+
+.icons-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
 }

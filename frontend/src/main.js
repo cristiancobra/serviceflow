@@ -12,8 +12,8 @@ import './assets/css/projects.css';
 import './assets/css/proposals.css';
 import './assets/css/show.css';
 import "./assets/css/style.css"
-import "bootstrap/dist/css/bootstrap.min.css"
-import "bootstrap"
+// import "bootstrap/dist/css/bootstrap.min.css"
+// import "bootstrap"
 import store from './store';
 import VueMask from '@devindex/vue-mask'; // vue mask
 import VueDatePicker from '@vuepic/vue-datepicker';

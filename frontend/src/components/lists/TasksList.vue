@@ -1,77 +1,80 @@
 <template>
   <div class="page-container">
-    <div class="row">
-      <div class="col d-flex justify-content-left">
-        <font-awesome-icon icon="fa-solid fa-tasks" class="icon pe-3 primary" />
-        <h2 class="title">TAREFAS</h2>
+    <div class="page-header">
+      <div class="title-container">
+        <font-awesome-icon icon="fa-solid fa-tasks" class="icon" />
+        <h1>TAREFAS</h1>
       </div>
-    </div>
-    <div class="row mt-3 mb-4">
-      <div class="col-10">
-        <input type="text" class="form-control search-container" v-model="searchTerm"
-          placeholder="Digite para buscar" />
-      </div>
-      <div class="col-2 d-flex justify-content-end">
+      <div class="action-container">
         <TaskCreateForm @new-task-event="addTaskCreated" />
       </div>
     </div>
+
+    <div class="row mt-3 mb-4">
+      <div class="col">
+        <input type="text" class="form-control search-container" v-model="searchTerm"
+          placeholder="Digite para buscar" />
+      </div>
+    </div>
+
     <div v-for="(filteredTasks, date) in groupedTasks" :key="date">
       <p class="date-group" :class="getDeadlineClass(date)">
         {{ formatDateGroup(date) }}
       </p>
-    <div class="row list-line" :class="{ showTasks: true, 'd-none': isHidden }" v-for="task in filteredTasks"
-      v-bind:key="task.id">
-      <div class="col-1 d-flex justify-content-center">
-        <img v-if="userData.photo" :src="urlImagePhoto" :alt="userData.name" class="user-image" />
+      <div class="list-line" :class="{ showTasks: true, 'd-none': isHidden }" v-for="task in filteredTasks"
+        v-bind:key="task.id">
+        <div class="icons-container">
+          <img v-if="userData.photo" :src="urlImagePhoto" :alt="userData.name" class="user-image" />
           <font-awesome-icon v-else icon="fa-solid fa-user" class="primary pe-2" />
-        <font-awesome-icon icon="fas fa-check-circle" class="checked-icon"
-          :class="isValidDate(task.date_conclusion) ? 'done' : 'canceled'" />
-      </div>
-      <div class="d-flex justify-content-left" v-if="showGroupColumn" :class="groupColumnClass">
-        <router-link v-if="task.opportunity" :to="{ name: 'opportunityShow', params: { id: task.opportunity.id } }">
-          <div class="d-flex">
-            <font-awesome-icon icon="fa-solid fa-bullseye" :class="getColorClassForName(task.opportunity.name)" />
-            <p class="group-name" :class="getColorClassForName(task.opportunity.name)">
-              {{ trimName(task.opportunity.name) }}
-            </p>
-          </div>
-        </router-link>
-        <router-link v-else-if="task.project" :to="{ name: 'projectShow', params: { id: task.project.id } }">
-          <div class="d-flex">
-            <font-awesome-icon icon="fa-solid fa-folder-open" :class="getColorClassForName(task.project.name)" />
-            <p class="group-name" :style="{ color: getColorClassForName(task.project.name) }">
-              {{ trimName(task.project.name) }}
-            </p>
-          </div>
-        </router-link>
-        <div v-else class="d-flex">
+          <font-awesome-icon icon="fas fa-check-circle" class="checked-icon"
+            :class="isValidDate(task.date_conclusion) ? 'done' : 'canceled'" />
+        </div>
+        <div class="group-column" v-if="showGroupColumn">
+          <router-link v-if="task.opportunity" :to="{ name: 'opportunityShow', params: { id: task.opportunity.id } }">
+            <div class="d-flex">
+              <font-awesome-icon icon="fa-solid fa-bullseye" :class="getColorClassForName(task.opportunity.name)" />
+              <p class="group-name" :class="getColorClassForName(task.opportunity.name)">
+                {{ trimName(task.opportunity.name) }}
+              </p>
+            </div>
+          </router-link>
+          <router-link v-else-if="task.project" :to="{ name: 'projectShow', params: { id: task.project.id } }">
+            <div class="d-flex">
+              <font-awesome-icon icon="fa-solid fa-folder-open" :class="getColorClassForName(task.project.name)" />
+              <p class="group-name" :style="{ color: getColorClassForName(task.project.name) }">
+                {{ trimName(task.project.name) }}
+              </p>
+            </div>
+          </router-link>
+          <div v-else class="d-flex">
             <p class="m-0 p-0 ps-1 bold">
               ----
             </p>
           </div>
-      </div>
+        </div>
 
-      <div class="d-flex" :class="taskColumnClass">
-        <router-link :to="{ name: 'taskShow', params: { id: task.id } }"
-          class="d-inline-flex flex-wrap align-items-center black">
-          <p class="name">
-            {{ task.name }}
+        <div class="d-flex" :class="taskColumnClass">
+          <router-link :to="{ name: 'taskShow', params: { id: task.id } }"
+            class="d-inline-flex flex-wrap align-items-center black">
+            <p class="name">
+              {{ task.name }}
+            </p>
+          </router-link>
+        </div>
+        <div class="col-2 d-flex justify-content-end">
+          <DateTimeValue v-if="isValidDate(task.date_conclusion)" v-model="task.date_conclusion" classText="done"
+            classIcon='done' @save="updateTask('date_conclusion', $event, task.id)" />
+          <DateTimeEditableInput v-else v-model="task.date_due" :classText="getDeadlineClass(task.date_due)"
+            :classIcon="getDeadlineClass(task.date_due)" @save="updateTask('date_due', $event, task.id)" />
+        </div>
+        <div class="col-1 d-flex justify-content-center" v-if="showTaskDuration">
+          <p class="m-0 p-0 ps-1 bold">
+            {{ formatDuration(task.duration_time) }}
           </p>
-        </router-link>
-      </div>
-      <div class="col-2 d-flex justify-content-end">
-        <DateTimeValue v-if="isValidDate(task.date_conclusion)" v-model="task.date_conclusion" classText="done"
-          classIcon='done' @save="updateTask('date_conclusion', $event, task.id)" />
-        <DateTimeEditableInput v-else v-model="task.date_due" :classText="getDeadlineClass(task.date_due)"
-          :classIcon="getDeadlineClass(task.date_due)" @save="updateTask('date_due', $event, task.id)" />
-      </div>
-      <div class="col-1 d-flex justify-content-center" v-if="showTaskDuration">
-        <p class="m-0 p-0 ps-1 bold">
-          {{ formatDuration(task.duration_time) }}
-        </p>
+        </div>
       </div>
     </div>
-    </div>
+
   </div>
 </template>
 
@@ -323,12 +326,12 @@ export default {
     if (this.template === 'project') {
       this.showTaskDuration = true;
       this.taskColumnClass = "col-7",
-      this.getTasksFromProject();
+        this.getTasksFromProject();
     }
     if (this.template === 'opportunity') {
       this.showTaskDuration = true;
       this.taskColumnClass = "col-7",
-      this.getTasksFromOpportunity();
+        this.getTasksFromOpportunity();
     }
   },
 };
@@ -375,12 +378,12 @@ a {
 
 
 .user-image {
-    width: 30px;
-    height: 30px;
-    border-style: solid;
-    border-color: white;
-    border-width: 3px;
-    border-radius: 50%;
-    margin-right: 0px;
+  width: 30px;
+  height: 30px;
+  border-style: solid;
+  border-color: white;
+  border-width: 3px;
+  border-radius: 50%;
+  margin-right: 0px;
 }
 </style>

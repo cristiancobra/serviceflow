@@ -46,192 +46,205 @@
       </p>
     </div>
 
-    <div class="subtitle-container">
-      <font-awesome-icon icon="fas fa-file-invoice" class="icon" />
-      <h2>
-        Itens da proposta
-      </h2>
-    </div>
-    <div class="row service-item pt-1 pb-1" v-for="proposalService in proposal.proposalServices"
-      v-bind:key="proposalService.id">
-      <div class="col-1 d-flex align-items-center justify-content-center">
-        <font-awesome-icon icon="fa-solid fa-coins" class="primary" />
+    <div class="section-container">
+      <div class="subtitle-container">
+        <font-awesome-icon icon="fas fa-file-invoice" class="icon" />
+        <h2>
+          Itens da proposta
+        </h2>
       </div>
-      <div class="col-6">
-        <p class="name ps-2">
-          {{ proposalService.name }}
-        </p>
-      </div>
-      <div class="col-1">
-        {{ proposalService.quantity }} x
-      </div>
-      <div class="col-2">
-        <money-field name="price" v-model="proposalService.price" />
-      </div>
-      <div class="col-2">
-        <money-field name="total_price" v-model="proposalService.total_price" />
-      </div>
-    </div>
-
-    <div class="subtitle-container">
-      <font-awesome-icon icon="fas fa-dollar" class="icon" />
-      <h2>
-        Custos e margem de lucro
-      </h2>
-    </div>
-    <div class="row">
-      <div class="col-3 d-flex justify-content-start">
-        <p>
-          <font-awesome-icon icon="fa fa-clock" />
-          <span class="label"> Custo operacional</span>
-        </p>
-      </div>
-      <div class="col-1  d-flex justify-content-end">
-        <hours-decimal-editable-field name="total_hours" v-model="proposal.total_hours"
-          placeholder="quantidade total de horas" @save="updateProposal('total_hours', $event)" />
-        h
-      </div>
-      <div class="col-1 text-end">
-        <money-field name="total_operational_cost" v-model="proposal.total_operational_cost" />
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-3 d-flex justify-content-start">
-        <p>
-          <font-awesome-icon icon="fa fa-clock" />
-          <span class="label"> Custos de propdução</span>
-        </p>
-      </div>
-      <div class="col-2 text-end">
-        <money-field name="total_third_party_cost" v-model="proposal.total_third_party_cost" />
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-3 d-flex justify-content-start">
-        <p>
-          <font-awesome-icon icon="fas fa-percent" />
-          <span class="label"> Lucro: </span>
-        </p>
-      </div>
-      <div class="col-1 d-flex justify-content-end">
-        <decimal-editable-field name="total_profit_percentage" v-model="proposal.total_profit_percentage"
-          placeholder="percentual do lucro" @save="updateProposal('total_profit_percentage', $event)" />
-        %
-      </div>
-      <div class="col-1 text-end">
-        <money-field name="total_profit" v-model="proposal.total_profit" />
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-4 d-flex justify-content-start">
-        <p>
-          <font-awesome-icon icon="fas fa-dollar-sign" />
-          <span class="label"> Preço: </span>
-        </p>
-      </div>
-      <div class="col-1 text-end">
-        <money-field name="price" v-model="proposal.total_price" />
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-3 d-flex justify-content-start">
-        <p>
-          <font-awesome-icon icon="fas fa-credit-card" />
-          <span class="label"> Parcelamento: </span>
-        </p>
-      </div>
-      <div class="col-2 text-end">
-        <integer-editable-field v-model="proposal.installment_quantity"
-          @save="updateProposal('installment_quantity', $event)" placeholder="quantidade de parcelas" />
-      </div>
-    </div>
-
-    <div class="row pt-5 mb-5 ">
-      <div class="col-3">
-        <p>
-          <font-awesome-icon icon="fa fa-calendar-alt" />
-          <span class="label"> Data de criação: </span>
-        </p>
-      </div>
-      <div class="col-2 text-end">
-        {{ formatDateBr(proposal.created_at) }}
-      </div>
-    </div>
-
-    <div class="row pt-5">
-      <p class="title">
-        Custos de produção
-      </p>
-    </div>
-
-    <div class="row service-item pt-1 pb-1" v-for="proposalCost in proposal.proposalCosts" v-bind:key="proposalCost.id">
-      <div class="col-1 d-flex align-items-center justify-content-center">
-        <font-awesome-icon icon="fa-solid fa-coins" class="primary" />
-      </div>
-      <div class="col-6">
-        <p class="name ps-2">
-          {{ proposalCost.name }}
-        </p>
-      </div>
-      <div class="col-1">
-        {{ proposalCost.quantity }} x
-      </div>
-      <div class="col-2">
-        <money-field name="price" v-model="proposalCost.price" />
-      </div>
-      <div class="col-2">
-        <money-field name="total_price" v-model="proposalCost.total_price" />
-      </div>
-    </div>
-
-    <div class="row pt-5">
-      <div class="col-10">
-        <p class="title">
-          Faturamento
-        </p>
-      </div>
-      <div class="col-2 d-flex justify-content-end">
-        <invoice-create-form @new-invoice-event="addInvoiceCreated" :proposal="proposal" />
-      </div>
-    </div>
-
-    <div class="row service-item pt-1 pb-1" v-for="invoice in proposal.invoices" :key="invoice.id">
-      <router-link :to="{ name: 'invoiceShow', params: { id: invoice.id } }" class="col-12">
-        <div class="row">
-          <div class="col-2">
-            {{ invoice.date_due }}
-          </div>
-          <div class="col-2">
-            <money-field name="price" v-model="invoice.price" />
-          </div>
+      <div class="row service-item pt-1 pb-1" v-for="proposalService in proposal.proposalServices"
+        v-bind:key="proposalService.id">
+        <div class="col-1 d-flex align-items-center justify-content-center">
+          <font-awesome-icon icon="fa-solid fa-coins" class="primary" />
         </div>
-      </router-link>
-    </div>
-
-
-    <div class="row mt-5 mb-5">
-      <div class="col-2 d-flex justify-content-start">
-        <button class="button delete me-5" @click="deleteProposal()">
-          excluir
-        </button>
-      </div>
-      <div class="col-6 d-flex justify-content-end">
-        <div class="toggle-switch">
-          <input type="checkbox" id="toggle" class="toggle-checkbox" v-model="isVisibleQuantity">
-          <label for="toggle" class="toggle-label">quantidades</label>
+        <div class="col-6">
+          <p class="name ps-2">
+            {{ proposalService.name }}
+          </p>
+        </div>
+        <div class="col-1">
+          {{ proposalService.quantity }} x
+        </div>
+        <div class="col-2">
+          <money-field name="price" v-model="proposalService.price" />
+        </div>
+        <div class="col-2">
+          <money-field name="total_price" v-model="proposalService.total_price" />
         </div>
       </div>
-      <div class="col-4 d-flex justify-content-end">
-        <button class="button" @click="exportPDF()">
-          Gerar PDF
-        </button>
+    </div>
+
+    <div class="section-container">
+      <div class="section-header">
+        <div class="subtitle-container">
+          <font-awesome-icon icon="fas fa-dollar" class="icon" />
+          <h2>
+            Custos e margem de lucro
+          </h2>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-3 d-flex justify-content-start">
+          <p>
+            <font-awesome-icon icon="fa fa-clock" />
+            <span class="label"> Custo operacional</span>
+          </p>
+        </div>
+        <div class="col-1  d-flex justify-content-end">
+          <hours-decimal-editable-field name="total_hours" v-model="proposal.total_hours"
+            placeholder="quantidade total de horas" @save="updateProposal('total_hours', $event)" />
+          h
+        </div>
+        <div class="col-1 text-end">
+          <money-field name="total_operational_cost" v-model="proposal.total_operational_cost" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-3 d-flex justify-content-start">
+          <p>
+            <font-awesome-icon icon="fa fa-clock" />
+            <span class="label"> Custos de propdução</span>
+          </p>
+        </div>
+        <div class="col-2 text-end">
+          <money-field name="total_third_party_cost" v-model="proposal.total_third_party_cost" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-3 d-flex justify-content-start">
+          <p>
+            <font-awesome-icon icon="fas fa-percent" />
+            <span class="label"> Lucro: </span>
+          </p>
+        </div>
+        <div class="col-1 d-flex justify-content-end">
+          <decimal-editable-field name="total_profit_percentage" v-model="proposal.total_profit_percentage"
+            placeholder="percentual do lucro" @save="updateProposal('total_profit_percentage', $event)" />
+          %
+        </div>
+        <div class="col-1 text-end">
+          <money-field name="total_profit" v-model="proposal.total_profit" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-4 d-flex justify-content-start">
+          <p>
+            <font-awesome-icon icon="fas fa-dollar-sign" />
+            <span class="label"> Preço: </span>
+          </p>
+        </div>
+        <div class="col-1 text-end">
+          <money-field name="price" v-model="proposal.total_price" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-3 d-flex justify-content-start">
+          <p>
+            <font-awesome-icon icon="fas fa-credit-card" />
+            <span class="label"> Parcelamento: </span>
+          </p>
+        </div>
+        <div class="col-2 text-end">
+          <integer-editable-field v-model="proposal.installment_quantity"
+            @save="updateProposal('installment_quantity', $event)" placeholder="quantidade de parcelas" />
+        </div>
+      </div>
+
+
+      <div class="row pt-5 mb-5 ">
+        <div class="col-3">
+          <p>
+            <font-awesome-icon icon="fa fa-calendar-alt" />
+            <span class="label"> Data de criação: </span>
+          </p>
+        </div>
+        <div class="col-2 text-end">
+          {{ formatDateBr(proposal.created_at) }}
+        </div>
+      </div>
+
+      <div class="section-container">
+        <div class="subtitle-container">
+          <font-awesome-icon icon="fas fa-dollar" class="icon" />
+          <h2>
+            Custos de produção
+          </h2>
+        </div>
+        <div class="row service-item pt-1 pb-1" v-for="proposalCost in proposal.proposalCosts"
+          v-bind:key="proposalCost.id">
+          <div class="col-1 d-flex align-items-center justify-content-center">
+            <font-awesome-icon icon="fa-solid fa-coins" class="primary" />
+          </div>
+          <div class="col-6">
+            <p class="name ps-2">
+              {{ proposalCost.name }}
+            </p>
+          </div>
+          <div class="col-1">
+            {{ proposalCost.quantity }} x
+          </div>
+          <div class="col-2">
+            <money-field name="price" v-model="proposalCost.price" />
+          </div>
+          <div class="col-2">
+            <money-field name="total_price" v-model="proposalCost.total_price" />
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+
+      <div class="section-container">
+        <div class="section-header">
+        <div class="subtitle-container">
+          <font-awesome-icon icon="fas fa-dollar" class="icon" />
+          <h2>
+            Faturamento
+          </h2>
+        </div>
+        <div class="action-container">
+          <invoice-create-form @new-invoice-event="addInvoiceCreated" :proposal="proposal" />
+        </div>
+        </div>
+
+        <div class="row service-item pt-1 pb-1" v-for="invoice in proposal.invoices" :key="invoice.id">
+          <router-link :to="{ name: 'invoiceShow', params: { id: invoice.id } }" class="col-12">
+            <div class="row">
+              <div class="col-2">
+                {{ invoice.date_due }}
+              </div>
+              <div class="col-2">
+                <money-field name="price" v-model="invoice.price" />
+              </div>
+            </div>
+          </router-link>
+        </div>
+      </div>
+
+      <div class="row mt-5 mb-5">
+        <div class="col-2 d-flex justify-content-start">
+          <button class="button delete me-5" @click="deleteProposal()">
+            excluir
+          </button>
+        </div>
+        <div class="col-6 d-flex justify-content-end">
+          <div class="toggle-switch">
+            <input type="checkbox" id="toggle" class="toggle-checkbox" v-model="isVisibleQuantity">
+            <label for="toggle" class="toggle-label">quantidades</label>
+          </div>
+        </div>
+        <div class="col-4 d-flex justify-content-end">
+          <button class="button" @click="exportPDF()">
+            Gerar PDF
+          </button>
+        </div>
+      </div>
+    </div>
 </template>
 
 

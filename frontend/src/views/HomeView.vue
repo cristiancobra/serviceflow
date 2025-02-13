@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="mt-4">
+    <div class="row mt-5">
       <p class="text-end">
         Bem vindo, hoje é
         <span style="font-weight: bolder">
@@ -8,6 +8,7 @@
         </span>
       </p>
     </div>
+
     <div class="row mt-2 mb-4 me-5 ms-3">
       <div class="col-2">
         <div class="small-container">
@@ -20,7 +21,9 @@
         </div>
       </div>
     </div>
+
     <TasksList template="home" />
+    
   </div>
 </template>
 

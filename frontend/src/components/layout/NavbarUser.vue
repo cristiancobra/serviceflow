@@ -1,15 +1,15 @@
 <template>
-  <div class="sticky-top">
-    <nav class="navbar navbar-expand-lg ">
+  <div class="navbar-container">
+    <nav class="navbar">
       <a class="navbar-brand" href="#">
         <img :src="require('@/assets/logo-serviceflow-BRANCO.png')" class="logo" alt="logo-serviceflow" />
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" :class="{ open: isNavbarOpen }" @click="toggleNavbar"> <!-- Adiciona a classe condicional 'open' -->
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
+
+      <div :class="['navbar-collapse', { 'show': isNavbarOpen }]">
+        <ul class="navbar-nav">
           <router-link to="/">
             <li class="nav-item" @mouseover="toggleActive('home')" :class="{ active: activeItem === 'home' }">
               <font-awesome-icon icon="fas fa-calendar" />
@@ -40,19 +40,21 @@
           </router-link>
 
 
-          <li class="nav-item" @mouseover="showSubmenu = true" @mouseleave="showSubmenu = false"
+          <li class="nav-item" @mouseover="showSubmenu('financeiro')" @mouseleave="hideSubmenu('financeiro')"
             :class="{ active: activeItem === 'financeiro' }">
             <font-awesome-icon icon="fas fa-cogs" />
             <span class="router-link-text">FINANCEIRO</span>
-            <ul class="submenu" v-show="showSubmenu">
+            <ul class="submenu" v-show="submenus.financeiro">
               <router-link to="/financial">
-                <li class="nav-item" @mouseover="toggleActive('financial-report')" :class="{ active: activeItem === 'financial-report' }">
+                <li class="nav-item" @mouseover="toggleActive('financial-report')"
+                  :class="{ active: activeItem === 'financial-report' }">
                   <font-awesome-icon icon="fas fa-chart-line" />
                   <span class="router-link-text">RELATÓRIOS</span>
                 </li>
               </router-link>
               <router-link to="/proposals">
-                <li class="nav-item" @mouseover="toggleActive('proposals')" :class="{ active: activeItem === 'proposals' }">
+                <li class="nav-item" @mouseover="toggleActive('proposals')"
+                  :class="{ active: activeItem === 'proposals' }">
                   <font-awesome-icon icon="fas fa-file-invoice-dollar" />
                   <span class="router-link-text">PROPOSTAS</span>
                 </li>
@@ -87,11 +89,11 @@
             </li>
           </router-link>
 
-          <li class="nav-item" @mouseover="showSubmenu = true" @mouseleave="showSubmenu = false"
+          <li class="nav-item" @mouseover="showSubmenu('configuracoes')" @mouseleave="hideSubmenu('configuracoes')"
             :class="{ active: activeItem === 'configuracoes' }">
             <font-awesome-icon icon="fas fa-cogs" />
             <span class="router-link-text">CONFIGURAÇÕES</span>
-            <ul class="submenu" v-show="showSubmenu">
+            <ul class="submenu" v-show="submenus.configuracoes">
               <router-link :to="`/accounts/${accountId}`">
                 <li class="nav-item" @mouseover="toggleActive('account')" :class="{ active: activeItem === 'account' }">
                   <font-awesome-icon icon="fas fa-user" />
@@ -130,7 +132,11 @@ export default {
   data() {
     return {
       activeItem: null,
-      showSubmenu: false,
+      isNavbarOpen: false,
+      submenus: {
+        configuracoes: false,
+        financeiro: false,
+      },
     };
   },
   components: {
@@ -145,6 +151,15 @@ export default {
     toggleActive(item) {
       this.activeItem = item;
     },
+    toggleNavbar() {
+      this.isNavbarOpen = !this.isNavbarOpen;
+    },
+    showSubmenu(submenu) {
+      this.submenus[submenu] = true;
+    },
+    hideSubmenu(submenu) {
+      this.submenus[submenu] = false;
+    },
   },
   computed: {
     ...mapState([
@@ -158,154 +173,189 @@ export default {
 };
 </script>
 
-<style>
-.alert {
-  color: red !important;
-  background-color: #fff3cd;
-  border-color: #ffeeba;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid transparent;
-  border-radius: 4px;
-}
-
-
-nav {
-  padding: 1rem;
-}
-
-nav a {
-  font-weight: bold;
+<style scoped>
+.navbar-container {
+  position: sticky;
+  top: 0;
   color: white;
-  text-decoration: none;
+  background-color: var(--primary);
+  z-index: 1000;
 }
 
 .navbar {
-  background-color: var(--primary);
-  /* background-image: linear-gradient(to bottom, var(--primary), rgba(255, 255, 255, 0.4)); */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 5rem;
+  padding-right: 5rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
-.nav-item {
-  border-width: 2px;
-  border-style: none;
-  border-radius: 16px 16px 16px 16px;
-  padding: 4px 15px 4px 15px;
-  margin: 0 4px 0 4px;
-  font-weight: 200;
-  font-size: 0.9rem;
-  color: white;
-  list-style-type: none;
-
+.navbar-brand .logo {
+  height: 30px;
 }
 
-.nav-item a {
+.navbar-toggler {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: none;
+}
+
+.navbar-toggler-icon {
+  width: 60px;
+  height: 6px;
+  background-color: #fff;
+  display: block;
+  position: relative;
+  transition: transform 0.3s ease; 
+}
+
+.navbar-toggler-icon::before,
+.navbar-toggler-icon::after {
+  content: '';
+  width: 60px;
+  height: 6px;
+  background-color: #fff;
+  display: block;
+  position: absolute;
+  left: 0;
+  transition: transform 0.3s ease; 
+}
+
+.navbar-toggler-icon::before {
+  top: -18px;
+}
+
+.navbar-toggler-icon::after {
+  top: 20px;
+}
+/* botao fechar */
+.navbar-toggler.open .navbar-toggler-icon {
+  transform: rotate(45deg); /* Rotaciona o ícone principal */
+}
+
+.navbar-toggler.open .navbar-toggler-icon::before {
+  transform: rotate(90deg) translateX(-18px); /* Rotaciona e desloca a linha superior */
+}
+
+.navbar-toggler.open .navbar-toggler-icon::after {
+  transform: rotate(90deg) translateX(20px); /* Rotaciona e desloca a linha inferior */
+}
+
+.navbar-collapse {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.navbar-collapse.show {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.navbar-nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+}
+
+.navbar-nav a {
   text-decoration: none;
   color: white;
 }
 
-.nav-item:hover {
-  /* color: var(--purple); */
+.navbar-nav a:hover {
+  text-decoration: none;
 }
 
-.nav-item:hover a {}
-
-.nav-item.active:hover {
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 16px 16px 16px 16px;
-  border-color: white;
-  padding: 4px 15px 4px 15px;
-  margin: 0 4px 0 4px;
-}
-
-.navbar-user-menu-container {
+.nav-item {
   position: relative;
+  display: flex;
+  margin: 0.5rem 0;
+  color: white;
+  text-decoration: none;
+  padding: 0.7rem;
 }
 
-.off {
-  font-size: 1.0rem;
-  z-index: 1;
-  color: var(--purple);
-}
-
-.logo {
-  margin-left: 2rem;
-  width: 146px;
-  height: 30px;
+.nav-item.active {
+  border-color: white;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 30px;
 }
 
 .router-link-text {
-  padding-left: 5px;
-}
-
-.nav-item .router-link-text {
-  /* display: none; */
-  color: white;
-  transition: display 0.3s ease;
-}
-
-.nav-item:hover .router-link-text {
-  display: inline;
-}
-
-nav a.router-link-exact-active {
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 16px 16px 16px 16px;
-  border-color: white;
-}
-
-nav a.router-link-exact-active:hover {
-  border-style: none;
+  color: #fff;
+  text-decoration: none;
+  margin-left: 0.5rem;
 }
 
 .submenu {
   display: none;
   position: absolute;
+  top: 100%;
+  left: 0;
   background-color: var(--primary);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  z-index: 1000;
+  width: 200px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .nav-item:hover .submenu {
   display: block;
 }
 
-.play-container {
-  position: absolute;
-  top: 32px; /* Ajuste este valor conforme necessário */
-  left: 42%;
-  width: 22px;
-  height: 22px; /* Adicione altura para centralizar verticalmente */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  pointer-events: none; 
-  background-color: white;
+.submenu .nav-item {
+  margin: 0;
+  padding: 0.5rem 1rem;
+  white-space: nowrap;
 }
 
-.play {
-  font-size: 0.9rem;
-  padding-left: 0.1rem;
-  z-index: 1;
-  animation: colorChange 2s infinite;
+.submenu .nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
-@keyframes colorChange {
-  0% {
-    color: var(--green);
+/* tela celular */
+@media screen and (max-width: 768px) {
+  .navbar {
+    padding-left: 4rem;
+    padding-right: 4rem;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
   }
-  50% {
-    color: var(--green-light);
-  }
-  100% {
-    color: var(--green);
-  }
-}
 
-.task-doing {
-  padding: 0.4rem 2rem;
-  text-align: right;
-  font-size: 0.8rem;
-  font-weight: 800;
+  .navbar-toggler {
+    display: block;
+    /* Mostra o toggler em telas pequenas */
+  }
+
+  .navbar-collapse {
+    display: none;
+    /* Esconde a navbar em telas pequenas */
+  }
+
+  .navbar-collapse.show {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .navbar-nav {
+    flex-direction: column;
+
+  }
+
+  .navbar-brand .logo {
+    height: 70px;
+    /* Ajusta o tamanho do logo em telas pequenas */
+  }
 }
 </style>
