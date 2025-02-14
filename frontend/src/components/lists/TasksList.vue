@@ -297,6 +297,7 @@ export default {
     //   }
     // },
     groupedTasks() {
+      console.log('tasks', this.tasks);
       if (this.tasks) {
         return this.tasks.reduce((groups, task) => {
           if (task.date_due) {
@@ -309,8 +310,16 @@ export default {
           return groups;
         }, {});
       } else {
-        return {}; // Retorna um objeto vazio se this.tasks estiver vazio
+        return {};
       }
+    },
+  },
+  watch: {
+    opportunity: {
+      handler(newVal) {
+        this.tasks = newVal.tasks;
+      },
+      deep: true,
     },
   },
   mounted() {
