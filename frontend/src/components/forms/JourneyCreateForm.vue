@@ -5,7 +5,7 @@
 
     <div class="row errorBox" v-bind:class="{ 'd-none': datesError }"></div>
     <form @submit.prevent="submitForm">
-      <div class="form" v-bind:class="{ 'd-none': isActive }">
+      <div class="form" v-bind:class="{ 'd-none': !isActive }">
         <div class="row mt-0">
           <div class="col">
             <label for="start">Início</label>
@@ -77,7 +77,7 @@ export default {
       quickForm: {
         task_id: this.$route.params.id,
       },
-      isActive: true,
+      isActive: false,
       datesError: false,
       enableTime: true,
       newJourney: null,

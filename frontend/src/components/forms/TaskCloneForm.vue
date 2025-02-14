@@ -1,12 +1,13 @@
 <template>
   <div class=" pe-3">
-    <button type="button" class="button button-new d-flex justify-content-center" @click="cloneForm"
+    <button type="button" class="button button-new d-flex justify-content-center" @click="openModal"
       data-bs-toggle="modal" data-bs-target="#taskModal">
-      <font-awesome-icon icon="fa-solid fa-copy" class="pe-2" />
+      <font-awesome-icon icon="fa-solid fa-copy" class="" />
       clonar
     </button>
 
-    <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    
+    <div v-if="isModalVisible" class="myModal">
       <div class="modal-dialog modal-xl">
         <div class="modal-content">
           <div class="modal-header">
@@ -67,11 +68,11 @@
                 <div class="col-md-6">
                   <DateInput v-model="form.date_due" label="Prazo final" name="date_due" placeholder="prazo final"
                     @update="updateForm" />
-                </div>                UPDATE task SET date_due = NULL WHERE id = 283;
+                </div>
               </div>
 
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-secondary" @click=closeModal>Fechar</button>
                 <button type="submit" class="button-new" data-bs-dismiss="modal">clonar</button>
               </div>
             </form>
@@ -138,6 +139,7 @@ export default {
       },
       isActiveCompany: false,
       isActiveLead: false,
+      isModalVisible: false,
       leads: [],
       message: null,
       messageStatus: "",
@@ -188,14 +190,13 @@ export default {
       this.form.project_id = this.task.project_id;
       this.form.status = this.task.status;
     },
-    // getTasksStatus() {
-    //   axios
-    //     .get(`${BACKEND_URL}${TASK_STATUS_URL}`)
-    //     .then((response) => {
-    //       this.allStatus = response.data;
-    //     })
-    //     .catch((error) => console.log(error));
-    // },
+    closeModal() {
+      this.isModalVisible = false;
+    },
+    openModal() {
+      this.isModalVisible = true;
+      this.cloneForm();
+    },
     async submitForm() {
       this.newTask = await this.submitFormCreate('tasks', this.form);
       this.$router.push({ name: 'taskShow', params: { id: this.newTask.id } });

@@ -1,17 +1,15 @@
 <template>
     <div>
-        <button type="button" class="button button-new d-flex justify-content-center" @click="showModal"
-            data-bs-toggle="modal" data-bs-target="#taskModal">
+        <button type="button" class="button button-new" @click="openModal">
             <font-awesome-icon icon="fa-solid fa-plus" class="" />
         </button>
 
-        <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+        <div v-if="isModalVisible" class="myModal">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="taskModalLabel">Nova proposta</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" @click="closeModal"
-                            aria-label="Close"></button>
+                        <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form @submit.prevent="submitForm">
@@ -154,7 +152,8 @@ export default {
                 validity_days: 30,
                 installment_quantity: 1,
             },
-            modal: true,
+            isModalVisible: false,
+            modal: false,
             services: [],
             selectedServices: [],
         };
@@ -163,16 +162,16 @@ export default {
         index,
         submitFormCreate,
         closeModal() {
-            this.modal = false;
+            this.isModalVisible = false;
+        },
+        openModal() {
+            this.isModalVisible = true;
         },
         async getCosts() {
             this.costs = await this.index("costs");
         },
         async getServices() {
             this.services = await this.index("services");
-        },
-        showModal() {
-            this.modal = true;
         },
         async submitForm() {
             this.form.services = this.services

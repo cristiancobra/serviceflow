@@ -7,6 +7,7 @@ import router from './router'
 import './assets/css/cards.css';
 import './assets/css/forms.css';
 import './assets/css/lists.css';
+import './assets/css/login.css';
 import './assets/css/modal.css';
 import './assets/css/projects.css';
 import './assets/css/proposals.css';

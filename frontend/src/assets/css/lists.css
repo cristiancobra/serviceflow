@@ -177,23 +177,70 @@
 }
 
 .list-line .checked-icon {
-  font-size: 1.8rem;
-  padding-top: 0.2rem;
+  font-size: 1.4rem;
 }
 
 .list-line .group-column {
   display: flex;
   align-items: center;
-  justify-content: left;
+  justify-content: flex-start;
   flex-direction: row;
-  padding: 1.8rem;
+  flex: 4;
   margin: 0rem;
 }
 
-
-.icons-container {
+.list-line .icons-column {
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: center;
   margin-right: 1rem;
+}
+
+.list-line .date-column {
+  display: flex;
+  flex: 2;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+}
+
+.list-line .description-column {
+  display: flex;
+  flex: 6;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: row;
+  margin: 0rem;
+}
+
+.list-line .money-column {
+  flex: 2;
+  text-align: right;
+}
+
+.list-line .task-column {
+  display: flex;
+  flex: 6;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: row;
+  margin: 0rem;
+}
+
+.list-line .user-image {
+  width: 26px;
+  height: 26px;
+  border-style: solid;
+  border-color: white;
+  border-width: 3px;
+  border-radius: 50%;
+  margin-right: 0px;
+}
+
+.list-line-link {
+  display: flex;
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
 }

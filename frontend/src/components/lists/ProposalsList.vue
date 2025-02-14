@@ -1,59 +1,53 @@
 <template>
     <div class="page-container">
-        <div class="row">
-            <div class="col d-flex justify-content-left">
-                <font-awesome-icon icon="fa-solid fa-file-invoice" class="icon pe-3 primary" />
-                <h2 class="title">PROPOSTAS</h2>
+        <div class="page-header">
+            <div class="title-container">
+                <font-awesome-icon icon="fa-solid fa-file-invoice" class="icon" />
+                <h1>PROPOSTAS</h1>
             </div>
-        </div>
-        <div class="row mt-3 mb-4">
-            <div class="col-10">
-                <input type="text" class="form-control search-container" v-model="searchTerm"
-                    placeholder="Digite para buscar" />
-            </div>
-            <div class="col-2 d-flex justify-content-end">
+            <div class="action-container">
                 <ProposalCreateForm @new-proposal-event="addProposalCreated" :opportunityId="opportunityId" />
             </div>
         </div>
-        <div v-for="proposal in proposals" v-bind:key="proposal.id">
-            <div class="row proposal-item pt-1 pb-1">
-                <div class="col-2 d-flex align-items-start justify-content-center" id="col-user">
-                    <select-status-button :status="proposal.status"
-                        @update:modelValue="updateProposal('status', proposal.id, $event)" />
-                </div>
-                <div class="col-10">
-                    <router-link :to="{ name: 'proposalShow', params: { id: proposal.id } }">
-                        <div class="row">
-                            <div class="col-2">
-                                {{ formatDateBr(proposal.date) }}
-                            </div>
-                            <div class="col-4">
-                                <p class="name" v-if="!proposal.opportunity">
-                                    sem oportunidade associada
-                                </p>
-                                <p class="group-name" v-else-if="proposal.opportunity?.company?.business_name">
-                                    {{ proposal.opportunity.company.business_name }}
-                                </p>
-                                <p class="group-name" v-else-if="proposal.opportunity?.company?.legal_name">
-                                    {{ proposal.opportunity.company.legal_name }}
-                                </p>
-                                <p class="group-name" v-else-if="proposal.opportunity?.lead?.name">
-                                    {{ proposal.opportunity.lead.name }}
-                                </p>
-                                <p class="name" v-else>
-                                    sem associação
-                                </p>
-                            </div>
-                            <div class="col-5 ">
-                                <p v-html="getShortDescription(proposal)" class="name ps-2"></p>
-                            </div>
-                            <div class="col-1 text-end">
-                                <money-field name="total_price" v-model="proposal.total_price" />
-                            </div>
-                        </div>
-                    </router-link>
-                </div>
+
+        <div class="row mt-3 mb-4">
+            <input type="text" class="form-control search-container" v-model="searchTerm"
+                placeholder="Digite para buscar" />
+        </div>
+
+        <div v-for="proposal in proposals" v-bind:key="proposal.id" class="list-line">
+            <div class="icons-column" id="col-user">
+                <select-status-button :status="proposal.status"
+                    @update:modelValue="updateProposal('status', proposal.id, $event)" />
             </div>
+            <router-link class="list-line-link" :to="{ name: 'proposalShow', params: { id: proposal.id } }">
+                <div class="date-column">
+                    {{ formatDateBr(proposal.date) }}
+                </div>
+                <div class="task-column">
+                    <p class="name" v-if="!proposal.opportunity">
+                        sem oportunidade associada
+                    </p>
+                    <p class="group-name" v-else-if="proposal.opportunity?.company?.business_name">
+                        {{ proposal.opportunity.company.business_name }}
+                    </p>
+                    <p class="group-name" v-else-if="proposal.opportunity?.company?.legal_name">
+                        {{ proposal.opportunity.company.legal_name }}
+                    </p>
+                    <p class="group-name" v-else-if="proposal.opportunity?.lead?.name">
+                        {{ proposal.opportunity.lead.name }}
+                    </p>
+                    <p class="name" v-else>
+                        sem associação
+                    </p>
+                </div>
+                <div class="description-column">
+                    <p v-html="getShortDescription(proposal)" class="name ps-2"></p>
+                </div>
+                <div class="money-column">
+                    <money-field name="total_price" v-model="proposal.total_price" />
+                </div>
+            </router-link>
         </div>
     </div>
 </template>

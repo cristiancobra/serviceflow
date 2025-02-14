@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button type="button" class="button button-new d-flex justify-content-center" @click=openModal>
+    <button type="button" class="button button-new d-flex justify-content-center" @click="openModal">
       <font-awesome-icon icon="fa-solid fa-plus" class="" />
     </button>
 
@@ -63,8 +63,8 @@
                 </div>
 
                 <div class="col-md-6">
-                  <DateInput v-model="form.date_conclusion" label="Data de conclusão" name="date_conclusion"
-                    placeholder="data quando a tarefa foi finalizada" @update="updateForm" />
+                  <DateInput v-model="form.date_due" label="Prazo final" name="date_due" placeholder="prazo final"
+                    @update="updateForm" />
                 </div>
               </div>
 
@@ -117,7 +117,6 @@ export default {
       form: {
         company_id: null,
         contact_id: null,
-        date_conclusion: null,
         date_due: null,
         date_start: null,
         description: null,
@@ -171,6 +170,7 @@ export default {
     },
     async submitForm() {
       const { data, error } = await this.submitFormCreate("tasks", this.form);
+      console.log('form', this.form);
 
       if (data) {
         this.messageStatus = "success";

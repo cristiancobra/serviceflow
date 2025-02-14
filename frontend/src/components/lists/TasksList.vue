@@ -17,61 +17,60 @@
       </div>
     </div>
 
-    <div v-for="(filteredTasks, date) in groupedTasks" :key="date">
+    <div v-for="(tasks, date) in groupedTasks" :key="date">
       <p class="date-group" :class="getDeadlineClass(date)">
         {{ formatDateGroup(date) }}
       </p>
-      <div class="list-line" :class="{ showTasks: true, 'd-none': isHidden }" v-for="task in filteredTasks"
+      <div class="list-line" :class="{ showTasks: true, 'd-none': isHidden }" v-for="task in tasks"
         v-bind:key="task.id">
-        <div class="icons-container">
+        <div class="icons-column">
           <img v-if="userData.photo" :src="urlImagePhoto" :alt="userData.name" class="user-image" />
           <font-awesome-icon v-else icon="fa-solid fa-user" class="primary pe-2" />
           <font-awesome-icon icon="fas fa-check-circle" class="checked-icon"
             :class="isValidDate(task.date_conclusion) ? 'done' : 'canceled'" />
         </div>
         <div class="group-column" v-if="showGroupColumn">
-          <router-link v-if="task.opportunity" :to="{ name: 'opportunityShow', params: { id: task.opportunity.id } }">
-            <div class="d-flex">
+          <router-link style="display: flex;" v-if="task.opportunity"
+            :to="{ name: 'opportunityShow', params: { id: task.opportunity.id } }">
+            <p class="group-name" :class="getColorClassForName(task.opportunity.name)">
               <font-awesome-icon icon="fa-solid fa-bullseye" :class="getColorClassForName(task.opportunity.name)" />
-              <p class="group-name" :class="getColorClassForName(task.opportunity.name)">
-                {{ trimName(task.opportunity.name) }}
-              </p>
-            </div>
+              {{ trimName(task.opportunity.name) }}
+            </p>
           </router-link>
-          <router-link v-else-if="task.project" :to="{ name: 'projectShow', params: { id: task.project.id } }">
-            <div class="d-flex">
-              <font-awesome-icon icon="fa-solid fa-folder-open" :class="getColorClassForName(task.project.name)" />
-              <p class="group-name" :style="{ color: getColorClassForName(task.project.name) }">
-                {{ trimName(task.project.name) }}
-              </p>
-            </div>
+          <router-link style="display: flex;" v-else-if="task.project"
+            :to="{ name: 'projectShow', params: { id: task.project.id } }">
+            <font-awesome-icon icon="fa-solid fa-folder-open" :class="getColorClassForName(task.project.name)" />
+            <p class="group-name" :style="{ color: getColorClassForName(task.project.name) }">
+              {{ trimName(task.project.name) }}
+            </p>
           </router-link>
-          <div v-else class="d-flex">
-            <p class="m-0 p-0 ps-1 bold">
+          <div v-else class="">
+            <p>
               ----
             </p>
           </div>
         </div>
 
-        <div class="d-flex" :class="taskColumnClass">
-          <router-link :to="{ name: 'taskShow', params: { id: task.id } }"
-            class="d-inline-flex flex-wrap align-items-center black">
+        <div class="task-column">
+          <router-link :to="{ name: 'taskShow', params: { id: task.id } }" class="">
             <p class="name">
               {{ task.name }}
             </p>
           </router-link>
         </div>
-        <div class="col-2 d-flex justify-content-end">
+
+        <div class="date-column">
           <DateTimeValue v-if="isValidDate(task.date_conclusion)" v-model="task.date_conclusion" classText="done"
             classIcon='done' @save="updateTask('date_conclusion', $event, task.id)" />
           <DateTimeEditableInput v-else v-model="task.date_due" :classText="getDeadlineClass(task.date_due)"
             :classIcon="getDeadlineClass(task.date_due)" @save="updateTask('date_due', $event, task.id)" />
+          <div class="" v-if="showTaskDuration">
+            <p class="">
+              {{ formatDuration(task.duration_time) }}
+            </p>
+          </div>
         </div>
-        <div class="col-1 d-flex justify-content-center" v-if="showTaskDuration">
-          <p class="m-0 p-0 ps-1 bold">
-            {{ formatDuration(task.duration_time) }}
-          </p>
-        </div>
+
       </div>
     </div>
 
@@ -82,7 +81,7 @@
 import axios from "axios";
 import { convertUtcToLocal, formatDuration } from "@/utils/date/dateUtils";
 import { getColorClassForName, getStatusColor, getPriorityClass, getDeadlineClass, getStatusIcon } from "@/utils/card/cardUtils";
-import { BACKEND_URL, IMAGES_PATH, TASK_URL_PARAMETER, TASK_BY_PROJECT_URL, TASK_BY_OPPORTUNITY_URL, TASK_PRIORIZED_URL } from "@/config/apiConfig";
+import { BACKEND_URL, IMAGES_PATH, TASK_URL_PARAMETER, TASK_PRIORIZED_URL } from "@/config/apiConfig";
 import { index } from "@/utils/requests/httpUtils";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
@@ -92,8 +91,8 @@ import { mapState } from "vuex";
 export default {
   name: "TasksList",
   props: {
-    opportunityId: {
-      type: Number,
+    opportunity: {
+      type: Object,
       required: false,
     },
     projectId: {
@@ -110,8 +109,6 @@ export default {
       formatedDate: '',
       formatedTime: '',
       isActive: true,
-      groupColumnClass: "col-4",
-      taskColumnClass: "col-5",
       showGroupColumn: false,
       showTaskDuration: false,
       percentage: 0,
@@ -183,7 +180,6 @@ export default {
     async getTasks() {
       try {
         this.tasks = await index(`tasks`);
-        console.log("Tarefas:", this.tasks);
       } catch (error) {
         console.error("Erro ao acessar tarefas:", error);
       }
@@ -193,57 +189,56 @@ export default {
         .get(`${BACKEND_URL}${TASK_PRIORIZED_URL}`)
         .then((response) => {
           this.tasks = response.data.data;
-          // this.filteredTasks = this.tasks; // Inicialmente, as tarefas filtradas são iguais a todas as tarefas
         })
         .catch((error) => console.log(error));
     },
-    async getTasksFromProject(page = 1) {
+    // async getTasksFromProject(page = 1) {
 
-      this.tasksUrl = `${BACKEND_URL}${TASK_BY_PROJECT_URL}project_id=${this.projectId}&per_page=50&page=${page}`;
+    //   this.tasksUrl = `${BACKEND_URL}${TASK_BY_PROJECT_URL}project_id=${this.projectId}&per_page=50&page=${page}`;
 
-      try {
-        const response = await axios.get(this.tasksUrl);
+    //   try {
+    //     const response = await axios.get(this.tasksUrl);
 
-        this.tasks = response.data.data.map(task => {
-          return { ...task, editing: false }; // Adiciona a propriedade editing a cada task
-        });
+    //     this.tasks = response.data.data.map(task => {
+    //       return { ...task, editing: false }; // Adiciona a propriedade editing a cada task
+    //     });
 
-        this.totalTasks = response.data.total_tasks;
-        this.completedTasks = response.data.completed_tasks;
-        this.percentage = Math.round((this.completedTasks / this.totalTasks) * 100);
+    //     this.totalTasks = response.data.total_tasks;
+    //     this.completedTasks = response.data.completed_tasks;
+    //     this.percentage = Math.round((this.completedTasks / this.totalTasks) * 100);
 
-        this.paginationData = {
-          links: response.data.links,
-          meta: response.data.meta,
-        };
+    //     this.paginationData = {
+    //       links: response.data.links,
+    //       meta: response.data.meta,
+    //     };
 
-      } catch (error) {
-        console.error("Erro ao acessar tarefas:", error);
-      }
-    },
-    async getTasksFromOpportunity(page = 1) {
+    //   } catch (error) {
+    //     console.error("Erro ao acessar tarefas:", error);
+    //   }
+    // },
+    // async getTasksFromOpportunity(page = 1) {
 
-      this.tasksUrl = `${BACKEND_URL}${TASK_BY_OPPORTUNITY_URL}opportunity_id=${this.opportunityId}&per_page=50&page=${page}`;
+    //   this.tasksUrl = `${BACKEND_URL}${TASK_BY_OPPORTUNITY_URL}opportunity_id=${this.opportunityId}&per_page=50&page=${page}`;
 
-      try {
-        const response = await axios.get(this.tasksUrl);
+    //   try {
+    //     const response = await axios.get(this.tasksUrl);
 
-        this.tasks = response.data.data.map(task => {
-          return { ...task, editing: false }; // Adiciona a propriedade editing a cada task
-        });
+    //     this.tasks = response.data.data.map(task => {
+    //       return { ...task, editing: false }; // Adiciona a propriedade editing a cada task
+    //     });
 
-        this.totalTasks = response.data.total_tasks;
-        this.completedTasks = response.data.completed_tasks;
+    //     this.totalTasks = response.data.total_tasks;
+    //     this.completedTasks = response.data.completed_tasks;
 
-        this.paginationData = {
-          links: response.data.links,
-          meta: response.data.meta,
-        };
+    //     this.paginationData = {
+    //       links: response.data.links,
+    //       meta: response.data.meta,
+    //     };
 
-      } catch (error) {
-        console.error("Erro ao acessar tarefas:", error);
-      }
-    },
+    //   } catch (error) {
+    //     console.error("Erro ao acessar tarefas:", error);
+    //   }
+    // },
     isValidDate(date) {
       if (date != '1969-12-31 18:00:00'
         && date != '1969-12-31 21:00:00'
@@ -287,34 +282,40 @@ export default {
     urlImagePhoto() {
       return `${IMAGES_PATH}${this.userData.photo}`;
     },
-    filteredTasks() {
-      if (this.searchTerm === "") {
-        return this.tasks;
-      } else {
-        const lowerSearchTerm = this.searchTerm.toLowerCase();
-        return this.tasks.filter((task) => {
-          return (
-            task.name.toLowerCase().includes(lowerSearchTerm) ||
-            (task.description &&
-              task.description.toLowerCase().includes(lowerSearchTerm))
-          );
-        });
-      }
-    },
+    // tasks() {
+    //   if (this.searchTerm === "") {
+    //     return this.tasks;
+    //   } else {
+    //     const lowerSearchTerm = this.searchTerm.toLowerCase();
+    //     return this.tasks.filter((task) => {
+    //       return (
+    //         task.name.toLowerCase().includes(lowerSearchTerm) ||
+    //         (task.description &&
+    //           task.description.toLowerCase().includes(lowerSearchTerm))
+    //       );
+    //     });
+    //   }
+    // },
     groupedTasks() {
-      return this.filteredTasks.reduce((groups, task) => {
-        if (task.date_due) {
-          const date = task.date_due.split(' ')[0];
-          if (!groups[date]) {
-            groups[date] = [];
+      if (this.tasks) {
+        return this.tasks.reduce((groups, task) => {
+          if (task.date_due) {
+            const date = task.date_due.split(' ')[0];
+            if (!groups[date]) {
+              groups[date] = [];
+            }
+            groups[date].push(task);
           }
-          groups[date].push(task);
-        }
-        return groups; // Sempre retorna groups
-      }, {});
+          return groups;
+        }, {});
+      } else {
+        return {}; // Retorna um objeto vazio se this.tasks estiver vazio
+      }
     },
   },
   mounted() {
+    // console.log('opportunity', this.opportunity);
+    console.log('template', this.template);
     if (this.template === 'index') {
       this.showGroupColumn = true;
       this.getTasks();
@@ -323,15 +324,14 @@ export default {
       this.showGroupColumn = true;
       this.getTasksPriorized();
     }
-    if (this.template === 'project') {
-      this.showTaskDuration = true;
-      this.taskColumnClass = "col-7",
-        this.getTasksFromProject();
-    }
     if (this.template === 'opportunity') {
+      console.log('opportunity', this.opportunity);
+      if (this.opportunity) {
+        this.tasks = this.opportunity.tasks;
+      }
+      // this.tasks = this.opportunity.tasks;
       this.showTaskDuration = true;
-      this.taskColumnClass = "col-7",
-        this.getTasksFromOpportunity();
+      this.taskColumnClass = "col-7";
     }
   },
 };
@@ -374,16 +374,5 @@ a {
 .small-date {
   font-size: 0.8rem;
   font-weight: 400;
-}
-
-
-.user-image {
-  width: 30px;
-  height: 30px;
-  border-style: solid;
-  border-color: white;
-  border-width: 3px;
-  border-radius: 50%;
-  margin-right: 0px;
 }
 </style>

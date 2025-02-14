@@ -11,6 +11,10 @@ html, body, #app {
   box-sizing: border-box;
 }
 
+.d-none {
+  display: none;
+}
+
 label {
   font-weight: 800;
   text-align: left;

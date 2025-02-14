@@ -1,17 +1,15 @@
 <template>
     <div>
-        <button type="button" class="button button-new d-flex justify-content-center" @click="showModal"
-            data-bs-toggle="modal" data-bs-target="#taskModal">
+        <button type="button" class="button button-new" @click="openModal">
             <font-awesome-icon icon="fa-solid fa-plus" class="" />
         </button>
 
-        <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+        <div v-if="isModalVisible" class="myModal">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="taskModalLabel">Nova oportunidade</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" @click="closeModal"
-                            aria-label="Close"></button>
+                        <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form @submit.prevent="submitForm">
@@ -134,32 +132,29 @@ export default {
                 priority: null,
                 status: null,
             },
+            isModalVisible: false,
             modal: true,
         };
     },
     methods: {
         submitFormCreate,
         closeModal() {
-            this.modal = false;
+            this.isModalVisible = false;
         },
-        showModal() {
-            this.modal = true;
+        openModal() {
+            this.isModalVisible = true;
         },
         async submitForm() {            
             const { data, error } = await this.submitFormCreate("opportunities", this.form);
 
             if (data) {
-                // this.isModalVisible = false;
-                this.modal = false;
+                this.isModalVisible = false;
                 this.$emit("new-opportunity-event", data);
             }
             if (error) {
                 this.errors = error;
             }
         }
-    },
-    mounted() {
-        console.log("modal", this.modal);
     },
 };
 </script>

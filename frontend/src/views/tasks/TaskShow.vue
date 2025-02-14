@@ -3,39 +3,36 @@
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
     <div class="header-fixed">
-      <div class="row ms-0">
-        <div class="col-1 status">
-          <font-awesome-icon icon="fa-solid fa-list-check" class="show-title-icon " />
-          <p class="show-duration">
-            {{ formatDuration(task.duration_time) }}
-          </p>
-        </div>
-        <div class="col-11 ps-3">
-          <p class="show-title d-flex">
-            <TextEditableField name="name" v-model="task.name" placeholder="descrição detalhada da tarefa"
-              @save="updateTask('name', $event)" />
-          </p>
-          <p class="opportunity" v-if="task.opportunity">
-            <router-link :to="'/opportunities/' + task.opportunity.id">
-              <font-awesome-icon icon="fa-solid fa-search" class="primary" />
-            </router-link>
-            {{ task.opportunity.name }}
-          </p>
-        </div>
+      <div class="icon-column">
+        <font-awesome-icon icon="fa-solid fa-list-check" class="show-title-icon " />
+        <p class="show-duration">
+          {{ formatDuration(task.duration_time) }}
+        </p>
       </div>
-      <div class="header-fixed-menu mt-3">
-        <button class="item-menu" @click="currentSection = 'info'" :class="{ active: currentSection === 'info' }">
-          Informações
-        </button>
-        <button class="item-menu" @click="currentSection = 'attachments'"
-          :class="{ active: currentSection === 'attachments' }">
-          Anexos
-        </button>
-        <button class="item-menu" @click="currentSection = 'journeys'"
-          :class="{ active: currentSection === 'journeys' }">
-          Jornadas
-        </button>
+      <div class="title-column">
+        <p class="show-title">
+          <TextEditableField name="name" v-model="task.name" placeholder="descrição detalhada da tarefa"
+            @save="updateTask('name', $event)" />
+        </p>
+        <p class="opportunity" v-if="task.opportunity">
+          <router-link :to="'/opportunities/' + task.opportunity.id">
+            <font-awesome-icon icon="fa-solid fa-search" class="primary" />
+          </router-link>
+          {{ task.opportunity.name }}
+        </p>
       </div>
+    </div>
+    <div class="header-fixed-menu">
+      <button class="item-menu" @click="currentSection = 'info'" :class="{ active: currentSection === 'info' }">
+        Informações
+      </button>
+      <button class="item-menu" @click="currentSection = 'attachments'"
+        :class="{ active: currentSection === 'attachments' }">
+        Anexos
+      </button>
+      <button class="item-menu" @click="currentSection = 'journeys'" :class="{ active: currentSection === 'journeys' }">
+        Jornadas
+      </button>
     </div>
 
     <div class="content-below-header">

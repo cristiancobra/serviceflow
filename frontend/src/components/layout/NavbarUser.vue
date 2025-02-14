@@ -180,6 +180,7 @@ export default {
   color: white;
   background-color: var(--primary);
   z-index: 1000;
+  height: 7vh;
 }
 
 .navbar {
@@ -188,8 +189,8 @@ export default {
   justify-content: space-between;
   padding-left: 5rem;
   padding-right: 5rem;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding-top: 0rem;
+  padding-bottom: 0rem;
 }
 
 .navbar-brand .logo {
