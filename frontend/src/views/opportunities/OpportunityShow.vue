@@ -85,7 +85,7 @@
       </div>
 
       <div class="info-container" v-show="currentSection === 'tasks'">
-        <tasks-list template="opportunity" :opportunity="opportunity"
+        <tasks-list template="opportunity" :tasks="opportunity.tasks"
           @update-opportunity-duration="updateOpportunityDuration()" />
       </div>
       <div class="row d-flex justify-content-end mt-2 mb-5 me-5">
@@ -162,7 +162,6 @@ export default {
     convertDateTimeToLocal,
     async getOpportunity() {
       this.opportunity = await show("opportunities", this.opportunityId);
-      console.log('opp', this.opportunity);
       this.currentOpportunity = this.opportunity;
       convertDateTimeToLocal(this.opportunity.date_start);
       this.opportunityLoaded = true;

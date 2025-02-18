@@ -45,7 +45,7 @@
         @save="updateProject('description', $event)" />
     </div>
     <div class="info-container">
-      <TasksList template="project" :projectId="projectId" @update-project-duration="updateProjectDuration()" />
+      <TasksList template="project" :tasks="project.tasks" @update-project-duration="updateProjectDuration()" />
     </div>
     <div class="row d-flex justify-content-end mt-2 mb-5 me-5">
       <div class="col-1">

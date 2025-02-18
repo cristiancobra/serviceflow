@@ -30,7 +30,7 @@ class JourneyController extends Controller
         //     ->paginate($perPage);
 
         // return [
-        //     // 'task' => TaskResource::make($taskData),
+        //     // 'task' => TasksResource::make($taskData),
         //     'journeys' => JourneyResource::collection($journeys),
         // ];
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\TasksResource;
 
 class ProjectResource extends JsonResource
 {
@@ -35,6 +36,9 @@ class ProjectResource extends JsonResource
 			"type" => $this->type,
 			"created_at" => $this->created_at,
 			"updated_at" => $this->updated_at,
+
+			// relationships
+			"tasks" => TasksResource::collection($this->whenLoaded('tasks')), // Adiciona o relacionamento tasks
 			];
     }
 }

@@ -19,7 +19,9 @@ class OpportunityController extends Controller
     {
         $opportunities = Opportunity::with([
             'project',
-            'tasks',
+            'tasks' => function ($query) {
+                $query->orderBy('date_start', 'desc');
+            },
         ])
             -> orderByRaw('date_canceled IS NULL DESC')
             ->orderByRaw('date_conclusion IS NULL DESC')

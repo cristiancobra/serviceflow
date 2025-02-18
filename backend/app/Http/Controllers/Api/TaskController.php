@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Task;
-use App\Http\Resources\TaskResource;
+use App\Http\Resources\TasksResource;
 use App\Http\Requests\TaskRequest;
 use App\Services\DateConversionService;
 
@@ -25,7 +25,7 @@ class TaskController extends Controller
             ->orderBy('date_due', 'desc')
             ->paginate(500);
 
-        return TaskResource::collection($tasks);
+        return TasksResource::collection($tasks);
     }
 
     /**
@@ -42,7 +42,7 @@ class TaskController extends Controller
 
             $task->save();
 
-            return TaskResource::make($task->load('project'));
+            return TasksResource::make($task->load('project'));
         } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",
@@ -60,7 +60,7 @@ class TaskController extends Controller
     public function show(Task $task)
     {
 
-        return TaskResource::make(Task::with(['journeys' => function ($query) {
+        return TasksResource::make(Task::with(['journeys' => function ($query) {
             $query->orderBy('start', 'desc');
         },
             'links',
@@ -92,7 +92,7 @@ class TaskController extends Controller
 
             $task->save();
 
-            return TaskResource::make($task)->additional([
+            return TasksResource::make($task)->additional([
                 'project' => $task->project,
             ]);
         } catch (ValidationException $validationException) {
@@ -144,7 +144,7 @@ class TaskController extends Controller
 
         $filteredTasks = $tasks->get();
 
-        return TaskResource::collection($filteredTasks);
+        return TasksResource::collection($filteredTasks);
     }
 
     /**
@@ -165,7 +165,7 @@ class TaskController extends Controller
             ->orderBy('date_due', 'desc')
             ->paginate(50);
 
-        return TaskResource::collection($tasks);
+        return TasksResource::collection($tasks);
     }
 
     /**
@@ -191,9 +191,9 @@ class TaskController extends Controller
 
         $tasks->appends(['project_id' => $request->project_id]);
 
-        // return TaskResource::collection($tasks);
+        // return TasksResource::collection($tasks);
         return response()->json([
-            'data' => TaskResource::collection($tasks),
+            'data' => TasksResource::collection($tasks),
             'total_tasks' => $totalTasks,
             'completed_tasks' => $completedTasks,
         ]);
@@ -215,7 +215,7 @@ class TaskController extends Controller
 
         $tasks->appends(['opportunity_id' => $request->opportunity_id]);
 
-        return TaskResource::collection($tasks);
+        return TasksResource::collection($tasks);
     }
 
     /**
@@ -240,14 +240,14 @@ class TaskController extends Controller
             // ->paginate(20);
             ->get();
 
-        return TaskResource::collection(
+        return TasksResource::collection(
             $tasks
         );
     }
 
     public function tasksMetrics()
     {
-        return TaskResource::collection(
+        return TasksResource::collection(
             Task::whereIn('status', [
                 'to-do',
                 'doing'

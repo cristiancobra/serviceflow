@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\TaskResource;
+use App\Http\Resources\TasksResource;
 use App\Http\Resources\OpportunitiesResource;
 
 class LinksResource extends JsonResource
@@ -28,7 +28,7 @@ class LinksResource extends JsonResource
             
             //relationships
             'opportunity' => new OpportunitiesResource($this->whenLoaded('opportunity')),
-            'task' => new TaskResource($this->whenLoaded('task')),
+            'task' => new TasksResource($this->whenLoaded('task')),
         ];
     }
 }

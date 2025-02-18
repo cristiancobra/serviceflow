@@ -82,8 +82,10 @@
       </div>
 
       <div class="info-container" v-show="currentSection === 'journeys'">
-        <journeys-list template="by-task" :taskId="taskId" @update-task-duration="updateTaskDuration()"
-          @last-journey-end="updateEndTaskButtonVisibility" />
+        <div class="page-container">
+          <journeys-list template="by-task" :taskId="taskId" @update-task-duration="updateTaskDuration()"
+            @last-journey-end="updateEndTaskButtonVisibility" />
+        </div>
       </div>
 
       <div class="d-flex justify-content-end">

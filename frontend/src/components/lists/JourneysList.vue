@@ -1,14 +1,18 @@
 <template>
-  <div class="page-container">
-    <div class="row">
-      <div class="col-9 d-flex justify-content-left">
-        <font-awesome-icon icon="fa-solid fa-clock" class="icon pe-3 primary" />
-        <h2 class="title">JORNADAS</h2>
-      </div>
-    </div>
+  <div class="">
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
+    <div class="page-header">
+      <div class="title-container">
+        <font-awesome-icon icon="fa-solid fa-clock" class="icon" />
+        <h1>Jornadas</h1>
+      </div>
+      <div class="action-container">
+        <TaskCreateForm @new-task-event="addTaskCreated" />
+      </div>
+    </div>
     <journey-create-form @new-journey-event="addJourneyCreated" />
+
     <div id="list" v-if="journeys.length > 0">
       <div class="row">
         <PaginateNav :paginationData="paginationData" @update-data="updatePaginationList" />
@@ -18,18 +22,20 @@
       </div>
       <div v-else class="list-line" v-for="journey in journeys" v-bind:key="journey.id"
         :class="{ 'highlight': journey.id === newJourneyId }">
-        <div v-if="journey.task && !taskId" class="col-4 taskCard">
+        <div v-if="journey.task && !taskId" class="tile-container">
           <router-link :to="{ name: 'taskShow', params: { id: journey.task_id } }">
             {{ journey.task.name }}
           </router-link>
         </div>
-        <div class="col d-flex justify-content-start">
+        <div class="date-column">
           <DateEditableInput name="start" v-model="journey.start" @save="updateJourney('start', $event, journey.id)" />
           <TimeEditableInput class="ps-5" name="end" v-model="journey.end"
             @save="updateJourney('end', $event, journey.id)" />
           <p class="time-bold ps-5">
             {{ formatDuration(journey.duration) }}
           </p>
+        </div>
+        <div class="date-column">
           <TextEditableField name="details" class="details ps-5" v-model="journey.details"
             @save="updateJourney('details', $event, journey.id)" />
           <div class="col d-flex justify-content-end">
@@ -47,7 +53,6 @@
         </div>
       </div>
       <PaginateNav :paginationData="paginationData" @update-data="updatePaginationList" />
-
     </div>
   </div>
 </template>

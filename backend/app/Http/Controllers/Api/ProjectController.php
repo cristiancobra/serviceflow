@@ -53,7 +53,14 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        return new ProjectResource(Project::find($project->id));
+        return new ProjectResource(Project::with('tasks')
+            ->find($project->id));
+
+        if (!$project) {
+            return response()->json(['error' => 'Project not found'], 404);
+        }
+
+        return new ProjectResource($project);
     }
 
     /**

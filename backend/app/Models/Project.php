@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Project extends Model {
+class Project extends Model
+{
 
-	use HasFactory, SoftDeletes;
-	
-	protected $table = 'projects';
+    use HasFactory, SoftDeletes;
+
+    protected $table = 'projects';
 
     protected $fillable = [
         'id',
@@ -29,8 +30,9 @@ class Project extends Model {
         'status',
         'priority',
     ];
-	
-	public static function getStatus() {
+
+    public static function getStatus()
+    {
         return [
             'fazer',
             'aguardar',
@@ -38,6 +40,11 @@ class Project extends Model {
             'fazendo',
             'cancelado',
         ];
-	}
+    }
 
+    // relationships
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
 }

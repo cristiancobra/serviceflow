@@ -7,7 +7,7 @@ use App\Http\Resources\LinksResource;
 use App\Http\Resources\JourneyResource;
 use App\Http\Resources\ProjectResource;
 
-class TaskResource extends JsonResource
+class TasksResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

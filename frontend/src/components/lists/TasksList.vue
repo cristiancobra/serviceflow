@@ -91,14 +91,14 @@ import { mapState } from "vuex";
 export default {
   name: "TasksList",
   props: {
-    opportunity: {
-      type: Object,
+    tasks: {
+      type: Array,
       required: false,
     },
-    projectId: {
-      type: Number,
-      required: false,
-    },
+    // project: {
+    //   type: Object,
+    //   required: false,
+    // },
     template: {
       type: String,
       required: true,
@@ -113,7 +113,7 @@ export default {
       showTaskDuration: false,
       percentage: 0,
       searchTerm: "",
-      tasks: [],
+      localTasks: this.tasks,
       totalTasks: 0,
       completedTasks: 0,
     };
@@ -133,7 +133,7 @@ export default {
     getStatusIcon,
     addTaskCreated(newTask) {
       this.toggle();
-      this.tasks.unshift(newTask);
+      this.localTasks.unshift(newTask);
     },
     formatDateGroup(date) {
       const dateParts = date.split('-');
@@ -179,7 +179,7 @@ export default {
     },
     async getTasks() {
       try {
-        this.tasks = await index(`tasks`);
+        this.localTasks = await index(`tasks`);
       } catch (error) {
         console.error("Erro ao acessar tarefas:", error);
       }
@@ -188,7 +188,7 @@ export default {
       axios
         .get(`${BACKEND_URL}${TASK_PRIORIZED_URL}`)
         .then((response) => {
-          this.tasks = response.data.data;
+          this.localTasks = response.data.data;
         })
         .catch((error) => console.log(error));
     },
@@ -268,8 +268,8 @@ export default {
 
     },
     updateTasksList(updatedTask, taskId) {
-      const index = this.tasks.findIndex(task => task.id === taskId);
-      this.tasks.splice(index, 1, updatedTask);
+      const index = this.localTasks.findIndex(task => task.id === taskId);
+      this.localTasks.splice(index, 1, updatedTask);
     },
     toggle() {
       this.isActive = !this.isActive;
@@ -297,16 +297,13 @@ export default {
     //   }
     // },
     groupedTasks() {
-      console.log('tasks', this.tasks);
-      if (this.tasks) {
-        return this.tasks.reduce((groups, task) => {
-          if (task.date_due) {
-            const date = task.date_due.split(' ')[0];
-            if (!groups[date]) {
-              groups[date] = [];
-            }
-            groups[date].push(task);
+      if (this.localTasks && this.localTasks.length > 0) {
+        return this.localTasks.reduce((groups, task) => {
+          const date = task.date_due ? task.date_due.split(' ')[0] : 'Sem Data';
+          if (!groups[date]) {
+            groups[date] = [];
           }
+          groups[date].push(task);
           return groups;
         }, {});
       } else {
@@ -315,16 +312,15 @@ export default {
     },
   },
   watch: {
-    opportunity: {
+    tasks: {
       handler(newVal) {
-        this.tasks = newVal.tasks;
+        console.log('Tasks updated:', newVal);
+        this.localTasks = newVal;
       },
       deep: true,
     },
   },
   mounted() {
-    // console.log('opportunity', this.opportunity);
-    console.log('template', this.template);
     if (this.template === 'index') {
       this.showGroupColumn = true;
       this.getTasks();
@@ -333,15 +329,20 @@ export default {
       this.showGroupColumn = true;
       this.getTasksPriorized();
     }
-    if (this.template === 'opportunity') {
-      console.log('opportunity', this.opportunity);
-      if (this.opportunity) {
-        this.tasks = this.opportunity.tasks;
-      }
-      // this.tasks = this.opportunity.tasks;
-      this.showTaskDuration = true;
-      this.taskColumnClass = "col-7";
-    }
+    // if (this.template === 'opportunity') {
+    //   if (this.opportunity) {
+    //     this.tasks = this.opportunity.tasks;
+    //   }
+    //   this.showTaskDuration = true;
+    //   this.taskColumnClass = "col-7";
+    // }
+    // if (this.template === 'project') {
+    //   if (this.project) {
+    //     this.localTasks = this.project.tasks;
+    //   }
+    //   this.showTaskDuration = true;
+    //   this.taskColumnClass = "col-7";
+    // }
   },
 };
 </script>
