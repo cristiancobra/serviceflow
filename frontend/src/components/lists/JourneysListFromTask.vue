@@ -5,7 +5,7 @@
     <div class="page-header">
       <div class="title-container">
         <font-awesome-icon icon="fa-solid fa-clock" class="icon" />
-        <h1>Jornadas</h1>
+        <h1>JORNADAS</h1>
       </div>
       <div class="action-container">
         <journey-create-form @new-journey-event="addJourneyCreated" />
@@ -33,34 +33,10 @@
             {{ formatDuration(journey.duration) }}
           </p>
         </div>
-        <div v-if="journey.task" class="task-column">
-          <router-link :to="{ name: 'taskShow', params: { id: journey.task_id } }">
-            {{ journey.task.name }}
+        <div v-if="task" class="task-column">
+          <router-link :to="{ name: 'taskShow', params: { id: task.id } }">
+            {{ task.name }}
           </router-link>
-        </div>
-        <div class="group-column">
-          <router-link :class="getColorClassForName(journey.task.opportunity.name)" style="display: flex;"
-            v-if="journey.task.opportunity"
-            :to="{ name: 'opportunityShow', params: { id: journey.task.opportunity.id } }">
-            <p class="group-name">
-              <font-awesome-icon icon="fa-solid fa-bullseye"
-                :class="getColorClassForName(journey.task.opportunity.name)" />
-              {{ trimName(journey.task.opportunity.name) }}
-            </p>
-          </router-link>
-          <router-link style="display: flex;" v-else-if="journey.task.project"
-            :to="{ name: 'projectShow', params: { id: journey.task.project.id } }">
-            <font-awesome-icon icon="fa-solid fa-folder-open"
-              :class="getColorClassForName(journey.task.project.name)" />
-            <p class="group-name" :style="{ color: getColorClassForName(journey.task.project.name) }">
-              {{ trimName(journey.task.project.name) }}
-            </p>
-          </router-link>
-          <div v-else class="">
-            <p>
-              ----
-            </p>
-          </div>
         </div>
         <div class="icons-column">
           <button v-if="!journey.end" class="button-circular stop" @click="stopJourney(journey.id)">
@@ -105,13 +81,18 @@ export default {
     TimeEditableInput,
   },
   props: {
+    task: {
+      type: Object,
+      default: null,
+    },
     template: {
       type: String,
     },
   },
   data() {
     return {
-      journeys: [],
+      journeys: this.task.journeys,
+      localTask: this.task,
       messageStatus: "",
       messageText: "",
       updatedJourney: {
@@ -262,8 +243,18 @@ export default {
       this.journeys = newData;
     },
   },
+  watch: {
+    task: {
+      handler(newVal) {
+        this.localTask = newVal;
+        this.journeys = newVal.journeys;
+      },
+      deep: true,
+    },
+  },
   mounted() {
-      this.getJourneys();
+    console.log("task", this.task);
+    console.log("journeys", this.journeys);
   },
 };
 </script>
@@ -351,6 +342,7 @@ a:hover {
 a:active {
   text-decoration: none;
 }
+
 
 .new {
   display: flex;

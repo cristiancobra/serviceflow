@@ -13,7 +13,7 @@
   margin-left: 1%;
   margin-right: 1%;
   box-shadow: var(--box-shadow-value);
-  background-color:  var(--background-container-color);
+  background-color: var(--background-container-color);
 }
 
 .list-container .black {
@@ -63,12 +63,12 @@
 }
 
 .list-container .bold {
-    text-align: left;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: black;
-    padding: 0;
-    margin: 0;  
+  text-align: left;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: black;
+  padding: 0;
+  margin: 0;
 }
 
 .list-container .col-status svg {
@@ -99,12 +99,12 @@
 }
 
 .list-container .name {
-    text-align: left;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: black;
-    padding: 0;
-    margin: 0;  
+  text-align: left;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: black;
+  padding: 0;
+  margin: 0;
 }
 
 .list-container .group-name {
@@ -156,7 +156,7 @@
   border-width: 0px;
   border-radius: 20px;
   box-shadow: var(--box-shadow-value);
-  background-color:  var(--background-container-color);
+  background-color: var(--background-container-color);
   min-height: 100%;
 }
 
@@ -244,4 +244,33 @@
   width: 100%;
   text-decoration: none;
   color: inherit;
+}
+
+.search-container {
+  border-width: 2px;
+  border-style: solid;
+  border-color: lightgray;
+  border-radius: 20px 20px 20px 20px;
+  margin: 0 0 3rem 0;
+  color: black;
+  width: 100%;
+  box-sizing: border-box; 
+}
+
+.search-container .search-input {
+  border: none;
+  width: 100%;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: black;
+  box-sizing: border-box;
+  border-radius: 20px 20px 20px 20px;
+  padding: 1rem;
+}
+
+.search-container .search-input:focus {
+  outline: none;
+  border: 3px solid var(--primary);
+  border-radius: 20px;
 }

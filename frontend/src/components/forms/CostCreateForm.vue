@@ -1,7 +1,8 @@
 <template>
   <div>
-    <button type="button" class="button button-new d-flex justify-content-center" @click=openModal>
-      <font-awesome-icon icon="fa-solid fa-plus" class="" />
+    <button type="button" class="button button-new" @click=openModal>
+      <font-awesome-icon icon="fa-solid fa-cogs" class="button-icon" />
+      <span class="button-text"> novo custo</span>
     </button>
 
     <div v-if="isModalVisible" class="myModal">
@@ -14,7 +15,7 @@
           </div>
           <div class="modal-body">
             <form @submit.prevent="submitForm">
-              <div class="row">
+              <div class="">
                 <div class="col-12">
                   <TextInput label="Nome" name="name" v-model="form.name" placeholder="nome do custo" />
                   <div class="error-row" v-if="errors.name">
@@ -43,8 +44,9 @@
                   </div>
                 </div>
               </div>
-              <div class="row ms-5 me-5 mt-4 mb-2">
-                <button type="submit" class="btn new">Criar</button>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @click="closeModal">Fechar</button>
+                <button type="submit" class="button-new">criar</button>
               </div>
             </form>
           </div>
@@ -59,7 +61,6 @@ import { submitFormCreate } from "@/utils/requests/httpUtils";
 import TextInput from "./inputs/text/TextInput";
 
 export default {
-  name: "CostCreateForm",
   emits: ["new-cost-event"],
   data() {
     return {
@@ -118,6 +119,38 @@ export default {
 </script>
 
 <style scoped>
+
+.button-icon {
+    margin-right: 0.5rem;
+}
+
+.button-text {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #000;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 0;
+  line-height: 1;
+}
+
+.btn-close:hover {
+  color: #ff0000; /* Cor ao passar o mouse */
+}
+
+.btn-close::before {
+  content: '×'; /* Símbolo de fechar */
+}
+
 .container {
   border-style: solid;
   border-color: #ff3eb5;

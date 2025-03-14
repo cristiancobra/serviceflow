@@ -75,7 +75,7 @@
 <script>
 import axios from "axios";
 import { convertUtcToLocal, formatDuration } from "@/utils/date/dateUtils";
-import { getColorForName, getColorClassForName, getStatusColor, getPriorityClass, getDeadlineClass, getStatusIcon } from "@/utils/card/cardUtils";
+import { getColorForName, getColorClassForName, getStatusColor, getPriorityClass, getDeadlineClass, getStatusIcon, trimName } from "@/utils/card/cardUtils";
 import { BACKEND_URL, IMAGES_PATH, TASK_URL_PARAMETER, TASK_PRIORIZED_URL } from "@/config/apiConfig";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
@@ -120,6 +120,7 @@ export default {
     getPriorityClass,
     getDeadlineClass,
     getStatusIcon,
+    trimName,    
     addTaskCreated(newTask) {
       this.toggle();
       this.tasks.unshift(newTask);
@@ -143,11 +144,6 @@ export default {
     trimDescription(description) {
       if (description) {
         return description.substring(0, 110);
-      }
-    },
-    trimName(description) {
-      if (description) {
-        return description.substring(0, 50);
       }
     },
     getColumnClass(columns) {

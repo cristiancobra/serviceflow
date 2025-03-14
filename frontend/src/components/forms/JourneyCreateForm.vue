@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div>
     <AddMessage :messageStatus="messageStatus" :messageText="messageText"
     @update:messageStatus="messageStatus = $event" />
 

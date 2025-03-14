@@ -1,72 +1,77 @@
 <template>
-    <div class="">
+    <div class="page-container">
         <AddMessage :messageStatus="messageStatus" :messageText="messageText"
             @update:messageStatus="messageStatus = $event" />
-        <div class="page-container d-flex">
-            <div class="col-8">
-                <div class="row me-5 w-50">
-                    <div class="col">
-                        <div class="row mt-4">
-                            <faIcon icon="user" />
-                            <TextEditableField name="name" v-model="account.name" placeholder="nome da conta"
-                                label="Nome da empresa:" @save="updateAccount('name', $event)" />
-                        </div>
-                        <div class="row mt-4">
-                            <TextEditableField name="email" v-model="account.email" placeholder="email da conta"
-                                label="Email:" @save="updateAccount('email', $event)" />
-                        </div>
-                        <div class="row mt-4">
-                            <div class="col d-flex justify-content-start">
-                            <TextEditableField class="pt-3" name="cnpj" v-model="account.cnpj" placeholder="cnpj da empresa"
-                                label="CNPJ:" @save="updateAccount('cnpj', $event)" />
+        <div class="page-header">
+            <div class="title-container">
+                <font-awesome-icon icon="fa-solid fa-cogs" class="icon" />
+                <h1>Configurações</h1>
+            </div>
+        </div>
+
+        <div class="col-half">
+            <div class="row me-5 w-50">
+                <div class="col">
+                    <div class="row mt-4">
+                        <faIcon icon="user" />
+                        <TextEditableField name="name" v-model="account.name" placeholder="nome da conta"
+                            label="Nome da empresa:" @save="updateAccount('name', $event)" />
+                    </div>
+                    <div class="row mt-4">
+                        <TextEditableField name="email" v-model="account.email" placeholder="email da conta"
+                            label="Email:" @save="updateAccount('email', $event)" />
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col d-flex justify-content-start">
+                            <TextEditableField class="pt-3" name="cnpj" v-model="account.cnpj"
+                                placeholder="cnpj da empresa" label="CNPJ:" @save="updateAccount('cnpj', $event)" />
                             <button @click="copyCnpjWithSymbols" class="button ms-2" title="Copiar com símbolos">
                                 <font-awesome-icon icon="fa-solid fa-copy" />
                             </button>
                             <button @click="copyCnpjWithoutSymbols" class="button ms-2" title="Copiar apenas números">
                                 <font-awesome-icon icon="fa-solid fa-hashtag" />
                             </button>
-                            </div>
                         </div>
-                        <div class="row mt-4">
-                            <TextEditableField name="inscricao_municipal" v-model="account.inscricao_municipal"
-                                placeholder="inscricao_municipal da empresa" label="Insc. Municipal:"
-                                @save="updateAccount('inscricao_municipal', $event)" />
-                        </div>
-                        <div class="row mt-4">
-                            <TextEditableField name="phone" v-model="account.phone" placeholder="telefone da empresa"
-                                label="Telefone:" @save="updateAccount('phone', $event)" />
-                        </div>
-                        <div class="row mt-4">
-                            <TextEditableField name="address" v-model="account.address"
-                                placeholder="Endereço da empresa" label="Endereço:"
-                                @save="updateAccount('address', $event)" />
-                        </div>
-                        <div class="row mt-4">
-                            <TextEditableField name="address_city" v-model="account.address_city" label="Cidade:"
-                                placeholder="Cidade:" @save="updateAccount('address_city', $event)" />
-                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <TextEditableField name="inscricao_municipal" v-model="account.inscricao_municipal"
+                            placeholder="inscricao_municipal da empresa" label="Insc. Municipal:"
+                            @save="updateAccount('inscricao_municipal', $event)" />
+                    </div>
+                    <div class="row mt-4">
+                        <TextEditableField name="phone" v-model="account.phone" placeholder="telefone da empresa"
+                            label="Telefone:" @save="updateAccount('phone', $event)" />
+                    </div>
+                    <div class="row mt-4">
+                        <TextEditableField name="address" v-model="account.address" placeholder="Endereço da empresa"
+                            label="Endereço:" @save="updateAccount('address', $event)" />
+                    </div>
+                    <div class="row mt-4">
+                        <TextEditableField name="address_city" v-model="account.address_city" label="Cidade:"
+                            placeholder="Cidade:" @save="updateAccount('address_city', $event)" />
                     </div>
                 </div>
             </div>
-            <div class="col-4">
-                <div class="mt-5">
-                    <img :src="urlImageLogo" alt="Logo">
-                </div>
-                <form @submit.prevent="submitFormLogo">
-                    <div class="row mt-4">
-                        <label for="logo">Logo:</label>
-                        <input type="file" id="logo" ref="logo" @change="handleLogoUpload">
-                    </div>
-                    <div class="row mt-4">
-                        <div class="col">
-                            <button class="button" type="submit">Submit</button>
-                        </div>
-                    </div>
-                </form>
+        </div>
+        <div class="col-half">
+            <div class="mt-5">
+                <img :src="urlImageLogo" alt="Logo">
+            </div>
+            <form @submit.prevent="submitFormLogo">
                 <div class="row mt-4">
-                    <label for="primary_color">Primary Color</label>
-                    <input type="color" name="primary_color" id="primary_color" class="form-control" value="{{ old('primary_color', $account->primary_color) }}">
+                    <label for="logo">Logo:</label>
+                    <input type="file" id="logo" ref="logo" @change="handleLogoUpload">
                 </div>
+                <div class="row mt-4">
+                    <div class="col">
+                        <button class="button" type="submit">Submit</button>
+                    </div>
+                </div>
+            </form>
+            <div class="row mt-4">
+                <label for="primary_color">Primary Color</label>
+                <input type="color" name="primary_color" id="primary_color" class="form-control"
+                    value="{{ old('primary_color', $account->primary_color) }}">
             </div>
         </div>
     </div>

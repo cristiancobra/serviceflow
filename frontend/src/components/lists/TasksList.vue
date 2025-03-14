@@ -10,11 +10,8 @@
       </div>
     </div>
 
-    <div class="row mt-3 mb-4">
-      <div class="col">
-        <input type="text" class="form-control search-container" v-model="searchTerm"
-          placeholder="Digite para buscar" />
-      </div>
+    <div class="search-container">
+      <input type="text" class="search-input" v-model="searchTerm" placeholder="Digite para buscar" />
     </div>
 
     <div v-for="(tasks, date) in groupedTasks" :key="date">
@@ -30,9 +27,9 @@
             :class="isValidDate(task.date_conclusion) ? 'done' : 'canceled'" />
         </div>
         <div class="group-column" v-if="showGroupColumn">
-          <router-link style="display: flex;" v-if="task.opportunity"
+          <router-link :class="getColorClassForName(task.opportunity.name)" style="display: flex;" v-if="task.opportunity"
             :to="{ name: 'opportunityShow', params: { id: task.opportunity.id } }">
-            <p class="group-name" :class="getColorClassForName(task.opportunity.name)">
+            <p class="group-name">
               <font-awesome-icon icon="fa-solid fa-bullseye" :class="getColorClassForName(task.opportunity.name)" />
               {{ trimName(task.opportunity.name) }}
             </p>
@@ -80,7 +77,7 @@
 <script>
 import axios from "axios";
 import { convertUtcToLocal, formatDuration } from "@/utils/date/dateUtils";
-import { getColorClassForName, getStatusColor, getPriorityClass, getDeadlineClass, getStatusIcon } from "@/utils/card/cardUtils";
+import { getColorClassForName, getStatusColor, getPriorityClass, getDeadlineClass, getStatusIcon, trimName } from "@/utils/card/cardUtils";
 import { BACKEND_URL, IMAGES_PATH, TASK_URL_PARAMETER, TASK_PRIORIZED_URL } from "@/config/apiConfig";
 import { index } from "@/utils/requests/httpUtils";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
@@ -108,7 +105,6 @@ export default {
     return {
       formatedDate: '',
       formatedTime: '',
-      isActive: true,
       showGroupColumn: false,
       showTaskDuration: false,
       percentage: 0,
@@ -131,8 +127,8 @@ export default {
     getPriorityClass,
     getDeadlineClass,
     getStatusIcon,
+    trimName,
     addTaskCreated(newTask) {
-      this.toggle();
       this.localTasks.unshift(newTask);
     },
     formatDateGroup(date) {
@@ -154,11 +150,6 @@ export default {
     trimDescription(description) {
       if (description) {
         return description.substring(0, 110);
-      }
-    },
-    trimName(description) {
-      if (description) {
-        return description.substring(0, 50);
       }
     },
     // getColumnClass(columns) {
@@ -192,53 +183,6 @@ export default {
         })
         .catch((error) => console.log(error));
     },
-    // async getTasksFromProject(page = 1) {
-
-    //   this.tasksUrl = `${BACKEND_URL}${TASK_BY_PROJECT_URL}project_id=${this.projectId}&per_page=50&page=${page}`;
-
-    //   try {
-    //     const response = await axios.get(this.tasksUrl);
-
-    //     this.tasks = response.data.data.map(task => {
-    //       return { ...task, editing: false }; // Adiciona a propriedade editing a cada task
-    //     });
-
-    //     this.totalTasks = response.data.total_tasks;
-    //     this.completedTasks = response.data.completed_tasks;
-    //     this.percentage = Math.round((this.completedTasks / this.totalTasks) * 100);
-
-    //     this.paginationData = {
-    //       links: response.data.links,
-    //       meta: response.data.meta,
-    //     };
-
-    //   } catch (error) {
-    //     console.error("Erro ao acessar tarefas:", error);
-    //   }
-    // },
-    // async getTasksFromOpportunity(page = 1) {
-
-    //   this.tasksUrl = `${BACKEND_URL}${TASK_BY_OPPORTUNITY_URL}opportunity_id=${this.opportunityId}&per_page=50&page=${page}`;
-
-    //   try {
-    //     const response = await axios.get(this.tasksUrl);
-
-    //     this.tasks = response.data.data.map(task => {
-    //       return { ...task, editing: false }; // Adiciona a propriedade editing a cada task
-    //     });
-
-    //     this.totalTasks = response.data.total_tasks;
-    //     this.completedTasks = response.data.completed_tasks;
-
-    //     this.paginationData = {
-    //       links: response.data.links,
-    //       meta: response.data.meta,
-    //     };
-
-    //   } catch (error) {
-    //     console.error("Erro ao acessar tarefas:", error);
-    //   }
-    // },
     isValidDate(date) {
       if (date != '1969-12-31 18:00:00'
         && date != '1969-12-31 21:00:00'
@@ -271,9 +215,6 @@ export default {
       const index = this.localTasks.findIndex(task => task.id === taskId);
       this.localTasks.splice(index, 1, updatedTask);
     },
-    toggle() {
-      this.isActive = !this.isActive;
-    },
   },
   computed: {
     ...mapState({
@@ -282,20 +223,6 @@ export default {
     urlImagePhoto() {
       return `${IMAGES_PATH}${this.userData.photo}`;
     },
-    // tasks() {
-    //   if (this.searchTerm === "") {
-    //     return this.tasks;
-    //   } else {
-    //     const lowerSearchTerm = this.searchTerm.toLowerCase();
-    //     return this.tasks.filter((task) => {
-    //       return (
-    //         task.name.toLowerCase().includes(lowerSearchTerm) ||
-    //         (task.description &&
-    //           task.description.toLowerCase().includes(lowerSearchTerm))
-    //       );
-    //     });
-    //   }
-    // },
     groupedTasks() {
       if (this.localTasks && this.localTasks.length > 0) {
         return this.localTasks.reduce((groups, task) => {
@@ -314,7 +241,6 @@ export default {
   watch: {
     tasks: {
       handler(newVal) {
-        console.log('Tasks updated:', newVal);
         this.localTasks = newVal;
       },
       deep: true,
@@ -350,8 +276,20 @@ export default {
 <style scoped>
 a {
   text-decoration: none;
+  color: inherit;
 }
 
+a:visited {
+  color: inherit;
+}
+
+a:hover {
+  color: inherit;
+}
+
+a:active {
+  color: inherit; 
+}
 
 .checked-icon {
   font-size: 1.4rem;

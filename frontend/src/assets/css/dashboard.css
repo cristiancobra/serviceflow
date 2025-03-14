@@ -14,8 +14,11 @@
     justify-content: center;
     align-items: center;
     font-size: 2rem;
-    padding: 0.2rem;
-    margin: 0rem;
+    padding: 1rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
     border-style: none;
     border-width: 0px;
     border-radius: 20px;
@@ -24,7 +27,6 @@
 }
 
 .small-container .icon {
-
     color: var(--primary);
 }
 

@@ -86,6 +86,32 @@ export const submitFormCreate = async (model, form) => {
   }
 };
 
+export const submitFormUpdate = async (model, id, form) => {
+  validateModel(model);
+  try {
+    const response = await axios.patch(
+      `${BACKEND_URL}${model}/${id}`,
+      form
+    );
+
+    const { data } = response.data;
+
+    return { data, error: null };
+
+  } catch (error) {
+    console.error("Error submitting form:", error);
+
+    let errorData;
+    if (!error.response || !error.response.data.errors) {
+      errorData = { form: ["Ocorreu um erro ao enviar o formulário. Tente novamente."] };
+    } else {
+      errorData = error.response.data.errors;
+    }
+
+    return { data: null, error: errorData };
+  }
+}
+
 
 // update on field of a model
 export const updateField = async (model, id, fieldName, value) => {

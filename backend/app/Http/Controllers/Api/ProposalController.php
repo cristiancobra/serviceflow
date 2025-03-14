@@ -159,6 +159,26 @@ class ProposalController extends Controller
             $proposal->fill($validatedData);
             $proposal->save();
 
+            // proposal costs
+            if ($request->input('proposalCosts')) {
+                $costsFormData = $request->input('proposalCosts', []);
+                $proposalCosts = $this->updateOrCreateProposalCostsObjects($costsFormData, $proposal->id);
+
+                foreach ($proposalCosts as $proposalCost) {
+                    $proposalCost->proposal_id = $proposal->id;
+                    $proposalCost->save();
+                }
+            }
+
+            $this->updateTotalThirdPartyCost($proposal);
+            $this->calculateProposalTotals($proposal);
+
+
+            $proposal->load([
+                'proposalServices',
+                'proposalCosts',
+            ]);
+
             return ProposalsResource::make($proposal);
         } catch (ValidationException $validationException) {
             return response()->json([
@@ -184,6 +204,46 @@ class ProposalController extends Controller
         return response()->json([
             'message' => "Proposta excluída com sucesso",
         ], 200);
+    }
+
+    /**
+     * Calculate and update the total values for a proposal.
+     *
+     * @param  Proposal  $proposal
+     * @return void
+     */
+    private function calculateProposalTotals(Proposal $proposal)
+    {
+        $proposal->load(['proposalServices', 'proposalCosts']);
+
+        $proposalTotalHours = 0;
+        $proposalTotalPrice = 0;
+        $proposalTotalProfit = 0;
+        $proposalTotalOperationalCost = 0;
+        $proposalTotalDiscount = 0;
+
+        foreach ($proposal->proposalServices as $proposalService) {
+            $proposalTotalHours += $proposalService->labor_hours_total;
+            $proposalTotalPrice += $proposalService->total_price;
+            $proposalTotalProfit += $proposalService->total_profit;
+            $proposalTotalOperationalCost += $proposalService->labor_hourly_rate_total;
+        }
+
+        $proposalTotalCosts = 0;
+
+        foreach ($proposal->proposalCosts as $proposalCost) {
+            $proposalTotalCosts += $proposalCost->total_price;
+        }
+
+        $proposal->total_hours = $proposalTotalHours;
+        $proposal->total_third_party_cost = $proposalTotalCosts;
+        $proposal->total_operational_cost = $proposalTotalOperationalCost;
+        $proposal->total_profit = $proposalTotalProfit;
+        $proposal->total_discount = $proposalTotalDiscount;
+        $proposal->total_price = $proposalTotalPrice + $proposalTotalCosts;
+        $proposal->total_profit_percentage = ($proposal->total_profit / $proposal->total_price) * 100;
+
+        $proposal->save();
     }
 
     /**
@@ -275,6 +335,48 @@ class ProposalController extends Controller
                     'price' => $costModel->price,
                     'total_price' => $costFormData['quantity'] * $costModel->price,
                 ]);
+            }
+        }
+        return $proposalCosts;
+    }
+
+    /**
+     * Sum and Update the proposal total_third_party_cost.
+     *
+     * @param  Proposal  $proposal
+     * @return ProposalService[] Array of ProposalService objects
+     */
+    private function updateTotalThirdPartyCost(Proposal $proposal)
+    {
+        $totalThirdPartyCost = $proposal->proposalCosts->sum('total_price');
+        $proposal->total_third_party_cost = $totalThirdPartyCost;
+        $proposal->save();
+    }
+
+    private function updateOrCreateProposalCostsObjects($costsFormData, $proposalId)
+    {
+        $proposalCosts = [];
+        $totalThirdPartyCostDifference = 0;
+        foreach ($costsFormData as $costFormData) {
+            $costModel = Cost::find($costFormData['id']);
+
+            if ($costModel) {
+                $proposalCost = ProposalCost::updateOrCreate(
+                    [
+                        'cost_id' => $costModel->id,
+                        'proposal_id' => $proposalId
+                    ],
+                    [
+                        'cost_id' => $costModel->id,
+                        'account_id' => $costModel->account_id,
+                        'name' => $costModel->name,
+                        'quantity' => $costFormData['quantity'],
+                        'price' => $costModel->price,
+                        'total_price' => $costFormData['quantity'] * $costModel->price,
+                    ]
+                );
+
+                $proposalCosts[] = $proposalCost;
             }
         }
         return $proposalCosts;
@@ -375,14 +477,14 @@ class ProposalController extends Controller
         return ProposalsResource::collection($proposals);
     }
 
-        /**
+    /**
      * Get the total value of all proposals.
      *
      * @return \Illuminate\Http\Response
      */
     public function report()
     {
-        $totalValue = Proposal::getTotalValue();    
+        $totalValue = Proposal::getTotalValue();
         $acceptedProposalsCount = Proposal::getAcceptedCount();
         return response()->json([
             'total' => $totalValue,

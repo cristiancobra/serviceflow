@@ -69,3 +69,9 @@ export function getStatusIcon(date) {
     return "fas fa-stop";
 
 }
+
+export function trimName(description) {
+    if (description) {
+        return description.substring(0, 50);
+    }
+}

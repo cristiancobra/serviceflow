@@ -120,6 +120,12 @@ label {
   background-color: var(--blue);
 }
 
+.col-half {
+  flex:  0 0 50%;
+  max-width: 50%;
+  box-sizing: border-box;
+}
+
 .stop {
   font-weight: 900;
   color: var(--blue);

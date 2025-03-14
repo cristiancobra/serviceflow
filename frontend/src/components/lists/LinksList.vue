@@ -95,22 +95,6 @@ export default {
 </script>
 
 <style scoped>
-.highlight {
-    animation: highlightAnimation 4s ease-out;
-}
-
-@keyframes highlightAnimation {
-    0% {
-        background-color: var(--done-color);
-        border-color: var(--done-color);
-        border-width: 5px;
-    }
-
-    100% {
-        background-color: transparent;
-    }
-}
-
 .link-name {
     font-size: 1rem;
     font-weight: 600;

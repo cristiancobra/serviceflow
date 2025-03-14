@@ -83,7 +83,7 @@
 
       <div class="info-container" v-show="currentSection === 'journeys'">
         <div class="page-container">
-          <journeys-list template="by-task" :taskId="taskId" @update-task-duration="updateTaskDuration()"
+          <journeys-list-from-task :task="task" @update-task-duration="updateTaskDuration()"
             @last-journey-end="updateEndTaskButtonVisibility" />
         </div>
       </div>
@@ -112,7 +112,6 @@ import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
 import DateEditableInput from "@/components/fields/datetime/DateTimeEditableInput";
 import { show } from "@/utils/requests/httpUtils.js";
-import JourneysList from "@/components/lists/JourneysList.vue";
 import OpportunitiesSelectEditableField from '../../components/fields/selects/OpportunitiesSelectEditableField.vue';
 import ProjectsSelectEditableField from "@/components/fields/selects/ProjectsSelectEditableField.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField";
@@ -120,19 +119,20 @@ import TextEditor from "@/components/forms/inputs/TextEditor.vue";
 import UsersSelectEditableField from "@/components/fields/selects/UsersSelectEditableField.vue";
 import TaskCloneForm from '../../components/forms/TaskCloneForm.vue';
 import LinksList from '../../components/lists/LinksList.vue';
+import JourneysListFromTask from '../../components/lists/JourneysListFromTask.vue';
 
 export default {
   name: "TaskShow",
   components: {
     DateEditableInput,
-    JourneysList,
     OpportunitiesSelectEditableField,
     ProjectsSelectEditableField,
     TextEditableField,
     TextEditor,
     UsersSelectEditableField,
     TaskCloneForm,
-    LinksList
+    LinksList,
+    JourneysListFromTask
   },
   data() {
     return {
@@ -203,7 +203,6 @@ export default {
     },
     async reloadTask(newId) {
       this.task = await show("tasks", newId);
-      console.log("taskReload", this.task);
       this.project = this.task.project;
       this.taskLoaded = true; // Marque a tarefa como carregada
     },
@@ -270,7 +269,6 @@ export default {
     }
   },
   async mounted() {
-    console.log("showButon", this.showEndTaskButton);
     this.setTaskId(this.$route.params.id);
     this.getTask();
   },

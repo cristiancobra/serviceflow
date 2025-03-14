@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="row mt-5">
+    <div style="display: flex;">
       <p class="text-end">
         Bem vindo, hoje é
         <span style="font-weight: bolder">
@@ -9,21 +9,17 @@
       </p>
     </div>
 
-    <div class="row mt-2 mb-4 me-5 ms-3">
-      <div class="col-2">
-        <div class="small-container">
-          <total-opportunities-open />
-        </div>
+    <div style="display: flex;">
+      <div class="small-container">
+        <total-opportunities-open />
       </div>
-      <div class="col-2">
-        <div class="small-container">
-          <total-proposal-open />
-        </div>
+      <div class="small-container">
+        <total-proposal-open />
       </div>
     </div>
 
     <TasksList template="home" />
-    
+
   </div>
 </template>
 

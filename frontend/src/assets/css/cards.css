@@ -188,16 +188,6 @@
   border-bottom-color: lightgray
 }
 
-.search-container {
-  border-width: 2px;
-  border-style: solid;
-  border-color: lightgray;
-  border-radius: 20px 20px 20px 20px;
-  padding: 10px 15px 10px 15px;
-  margin: 0 4px 0 4px;
-  color: black;
-}
-
 .status {
   display: flex;
   align-items: center;

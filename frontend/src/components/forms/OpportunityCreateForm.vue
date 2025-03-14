@@ -87,9 +87,8 @@
 
 
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                                    @click="closeModal">Fechar</button>
-                                <button type="submit" class="button-new" data-bs-dismiss="modal">criar</button>
+                                <button type="button" class="btn btn-secondary" @click="closeModal">Fechar</button>
+                                <button type="submit" class="button-new">criar</button>
                             </div>
                         </form>
                     </div>

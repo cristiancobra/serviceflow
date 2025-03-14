@@ -1,10 +1,10 @@
 <template>
-  <div class="mb-5">
+    <div class="page-container">
     <JourneysFilter @filter-canceled="getJourneysCanceled" @filter-doing="getJourneysDoing"
       @filter-done="getJourneysDone" @filter-late="getJourneysLate" @filter-to-do="getJourneysToDo" />
     <ErrorMessage v-if="isError" :formResponse="formResponse" />
     <SuccessMessage v-if="isSuccess" :formResponse="formResponse" />
-    <JourneysList @toggle="toggle" template="index" />
+    <JourneysList @toggle="toggle" />
   </div>
 </template>
 

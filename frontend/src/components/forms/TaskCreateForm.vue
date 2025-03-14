@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button type="button" class="button button-new d-flex justify-content-center" @click="openModal">
+    <button type="button" class="button button-new" @click="openModal">
       <font-awesome-icon icon="fa-solid fa-plus" class="" />
     </button>
 

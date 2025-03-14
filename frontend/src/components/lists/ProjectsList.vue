@@ -2,37 +2,27 @@
   <div class="page-container">
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
-    <div class="row align-items-start">
-      <div class="col-1">
-        <font-awesome-icon icon="fa-solid fa-project-diagram" class="icon" />
-      </div>
-      <div class="col-8">
-        <h2 class="title">PROJETOS</h2>
-      </div>
-      <div class="col-3 d-flex justify-content-end">
-        <button class="button button-new" @click="toggle()">+</button>
-      </div>
+    <div class="page-header">
+    <div class="title-container">
+      <font-awesome-icon icon="fa-solid fa-project-diagram" class="icon" />
+      <h1>PROJETOS</h1>
     </div>
-    <div class="row" v-bind:class="{ 'd-none': isActive }">
-      <ProjectCreateForm @new-project-event="addProjectCreated" @toggle-project-form=toggle() />
+    <div class="action-container">
+      <ProjectCreateForm @new-project-event="addProjectCreated" />
     </div>
-    <div class="row">
-      <div class="col-12 mb-3 mt-3">
-        <input type="text" class="form-control search-container" v-model="searchTerm"
-          placeholder="Digite para buscar" />
-      </div>
+  </div>
+
+    <div class="search-container">
+      <input type="text" class="search-input" v-model="searchTerm" placeholder="Digite para buscar" />
     </div>
-    <div class="row" v-for="project in filteredProjects" v-bind:key="project.id">
-      <div class="col-1 d-flex align-items-center justify-content-center" id="col-user">
+
+    <div class="list-line" v-for="project in filteredProjects" v-bind:key="project.id">
+      <div class="icons-column">
         <font-awesome-icon icon="fa-solid fa-folder-open" class="primary big-icon" />
+        <font-awesome-icon v-if="project.date_conclusion" icon="fas fa-check-circle" style="font-size: 2rem;" class="done" />
+        <font-awesome-icon v-else icon="fas fa-check-circle" style="font-size: 2rem;" class="canceled" />
       </div>
-      <div v-if="project.date_conclusion" class="col-1 status done">
-        <font-awesome-icon icon="fas fa-check-circle" style="font-size: 2rem;" class="done mb-3" />
-      </div>
-      <div v-else class="col-1 status canceled">
-        <font-awesome-icon icon="fas fa-check-circle" style="font-size: 2rem;" class="canceled" />
-      </div>
-      <div class="col cards">
+      <div class="task-column">
         <router-link :to="{ name: 'projectShow', params: { id: project.id } }">
           <div class="row title">
             <div class="col">
@@ -43,7 +33,7 @@
           </div>
         </router-link>
       </div>
-      <div class="col-3 line-list d-flex align-items-center justify-content-center">
+      <div class="date-column">
         <DateTimeValue v-if="project.date_conclusion" v-model="project.date_conclusion" classText="done"
           classIcon='done' @save="updateProject('date_conclusion', $event, project.id)" />
         <DateTimeEditableInput v-else v-model="project.date_due" :classText="getDeadlineClass(project.date_due)"
@@ -96,7 +86,7 @@ export default {
     getPriorityClass,
     getStatusIcon,
     addProjectCreated(newProject) {
-      this.toggle();
+      // this.toggle();
       this.projects.unshift(newProject);
     },
     getCombinedClasses(status, priority) {
@@ -146,9 +136,9 @@ export default {
         console.error("Erro ao acessar projetos:", error);
       }
     },
-    toggle() {
-      this.isActive = !this.isActive;
-    },
+    // toggle() {
+    //   this.isActive = !this.isActive;
+    // },
     updateProjectsList(updatedProject, projectId) {
       const index = this.projects.findIndex(project => project.id === projectId);
       this.projects.splice(index, 1, updatedProject);

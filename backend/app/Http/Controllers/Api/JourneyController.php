@@ -17,7 +17,11 @@ class JourneyController extends Controller
      */
     public function index()
     {
-        $journeys = Journey::with('task') // Carrega o relacionamento project
+        $journeys = Journey::with([
+            'task',
+            'task.project',
+            'task.opportunity',
+        ])
             ->orderBy('start', 'desc')
             ->paginate(50);
 
@@ -104,7 +108,6 @@ class JourneyController extends Controller
             $journey->save();
             $journey->updateAssociatedTaskDuration();
             return JourneyResource::make($journey);
-            
         } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",

@@ -180,7 +180,7 @@ export default {
   color: white;
   background-color: var(--primary);
   z-index: 1000;
-  height: 7vh;
+  height: auto;
 }
 
 .navbar {

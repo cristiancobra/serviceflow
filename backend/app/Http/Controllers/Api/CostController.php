@@ -37,6 +37,7 @@ class CostController extends Controller
             $cost->account_id = auth()->user()->account_id;
             $cost->fill($request->all());
             $cost->save();
+            
             return new CostResource($cost);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
