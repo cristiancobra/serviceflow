@@ -169,21 +169,6 @@ label {
   font-size: 0.8rem;
 }
 
-.form-container {
-  border-style: solid;
-  border-color: #ff3eb5;
-  border-width: 2px;
-  /* margin-left: 180px;
-    margin-right: 180px; */
-  margin-bottom: 60px;
-  margin-top: 60px;
-  padding: 4%;
-  border-radius: 16px;
-  transition: all 0.5s;
-  text-align: left;
-  font-weight: 800;
-}
-
 .main {
   margin-left: 10%;
   margin-right: 10%;

@@ -129,28 +129,6 @@ export default {
     font-weight: 600;
 }
 
-.btn-close {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #000;
-  cursor: pointer;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 0;
-  line-height: 1;
-}
-
-.btn-close:hover {
-  color: #ff0000; /* Cor ao passar o mouse */
-}
-
-.btn-close::before {
-  content: '×'; /* Símbolo de fechar */
-}
-
 .container {
   border-style: solid;
   border-color: #ff3eb5;

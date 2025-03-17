@@ -23,12 +23,19 @@ class Service extends Model
         'observations',
     ];
 
+    public function costs()
+    {
+        return $this->belongsToMany(Cost::class, 'service_costs')
+            ->withPivot('quantity', 'price', 'total_price')
+            ->withTimestamps();
+    }
+
     public function calculateLaborHourlyTotal($service)
     {
         $hours = $service->labor_hours / 3600;
         $total = $hours * $service->labor_hourly_rate;
         $formattedTotal = number_format($total, 2, '.', '');
-        
+
         return $formattedTotal;
     }
 
@@ -45,8 +52,7 @@ class Service extends Model
 
         $profit = $service->labor_hourly_total / $divisionFactorDecimal - $service->labor_hourly_total;
         $profit = number_format($profit, 2);
-        
+
         return $profit;
     }
-
 }

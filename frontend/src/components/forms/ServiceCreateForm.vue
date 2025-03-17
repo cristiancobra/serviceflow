@@ -1,113 +1,203 @@
 <template>
   <div>
-    <button type="button" class="button button-new d-flex justify-content-center" @click=openModal>
+    <button
+      type="button"
+      class="button button-new d-flex justify-content-center"
+      @click="openModal"
+    >
       <font-awesome-icon icon="fa-solid fa-plus" class="" />
     </button>
 
     <div v-if="isModalVisible" class="myModal">
-      <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-          <div class="myModal-header">
-            <font-awesome-icon icon="fa-solid fa-tasks" class="myModal-icon" />
-            <h5 class="myModal-title" id="taskModalLabel">Novo serviço</h5>
-            <button type="button" class="myModal-button-close" @click="closeModal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form @submit.prevent="submitForm">
-              <div class="row">
-                <div class="col">
-                  <TextInput label="Nome" name="name" v-model="form.name" placeholder="nome do serviço" />
+      <div class="modal-content">
+        <div class="myModal-header">
+          <font-awesome-icon icon="fa-solid fa-tasks" class="myModal-icon" />
+          <h5 class="myModal-title" id="taskModalLabel">Novo serviço</h5>
+          <button
+            type="button"
+            class="myModal-button-close"
+            @click="closeModal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form @submit.prevent="submitForm">
+            <div class="form-section">
+              <div class="table-row">
+                <div class="column-100">
+                  <TextInput
+                    label="Nome"
+                    name="name"
+                    v-model="form.name"
+                    placeholder="nome do serviço"
+                  />
                   <div class="error-row" v-if="errors.name">
                     <span class="error-text">* {{ errors.name[0] }}</span>
                   </div>
                 </div>
               </div>
 
-              <div class="form-group">
-                <div class="row">
-                  <div class="col-4">
-                    <label class="labels" for="observations"> Observações </label>
-                  </div>
-                  <div class="col-8">
-                    <input class="form-control" type="text" id="observations" v-model="form.observations"
-                      placeholder="Digite o nome do responsável por garantir a execução do projeto" />
-                  </div>
+              <div class="table-row">
+                <div class="column-25">
+                  <label class="labels" for="observations"> Observações </label>
+                </div>
+                <div class="column-80">
+                  <input
+                    class="form-control"
+                    type="textarea"
+                    id="observations"
+                    v-model="form.observations"
+                    placeholder="Digite o nome do responsável por garantir a execução do projeto"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <div class="subtitle-container">Precificação:</div>
+              <div class="table-row">
+                <div class="column-25">
+                  <label class="labels" for="hours">Tempo de trabalho</label>
+                </div>
+                <div class="col">
+                  <label class="labels">horas</label>
+                </div>
+                <div class="col">
+                  <input
+                    class="form-control"
+                    type="number"
+                    name="hours"
+                    v-model="form.hours"
+                    placeholder="HH"
+                    min="0"
+                    max="23"
+                  />
+                </div>
+                <div class="col">
+                  <label class="labels">minutos</label>
+                </div>
+                <div class="col">
+                  <input
+                    class="form-control"
+                    type="number"
+                    name="minutes"
+                    v-model="form.minutes"
+                    placeholder="MM"
+                    min="0"
+                    max="59"
+                  />
+                </div>
+                <div class="column-15">
+                  <label class="labels" for="labor_hourly_rate_minutes">
+                    Valor da hora
+                  </label>
+                </div>
+                <div class="col">
+                  <input
+                    class="form-control text-end"
+                    type="text"
+                    name="labor_hourly_rate"
+                    v-model="form.labor_hourly_rate"
+                    v-mask-decimal.br="2"
+                  />
                 </div>
               </div>
 
-              <div class="form-group">
-                <div class="row">
-                  <div class="col-4">
-                    <label class="labels" for="hours">Tempo de trabalho</label>
-                  </div>
-                  <div class="col">
-                    <label class="labels">horas</label>
-                  </div>
-                  <div class="col">
-                    <input class="form-control" type="number" name="hours" v-model="form.hours" placeholder="HH" min="0"
-                      max="23" />
-                  </div>
-                  <div class="col">
-                    <label class="labels">minutos</label>
-                  </div>
-                  <div class="col">
-                    <input class="form-control" type="number" name="minutes" v-model="form.minutes" placeholder="MM"
-                      min="0" max="59" />
-                  </div>
+              <div class="table-row">
+                <div class="column-25">
+                  <label class="labels" for="profit_percentage">
+                    Margem de lucro
+                  </label>
                 </div>
-                <div class="row">
-                  <div class="col-4">
-                    <label class="labels" for="labor_hourly_rate_minutes">
-                      Valor da hora de trabalho
-                    </label>
-                  </div>
-                  <div class="col">
-                    <input class="form-control text-end" type="text" name="labor_hourly_rate"
-                      v-model="form.labor_hourly_rate" v-mask-decimal.br="2" />
-                  </div>
+                <div class="column-10">
+                  <label class="labels" for="profit_percentage"> % </label>
                 </div>
-                <div class="row">
-                  <div class="col-4">
-                    <label class="labels" for="profit_percentage">
-                      Margem de lucro
-                    </label>
-                  </div>
-                  <div class="col-2 d-flex">
-                    <label class="labels" for="profit_percentage">
-                      percentual
-                    </label>
-                  </div>
-                  <div class="col-2">
-                    <input class="form-control text-end" type="text" name="profit_percentage"
-                      v-model="form.profit_percentage" v-mask="'000'" />
-                  </div>
-                  <div class="col-2 d-flex">
-                    <label class="labels" for="profit">
-                      valor em R$
-                    </label>
-                  </div>
-                  <div class="col-2">
-                    <input class="form-control text-end" type="text" name="profit" v-model="form.profit"
-                      v-mask-decimal.br="2" />
-                  </div>
-                  <div class="row">
-                    <div class="col-4">
-                      <label class="labels" for="price">
-                        Preço final
-                      </label>
-                    </div>
-                    <div class="col-8">
-                      <input class="form-control text-end" type="text" name="price" v-model="form.price"
-                        v-mask-decimal.br="2" disabled />
-                    </div>
-                  </div>
+                <div class="price-column">
+                  <input
+                    class="form-control text-end"
+                    type="text"
+                    name="profit_percentage"
+                    v-model="form.profit_percentage"
+                    @input="onProfitInput"
+                  />
+                </div>
+                <div class="column-5">
+                  <label class="labels" for="profit"> R$ </label>
+                </div>
+                <div class="price-column">
+                  <input
+                    class="form-control text-end"
+                    type="text"
+                    name="profit"
+                    v-model="form.profit"
+                    v-mask-decimal.br="2"
+                  />
                 </div>
               </div>
-              <div class="row ms-5 me-5 mt-4 mb-2">
-                <button type="submit" class="btn new">Criar</button>
+              <div class="table-row">
+                <div class="column-80">
+                  <label class="labels" for="price"> Preço final </label>
+                </div>
+                <div class="price-column">
+                  <input
+                    class="form-control text-end"
+                    type="text"
+                    name="price"
+                    v-model="form.price"
+                    v-mask-decimal.br="2"
+                    disabled
+                  />
+                </div>
               </div>
-            </form>
-          </div>
+            </div>
+
+            <div v-if="costs.length === 0" class="table-row">
+              <p>Você ainda não possui custos cadastrados.</p>
+            </div>
+            <div v-else class="form-section">
+              <div class="subtitle-container">Custos:</div>
+              <div class="table-row" v-for="cost in costs" :key="cost.id">
+                <div class="column-40">
+                  <label :for="cost.id">
+                    {{ cost.name }}
+                  </label>
+                </div>
+                <div class="column-10">
+                  <input
+                    type="number"
+                    min="0"
+                    :id="cost.id"
+                    v-model.number="cost.quantity"
+                    placeholder="0"
+                    class=""
+                    @input="updateTotalPrice(cost)"
+                  />
+                </div>
+                <div class="column-10">
+                  <p class="price">R$ {{ cost.price }}</p>
+                </div>
+                <div class="column-10">
+                  <p
+                    class="total-price"
+                    :class="{ 'price-active': cost.total_price > 0 }"
+                  >
+                    R$ {{ cost.total_price }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-row">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                @click="closeModal"
+              >
+                Fechar
+              </button>
+              <button type="submit" class="button button-new">Criar</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -115,7 +205,7 @@
 </template>
 
 <script>
-import { submitFormCreate } from "@/utils/requests/httpUtils";
+import { index, submitFormCreate } from "@/utils/requests/httpUtils";
 import TextInput from "./inputs/text/TextInput";
 
 export default {
@@ -124,7 +214,7 @@ export default {
   data() {
     return {
       allStatus: [],
-      message: null,
+      costs: [],
       data: [],
       errors: [],
       form: {
@@ -139,60 +229,177 @@ export default {
         minutes: 0,
       },
       isModalVisible: false,
-      userInput: true,
+      message: null,
+      userInput: false,
     };
   },
   components: {
     TextInput,
   },
   methods: {
+    index,
     submitFormCreate,
     calculateProfit() {
-      if (this.userInput) {
-        let formattedLaborHours = this.form.hours + this.form.minutes / 60;
-        let formattedLaborHourlyRate = parseFloat(this.form.labor_hourly_rate.replace(',', '.'));
-        let operationalCost = formattedLaborHourlyRate * formattedLaborHours;
-        let priceWithoutProfit = operationalCost / (1 - this.form.profit_percentage / 100);
-        this.form.profit = parseFloat((priceWithoutProfit - operationalCost).toFixed(2));
-        // this.calculatePrice();
+      let formattedLaborHours = this.form.hours + this.form.minutes / 60;
+      let laborHourlyRate = this.form.labor_hourly_rate;
+      if (typeof laborHourlyRate === "string") {
+        laborHourlyRate = laborHourlyRate.replace(",", ".");
       }
+      let formattedLaborHourlyRate = parseFloat(laborHourlyRate);
+      let operationalCost = formattedLaborHourlyRate * formattedLaborHours;
+
+      // Calculate third party cost
+      let thirdPartyCost = this.costs.reduce(
+        (sum, cost) => sum + parseFloat(cost.total_price.replace(",", ".")),
+        0
+      );
+
+      let totalCost = operationalCost + thirdPartyCost;
+      let profitPercentage = this.form.profit_percentage / 100;
+      let priceWithoutProfit = totalCost / (1 - profitPercentage);
+      this.form.profit = (priceWithoutProfit - totalCost)
+        .toFixed(2)
+        .replace(".", ",");
+
+      // this.calculatePrice();
     },
     calculatePrice() {
-      console.log('profit', this.form.profit);
-      let operationalCost = parseFloat(this.form.labor_hourly_rate.replace(',', '.')) * (this.form.hours + this.form.minutes / 60);
+      let laborHourlyRate = this.form.labor_hourly_rate;
+      if (typeof laborHourlyRate === "string") {
+        laborHourlyRate = laborHourlyRate.replace(",", ".");
+      }
+      let operationalCost =
+        parseFloat(laborHourlyRate) *
+        (this.form.hours + this.form.minutes / 60);
       operationalCost = parseFloat(operationalCost.toFixed(2));
-      console.log('operationalCost', operationalCost);
-      let currentProfit = parseFloat(this.form.profit.replace(',', '.')).toFixed(2);
-      console.log('currentProfit', currentProfit);
-      this.form.price = (operationalCost + currentProfit);
-      // if (typeof this.form.labor_hourly_rate === 'string') {
-        // this.form.price = (parseFloat(this.form.profit) + parseFloat(this.form.labor_hourly_rate.replace(',', '.')) * (this.form.hours + this.form.minutes / 60)).toFixed(2);
-      // } else {
-      //   this.form.price = (parseFloat(this.form.profit) + this.form.labor_hourly_rate * (this.form.hours + this.form.minutes / 60)).toFixed(2);
-      // }
-      console.log('price depois', this.form.price);
+
+      this.form.labor_hourly_total = operationalCost;
+
+      let profit = this.form.profit;
+      if (typeof profit === "string") {
+        profit = profit.replace(",", ".");
+      }
+      profit = parseFloat(profit);
+
+      this.updateFinalPrice();
+    },
+    clearForm() {
+      this.form = {
+        labor_hourly_rate: "",
+        hours: 0,
+        minutes: 0,
+        profit: "",
+        price: 0,
+        labor_hourly_total: 0,
+        labor_hours: 0,
+        costs: [],
+      };
+      this.costs = [];
+      this.errors = null;
     },
     closeModal() {
       this.isModalVisible = false;
     },
+    async getCosts() {
+      this.costs = await this.index("costs");
+      this.costs.forEach((cost) => {
+        cost.total_price = "0,00";
+      });
+    },
+    handleKeydown(event) {
+      if (event.key === "Escape" || event.key === "Esc") {
+        this.closeModal();
+      }
+    },
     async submitForm() {
       this.form.labor_hours = this.form.hours * 3600 + this.form.minutes * 60;
-      this.form.labor_hourly_rate = parseFloat(this.form.labor_hourly_rate.replace(',', '.'));
-      this.form.profit = parseFloat(this.form.profit.replace(',', '.'));
-      this.form.price = parseFloat(this.form.price.replace(',', '.'));
+      this.form.labor_hourly_rate = parseFloat(
+        this.form.labor_hourly_rate.replace(",", ".")
+      );
+      this.form.profit = parseFloat(this.form.profit.replace(",", "."));
+      this.form.price = parseFloat(this.form.price.replace(",", "."));
 
-      const { data, error } = await this.submitFormCreate("services", this.form);
+      this.form.costs = this.costs
+        .filter((cost) => cost.quantity > 0)
+        .map((cost) => ({
+          id: cost.id,
+          quantity: cost.quantity,
+          price: cost.price,
+          total_price: cost.total_price,
+        }));
+
+      const { data, error } = await this.submitFormCreate(
+        "services",
+        this.form
+      );
 
       if (data) {
         this.isModalVisible = false;
         this.$emit("new-service-event", data);
+        this.clearForm();
       }
       if (error) {
         this.errors = error;
       }
     },
+    onProfitPercentageInput() {
+      this.userInput = true;
+      this.calculateProfit();
+      this.userInput = false;
+    },
     openModal() {
       this.isModalVisible = true;
+    },
+    updateTotalPrice(cost) {
+      if (cost.quantity > 0) {
+        cost.total_price = (cost.quantity * cost.price).toFixed(2);
+      } else {
+        cost.total_price = "0,00";
+      }
+      this.updateFinalPrice();
+    },
+    updateFinalPrice() {
+      let totalCost = this.costs.reduce(
+        (sum, cost) => sum + parseFloat(cost.total_price.replace(",", ".")),
+        0
+      );
+
+      let profit = this.form.profit;
+      if (typeof profit === "string") {
+        profit = profit.replace(",", ".");
+      }
+      profit = parseFloat(profit);
+
+      this.form.price = (
+        totalCost +
+        parseFloat(this.form.labor_hourly_total || 0) +
+        profit
+      ).toFixed(2);
+
+      this.updateProfitPercentage();
+    },
+    updateProfitPercentage() {
+      let profit = this.form.profit;
+      if (typeof profit !== "string") {
+        profit = profit.toString();
+      }
+      profit = profit.replace(",", ".");
+      profit = parseFloat(profit);
+
+      let price = this.form.price;
+      if (typeof price !== "string") {
+        price = price.toString();
+      }
+      price = price.replace(",", ".");
+      price = parseFloat(price);
+
+      console.log(`Profit: ${profit}, Price: ${price}`);
+      if (price > 0) {
+        this.form.profit_percentage = ((profit / price) * 100).toFixed(2);
+      } else {
+        this.form.profit_percentage = "0";
+      }
+      console.log(`Profit Percentage: ${this.form.profit_percentage}`);
     },
     validateTimeInput() {
       const input = this.form.labor_hours;
@@ -206,56 +413,56 @@ export default {
     },
   },
   watch: {
-    'form.labor_hourly_rate': 'calculatePrice',
-    'form.hours': 'calculatePrice',
-    'form.minutes': 'calculatePrice',
-    'form.profit_percentage': function () {
-      this.userInput = true;
-      this.calculateProfit();
+    isModalVisible(newVal) {
+      if (newVal) {
+        this.getCosts();
+      }
     },
-    // 'form.hours': function () {
-    //   this.userInput = true;
-    //   this.calculatePrice();
-    // },
-    // 'form.minutes': function () {
-    //   this.userInput = true;
-    //   this.calculatePrice();
-    // },
-    'form.profit': function (newVal) {
+    "form.labor_hourly_rate": "calculatePrice",
+    "form.hours": "calculatePrice",
+    "form.minutes": "calculatePrice",
+    "form.profit": function (newVal) {
       this.userInput = false;
       this.form.profit = newVal;
       this.calculatePrice();
     },
   },
+  mounted() {
+    document.addEventListener("keydown", this.handleKeydown);
+  },
+  beforeUnmount() {
+    document.removeEventListener("keydown", this.handleKeydown);
+  },
 };
 </script>
 
 <style scoped>
-.container {
-  border-style: solid;
-  border-color: #ff3eb5;
-  border-width: 2px;
-  margin-left: 180px;
-  margin-right: 180px;
-  margin-bottom: 60px;
-  margin-top: 60px;
-  padding: 20px;
-  border-radius: 16px;
-  transition: all 0.5s;
-  text-align: left;
-  font-weight: 800;
+.quantity-column {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-basis: 5%;
+  text-align: right;
+  margin-right: 2rem;
 }
 
-.labels {
-  text-align: left;
-  margin-left: 0;
-  padding-top: 12px;
+.price {
+  text-align: right;
 }
 
-.new {
-  background-color: #ff3eb5;
-  color: white;
-  font-weight: 800;
-  padding: 10px 20px 10px 20px;
+.total-price {
+  text-align: right;
+}
+
+.price-active {
+  font-weight: bold;
+  color: var(--primary);
+}
+
+.title-column {
+  display: flex;
+  align-items: left;
+  justify-content: left;
+  flex-basis: 45%;
 }
 </style>

@@ -1,43 +1,41 @@
 <template>
-  <div class="page-container mt-5">
-    <div class="row align-items-start pb-5">
-      <div class="col-1">
-        <font-awesome-icon icon="fa-solid fa-tools" class="primary big-icon" />
-      </div>
-      <div class="col">
-        <h2 class="title">CUSTO DE PRODUÇÃO</h2>
+  <div class="page-container">
+    <div class="page-header">
+      <div class="title-container">
+        <font-awesome-icon icon="fa-solid fa-tools" class="icon" />
+        <h1 class="title">CUSTO DE PRODUÇÃO</h1>
       </div>
     </div>
-    <div class="row pb-5">
-      <div class="col title">
+    <div class="table-row">
+      <div class="subtitle-container">
         <TextEditableField name="name" v-model="cost.name" placeholder="descrição detalhada do serviço"
-          @save="updateService('name', $event)" />
+          @save="updateService('name', $event)" class="title"/>
       </div>
     </div>
-    <div class="row">
-      <div class="col-10 d-flex justify-content-end">
+    <div class="table-row">
+      <div class="column-80">
         <p>
           <font-awesome-icon icon="fa fa-clock" />
-          <span class="label"> Custo total</span>
+           Custo total
         </p>
       </div>
-      <div class="col-2 text-end">
-        <money-field name="price" v-model="cost.price" />
+      <div class="column-20">
+        <money-editable-field name="price" v-model="cost.price" @save="updateCost('price', $event)" />
       </div>
     </div>
  
-    <div class="row pt-5 ">
-      <div class="col-5">
+    <div class="table-row pt-5 ">
+      <div class="column-80">
         <p>
           <font-awesome-icon icon="fa fa-calendar-alt" />
-          <span class="label"> Data de criação: </span>
+          Data de criação:
         </p>
       </div>
-      <div class="col-1 text-end">
+      <div class="column-20">
         {{ formatDateBr(cost.created_at) }}
       </div>
     </div>
-    <div class="row mt-5 mb-5">
+    <div class="table-row mt-5 mb-5">
       <div>
         <button class="offset-10 col-1 myButton delete" @click="deleteService()">
           excluir
@@ -51,7 +49,7 @@
 <script>
 import { destroy, show, updateField } from "@/utils/requests/httpUtils";
 import TextEditableField from "@/components/fields/text/TextEditableField";
-import MoneyField from '../../components/fields/number/MoneyField.vue';
+import MoneyEditableField from '../../components/fields/number/MoneyEditableField.vue';
 
 export default {
   data() {
@@ -62,7 +60,7 @@ export default {
   },
   components: {
     TextEditableField,
-    MoneyField,
+    MoneyEditableField,
   },
   methods: {
     destroy,
@@ -92,7 +90,8 @@ export default {
     setCostId(costId) {
       this.costId = costId;
     },
-    async updateService(fieldName, editedValue) {
+    async updateCost(fieldName, editedValue) {
+      console.log(fieldName, editedValue);
       this.cost = await updateField("costs", this.costId, fieldName, editedValue);
     },
   },

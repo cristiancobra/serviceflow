@@ -8,7 +8,7 @@
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="taskModalLabel">Nova proposta</h5>
+                        <h1>Nova proposta</h1>
                         <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">

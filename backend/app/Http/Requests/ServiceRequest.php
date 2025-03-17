@@ -33,7 +33,11 @@ class ServiceRequest extends FormRequest
             'profit_percentage' => 'sometimes|numeric|min:0|max:100',
             'profit' => 'sometimes|numeric|min:0',
             'price' => 'sometimes|numeric|min:0',
+            'total_price' => 'sometimes|numeric|min:0',
             'observations' => 'nullable|string',
+            'costs' => 'sometimes|array',
+            'costs.*.id' => 'required_with:costs|exists:costs,id',
+            'costs.*.quantity' => 'required_with:costs|numeric|min:0',
         ];
     }
 
@@ -49,6 +53,19 @@ class ServiceRequest extends FormRequest
             $this->merge([
                 'labor_hourly_total' => $labor_hours_in_hours * $this->input('labor_hourly_rate'),
             ]);
+        }
+
+        if ($this->has('costs')) {
+            $costs = array_map(function ($cost) {
+                return [
+                    'id' => $cost['id'],
+                    'quantity' => $cost['quantity'],
+                    'price' => $cost['price'],
+                    'total_price' => $cost['total_price'],
+                ];
+            }, $this->input('costs'));
+
+            $this->merge(['costs' => $costs]);
         }
 
         // if($this->has('profit_percentage') && $this->has('labor_hourly_total')) {

@@ -59,12 +59,19 @@ class CostController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\Cost  $cost
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Cost $cost)
     {
-        //
+        try {
+            $cost->fill($request->all());
+            $cost->save();
+            
+            return new CostResource($cost);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
     }
 
     /**

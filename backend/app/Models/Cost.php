@@ -13,6 +13,13 @@ class Cost extends Model
     protected $fillable = [
         'name',
         'price',
-        'company_id'
+        'company_id',
     ];
+
+    public function services()
+    {
+        return $this->belongsToMany(Service::class, 'service_costs')
+            ->withPivot('quantity', 'price', 'total_price')
+            ->withTimestamps();
+    }
 }

@@ -1,35 +1,39 @@
 <template>
-  <div class="page-container mb-5 mt-0">
-    <div class="row">
-      <div class="col d-flex justify-content-left">
+  <div class="page-container">
+    <div class="page-header">
+      <div class="title-container">
         <font-awesome-icon icon="fa-solid fa-tools" class="icon" />
-        <h2 class="title">Custos de produção</h2>
+        <h1>Custos de produção</h1>
+      </div>
+      <div class="action-container">
+        <cost-create-form @new-cost-event="addCostCreated" />
       </div>
     </div>
-    <div class="row mt-3 mb-4">
-      <div class="col-10">
-        <input type="text" class="form-control search-container" v-model="searchTerm"
-          placeholder="Digite para buscar" />
-      </div>
-      <div class="col-2 d-flex justify-content-end">
-        <cost-create-form @new-cost-event="addCostCreated" />  
-      </div>
+    <div class="table-row">
+      <input
+        type="text"
+        class="form-control search-container"
+        v-model="searchTerm"
+        placeholder="Digite para buscar"
+      />
     </div>
-    <div class="row" v-for="cost in costs" v-bind:key="cost.id">
-      <div class="col cards">
-        <router-link :to="{ name: 'costShow', params: { id: cost.id } }">
-          <div class="row title">
-            <div class="col">
-              <p class="name ps-2">
-                {{ cost.name }}
-              </p>
-            </div>
-            <div class="col">
-              <p class="price">R$ {{ cost.price }}</p>
-            </div>
-          </div>
-        </router-link>
-      </div>
+    <div class="table-row" v-for="cost in costs" v-bind:key="cost.id">
+      <router-link
+        :to="{ name: 'costShow', params: { id: cost.id } }"
+        class="link-row"
+      >
+        <div class="icon-column">
+          <font-awesome-icon icon="fa fa-cogs" />
+        </div>
+        <div class="column-80">
+          <p class="name ps-2">
+            {{ cost.name }}
+          </p>
+        </div>
+        <div class="column-20">
+          <p class="price">R$ {{ cost.price }}</p>
+        </div>
+      </router-link>
       <router-view />
     </div>
   </div>
@@ -38,12 +42,12 @@
 <script>
 import { BACKEND_URL, COST_URL } from "@/config/apiConfig";
 import axios from "axios";
-import CostCreateForm from '../forms/CostCreateForm.vue';
+import CostCreateForm from "../forms/CostCreateForm.vue";
 import { index } from "@/utils/requests/httpUtils";
 
 export default {
   components: {
-    CostCreateForm
+    CostCreateForm,
   },
   data() {
     return {
@@ -79,10 +83,7 @@ export default {
         this.updatedCost.price = cost.price;
 
         axios
-          .put(
-            `${BACKEND_URL}${COST_URL}${cost.id}`,
-            this.updatedCost
-          )
+          .put(`${BACKEND_URL}${COST_URL}${cost.id}`, this.updatedCost)
           .then((response) => {
             console.log(response.data);
           });
@@ -91,7 +92,7 @@ export default {
   },
   mounted() {
     this.getCosts();
-  }
+  },
 };
 </script>
 
@@ -117,6 +118,15 @@ export default {
   /* height: 15vh; */
 }
 
+.link-row {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  flex-basis: 100%;
+  text-decoration: none;
+  color: black;
+}
+
 .money {
   text-align: right;
   font-size: 16px;
@@ -136,34 +146,17 @@ export default {
   font-weight: 400;
 }
 
-.icon:hover {}
-
-.icon-col {
-  font-size: 16px;
-  display: inline-block;
-  align-items: center;
-  /* Centraliza verticalmente */
-  justify-content: center;
-  /* Centraliza horizontalmente */
-  width: 35px;
-  height: 35px;
-  margin-right: 12px;
-  margin-top: -8px;
-  padding: 10px;
-  background-color: #f1f1f1;
-  border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  /* Reduz a intensidade do sombreamento */
-  transition: font-size 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+.icon:hover {
 }
 
-.icon-col:hover {
-  font-size: 20px;
-  background-color: #f6f6f6;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
-  transform: perspective(500px) rotateX(10deg);
-  transform-origin: center center;
-  /* Inicia a transformação a partir do centro */
+.icon-column {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  margin: 1rem;
+  flex-basis: 0%;
+  color: var(--primary);
 }
 
 .comments {

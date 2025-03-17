@@ -1,78 +1,83 @@
 <template>
-  <div class="page-container mt-5">
-    <div class="row align-items-start pb-5">
-      <div class="col-1">
-        <font-awesome-icon icon="fa-solid fa-tools" class="primary big-icon" />
-      </div>
-      <div class="col">
-        <h2 class="title">SERVIÇO</h2>
+  <div class="page-container">
+    <div class="page-header">
+      <div class="title-container">
+        <font-awesome-icon icon="fa-solid fa-tools" class="icon" />
+        <h1>SERVIÇO</h1>
       </div>
     </div>
-    <div class="row pb-5">
-      <div class="col title">
-        <TextEditableField name="name" v-model="service.name" placeholder="descrição detalhada do serviço"
-          @save="updateService('name', $event)" />
+
+    <div class="section-container">
+      <div class="table-row">
+        <div class="subtitle-container">
+          <TextEditableField name="name" class="title" v-model="service.name"
+            placeholder="descrição detalhada do serviço" @save="updateService('name', $event)" />
+        </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-9 d-flex justify-content-end">
-        <p>
-          <font-awesome-icon icon="fa fa-clock" />
-          <span class="label"> Custo operacional</span>
-        </p>
+
+    <div class="table-row">
+      <div class="icon-column">
+        <font-awesome-icon icon="fa fa-clock" />
       </div>
-      <div class="col-1  d-flex justify-content-end">
+      <div class="title-column-3">
+        Custo operacional
+      </div>
+      <div class="integer-column">
         <hours-decimal-editable-field name="labor_hours" v-model="service.labor_hours"
           placeholder="quantidade total de horas" @save="updateService('labor_hours', $event)" />
         h
       </div>
-      <div class="col-1 text-end">
+      <div class="price-column">
         <money-editable-field name="labor_hourly_rate" v-model="service.labor_hourly_rate"
           placeholder="valor da hora de trabalho" @save="updateService('labor_hourly_rate', $event)" />
       </div>
-      <div class="col-1 text-end">
+      <div class="total-price-column">
         <money-field name="labor_hourly_total" v-model="service.labor_hourly_total" />
       </div>
     </div>
-    <div class="row">
-      <div class="col-9 d-flex justify-content-end">
-        <p>
-          <font-awesome-icon icon="fas fa-percent" />
-          <span class="label"> Percentual de lucro: </span>
-        </p>
+    <div class="table-row">
+      <div class="icon-column">
+        <font-awesome-icon icon="fas fa-percent" />
       </div>
-      <div class="col-2  d-flex justify-content-end">
+      <div class="title-column-2">
+        Percentual de lucro:
+      </div>
+      <div class="price-column">
         <decimal-editable-field name="profit_percentage" v-model="service.profit_percentage"
           placeholder="percentual do lucro" @save="updateService('profit_percentage', $event)" />
-          %
+        %
       </div>
-      <div class="col-1 text-end">
+      <div class="total-price-column">
         <money-editable-field name="profit" v-model="service.profit" @update="updateService('profit', $event)" />
       </div>
     </div>
-    <div class="row">
-      <div class="col-9 d-flex justify-content-end">
-        <p>
-          <font-awesome-icon icon="fas fa-dollar-sign" />
-          <span class="label"> Preço: </span>
-        </p>
+    <div class="table-row">
+      <div class="icon-column">
+        <font-awesome-icon icon="fas fa-dollar-sign" />
       </div>
-      <div class="col-3 text-end">
+      <div class="title-column">
+        Preço:
+      </div>
+      <div class="total-price-column">
         <money-field name="price" v-model="service.price" />
       </div>
     </div>
-    <div class="row pt-5 ">
-      <div class="col-5">
-        <p>
-          <font-awesome-icon icon="fa fa-calendar-alt" />
-          <span class="label"> Data de criação: </span>
-        </p>
+    <div class="table-row">
+      <div class="icon-column">
+        <font-awesome-icon icon="fa fa-calendar-alt" />
       </div>
-      <div class="col-1 text-end">
+      <div class="title-column">
+        Data de criação:
+      </div>
+      <div class="price-column">
         {{ formatDateBr(service.created_at) }}
       </div>
     </div>
-    <div class="row mt-5 mb-5">
+
+    <service-costs-section :service="service" @update-total-third-party-cost="updateTotalThirdPartyCost" />
+
+    <div class="table-row mt-5 mb-5">
       <div>
         <button class="offset-10 col-1 myButton delete" @click="deleteService()">
           excluir
@@ -90,6 +95,7 @@ import MoneyEditableField from "@/components/fields/number/MoneyEditableField";
 import TextEditableField from "@/components/fields/text/TextEditableField";
 import MoneyField from '../../components/fields/number/MoneyField.vue';
 import HoursDecimalEditableField from '../../components/fields/number/HoursDecimalEditableField.vue';
+import ServiceCostsSection from '../../components/show/ServiceCostsSection.vue';
 
 export default {
   data() {
@@ -104,6 +110,7 @@ export default {
     TextEditableField,
     MoneyField,
     MoneyEditableField,
+    ServiceCostsSection,
   },
   methods: {
     destroy,
@@ -146,47 +153,56 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-p {
-  text-align: left;
-  font-weight: 400;
+.icon-column {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin: 1rem;
+  flex-basis: 0%;
 }
 
-h3 {
-  margin: 40px 0 0;
+.integer-column {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-basis: 5%;
 }
 
-ul {
-  list-style-type: none;
-  padding: 0;
+.price-column {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  flex-basis: 10%;
 }
 
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: rgb(61, 61, 61);
-}
-
-a:link {
-  text-decoration: none;
-}
-
-a:visited {
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: none;
-}
-
-a:active {
-  text-decoration: none;
-}
-
-.label {
+.total-price-column {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  flex-basis: 15%;
   font-weight: 800;
+}
+
+.title-column {
+  display: flex;
+  align-items: left;
+  justify-content: left;
+  flex-basis: 90%;
+}
+
+.title-column-2 {
+  display: flex;
+  align-items: left;
+  justify-content: left;
+  flex-basis: 80%;
+}
+
+.title-column-3 {
+  display: flex;
+  align-items: left;
+  justify-content: left;
+  flex-basis: 75%;
 }
 
 .title {

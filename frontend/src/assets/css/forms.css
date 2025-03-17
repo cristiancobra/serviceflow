@@ -1,3 +1,24 @@
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #000;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 0;
+  line-height: 1;
+}
+
+.btn-close:hover {
+  color: #ff0000; /* Cor ao passar o mouse */
+}
+
+.btn-close::before {
+  content: '×'; /* Símbolo de fechar */
+}
 
 .label-input-container {
     display: flex;
@@ -24,4 +45,12 @@
     font-size: 0.8rem;
     text-align: left;
     font-weight: 500;
+  }
+
+  .form-section {
+    margin-bottom: 3rem;
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
   }

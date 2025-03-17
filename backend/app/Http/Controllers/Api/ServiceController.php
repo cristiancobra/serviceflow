@@ -38,23 +38,19 @@ class ServiceController extends Controller
 
             $service->save();
 
-            return ServiceResource::make($service);
+            if ($request->has('costs')) {
+                $costs = [];
+                foreach ($request->input('costs') as $cost) {
+                    $costs[$cost['id']] = [
+                        'quantity' => $cost['quantity'],
+                        'price' => $cost['price'],
+                        'total_price' => $cost['total_price'],
+                    ];
+                }
+                $service->costs()->sync($costs);
+            }
 
-            // $service->fill($request->all());
-            // // $service->account_id = 1;
-            // // $service->user_id = 1;
-            // $service->labor_hours = $request->labor_hours;
-            // $service->labor_hourly_rate = $this->convertMoneyBrToDefault($request->labor_hourly_rate);
-            // $service->labor_hourly_total = $service->calculateLaborHourlyTotal($service);
-            // $service->profit_percentage = $request->profit_percentage;
-            // $service->profit = $service->calculateProfit($service);
-            // $service->price = $service->calculatePrice($service);
-            // $service->save();
-
-            // return response()->json([
-            //     'message' => "Serviço $service->name atualizado",
-            //     'service' => $service,
-            // ]);
+            return new ServiceResource($service->load('costs'));
 
         } catch (ValidationException $validationException) {
             return response()->json([
@@ -72,7 +68,7 @@ class ServiceController extends Controller
      */
     public function show(Service $service)
     {
-        return new ServiceResource(Service::find($service->id));
+        return new ServiceResource($service->load('costs'));
     }
 
     /**
