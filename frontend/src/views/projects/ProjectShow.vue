@@ -1,53 +1,95 @@
 <template>
-  <div>
-    <div class="header-fixed">
-      <div class="row ms-1">
-        <div class="col-1 status">
-          <font-awesome-icon icon="fa-solid fa-folder-open" class="primary" />
-          <p class="duration">
-            {{ formatDuration(project.duration_time) }}
-          </p>
-        </div>
-        <div class="col-8 ps-3">
-          <p class="title">
-            <TextEditableField name="name" v-model="project.name" placeholder="descrição detalhada da tarefa"
-              @save="updateProject('name', $event)" />
-          </p>
-        </div>
-        <div class="col-3">
-          <div class="row">
-            <DateEditableInput class="d-flex justify-content-end" name="date_start" label="Início:"
-              v-model="project.date_start" @save="updateProject('date_start', $event)" />
+  <div class="page-container">
+    <div class="page-header">
+      <div class="page-title">
+        <font-awesome-icon icon="fa-solid fa-folder-open" class="page-icon" />
+        <h1>
+          <TextEditableField
+            name="name"
+            v-model="project.name"
+            placeholder="descrição detalhada da tarefa"
+            @save="updateProject('name', $event)"
+          />
+        </h1>
+      </div>
+      <div class="page-action">
+        <p class="show-duration">
+          {{ formatDuration(project.duration_time) }}
+        </p>
+      </div>
+    </div>
+
+    <div class="section-container">
+      <div class="section-title">
+        <font-awesome-icon icon="fas fa-file-invoice" class="icon" />
+        <h2>Informações</h2>
+      </div>
+      <div class="table-row">
+        <div class="column-70">
+          <div class="table-row">
+            <TextEditor
+              label="Descrição"
+              name="description"
+              v-model="project.description"
+              @save="updateProject('description', $event)"
+            />
           </div>
-          <div class="row">
-            <DateEditableInput class="d-flex justify-content-end" name="date_due" label="Prazo:"
-              v-model="project.date_due" @save="updateProject('date_due', $event)" />
+          <div class="table-row">
+            <opportunities-select-editable-field
+              label="Oportunidade"
+              v-model="project.opportunity_id"
+              @update:modelValue="updateProject('opportunity_id', $event)"
+              fieldNull="Nenhum"
+            />
+            <SelectInput
+              label="Responsável"
+              name="user_id"
+              v-model="project.user_id"
+              :items="users"
+              fieldsToDisplay="name"
+            />
           </div>
-          <div class="row">
-            <DateEditableInput class="d-flex justify-content-end" name="date_conclusion" label="Conclusão:"
-              v-model="project.date_conclusion" @save="updateProject('date_conclusion', $event)" />
+        </div>
+        <div class="column-30">
+          <div class="table-row">
+            <DateEditableInput
+              class="d-flex justify-content-end"
+              name="date_start"
+              label="Início:"
+              v-model="project.date_start"
+              @save="updateProject('date_start', $event)"
+            />
+          </div>
+          <div class="table-row">
+            <DateEditableInput
+              class="d-flex justify-content-end"
+              name="date_due"
+              label="Prazo:"
+              v-model="project.date_due"
+              @save="updateProject('date_due', $event)"
+            />
+          </div>
+          <div class="table-row">
+            <DateEditableInput
+              class="d-flex justify-content-end"
+              name="date_conclusion"
+              label="Conclusão:"
+              v-model="project.date_conclusion"
+              @save="updateProject('date_conclusion', $event)"
+            />
           </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col-3">
-          <opportunities-select-editable-field label="Oportunidade" v-model="project.opportunity_id"
-            @update:modelValue="updateProject('opportunity_id', $event)" fieldNull="Nenhum" />
-        </div>
-        <div class="col-3">
-          <SelectInput label="Responsável" name="user_id" v-model="project.user_id" :items="users"
-            fieldsToDisplay="name" />
-        </div>
-      </div>
     </div>
-    <div class="info-container">
-      <TextEditor label="Descrição" name="description" v-model="project.description"
-        @save="updateProject('description', $event)" />
-    </div>
-    <div class="info-container">
-      <TasksList template="project" :tasks="project.tasks" @update-project-duration="updateProjectDuration()" />
-    </div>
-    <div class="row d-flex justify-content-end mt-2 mb-5 me-5">
+
+     <section id="tasks">
+      <tasks-list-section
+        :tasks="project.tasks"
+        @update-project-duration="updateProjectDuration()"
+      />
+    </section>
+
+    <div class="row">
       <div class="col-1">
         <button class="button delete" @click="confirmDeleteProject()">
           excluir
@@ -66,13 +108,13 @@ import { formatDateTimeBr } from "@/utils/date/dateUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
 import { getStatusClass } from "@/utils/card/cardUtils";
 import { getStatusIcon } from "@/utils/card/cardUtils";
-import { provide, ref } from 'vue';
+import { provide, ref } from "vue";
 import { show, updateField } from "@/utils/requests/httpUtils";
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
 import DateEditableInput from "@/components/fields/datetime/DateTimeEditableInput";
-import OpportunitiesSelectEditableField from '../../components/fields/selects/OpportunitiesSelectEditableField.vue';
-import TasksList from "@/components/lists/TasksList.vue";
+import OpportunitiesSelectEditableField from "../../components/fields/selects/OpportunitiesSelectEditableField.vue";
+import TasksListSection from "@/components/lists/TasksListSection.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField";
 import TextEditor from "@/components/forms/inputs/TextEditor.vue";
 
@@ -81,7 +123,7 @@ export default {
   components: {
     DateEditableInput,
     OpportunitiesSelectEditableField,
-    TasksList,
+    TasksListSection,
     TextEditableField,
     TextEditor,
   },
@@ -94,12 +136,11 @@ export default {
       project: [],
       editedProject: [],
       projectId: this.$route.params.id,
-
     };
   },
   setup() {
     const currentProject = ref(null);
-    provide('currentProject', currentProject);
+    provide("currentProject", currentProject);
     return {
       currentProject,
     };
@@ -116,37 +157,38 @@ export default {
     translatePriority,
     updateField,
     confirmDeleteProject() {
-      if (window.confirm('Tem certeza que deseja excluir este projeto?')) {
+      if (window.confirm("Tem certeza que deseja excluir este projeto?")) {
         this.deleteProject();
       }
     },
     async getProject() {
-      this.project = await show('projects', this.projectId);
+      this.project = await show("projects", this.projectId);
       this.currentProject = this.project;
       convertDateTimeToLocal(this.project.date_start);
       this.projectLoaded = true;
-
     },
     setProjectId(projectId) {
       this.projectId = projectId;
     },
     async deleteProject() {
       try {
-        const response = await axios.delete(`${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.projectId}`);
+        const response = await axios.delete(
+          `${BACKEND_URL}${PROJECT_URL_PARAMETER}${this.projectId}`
+        );
         this.data = response.data;
-        this.$store.dispatch('setMessage', {
-          status: 'deleted',
-          text: 'Projeto excluído com sucesso!',
+        this.$store.dispatch("setMessage", {
+          status: "deleted",
+          text: "Projeto excluído com sucesso!",
         });
         this.$router.push({
           name: "projectsIndex",
         });
       } catch (error) {
         console.error("Erro ao deletar project:", error);
-        this.$store.dispatch('setMessage', {
-        status: 'error',
-        text: 'Erro ao deletar projeto.',
-      });
+        this.$store.dispatch("setMessage", {
+          status: "error",
+          text: "Erro ao deletar projeto.",
+        });
       }
     },
     updateJourneys(updatedJourney) {
@@ -160,7 +202,12 @@ export default {
       }
     },
     async updateProject(fieldName, editedValue) {
-      this.project = await updateField("projects", this.projectId, fieldName, editedValue);
+      this.project = await updateField(
+        "projects",
+        this.projectId,
+        fieldName,
+        editedValue
+      );
     },
     updateProjectDuration() {
       axios

@@ -1,8 +1,8 @@
 <template>
   <div class="page-container">
     <div class="page-header">
-      <div class="title-container">
-        <font-awesome-icon icon="fa-solid fa-tools" class="icon" />
+      <div class="page-title">
+        <font-awesome-icon icon="fa-solid fa-tools" class="page-icon" />
         <h1>SERVIÇOS</h1>
       </div>
       <div class="action-container">
@@ -10,10 +10,10 @@
       </div>
     </div>
     <div class="section-container">
-      <div class="table-row">
+      <div class="search-container">
         <input
           type="text"
-          class="form-control search-container"
+          class="search-input"
           v-model="searchTerm"
           placeholder="Digite para buscar"
         />
@@ -23,14 +23,20 @@
         v-for="service in services"
         v-bind:key="service.id"
       >
-        <router-link :to="{ name: 'serviceShow', params: { id: service.id } }" class="link-row">
+        <router-link
+          :to="{ name: 'serviceShow', params: { id: service.id } }"
+          class="link-row"
+        >
           <div class="icon-column">
             <font-awesome-icon icon="fa fa-tools" />
           </div>
           <div class="title-column">
             {{ service.name }}
           </div>
-          <div class="price-column">R$ {{ service.price }}</div>
+          <div class="price-column">{{ formatCurrencySymbol(service.price) }}</div>
+          <div class="price-column">
+            <p class="price-active">{{ formatCurrencySymbol(service.final_price) }}</p>
+          </div>
         </router-link>
         <router-view />
       </div>
@@ -40,6 +46,7 @@
 
 <script>
 import { BACKEND_URL, SERVICE_URL } from "@/config/apiConfig";
+import { formatCurrencySymbol } from "@/utils/number/moneyUtils";
 import axios from "axios";
 import ServiceCreateForm from "../forms/ServiceCreateForm.vue";
 import { index } from "@/utils/requests/httpUtils";
@@ -65,6 +72,7 @@ export default {
     };
   },
   methods: {
+    formatCurrencySymbol,
     addServiceCreated(newService) {
       this.toggle();
       this.services.unshift(newService);
@@ -126,6 +134,11 @@ export default {
   flex-basis: 100%;
   text-decoration: none;
   color: black;
+}
+
+.price-active {
+  font-weight: bold;
+  color: var(--primary);
 }
 
 .price-column {

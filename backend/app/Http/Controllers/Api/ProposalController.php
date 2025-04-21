@@ -99,6 +99,8 @@ class ProposalController extends Controller
                 $proposalCost->save();
             }
 
+            $service->final_price = $service->price + $productionCosts;
+
             return ProposalsResource::make($proposal->load('proposalServices'));
         } catch (ValidationException $validationException) {
             return response()->json([
@@ -147,6 +149,7 @@ class ProposalController extends Controller
     public function update(ProposalRequest $request, Proposal $proposal)
     {
         try {
+            // dd($request->all());
             $validatedData = $request->validated();
 
             // Se o status foi alterado, atualize a coluna correspondente
@@ -159,8 +162,44 @@ class ProposalController extends Controller
             $proposal->fill($validatedData);
             $proposal->save();
 
+            // Atualiza ou cria os serviços relacionados à proposta
+            if ($request->has('proposalServices')) {
+                $servicesFormData = $request->input('proposalServices', []);
+
+                foreach ($servicesFormData as $serviceData) {
+                    $proposalService = ProposalService::where('proposal_id', $proposal->id)
+                        ->where('service_id', $serviceData['service_id'])
+                        ->first();
+
+                    if (!$proposalService) {
+                        // Se o registro não existir, crie um novo
+                        $proposalService = new ProposalService([
+                            'proposal_id' => $proposal->id,
+                            'service_id' => $serviceData['service_id'],
+                        ]);
+                    }
+
+                    // Atualiza apenas os campos enviados no payload
+                    $proposalService->quantity = $serviceData['quantity'] ?? $proposalService->quantity;
+                    $proposalService->price = $serviceData['price'] ?? $proposalService->price;
+                    $proposalService->profit = $serviceData['profit'] ?? $proposalService->profit;
+                    $proposalService->profit_percentage = $serviceData['profit_percentage'] ?? $proposalService->profit_percentage;
+                    $proposalService->labor_hours = $serviceData['labor_hours'] ?? $proposalService->labor_hours;
+                    $proposalService->labor_hourly_rate = $serviceData['labor_hourly_rate'] ?? $proposalService->labor_hourly_rate;
+
+                    // Recalcula os campos derivados
+                    $proposalService->labor_hours_total = $proposalService->quantity * $proposalService->labor_hours;
+                    $proposalService->labor_hourly_rate_total = $proposalService->quantity * ($proposalService->labor_hourly_rate * ($proposalService->labor_hours / 3600));
+                    $proposalService->total_price = $proposalService->quantity * $proposalService->price;
+                    $proposalService->total_profit = $proposalService->quantity * $proposalService->profit;
+
+                    // Salva o registro atualizado
+                    $proposalService->save();
+                }
+            }
+
             // proposal costs
-            if ($request->input('proposalCosts')) {
+            if ($request->has('proposalCosts')) {
                 $costsFormData = $request->input('proposalCosts', []);
                 $proposalCosts = $this->updateOrCreateProposalCostsObjects($costsFormData, $proposal->id);
 
@@ -228,13 +267,13 @@ class ProposalController extends Controller
             $proposalTotalProfit += $proposalService->total_profit;
             $proposalTotalOperationalCost += $proposalService->labor_hourly_rate_total;
         }
-
+        
         $proposalTotalCosts = 0;
-
+        
         foreach ($proposal->proposalCosts as $proposalCost) {
             $proposalTotalCosts += $proposalCost->total_price;
         }
-
+        
         $proposal->total_hours = $proposalTotalHours;
         $proposal->total_third_party_cost = $proposalTotalCosts;
         $proposal->total_operational_cost = $proposalTotalOperationalCost;

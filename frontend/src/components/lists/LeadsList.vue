@@ -1,31 +1,26 @@
 <template>
-  <div class="page-container mb-5 mt-0">
-    <div class="row">
-      <div class="col-9 d-flex justify-content-left">
+  <div class="page-container">
+    <div class="page-header">
+      <div class="page-title">
         <font-awesome-icon icon="fa-solid fa-tasks" class="icon pe-3 primary" />
-        <h2 class="title">CONTATOS</h2>
+        <h1>CONTATOS</h1>
       </div>
-      <div class="col-3">
-        <div class="d-flex justify-content-end">
-          concluidas {{ completedTasks }} de {{ totalTasks }}
-          <font-awesome-icon icon="fa-solid fa-folder" class="ps-3 pe-3 primary" />
-        </div>
-        <div class="progress">
-          <div class="progress-bar" :style="{ width: percentage + '%' }" role="progressbar" :aria-valuenow="percentage"
-            aria-valuemin="0" aria-valuemax="100">
-            {{ percentage }}%
-          </div>
-        </div>
+      <div class="page-action">
+        <LeadCreateForm template="index" @new-lead-event="addLeadCreated($event)" />
       </div>
     </div>
-    <LeadCreateForm template="index" @new-lead-event="addLeadCreated($event)" />
-    <NoLeadsMessage v-if="!leads"/>
+
+    <NoLeadsMessage v-if="!leads" />
     <div v-else id="line-container" class="row mb-5">
       <div class="card" v-for="lead in leads" :key="lead.id">
-        <router-link :to="isLinkDisabled(lead.id)
-        ? ''
-        : { name: 'leadShow', params: { id: lead.id } }
-      " class="row router-link">
+        <router-link
+          :to="
+            isLinkDisabled(lead.id)
+              ? ''
+              : { name: 'leadShow', params: { id: lead.id } }
+          "
+          class="row router-link"
+        >
           <!-- Coluna para a imagem -->
           <div class="col-4 d-flex align-items-top">
             <span class="icon big">
@@ -35,30 +30,54 @@
 
           <!-- Coluna para as demais informações -->
           <div class="col-8">
-            <div class="infos-container" @mouseover="showCopyName(lead.id)" @mouseleave="hideCopyName(lead.id)">
+            <div
+              class="infos-container"
+              @mouseover="showCopyName(lead.id)"
+              @mouseleave="hideCopyName(lead.id)"
+            >
               <p class="name">
                 {{ lead.name }}
               </p>
-              <CopyContentClipboard class="CopyContentClipboard" :data="lead.name" :key="'name_' + lead.id"
-                v-show="isMouseOverName[lead.id]" />
+              <CopyContentClipboard
+                class="CopyContentClipboard"
+                :data="lead.name"
+                :key="'name_' + lead.id"
+                v-show="isMouseOverName[lead.id]"
+              />
             </div>
 
-            <div v-if="lead.email" class="infos-container" @mouseover="showCopyEmail(lead.id)"
-              @mouseleave="hideCopyEmail(lead.id)">
+            <div
+              v-if="lead.email"
+              class="infos-container"
+              @mouseover="showCopyEmail(lead.id)"
+              @mouseleave="hideCopyEmail(lead.id)"
+            >
               <p class="email">
                 {{ lead.email }}
               </p>
-              <CopyContentClipboard class="CopyContentClipboard" :data="lead.email" :key="'email_' + lead.id"
-                v-show="isMouseOverEmail[lead.id]" />
+              <CopyContentClipboard
+                class="CopyContentClipboard"
+                :data="lead.email"
+                :key="'email_' + lead.id"
+                v-show="isMouseOverEmail[lead.id]"
+              />
             </div>
 
-            <div v-if="lead.cel_phone" class="infos-container" @mouseover="showCopyCelPhone(lead.id)"
-              @mouseleave="hideCopyCelPhone(lead.id)">
+            <div
+              v-if="lead.cel_phone"
+              class="infos-container"
+              @mouseover="showCopyCelPhone(lead.id)"
+              @mouseleave="hideCopyCelPhone(lead.id)"
+            >
               <p class="cel_phone">
                 {{ lead.cel_phone }}
               </p>
-              <CopyContentClipboard class="CopyContentClipboard" :data="lead.cel_phone" :key="'cel_phone_' + lead.id"
-                v-show="isMouseOverCelPhone[lead.id]" />
+              <CopyContentClipboard
+                class="CopyContentClipboard"
+                :data="lead.cel_phone"
+                :key="'cel_phone_' + lead.id"
+                v-show="isMouseOverCelPhone[lead.id]"
+              />
             </div>
           </div>
         </router-link>
@@ -73,7 +92,7 @@
 import { index } from "@/utils/requests/httpUtils";
 import CopyContentClipboard from "../CopyContentClipboard.vue";
 import LeadCreateForm from "@/components/forms/LeadCreateForm.vue";
-import NoLeadsMessage from '@/components/messages/NoLeadsMessage.vue';
+import NoLeadsMessage from "@/components/messages/NoLeadsMessage.vue";
 
 export default {
   name: "LeadsList",
@@ -201,7 +220,8 @@ export default {
   font-weight: 400;
 }
 
-.icon:hover {}
+.icon:hover {
+}
 
 .icon-col {
   z-index: 3;

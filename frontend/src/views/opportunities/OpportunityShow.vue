@@ -1,99 +1,162 @@
 <template>
-  <div class="mb-5">
-    <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
+  <div class="page-container">
+    <AddMessage
+      v-if="messageStatus"
+      :messageStatus="messageStatus"
+      :messageText="messageText"
+    >
     </AddMessage>
-    <div class="header-fixed">
-      <div class="row ms-1">
-        <div class="col-1 d-flex align-items-start flex-column justify-content-center">
-          <font-awesome-icon icon="fa-solid fa-bullseye" class="show-title-icon " />
-          <p class="show-duration">
-            {{ formatDuration(opportunity.duration_time) }}
-          </p>
-        </div>
-        <div class="col-11 ps-3">
-          <p class="show-title d-flex">
-            <TextEditableField name="name" v-model="opportunity.name" placeholder="descrição detalhada da tarefa"
-              @save="updateOpportunity('name', $event)" />
-            <font-awesome-icon v-if="opportunity.date_conclusion" icon="fa-solid fa-circle-check" class="done ps-2" />
-            <font-awesome-icon v-if="opportunity.date_canceled" icon="fa-solid fa-x" class="canceled ps-2" />
-          </p>
-        </div>
+    <div class="page-header">
+      <div class="page-title">
+        <font-awesome-icon icon="fa-solid fa-bullseye" class="page-icon" />
+        <h1>
+          <TextEditableField
+            name="name"
+            v-model="opportunity.name"
+            placeholder="descrição detalhada da tarefa"
+            @save="updateOpportunity('name', $event)"
+          />
+        </h1>
       </div>
-      <div class="header-fixed-menu mt-3">
-        <button class="item-menu" @click="currentSection = 'info'" :class="{ active: currentSection === 'info' }">
-          Informações
-        </button>
-
-        <button class="item-menu" @click="currentSection = 'proposals'"
-          :class="{ active: currentSection === 'proposals' }">
-          Propostas
-        </button>
-
-        <button class="item-menu" @click="currentSection = 'attachments'"
-          :class="{ active: currentSection === 'attachments' }">
-          Anexos
-        </button>
-
-        <button class="item-menu" @click="currentSection = 'tasks'" :class="{ active: currentSection === 'tasks' }">
-          Tarefas
-        </button>
+      <div class="page-action">
+        <font-awesome-icon
+          v-if="!opportunity.date_conclusion"
+          icon="fa-solid fa-circle-check"
+          class="big-icon done"
+        />
+        <font-awesome-icon
+          v-if="!opportunity.date_canceled"
+          icon="fa-solid fa-x"
+          class="big-icon canceled"
+        />
+      </div>
+      <div class="page-action">
+        <p class="show-duration">
+          {{ formatDuration(opportunity.duration_time) }}
+        </p>
       </div>
     </div>
 
-    <div class="content-below-header">
-      <div class="info-container" v-show="currentSection === 'info'">
-        <div class="page-container d-flex pt-4">
-          <div class="col-6">
-            <companies-select-editable-field label="Empresa" name="company_id" v-model="opportunity.company_id"
-              @update:modelValue="updateOpportunity('company_id', $event)" />
-            <leads-select-editable-field label="Cliente" name="lead_id" v-model="opportunity.lead_id"
-              @update:modelValue="updateOpportunity('lead_id', $event)" />
-            <users-select-editable-field label="Responsável" name="user_id" v-model="opportunity.user_id"
-              @update:modelValue="updateOpportunity('user_id', $event)" />
+    <nav class="section-menu">
+      <button class="item-menu" @click="scrollToSection('info')">
+        <font-awesome-icon icon="fas fa-file-invoice" class="icon" />
+      </button>
+      <button class="item-menu" @click="scrollToSection('proposals')">
+        <font-awesome-icon icon="fas fa-money-bill" class="icon" />
+      </button>
+      <button class="item-menu" @click="scrollToSection('attachments')">
+        <font-awesome-icon icon="fas fa-link" class="icon" />
+      </button>
+      <button class="item-menu" @click="scrollToSection('journeys')">
+        <font-awesome-icon icon="fas fa-clock" class="icon" />
+      </button>
+    </nav>
+
+    <section id="info" class="section-container">
+      <div class="section-title">
+        <font-awesome-icon icon="fas fa-file-invoice" class="icon" />
+        <h2>Informações</h2>
+      </div>
+      <div class="table-row">
+        <div class="column-70">
+          <div class="table-row">
+            <companies-select-editable-field
+              label="Empresa"
+              name="company_id"
+              v-model="opportunity.company_id"
+              @update:modelValue="updateOpportunity('company_id', $event)"
+            />
           </div>
-          <div class="col-6">
-            <div class="row">
-              <DateEditableInput class="d-flex justify-content-end" name="date_start" label="Início:"
-                v-model="opportunity.date_start" @save="updateOpportunity('date_start', $event)" />
-            </div>
-            <div class="row mt-2">
-              <DateEditableInput class="d-flex justify-content-end" name="date_due" label="Prazo:"
-                v-model="opportunity.date_due" @save="updateOpportunity('date_due', $event)" />
-            </div>
-            <div class="row mt-2">
-              <DateEditableInput class="d-flex justify-content-end" name="date_conclusion" label="Conclusão:"
-                v-model="opportunity.date_conclusion" @save="updateOpportunity('date_conclusion', $event)" />
-            </div>
-            <div class="row mt-2">
-              <DateEditableInput class="d-flex justify-content-end" name="date_conclusion" label="Cancelado:"
-                v-model="opportunity.date_canceled" @save="updateOpportunity('date_canceled', $event)" />
-            </div>
+          <div class="table-row">
+            <leads-select-editable-field
+              label="Cliente"
+              name="lead_id"
+              v-model="opportunity.lead_id"
+              @update:modelValue="updateOpportunity('lead_id', $event)"
+            />
+          </div>
+          <div class="table-row">
+            <users-select-editable-field
+              label="Responsável"
+              name="user_id"
+              v-model="opportunity.user_id"
+              @update:modelValue="updateOpportunity('user_id', $event)"
+            />
           </div>
         </div>
-        <div class="page-container pt-4">
-          <TextEditor label="Descrição" name="description" v-model="opportunity.description"
-            @save="updateOpportunity('description', $event)" />
+        <div class="column-30">
+          <div class="table-row">
+            <DateEditableInput
+              class="d-flex justify-content-end"
+              name="date_start"
+              label="Início:"
+              v-model="opportunity.date_start"
+              @save="updateOpportunity('date_start', $event)"
+            />
+          </div>
+
+          <div class="table-row">
+            <DateEditableInput
+              class="d-flex justify-content-end"
+              name="date_due"
+              label="Prazo:"
+              v-model="opportunity.date_due"
+              @save="updateOpportunity('date_due', $event)"
+            />
+          </div>
+          <div class="table-row">
+            <DateEditableInput
+              class="d-flex justify-content-end"
+              name="date_conclusion"
+              label="Conclusão:"
+              v-model="opportunity.date_conclusion"
+              @save="updateOpportunity('date_conclusion', $event)"
+            />
+          </div>
+          <div class="table-row">
+            <DateEditableInput
+              class="d-flex justify-content-end"
+              name="date_conclusion"
+              label="Cancelado:"
+              v-model="opportunity.date_canceled"
+              @save="updateOpportunity('date_canceled', $event)"
+            />
+          </div>
         </div>
       </div>
+    </section>
 
-      <div class="info-container" v-show="currentSection === 'proposals'">
-        <proposals-list :opportunityId="opportunityId" />
+    <section class="section-container">
+      <div class="table-row">
+        <TextEditor
+          label="Descrição"
+          name="description"
+          v-model="opportunity.description"
+          @save="updateOpportunity('description', $event)"
+        />
       </div>
+    </section>
 
-      <div class="info-container" v-show="currentSection === 'attachments'">
-        <links-list :links="opportunity.links" :opportunityId="opportunityId" />
-      </div>
+    <section id="proposals">
+      <proposals-list-section :opportunityId="opportunityId" />
+    </section>
 
-      <div class="info-container" v-show="currentSection === 'tasks'">
-        <tasks-list template="opportunity" :tasks="opportunity.tasks"
-          @update-opportunity-duration="updateOpportunityDuration()" />
-      </div>
-      <div class="row d-flex justify-content-end mt-2 mb-5 me-5">
-        <div class="col-1">
-          <button class="button delete" @click="deleteOpportunity()">
-            excluir
-          </button>
-        </div>
+    <section id="attachments">
+      <links-list :links="opportunity.links" :opportunityId="opportunityId" />
+    </section>
+
+    <section id="tasks">
+      <tasks-list-section
+        :tasks="opportunity.tasks"
+        @update-opportunity-duration="updateOpportunityDuration()"
+      />
+    </section>
+
+    <div class="table-row">
+      <div class="">
+        <button class="button delete" @click="deleteOpportunity()">
+          excluir
+        </button>
       </div>
     </div>
   </div>
@@ -104,19 +167,25 @@ import axios from "axios";
 import { BACKEND_URL, OPPORTUNITY_URL_PARAMETER } from "@/config/apiConfig";
 import { formatDuration, convertDateTimeToLocal } from "@/utils/date/dateUtils";
 import { destroy, show, updateField } from "@/utils/requests/httpUtils";
-import { formatDateBr, formatDateTimeBr, getStatusClass, getStatusIcon } from "@/utils/card/cardUtils";
-import { provide, ref } from 'vue';
+import {
+  formatDateBr,
+  formatDateTimeBr,
+  getStatusClass,
+  getStatusIcon,
+} from "@/utils/card/cardUtils";
+import { scrollToSection } from "@/utils/layout/navigationUtils";
+import { provide, ref } from "vue";
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
-import CompaniesSelectEditableField from '../../components/fields/selects/CompaniesSelectEditableField.vue';
+import CompaniesSelectEditableField from "../../components/fields/selects/CompaniesSelectEditableField.vue";
 import DateEditableInput from "@/components/fields/datetime/DateTimeEditableInput";
-import LeadsSelectEditableField from '../../components/fields/selects/LeadsSelectEditableField.vue';
+import LeadsSelectEditableField from "../../components/fields/selects/LeadsSelectEditableField.vue";
 import LinksList from "@/components/lists/LinksList.vue";
-import ProposalsList from "@/components/lists/ProposalsList.vue";
-import TasksList from "@/components/lists/TasksList.vue";
+import ProposalsListSection from "@/components/lists/ProposalsListSection.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField";
 import TextEditor from "@/components/forms/inputs/TextEditor.vue";
 import UsersSelectEditableField from "@/components/fields/selects/UsersSelectEditableField.vue";
+import TasksListSection from '../../components/lists/TasksListSection.vue';
 
 export default {
   name: "ProjectShow",
@@ -125,15 +194,15 @@ export default {
     DateEditableInput,
     LeadsSelectEditableField,
     LinksList,
-    ProposalsList,
-    TasksList,
+    ProposalsListSection,
     TextEditableField,
     TextEditor,
     UsersSelectEditableField,
+    TasksListSection,
   },
   data() {
     return {
-      currentSection: 'info',
+      currentSection: "info",
       journeysData: [],
       journeysUrl: "",
       messageStatus: "",
@@ -141,12 +210,11 @@ export default {
       opportunity: [],
       editedProject: [],
       opportunityId: this.$route.params.id,
-
     };
   },
   setup() {
     const currentOpportunity = ref(null);
-    provide('currentOpportunity', currentOpportunity);
+    provide("currentOpportunity", currentOpportunity);
     return {
       currentOpportunity,
     };
@@ -157,6 +225,7 @@ export default {
     formatDuration,
     getStatusClass,
     getStatusIcon,
+    scrollToSection,
     translateStatus,
     translatePriority,
     convertDateTimeToLocal,
@@ -170,7 +239,7 @@ export default {
       this.opportunityId = opportunityId;
     },
     async deleteOpportunity() {
-      this.response = await destroy('opportunities', this.opportunityId);
+      this.response = await destroy("opportunities", this.opportunityId);
       this.$router.push({ name: "opportunitiesIndex" });
     },
     updateJourneys(updatedJourney) {
@@ -184,7 +253,12 @@ export default {
       }
     },
     async updateOpportunity(fieldName, editedValue) {
-      this.opportunity = await updateField("opportunities", this.opportunityId, fieldName, editedValue);
+      this.opportunity = await updateField(
+        "opportunities",
+        this.opportunityId,
+        fieldName,
+        editedValue
+      );
     },
     updateOpportunityDuration() {
       axios
@@ -251,7 +325,6 @@ a:hover {
 a:active {
   text-decoration: none;
 }
-
 
 .status {
   text-align: center;

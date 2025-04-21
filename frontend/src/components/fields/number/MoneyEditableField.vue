@@ -3,8 +3,9 @@
     <label v-if="label" class="form-label" :for="name">{{ label }}</label>
     <div v-if="!editing"  @click="startEditing">
       <div v-if="localValue">
-        <p class="text-end">
-        {{ formatCurrencySymbol(localValue) }}
+        <p class="price-editable">
+          <font-awesome-icon icon="edit" class="edit-icon" />
+          {{ formatCurrencySymbol(localValue) }}
         </p>
       </div>
       <div v-else>
@@ -44,7 +45,7 @@ export default {
       this.editing = true;
     },
     emitSave() {
-      this.$emit("update", this.convertBrToCurrency(this.localValue));
+      this.$emit("save", this.convertBrToCurrency(this.localValue));
       this.editing = false;
     },
     cancelEditing() {
@@ -61,6 +62,16 @@ export default {
 </script>
 
 <style scoped>
+.edit-icon {
+  display: none;
+  margin-left: 5px;
+  color: var(--green);
+}
+
+.price-editable:hover .edit-icon {
+  display: inline;
+}
+
 .input-money {
   text-align: right;
   width: 100%;
@@ -70,6 +81,11 @@ export default {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
+}
+
+.price-editable {
+  cursor: pointer;
+  color: var(--primary);
 }
 
 .show-label {

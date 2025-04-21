@@ -54,7 +54,7 @@
             </div>
 
             <div class="form-section">
-              <div class="subtitle-container">Precificação:</div>
+              <div class="section-title">Precificação:</div>
               <div class="table-row">
                 <div class="column-25">
                   <label class="labels" for="hours">Tempo de trabalho</label>
@@ -155,7 +155,7 @@
               <p>Você ainda não possui custos cadastrados.</p>
             </div>
             <div v-else class="form-section">
-              <div class="subtitle-container">Custos:</div>
+              <div class="section-title">Custos:</div>
               <div class="table-row" v-for="cost in costs" :key="cost.id">
                 <div class="column-40">
                   <label :for="cost.id">
@@ -359,10 +359,10 @@ export default {
       this.updateFinalPrice();
     },
     updateFinalPrice() {
-      let totalCost = this.costs.reduce(
-        (sum, cost) => sum + parseFloat(cost.total_price.replace(",", ".")),
-        0
-      );
+      // let totalCost = this.costs.reduce(
+      //   (sum, cost) => sum + parseFloat(cost.total_price.replace(",", ".")),
+      //   0
+      // );
 
       let profit = this.form.profit;
       if (typeof profit === "string") {
@@ -371,7 +371,7 @@ export default {
       profit = parseFloat(profit);
 
       this.form.price = (
-        totalCost +
+        // totalCost +
         parseFloat(this.form.labor_hourly_total || 0) +
         profit
       ).toFixed(2);

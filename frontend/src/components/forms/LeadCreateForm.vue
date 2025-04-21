@@ -1,14 +1,14 @@
 <template>
   <div>
-    <button type="button" class="button button-new d-flex justify-content-center" @click="showModal"
-      data-bs-toggle="modal" data-bs-target="#taskModal">
+    <button type="button" class="button button-new" @click="openModal">
       <font-awesome-icon icon="fa-solid fa-plus" class="" />
     </button>
 
-    <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div v-if="isModalVisible" class="myModal">
       <div class="modal-dialog modal-xl">
         <div class="modal-content">
           <div class="modal-header">
+            <font-awesome-icon icon="fa-solid fa-tasks" class="icon primary" />
             <h5 class="modal-title" id="taskModalLabel">Novo contato</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" @click="closeModal"
               aria-label="Close"></button>
@@ -290,6 +290,7 @@ export default {
         source_contact_channel: null,
         reason_for_initial_contact: null,
       },
+      isModalVisible: false,
       users: [],
       companies: [],
     };
@@ -340,6 +341,12 @@ export default {
       this.form.source = null;
       this.form.source_contact_channel = null;
       this.form.reason_for_initial_contact = null;
+    },
+    closeModal() {
+      this.isModalVisible = false;
+    },
+    openModal() {
+      this.isModalVisible = true;
     },
   },
 };

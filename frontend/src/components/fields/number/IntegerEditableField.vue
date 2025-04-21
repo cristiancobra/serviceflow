@@ -1,8 +1,11 @@
 <template>
   <div>
-    <label :for="name">{{ label }}</label>
+    <label v-if="label" :for="name">{{ label }}</label>
     <div v-if="!editing" @click="startEditing">
-      <span>{{ localValue }}</span>
+      <p class="number-editable">
+          <font-awesome-icon icon="edit" class="edit-icon" />
+          {{ localValue }}
+        </p>
     </div>
     <div v-else>
       <input type="number" v-model="localValue" :placeholder="placeholder" @keydown.esc="cancelEditing" @blur="emitSave" @keydown.enter.prevent="emitSave" />
@@ -46,5 +49,18 @@ export default {
 </script>
 
 <style scoped>
-/* Adapte o estilo conforme necessário */
+.edit-icon {
+  display: none;
+  margin-left: 5px;
+  color: var(--green);
+}
+
+.number-editable:hover .edit-icon {
+  display: inline;
+}
+
+.number-editable {
+  cursor: pointer;
+  color: var(--primary);
+}
 </style>

@@ -1,13 +1,17 @@
 <template>
   <div>
-    <TasksFilter @filter-canceled="getTasksCanceled" @filter-doing="getTasksDoing" @filter-done="getTasksDone"
-      @filter-late="getTasksLate" @filter-to-do="getTasksToDo" />
+    <TasksFilter
+      @filter-canceled="getTasksCanceled"
+      @filter-doing="getTasksDoing"
+      @filter-done="getTasksDone"
+      @filter-late="getTasksLate"
+      @filter-to-do="getTasksToDo"
+    />
 
     <ErrorMessage v-if="isError" :formResponse="formResponse" />
     <SuccessMessage v-if="isSuccess" :formResponse="formResponse" />
 
-    <TasksList template="index" />
-
+      <TasksList template="index" />
   </div>
 </template>
 
@@ -16,7 +20,7 @@ import { BACKEND_URL, TASK_URL_PARAMETER } from "@/config/apiConfig";
 import axios from "axios";
 import TasksList from "@/components/lists/TasksList.vue";
 import TasksFilter from "@/components/filters/TasksFilter.vue";
-import SuccessMessage from '../../components/forms/messages/SuccessMessage.vue';
+import SuccessMessage from "../../components/forms/messages/SuccessMessage.vue";
 
 export default {
   name: "TasksIndexView",

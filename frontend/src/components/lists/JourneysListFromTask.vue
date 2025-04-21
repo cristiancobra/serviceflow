@@ -1,13 +1,13 @@
 <template>
-  <div class="">
+  <div class="section-container">
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
-    <div class="page-header">
-      <div class="title-container">
+    <div class="section-header">
+      <div class="section-title">
         <font-awesome-icon icon="fa-solid fa-clock" class="icon" />
-        <h1>JORNADAS</h1>
+        <h2>JORNADAS</h2>
       </div>
-      <div class="action-container">
+      <div class="section-action">
         <journey-create-form @new-journey-event="addJourneyCreated" />
       </div>
     </div>

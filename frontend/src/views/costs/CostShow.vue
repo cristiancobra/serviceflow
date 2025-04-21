@@ -1,13 +1,15 @@
 <template>
   <div class="page-container">
     <div class="page-header">
-      <div class="title-container">
-        <font-awesome-icon icon="fa-solid fa-tools" class="icon" />
+      <div class="page-title">
+        <font-awesome-icon icon="fa-solid fa-tools" class="page-icon" />
         <h1 class="title">CUSTO DE PRODUÇÃO</h1>
       </div>
     </div>
+
+    <section class="section-container">
     <div class="table-row">
-      <div class="subtitle-container">
+      <div class="section-title">
         <TextEditableField name="name" v-model="cost.name" placeholder="descrição detalhada do serviço"
           @save="updateService('name', $event)" class="title"/>
       </div>
@@ -24,7 +26,7 @@
       </div>
     </div>
  
-    <div class="table-row pt-5 ">
+    <div class="table-row ">
       <div class="column-80">
         <p>
           <font-awesome-icon icon="fa fa-calendar-alt" />
@@ -35,13 +37,14 @@
         {{ formatDateBr(cost.created_at) }}
       </div>
     </div>
-    <div class="table-row mt-5 mb-5">
+    <div class="table-row">
       <div>
-        <button class="offset-10 col-1 myButton delete" @click="deleteService()">
+        <button class="myButton delete" @click="deleteService()">
           excluir
         </button>
       </div>
     </div>
+    </section>
   </div>
 </template>
 

@@ -1,26 +1,53 @@
 <template>
   <div class="page-container">
-    <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
+    <AddMessage
+      v-if="messageStatus"
+      :messageStatus="messageStatus"
+      :messageText="messageText"
+    >
     </AddMessage>
     <div class="page-header">
-    <div class="title-container">
-      <font-awesome-icon icon="fa-solid fa-project-diagram" class="icon" />
-      <h1>PROJETOS</h1>
+      <div class="page-title">
+        <font-awesome-icon icon="fa-solid fa-project-diagram" class="page-icon" />
+        <h1>PROJETOS</h1>
+      </div>
+      <div class="page-action">
+        <ProjectCreateForm @new-project-event="addProjectCreated" />
+      </div>
     </div>
-    <div class="action-container">
-      <ProjectCreateForm @new-project-event="addProjectCreated" />
-    </div>
-  </div>
 
+    <section class="section-container">
     <div class="search-container">
-      <input type="text" class="search-input" v-model="searchTerm" placeholder="Digite para buscar" />
+      <input
+        type="text"
+        class="search-input"
+        v-model="searchTerm"
+        placeholder="Digite para buscar"
+      />
     </div>
 
-    <div class="list-line" v-for="project in filteredProjects" v-bind:key="project.id">
+    <div
+      class="list-line"
+      v-for="project in filteredProjects"
+      v-bind:key="project.id"
+    >
       <div class="icons-column">
-        <font-awesome-icon icon="fa-solid fa-folder-open" class="primary big-icon" />
-        <font-awesome-icon v-if="project.date_conclusion" icon="fas fa-check-circle" style="font-size: 2rem;" class="done" />
-        <font-awesome-icon v-else icon="fas fa-check-circle" style="font-size: 2rem;" class="canceled" />
+        <font-awesome-icon
+          icon="fa-solid fa-folder-open"
+          class="primary big-icon"
+        />
+        <font-awesome-icon
+          v-if="project.date_conclusion"
+          icon="fas fa-check-circle"
+          style="font-size: 2rem"
+          class="done"
+        />
+        <font-awesome-icon
+          v-else
+          icon="fas fa-check-circle"
+          style="font-size: 2rem"
+          class="canceled"
+        />
       </div>
       <div class="task-column">
         <router-link :to="{ name: 'projectShow', params: { id: project.id } }">
@@ -34,19 +61,40 @@
         </router-link>
       </div>
       <div class="date-column">
-        <DateTimeValue v-if="project.date_conclusion" v-model="project.date_conclusion" classText="done"
-          classIcon='done' @save="updateProject('date_conclusion', $event, project.id)" />
-        <DateTimeEditableInput v-else v-model="project.date_due" :classText="getDeadlineClass(project.date_due)"
-          :classIcon='getDeadlineClass(project.date_due)' @save="updateProject('date_due', $event, project.id)" />
+        <DateTimeValue
+          v-if="project.date_conclusion"
+          v-model="project.date_conclusion"
+          classText="done"
+          classIcon="done"
+          @save="updateProject('date_conclusion', $event, project.id)"
+        />
+        <DateTimeEditableInput
+          v-else
+          v-model="project.date_due"
+          :classText="getDeadlineClass(project.date_due)"
+          :classIcon="getDeadlineClass(project.date_due)"
+          @save="updateProject('date_due', $event, project.id)"
+        />
       </div>
     </div>
+  </section>
   </div>
 </template>
 
 <script>
 import { formatDuration } from "@/utils/date/dateUtils";
-import { getDeadlineClass, getStatusClass, getPriorityClass, getStatusColor, getStatusIcon } from "@/utils/card/cardUtils";
-import { BACKEND_URL, PROJECT_URL_PARAMETER, PROJECTS_PRIORIZED_URL } from "@/config/apiConfig";
+import {
+  getDeadlineClass,
+  getStatusClass,
+  getPriorityClass,
+  getStatusColor,
+  getStatusIcon,
+} from "@/utils/card/cardUtils";
+import {
+  BACKEND_URL,
+  PROJECT_URL_PARAMETER,
+  PROJECTS_PRIORIZED_URL,
+} from "@/config/apiConfig";
 import { index } from "@/utils/requests/httpUtils";
 import axios from "axios";
 import ProjectCreateForm from "../forms/ProjectCreateForm.vue";
@@ -67,7 +115,7 @@ export default {
     },
     template: {
       type: String,
-    }
+    },
   },
   data() {
     return {
@@ -140,7 +188,9 @@ export default {
     //   this.isActive = !this.isActive;
     // },
     updateProjectsList(updatedProject, projectId) {
-      const index = this.projects.findIndex(project => project.id === projectId);
+      const index = this.projects.findIndex(
+        (project) => project.id === projectId
+      );
       this.projects.splice(index, 1, updatedProject);
     },
   },
@@ -161,14 +211,13 @@ export default {
     },
   },
   mounted() {
-    if (this.template === 'priorized') {
+    if (this.template === "priorized") {
       this.getProjectsPriorized();
     }
 
-    if (this.template === 'index') {
+    if (this.template === "index") {
       this.getProjects();
     }
-
-  }
+  },
 };
 </script>

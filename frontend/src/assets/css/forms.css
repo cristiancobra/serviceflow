@@ -54,3 +54,12 @@
     flex-wrap: wrap;
     gap: 15px;
   }
+
+  .input-number {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 5px;
+    border: 1px solid var(--gray);
+    font-size: 1rem;
+    text-align: right;
+  }

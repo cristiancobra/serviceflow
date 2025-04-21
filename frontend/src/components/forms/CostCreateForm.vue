@@ -10,7 +10,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <font-awesome-icon icon="fa-solid fa-tasks" class="icon pe-3 primary" />
-            <h5 class="modal-title" id="taskModalLabel">Novo custo</h5>
+            <h2 class="modal-title" id="taskModalLabel">Novo custo</h2>
             <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
           </div>
           <div class="modal-body">

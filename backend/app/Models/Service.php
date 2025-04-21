@@ -30,6 +30,11 @@ class Service extends Model
             ->withTimestamps();
     }
 
+    public function proposals()
+    {
+        return $this->hasMany(Proposal::class);
+    }
+
     public function calculateLaborHourlyTotal($service)
     {
         $hours = $service->labor_hours / 3600;

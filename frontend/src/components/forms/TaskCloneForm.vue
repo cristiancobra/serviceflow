@@ -182,9 +182,9 @@ export default {
       this.form.company_id = this.task.company_id;
       this.form.contact_id = this.task.contact_id;
       this.form.user_id = this.task.user_id;
-      this.form.date_start = this.task.date_start;
-      this.form.date_due = this.task.date_due;
-      this.form.date_conclusion = this.task.date_conclusion;
+      this.form.date_start = new Date().toISOString().split("T")[0];
+      this.form.date_due = "";
+      this.form.date_conclusion = "";
       this.form.priority = this.task.priority;
       this.form.opportunity_id = this.task.opportunity_id;
       this.form.project_id = this.task.project_id;

@@ -115,6 +115,8 @@ Route::middleware('auth:sanctum')->group(function () {
 		->names('proposals');
 
 	// SERVICES
+	Route::delete('/services/{service}/costs/{cost}', [ServiceController::class, 'detachCost']);
+	
 	Route::apiResource('services', ServiceController::class)
 		->names('services');
 

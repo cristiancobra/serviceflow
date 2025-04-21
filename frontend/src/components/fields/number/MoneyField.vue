@@ -1,7 +1,7 @@
 <template>
   <div class="money-container">
-    <div v-if="localValue" class="disabled">
-      <p class="text-end">
+    <div v-if="localValue" class="price">
+      <p>
         {{ formatCurrencySymbol(localValue) }}
       </p>
     </div>

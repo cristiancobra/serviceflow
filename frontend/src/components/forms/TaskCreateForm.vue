@@ -8,7 +8,7 @@
       <div class="modal-dialog modal-xl">
         <div class="modal-content">
           <div class="modal-header">
-            <font-awesome-icon icon="fa-solid fa-tasks" class="icon pe-3 primary" />
+            <font-awesome-icon icon="fa-solid fa-tasks" class="icon primary" />
             <h5 class="modal-title" id="taskModalLabel">Nova tarefa</h5>
             <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
           </div>

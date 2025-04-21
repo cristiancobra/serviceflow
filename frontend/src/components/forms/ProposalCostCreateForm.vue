@@ -24,7 +24,7 @@
                                 </p>
                             </div>
                             <div v-else class="section-container">
-                                <div class="subtitle-container">
+                                <div class="section-title">
                                     <h3>
                                         Custos:
                                     </h3>

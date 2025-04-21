@@ -1,14 +1,13 @@
 <template>
-  <div class="">
+  <div class="section-container">
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
-    <div class="page-header">
-      <div class="title-container">
+    <div class="section-header">
+      <div class="section-title">
         <font-awesome-icon icon="fa-solid fa-clock" class="icon" />
-        <h1>Jornadas</h1>
+        <h2>Jornadas</h2>
       </div>
-      <div class="action-container">
-        <journey-create-form @new-journey-event="addJourneyCreated" />
+      <div class="section-action">
       </div>
     </div>
 
@@ -93,14 +92,12 @@ import { formatDuration } from "@/utils/date/dateUtils";
 import { mapMutations } from 'vuex';
 import DateEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import TimeEditableInput from "@/components/forms/inputs/time/TimeEditableInput.vue";
-import JourneyCreateForm from "@/components/forms/JourneyCreateForm.vue";
 import PaginateNav from "@/components/layout/PaginateNav.vue";
 
 export default {
   name: "JourneysList",
   components: {
     DateEditableInput,
-    JourneyCreateForm,
     PaginateNav,
     TimeEditableInput,
   },
@@ -308,7 +305,7 @@ export default {
   color: white;
 }
 
-icon-clock-new:hover {
+.icon-clock-new:hover {
   font-size: 2.5rem;
   text-align: center;
   font-weight: 400;

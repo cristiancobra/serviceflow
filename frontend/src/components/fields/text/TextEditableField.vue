@@ -1,21 +1,24 @@
 <template>
   <div class="main-container">
-    <label class="form-label me-2" :for="name">{{ label }}</label>
-    <div v-if="!editing"  @click="startEditing">
+    <label v-if="label" class="" :for="name">{{ label }}</label>
+    <div v-if="!editing" @click="startEditing">
       <div v-if="modelValue" class="">
         {{ modelValue }}
       </div>
-      <div v-else>
-        não informado
-      </div>
+      <div v-else>não informado</div>
     </div>
     <div v-else>
-      <div class="text-input-container">
-        <input class="text-input" type="text" :name="name" v-model="localValue" :placeholder="placeholder"
-          @keydown.esc="cancelEditing" @blur="emitSave" @keydown.enter.prevent="emitSave" />
-      </div>
+      <input
+        class="text-input"
+        type="text"
+        :name="name"
+        v-model="localValue"
+        :placeholder="placeholder"
+        @keydown.esc="cancelEditing"
+        @blur="emitSave"
+        @keydown.enter.prevent="emitSave"
+      />
     </div>
-
   </div>
 </template>
 
@@ -44,7 +47,7 @@ export default {
     },
     cancelEditing() {
       this.editing = false;
-      this.localValue = this.modelValue
+      this.localValue = this.modelValue;
     },
   },
   watch: {

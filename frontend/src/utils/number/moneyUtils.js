@@ -18,6 +18,11 @@ export function convertBrToCurrency(value) {
 }
 
 export function convertCurrencyToBr(value) {
+  if (value === null || value === undefined) {
+    console.error("Valor é nulo ou indefinido.");
+    return ''; // Retorna uma string vazia ou outro valor padrão
+  }
+
   if (typeof value === 'string') {
     value = parseFloat(value.replace(',', '.')); // Converte a string para número
   }
@@ -31,12 +36,17 @@ export function convertCurrencyToBr(value) {
 }
 
 export function formatCurrencySymbol(value, locale = 'pt-BR', currency = 'BRL') {
-  let convertedValue = this.convertBrToCurrency(value);
 
-  const formattedValue = new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency: currency,
-  }).format(convertedValue);
+  if (value !== null && value !== undefined) {
+    let convertedValue = convertBrToCurrency(value);
 
-  return formattedValue;
+    const formattedValue = new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: currency,
+    }).format(convertedValue);
+
+    return formattedValue;
+  } else {
+    console.error("Valor é nulo ou indefinido, não será formatado.");
+  }
 }

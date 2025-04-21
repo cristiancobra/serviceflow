@@ -2,72 +2,112 @@
   <div class="navbar-container">
     <nav class="navbar">
       <a class="navbar-brand" href="#">
-        <img :src="require('@/assets/logo-serviceflow-BRANCO.png')" class="logo" alt="logo-serviceflow" />
+        <img
+          :src="require('@/assets/logo-serviceflow-BRANCO.png')"
+          class="logo"
+          alt="logo-serviceflow"
+        />
       </a>
-      <button class="navbar-toggler" :class="{ open: isNavbarOpen }" @click="toggleNavbar"> <!-- Adiciona a classe condicional 'open' -->
+      <button
+        class="navbar-toggler"
+        :class="{ open: isNavbarOpen }"
+        @click="toggleNavbar"
+      >
+        <!-- Adiciona a classe condicional 'open' -->
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div :class="['navbar-collapse', { 'show': isNavbarOpen }]">
+      <div :class="['navbar-collapse', { show: isNavbarOpen }]">
         <ul class="navbar-nav">
           <router-link to="/">
-            <li class="nav-item" @mouseover="toggleActive('home')" :class="{ active: activeItem === 'home' }">
+            <li
+              class="nav-item"
+              @mouseover="toggleActive('home')"
+              :class="{ active: activeItem === 'home' }"
+            >
               <font-awesome-icon icon="fas fa-calendar" />
               <span class="router-link-text">AGENDA</span>
             </li>
           </router-link>
 
           <router-link to="/leads">
-            <li class="nav-item" @mouseover="toggleActive('contacts')" :class="{ active: activeItem === 'contacts' }">
+            <li
+              class="nav-item"
+              @mouseover="toggleActive('contacts')"
+              :class="{ active: activeItem === 'contacts' }"
+            >
               <font-awesome-icon icon="fas fa-user" />
               <span class="router-link-text">CONTATOS</span>
             </li>
           </router-link>
 
           <router-link to="/companies">
-            <li class="nav-item" @mouseover="toggleActive('companies')" :class="{ active: activeItem === 'companies' }">
+            <li
+              class="nav-item"
+              @mouseover="toggleActive('companies')"
+              :class="{ active: activeItem === 'companies' }"
+            >
               <font-awesome-icon icon="fas fa-briefcase" />
               <span class="router-link-text">EMPRESAS</span>
             </li>
           </router-link>
 
           <router-link to="/opportunities">
-            <li class="nav-item" @mouseover="toggleActive('opportunities')"
-              :class="{ active: activeItem === 'opportunities' }">
+            <li
+              class="nav-item"
+              @mouseover="toggleActive('opportunities')"
+              :class="{ active: activeItem === 'opportunities' }"
+            >
               <font-awesome-icon icon="fas fa-bullseye" />
               <span class="router-link-text">OPORTUNIDADES</span>
             </li>
           </router-link>
 
-
-          <li class="nav-item" @mouseover="showSubmenu('financeiro')" @mouseleave="hideSubmenu('financeiro')"
-            :class="{ active: activeItem === 'financeiro' }">
+          <li
+            class="nav-item"
+            @mouseover="showSubmenu('financeiro')"
+            @mouseleave="hideSubmenu('financeiro')"
+            :class="{ active: activeItem === 'financeiro' }"
+          >
             <font-awesome-icon icon="fas fa-cogs" />
             <span class="router-link-text">FINANCEIRO</span>
             <ul class="submenu" v-show="submenus.financeiro">
               <router-link to="/financial">
-                <li class="nav-item" @mouseover="toggleActive('financial-report')"
-                  :class="{ active: activeItem === 'financial-report' }">
+                <li
+                  class="nav-item"
+                  @mouseover="toggleActive('financial-report')"
+                  :class="{ active: activeItem === 'financial-report' }"
+                >
                   <font-awesome-icon icon="fas fa-chart-line" />
                   <span class="router-link-text">RELATÓRIOS</span>
                 </li>
               </router-link>
               <router-link to="/proposals">
-                <li class="nav-item" @mouseover="toggleActive('proposals')"
-                  :class="{ active: activeItem === 'proposals' }">
+                <li
+                  class="nav-item"
+                  @mouseover="toggleActive('proposals')"
+                  :class="{ active: activeItem === 'proposals' }"
+                >
                   <font-awesome-icon icon="fas fa-file-invoice-dollar" />
                   <span class="router-link-text">PROPOSTAS</span>
                 </li>
               </router-link>
               <router-link to="/services">
-                <li class="nav-item" @mouseover="toggleActive('services')"
-                  :class="{ active: activeItem === 'services' }">
+                <li
+                  class="nav-item"
+                  @mouseover="toggleActive('services')"
+                  :class="{ active: activeItem === 'services' }"
+                >
                   <font-awesome-icon icon="fas fa-coins" />
                   <span class="router-link-text">SERVIÇOS</span>
                 </li>
               </router-link>
               <router-link to="/costs">
-                <li class="nav-item" @mouseover="toggleActive('costs')" :class="{ active: activeItem === 'costs' }">
+                <li
+                  class="nav-item"
+                  @mouseover="toggleActive('costs')"
+                  :class="{ active: activeItem === 'costs' }"
+                >
                   <font-awesome-icon icon="fas fa-dollar-sign" />
                   <span class="router-link-text">CUSTOS</span>
                 </li>
@@ -76,26 +116,42 @@
           </li>
 
           <router-link to="/projects">
-            <li class="nav-item" @mouseover="toggleActive('projects')" :class="{ active: activeItem === 'projects' }">
+            <li
+              class="nav-item"
+              @mouseover="toggleActive('projects')"
+              :class="{ active: activeItem === 'projects' }"
+            >
               <font-awesome-icon icon="fas fa-project-diagram" />
               <span class="router-link-text">PROJETOS</span>
             </li>
           </router-link>
 
           <router-link to="/tasks">
-            <li class="nav-item" @mouseover="toggleActive('tasks')" :class="{ active: activeItem === 'tasks' }">
+            <li
+              class="nav-item"
+              @mouseover="toggleActive('tasks')"
+              :class="{ active: activeItem === 'tasks' }"
+            >
               <font-awesome-icon icon="fas fa-tasks" />
               <span class="router-link-text">TAREFAS</span>
             </li>
           </router-link>
 
-          <li class="nav-item" @mouseover="showSubmenu('configuracoes')" @mouseleave="hideSubmenu('configuracoes')"
-            :class="{ active: activeItem === 'configuracoes' }">
+          <li
+            class="nav-item"
+            @mouseover="showSubmenu('configuracoes')"
+            @mouseleave="hideSubmenu('configuracoes')"
+            :class="{ active: activeItem === 'configuracoes' }"
+          >
             <font-awesome-icon icon="fas fa-cogs" />
             <span class="router-link-text">CONFIGURAÇÕES</span>
             <ul class="submenu" v-show="submenus.configuracoes">
               <router-link :to="`/accounts/${accountId}`">
-                <li class="nav-item" @mouseover="toggleActive('account')" :class="{ active: activeItem === 'account' }">
+                <li
+                  class="nav-item"
+                  @mouseover="toggleActive('account')"
+                  :class="{ active: activeItem === 'account' }"
+                >
                   <font-awesome-icon icon="fas fa-user" />
                   <span class="router-link-text">CONTA</span>
                 </li>
@@ -103,20 +159,19 @@
             </ul>
           </li>
           <router-link to="/logout">
-            <li class="nav-item" @click="logout" @mouseover="toggleActive('submitLogout')"
-              :class="{ active: activeItem === 'logout' }">
+            <li
+              class="nav-item"
+              @click="logout"
+              @mouseover="toggleActive('submitLogout')"
+              :class="{ active: activeItem === 'logout' }"
+            >
               <font-awesome-icon icon="fas fa-sign-out" />
               <span class="router-link-text">SAIR</span>
             </li>
           </router-link>
         </ul>
-        <div class="navbar-user-menu-container">
-          <navbar-user-menu />
-          <div class="play-container">
-            <font-awesome-icon v-if="openJourney" icon="fas fa-play" class="play" />
-            <font-awesome-icon v-else icon="fas fa-pause" class="off" />
-          </div>
-        </div>
+
+        <navbar-user-menu :openJourney="openJourney" />
       </div>
     </nav>
   </div>
@@ -124,9 +179,9 @@
 
 
 <script>
-import { mapActions } from 'vuex';
-import { mapState } from 'vuex';
-import NavbarUserMenu from './NavbarUserMenu.vue';
+import { mapActions } from "vuex";
+import { mapState } from "vuex";
+import NavbarUserMenu from "./NavbarUserMenu.vue";
 
 export default {
   data() {
@@ -143,10 +198,10 @@ export default {
     NavbarUserMenu,
   },
   methods: {
-    ...mapActions(['logout']),
+    ...mapActions(["logout"]),
     async submitLogout() {
       await this.logout();
-      this.toggleActive('logout');
+      this.toggleActive("logout");
     },
     toggleActive(item) {
       this.activeItem = item;
@@ -162,13 +217,7 @@ export default {
     },
   },
   computed: {
-    ...mapState([
-      'accountId',
-      'openJourney',
-    ]),
-  },
-  mounted() {
-    console.log('openJourney', this.openJourney);
+    ...mapState(["accountId", "openJourney"]),
   },
 };
 </script>
@@ -184,6 +233,7 @@ export default {
 }
 
 .navbar {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -194,7 +244,7 @@ export default {
 }
 
 .navbar-brand .logo {
-  height: 30px;
+  height: 22px;
 }
 
 .navbar-toggler {
@@ -210,19 +260,19 @@ export default {
   background-color: #fff;
   display: block;
   position: relative;
-  transition: transform 0.3s ease; 
+  transition: transform 0.3s ease;
 }
 
 .navbar-toggler-icon::before,
 .navbar-toggler-icon::after {
-  content: '';
+  content: "";
   width: 60px;
   height: 6px;
   background-color: #fff;
   display: block;
   position: absolute;
   left: 0;
-  transition: transform 0.3s ease; 
+  transition: transform 0.3s ease;
 }
 
 .navbar-toggler-icon::before {
@@ -277,10 +327,14 @@ export default {
 .nav-item {
   position: relative;
   display: flex;
-  margin: 0.5rem 0;
+  margin: 0.4rem 0;
   color: white;
+  font-size: 0.8rem;
   text-decoration: none;
-  padding: 0.7rem;
+  padding-left: 0.9rem;
+  padding-right: 0.9rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
 .nav-item.active {
@@ -294,6 +348,8 @@ export default {
   color: #fff;
   text-decoration: none;
   margin-left: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 400;
 }
 
 .submenu {
@@ -351,11 +407,10 @@ export default {
 
   .navbar-nav {
     flex-direction: column;
-
   }
 
   .navbar-brand .logo {
-    height: 70px;
+    height: 60px;
     /* Ajusta o tamanho do logo em telas pequenas */
   }
 }

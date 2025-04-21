@@ -20,22 +20,62 @@ label {
   text-align: left;
 }
 
+.alert-text {
+  font-weight: 800;
+  color: var(--red);
+}
+
+.featured-text {
+  font-weight: 900;
+  color: var(--purple);
+}
+
+/* button */
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 20px 20px 20px 20px;
+  width: 8rem;
+  font-weight: 800;
+  border-color: var(--purple-light);
+  background-color: var(--purple);
+  color: white;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos responsivos para telas pequenas */
+@media (max-width: 576px) {
+  .button {
+    /* border-radius: 6px 6px 6px 6px; */
+  }
+
+  /* Estilos responsivos para telas médias */
+@media (min-width: 577px) and (max-width: 768px) {
+  .button {
+    /* border-radius: 6px 6px 6px 6px; */
+  }
+}
+}
+
+.button:hover {
+  border-color: var(--purple);
+  background-color: var(--purple-light);
+  color: var(--purple);
+}
+
 .button-new {
-  padding-left: 0.8rem;
-  padding-right: 0.8rem;
-  padding-top: 0.2rem;
-  padding-bottom: 0.2rem;
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
   text-align: center;
   font-weight: 900;
-  font-size: 1.2rem;
-  border-style: solid;
-  border-radius: 10px;
-  border-width: 2px;
-  border-color: white;
+  font-size: 1.0rem;
   background-color: var(--purple);
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   color: white;
-  height: 2.8rem;
 }
 
 .button-new:hover {
@@ -58,40 +98,6 @@ label {
   width: 6%;
 }
 
-/* button */
-.button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-width: 2px;
-  border-style: solid;
-  border-radius: 20px 20px 20px 20px;
-  width: 9rem;
-  font-weight: 800;
-  border-color: var(--purple-light);
-  background-color: var(--purple);
-  color: white;
-}
-
-/* Estilos responsivos para telas pequenas */
-@media (max-width: 576px) {
-  .button {
-    /* border-radius: 6px 6px 6px 6px; */
-  }
-
-  /* Estilos responsivos para telas médias */
-@media (min-width: 577px) and (max-width: 768px) {
-  .button {
-    /* border-radius: 6px 6px 6px 6px; */
-  }
-}
-}
-
-.button:hover {
-  border-color: var(--purple);
-  background-color: var(--purple-light);
-  color: var(--purple);
-}
 
 /* circular button */
 .button-circular {
@@ -266,4 +272,14 @@ label {
 .show {
   display: block;
   transition: display 2s;
+}
+
+.no-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.no-link:hover {
+  text-decoration: none;
+  color: var(--primary);
 }

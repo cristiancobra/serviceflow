@@ -1,7 +1,7 @@
 <template>
     <div class="section-container">
         <div class="section-header">
-            <div class="subtitle-container">
+            <div class="section-title">
                 <font-awesome-icon icon="fas fa-coins" class="icon" />
                 <h2>
                     Custos de propdução

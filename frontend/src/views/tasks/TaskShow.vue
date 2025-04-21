@@ -1,94 +1,148 @@
 <template>
-  <div class="mb-5">
-    <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
+  <div class="">
+    <AddMessage
+      v-if="messageStatus"
+      :messageStatus="messageStatus"
+      :messageText="messageText"
+    >
     </AddMessage>
-    <div class="header-fixed">
-      <div class="icon-column">
-        <font-awesome-icon icon="fa-solid fa-list-check" class="show-title-icon " />
-        <p class="show-duration">
-          {{ formatDuration(task.duration_time) }}
-        </p>
-      </div>
-      <div class="title-column">
-        <p class="show-title">
-          <TextEditableField name="name" v-model="task.name" placeholder="descrição detalhada da tarefa"
-            @save="updateTask('name', $event)" />
-        </p>
-        <p class="opportunity" v-if="task.opportunity">
-          <router-link :to="'/opportunities/' + task.opportunity.id">
-            <font-awesome-icon icon="fa-solid fa-search" class="primary" />
-          </router-link>
-          {{ task.opportunity.name }}
-        </p>
-      </div>
-    </div>
-    <div class="header-fixed-menu">
-      <button class="item-menu" @click="currentSection = 'info'" :class="{ active: currentSection === 'info' }">
-        Informações
-      </button>
-      <button class="item-menu" @click="currentSection = 'attachments'"
-        :class="{ active: currentSection === 'attachments' }">
-        Anexos
-      </button>
-      <button class="item-menu" @click="currentSection = 'journeys'" :class="{ active: currentSection === 'journeys' }">
-        Jornadas
-      </button>
-    </div>
-
-    <div class="content-below-header">
-      <div class="info-container" v-show="currentSection === 'info'">
-        <div class="page-container d-flex pt-4">
-          <div class="col-6">
-            <users-select-editable-field label="Responsável" name="user_id" v-model="task.user_id"
-              @update:modelValue="updateTask('user_id', $event)" />
-            <projects-select-editable-field label="Projeto" v-model="task.project_id"
-              @update:modelValue="updateTask('project_id', $event)" fieldNull="Nenhum" />
-            <opportunities-select-editable-field label="Oportunidade" v-model="task.opportunity_id"
-              @update:modelValue="updateTask('opportunity_id', $event)" fieldNull="Nenhum" />
-          </div>
-          <div class="col-6">
-            <div class="row">
-              <DateEditableInput class="d-flex justify-content-end" name="date_start" label="Início:"
-                v-model="task.date_start" @save="updateTask('date_start', $event)" />
-            </div>
-            <div class="row mt-2">
-              <DateEditableInput class="d-flex justify-content-end" name="date_due" label="Prazo:"
-                v-model="task.date_due" @save="updateTask('date_due', $event)" />
-            </div>
-            <div class="row mt-2">
-              <div class="col d-flex justify-content-end">
-                <button v-if="showEndTaskButton" class="button-circular primary me-3" @click="updateDateConclusion"
-                  :title="endTaskTitle">
-                  <font-awesome-icon icon="fa-solid fa-check-square" />
-                </button>
-                <DateEditableInput class="d-flex justify-content-end" name="date_conclusion" label="Conclusão:"
-                  v-model="task.date_conclusion" @save="updateTask('date_conclusion', $event)" />
-              </div>
-            </div>
-            <div class="row mt-2">
-              <DateEditableInput class="d-flex justify-content-end" name="date_conclusion" label="Cancelado:"
-                v-model="task.date_canceled" @save="updateTask('date_canceled', $event)" />
-            </div>
-          </div>
+    <div class="page-container">
+      <div class="page-header">
+        <div class="page-title">
+          <font-awesome-icon icon="fa-solid fa-list-check" class="page-icon" />
+          <h1>
+            <TextEditableField
+              name="name"
+              v-model="task.name"
+              placeholder="descrição detalhada da tarefa"
+              @save="updateTask('name', $event)"
+            />
+          </h1>
         </div>
-        <div class="page-container d-flex pt-4">
-          <TextEditor label="Descrição" name="description" v-model="task.description"
-            @save="updateTask('description', $event)" />
+        <div class="page-action">
+          <p class="show-duration">
+            {{ formatDuration(task.duration_time) }}
+          </p>
         </div>
       </div>
 
-      <div class="info-container" v-show="currentSection === 'attachments'">
+      <nav class="section-menu">
+        <button class="item-menu" @click="scrollToSection('info')">
+          <font-awesome-icon icon="fas fa-file-invoice" class="icon" />
+        </button>
+        <button class="item-menu" @click="scrollToSection('attachments')">
+          <font-awesome-icon icon="fas fa-link" class="icon" />
+        </button>
+        <button class="item-menu" @click="scrollToSection('journeys')">
+          <font-awesome-icon icon="fas fa-clock" class="icon" />
+        </button>
+      </nav>
+
+      <section id="info" class="section-container">
+        <div class="section-title">
+          <font-awesome-icon icon="fas fa-file-invoice" class="icon" />
+          <h2>Informações</h2>
+        </div>
+        <div class="table-row">
+          <div class="column-70">
+            <div class="tale-row">
+              <users-select-editable-field
+                label="Responsável"
+                name="user_id"
+                v-model="task.user_id"
+                @update:modelValue="updateTask('user_id', $event)"
+              />
+            </div>
+            <div class="tale-row">
+              <projects-select-editable-field
+                label="Projeto"
+                v-model="task.project_id"
+                @update:modelValue="updateTask('project_id', $event)"
+                fieldNull="Nenhum"
+              />
+            </div>
+            <div class="tale-row">
+              <opportunities-select-editable-field
+                label="Oportunidade"
+                v-model="task.opportunity_id"
+                @update:modelValue="updateTask('opportunity_id', $event)"
+                fieldNull="Nenhum"
+              />
+            </div>
+          </div>
+          <div class="column-30">
+            <div class="table-row">
+              <DateEditableInput
+                class="d-flex justify-content-end"
+                name="date_start"
+                label="Início:"
+                v-model="task.date_start"
+                @save="updateTask('date_start', $event)"
+              />
+            </div>
+            <div class="table-row">
+              <DateEditableInput
+                class="d-flex justify-content-end"
+                name="date_due"
+                label="Prazo:"
+                v-model="task.date_due"
+                @save="updateTask('date_due', $event)"
+              />
+            </div>
+            <div class="table-row">
+              <button
+                v-if="showEndTaskButton"
+                class="button-circular primary me-3"
+                @click="updateDateConclusion"
+                :title="endTaskTitle"
+              >
+                <font-awesome-icon icon="fa-solid fa-check-square" />
+              </button>
+              <DateEditableInput
+                class="d-flex justify-content-end"
+                name="date_conclusion"
+                label="Conclusão:"
+                v-model="task.date_conclusion"
+                @save="updateTask('date_conclusion', $event)"
+              />
+            </div>
+            <div class="table-row mt-2">
+              <DateEditableInput
+                class="d-flex justify-content-end"
+                name="date_conclusion"
+                label="Cancelado:"
+                v-model="task.date_canceled"
+                @save="updateTask('date_canceled', $event)"
+              />
+            </div>
+          </div>
+        </div>
+
+        <timeline-task :task="task" />
+
+        <div class="table-row">
+          <TextEditor
+            label="Descrição"
+            name="description"
+            v-model="task.description"
+            @save="updateTask('description', $event)"
+          />
+        </div>
+      </section>
+
+      <section id="attachments">
         <links-list :links="task.links" :taskId="taskId" />
-      </div>
+      </section>
 
-      <div class="info-container" v-show="currentSection === 'journeys'">
-        <div class="page-container">
-          <journeys-list-from-task :task="task" @update-task-duration="updateTaskDuration()"
-            @last-journey-end="updateEndTaskButtonVisibility" />
-        </div>
-      </div>
+      <section id="journeys">
+        <journeys-list-from-task
+          :task="task"
+          @update-task-duration="updateTaskDuration()"
+          @last-journey-end="updateEndTaskButtonVisibility"
+        />
+      </section>
 
-      <div class="d-flex justify-content-end">
+      <div class="table-row">
         <task-clone-form :task="task" />
         <button class="button delete" @click="deleteTask()">
           <font-awesome-icon icon="fa-solid fa-trash" class="" />
@@ -108,18 +162,20 @@ import { formatDateTimeBr } from "@/utils/date/dateUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
 import { getStatusClass } from "@/utils/card/cardUtils";
 import { getStatusIcon } from "@/utils/card/cardUtils";
+import { show } from "@/utils/requests/httpUtils.js";
+import { scrollToSection } from "@/utils/layout/navigationUtils";
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
 import DateEditableInput from "@/components/fields/datetime/DateTimeEditableInput";
-import { show } from "@/utils/requests/httpUtils.js";
-import OpportunitiesSelectEditableField from '../../components/fields/selects/OpportunitiesSelectEditableField.vue';
+import OpportunitiesSelectEditableField from "../../components/fields/selects/OpportunitiesSelectEditableField.vue";
 import ProjectsSelectEditableField from "@/components/fields/selects/ProjectsSelectEditableField.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField";
 import TextEditor from "@/components/forms/inputs/TextEditor.vue";
 import UsersSelectEditableField from "@/components/fields/selects/UsersSelectEditableField.vue";
-import TaskCloneForm from '../../components/forms/TaskCloneForm.vue';
-import LinksList from '../../components/lists/LinksList.vue';
-import JourneysListFromTask from '../../components/lists/JourneysListFromTask.vue';
+import TaskCloneForm from "../../components/forms/TaskCloneForm.vue";
+import LinksList from "../../components/lists/LinksList.vue";
+import JourneysListFromTask from "../../components/lists/JourneysListFromTask.vue";
+import TimelineTask from "@/components/show/TimelineTask.vue";
 
 export default {
   name: "TaskShow",
@@ -132,12 +188,11 @@ export default {
     UsersSelectEditableField,
     TaskCloneForm,
     LinksList,
-    JourneysListFromTask
+    JourneysListFromTask,
+    TimelineTask,
   },
   data() {
     return {
-      currentSection: 'info',
-      // journeysData: [],
       journeysUrl: "",
       journeyEnd: "",
       messageStatus: "",
@@ -158,12 +213,16 @@ export default {
     },
     latestJourneyEnd() {
       if (this.task.journeys.length === 0) return null;
-      const sortedJourneys = [...this.task.journeys].sort((a, b) => new Date(b.end) - new Date(a.end));
+      const sortedJourneys = [...this.task.journeys].sort(
+        (a, b) => new Date(b.end) - new Date(a.end)
+      );
       console.log("sortedJourneys", sortedJourneys);
       return sortedJourneys[0].end;
     },
     endTaskTitle() {
-      return `Finalizar tarefa com data da última jornada ${this.latestJourneyEnd ? this.latestJourneyEnd : ''}`;
+      return `Finalizar tarefa com data da última jornada ${
+        this.latestJourneyEnd ? this.latestJourneyEnd : ""
+      }`;
     },
   },
   methods: {
@@ -172,6 +231,7 @@ export default {
     formatDuration,
     getStatusClass,
     getStatusIcon,
+    scrollToSection,
     show,
     translateStatus,
     translatePriority,
@@ -211,10 +271,10 @@ export default {
     },
     updateDateConclusion() {
       if (this.journeyEnd) {
-        this.updateTask('date_conclusion', this.journeyEnd)
+        this.updateTask("date_conclusion", this.journeyEnd);
         this.showEndTaskButton = false;
       } else {
-        console.log('Nenhum item encontrado na lista de journeys');
+        console.log("Nenhum item encontrado na lista de journeys");
       }
     },
     updateEndTaskButtonVisibility(journeyEnd) {
@@ -261,12 +321,12 @@ export default {
     },
   },
   watch: {
-    '$route.params.id': {
+    "$route.params.id": {
       immediate: true,
       handler(newId) {
         this.reloadTask(newId);
-      }
-    }
+      },
+    },
   },
   async mounted() {
     this.setTaskId(this.$route.params.id);

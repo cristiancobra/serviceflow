@@ -1,41 +1,49 @@
 <template>
   <div class="page-container">
     <div class="page-header">
-      <div class="title-container">
-        <font-awesome-icon icon="fa-solid fa-tools" class="icon" />
+      <div class="page-title">
+        <font-awesome-icon icon="fa-solid fa-tools" class="page-icon" />
         <h1>Custos de produção</h1>
       </div>
       <div class="action-container">
         <cost-create-form @new-cost-event="addCostCreated" />
       </div>
     </div>
-    <div class="table-row">
-      <input
-        type="text"
-        class="form-control search-container"
-        v-model="searchTerm"
-        placeholder="Digite para buscar"
-      />
-    </div>
-    <div class="table-row" v-for="cost in costs" v-bind:key="cost.id">
-      <router-link
-        :to="{ name: 'costShow', params: { id: cost.id } }"
-        class="link-row"
-      >
-        <div class="icon-column">
-          <font-awesome-icon icon="fa fa-cogs" />
+
+    <section class="section-container">
+      <div class="table-row">
+        <input
+          type="text"
+          class="form-control search-container"
+          v-model="searchTerm"
+          placeholder="Digite para buscar"
+        />
+      </div>
+      <div v-if="!costs.length" class="section-container">
+        <no-itens-message @new-company-event="addCompanyCreated($event)" />
+      </div>
+      <div v-else>
+        <div class="table-row" v-for="cost in costs" v-bind:key="cost.id">
+          <router-link
+            :to="{ name: 'costShow', params: { id: cost.id } }"
+            class="link-row"
+          >
+            <div class="icon-column">
+              <font-awesome-icon icon="fa fa-cogs" />
+            </div>
+            <div class="column-80">
+              <p class="name">
+                {{ cost.name }}
+              </p>
+            </div>
+            <div class="column-20">
+              <p class="price">R$ {{ cost.price }}</p>
+            </div>
+          </router-link>
+          <router-view />
         </div>
-        <div class="column-80">
-          <p class="name ps-2">
-            {{ cost.name }}
-          </p>
-        </div>
-        <div class="column-20">
-          <p class="price">R$ {{ cost.price }}</p>
-        </div>
-      </router-link>
-      <router-view />
-    </div>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -44,10 +52,12 @@ import { BACKEND_URL, COST_URL } from "@/config/apiConfig";
 import axios from "axios";
 import CostCreateForm from "../forms/CostCreateForm.vue";
 import { index } from "@/utils/requests/httpUtils";
+import NoItensMessage from "../messages/NoItensMessage.vue";
 
 export default {
   components: {
     CostCreateForm,
+    NoItensMessage,
   },
   data() {
     return {
@@ -99,8 +109,8 @@ export default {
 <style scoped>
 .name {
   text-align: left;
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 400;
 }
 
 .big {
@@ -137,8 +147,8 @@ export default {
   text-align: right;
   margin-top: 0px;
   margin-bottom: -0px;
-  font-size: 1.2rem;
-  font-weight: 800;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 .icon {

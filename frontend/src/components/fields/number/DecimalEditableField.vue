@@ -3,7 +3,8 @@
     <label class="form-label" :for="name">{{ label }}</label>
     <div v-if="!editing"  @click="startEditing">
       <div v-if="localValue">
-        <p class="text-end">
+        <p class="number-editable">
+          <font-awesome-icon icon="edit" class="edit-icon" />
         {{ localValue }}
         </p>
       </div>
@@ -12,8 +13,8 @@
       </div>
     </div>
     <div v-else>
-      <div class="text-input-container">
-        <input class="text-input text-end" type="number" step="0.1" :name="name" 
+      <div class="">
+        <input class="input-number" type="number" step="0.1" :name="name" 
         v-model="localValue" :placeholder="placeholder" @keydown.esc="cancelEditing" @blur="emitSave" @keydown.enter.prevent="emitSave" />
       </div>
     </div>
@@ -54,10 +55,27 @@ export default {
       this.localValue = newValue ? parseFloat(newValue).toFixed(2) : '';
     },
   },
+  mounted() {
+    console.log("localValue", this.localValue);
+  }
 };
 </script>
 
 <style scoped>
+.edit-icon {
+  display: none;
+  margin-left: 5px;
+  color: var(--green);
+}
+
+.number-editable:hover .edit-icon {
+  display: inline;
+}
+
+.number-editable {
+  cursor: pointer;
+  color: var(--primary);
+}
 .main-container {
   display: flex;
   flex-direction: row;

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cost;
 use App\Models\Service;
 use App\Http\Resources\ServiceResource;
 use App\Http\Requests\ServiceRequest;
@@ -17,8 +18,14 @@ class ServiceController extends Controller
     public function index()
     {
         $services = Service::where('account_id', auth()->user()->account_id)
+            ->with('costs') // Carrega os custos relacionados ao serviço
             ->orderBy('name', 'asc')
             ->paginate(500);
+
+        foreach ($services->getCollection() as $service) {
+            $productionCosts = $service->costs->sum('price');
+            $service->final_price = $service->price + $productionCosts;
+        }
 
         return ServiceResource::collection($services);
     }
@@ -49,9 +56,21 @@ class ServiceController extends Controller
                 }
                 $service->costs()->sync($costs);
             }
+    
+            // Recarrega os custos associados ao serviço
+            $service->load('costs');
+    
+            // Calcula os custos de produção
+            $productionCosts = $service->costs->sum('price');
+    
+            // Calcula o preço final
+            
+            // Salva os valores calculados no serviço
+            $service->save();
+            $service->production_costs = $productionCosts;
+            $service->final_price = $service->price + $productionCosts;
 
             return new ServiceResource($service->load('costs'));
-
         } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",
@@ -68,7 +87,12 @@ class ServiceController extends Controller
      */
     public function show(Service $service)
     {
-        return new ServiceResource($service->load('costs'));
+
+        $service->load('costs');
+        $service->production_costs = $service->costs->sum('price');
+        $service->final_price = $service->price + $service->production_costs;
+
+        return new ServiceResource($service);
     }
 
     /**
@@ -82,27 +106,63 @@ class ServiceController extends Controller
     {
         try {
             $serviceValidated = $request->validated();
-            
-            $laborHours = $serviceValidated['labor_hours'] ?? $service->labor_hours;
-            $laborHours = $laborHours / 3600;
-            $laborHourlyRate = $serviceValidated['labor_hourly_rate'] ?? $service->labor_hourly_rate;
-            $laborHourlyTotal = $laborHours * $laborHourlyRate;
-            $serviceValidated['labor_hourly_total'] = $laborHourlyTotal;
-            $operationalCost = $serviceValidated['labor_hourly_total'];
-            
-            if(isset($serviceValidated['profit_percentage'])) {
-                $serviceValidated['price'] = $operationalCost / (1 - ($serviceValidated['profit_percentage'] / 100));
-                $serviceValidated['profit'] = $serviceValidated['price'] - $operationalCost;
+
+            $serviceData = [
+                'labor_hours' => $serviceValidated['labor_hours'] ?? $service->labor_hours,
+                'labor_hourly_rate' => $serviceValidated['labor_hourly_rate'] ?? $service->labor_hourly_rate,
+                'price' => $serviceValidated['price'] ?? $service->price,
+                'profit_percentage' => $serviceValidated['profit_percentage'] ?? $service->profit_percentage,
+                'profit' => $serviceValidated['profit'] ?? $service->profit,
+                'final_price' => null,
+            ];
+
+            $laborHours = $serviceData['labor_hours'] / 3600;
+            $laborHourlyTotal = $laborHours * $serviceData['labor_hourly_rate'];
+            $operationalCost = $laborHourlyTotal;
+
+            // Atualiza ou adiciona os custos associados ao serviço
+            if ($request->has('serviceCosts')) {
+                $serviceCosts = [];
+                foreach ($request->input('serviceCosts') as $cost) {
+                    $serviceCosts[$cost['id']] = [
+                        'quantity' => $cost['quantity'],
+                        'price' => $cost['price'],
+                        'total_price' => $cost['quantity'] * $cost['price'], // Calcula o total_price
+                    ];
+                }
+                $service->costs()->syncWithoutDetaching($serviceCosts); // Adiciona ou atualiza os custos sem remover os existentes
             }
-            
-            if(isset($serviceValidated['profit'])) {
-                $serviceValidated['price'] = $operationalCost + $serviceValidated['profit'];
-                $serviceValidated['profit_percentage'] = ($serviceValidated['profit'] / $serviceValidated['price']) * 100;
+
+            // Recarrega os custos associados ao serviço
+            $service->load('costs');
+
+            // Recalcula os custos de produção
+            $productionCosts = $service->costs->sum('price');
+            $totalCost = $operationalCost + $productionCosts;
+
+            // Recalcula o preço e a margem de lucro
+            if (isset($serviceValidated['profit_percentage'])) {
+                $serviceData['final_price'] = $totalCost / (1 - ($serviceValidated['profit_percentage'] / 100));
+                $serviceData['profit'] = $serviceData['final_price'] - $totalCost;
+                $serviceData['price'] = $operationalCost + $serviceData['profit'];
+            } elseif (isset($serviceValidated['profit'])) {
+                $serviceData['final_price'] = $totalCost + $serviceValidated['profit'];
+                $serviceData['profit_percentage'] = ($serviceValidated['profit'] / $serviceData['final_price']) * 100;
+                $serviceData['price'] = $operationalCost + $serviceValidated['profit'];
+            } else {
+                $serviceData['final_price'] = $totalCost + $serviceData['profit'];
+                $serviceData['price'] = $operationalCost + $serviceData['profit'];
+                $serviceData['profit_percentage'] = ($serviceData['profit'] / $serviceData['final_price']) * 100;
             }
-            // $profitPercentage = $serviceValidated['profit_percentage'] ?? $service->profit_percentage;
-    
-            $service->fill($serviceValidated);
+
+            // Atualiza os dados do serviço
+            $serviceData['labor_hourly_total'] = $laborHourlyTotal;
+            $service->fill($serviceData);
             $service->save();
+
+            // Recalcula os custos de produção e o preço final
+            $service->production_costs = $productionCosts;
+            $service->final_price = $serviceData['final_price'];
 
             return ServiceResource::make($service);
         } catch (ValidationException $validationException) {
@@ -126,6 +186,30 @@ class ServiceController extends Controller
         return response()->json([
             'message' => "Serviço $service->name deletado",
         ]);
+    }
+
+    /**
+     * Detach a cost from a service.
+     *
+     * @param  \App\Models\Service  $service
+     * @param  \App\Models\Cost  $cost
+     * @return \Illuminate\Http\Response
+     * */
+    public function detachCost(Service $service, Cost $cost)
+    {
+        try {
+            // Remove a associação do custo ao serviço
+            $service->costs()->detach($cost->id);
+
+            return response()->json([
+                'message' => 'Custo desassociado com sucesso.',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao desassociar o custo.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     private function convertDecimalBrToDefault($value)

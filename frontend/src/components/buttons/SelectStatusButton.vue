@@ -59,10 +59,16 @@ export default {
 .dropdown-menu {
     display: block;
     position: absolute;
+    font-size: 0.9rem;
     background-color: #f9f9f9;
+    border-color: var(--primary);
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 4px;
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    padding: 12px 16px;
+    padding: 1rem;
+    padding-left: 3rem;
     z-index: 1;
 }
 </style>

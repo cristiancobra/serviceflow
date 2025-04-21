@@ -21,101 +21,105 @@
       </div>
 
       <section class="list-container">
-        <div
-          v-for="localTask in localTasks"
-          class="list-line"
-          :class="{ 'highlight': localTask.id === newTaskId }"
-          v-bind:key="localTask.id"
-        >
-          <div class="icons-column">
-            <img
-              v-if="userData.photo"
-              :src="urlImagePhoto"
-              :alt="userData.name"
-              class="user-image"
-            />
-            <font-awesome-icon v-else icon="fa-solid fa-user" class="primary" />
-            <font-awesome-icon
-              icon="fas fa-check-circle"
-              class="checked-icon"
-              :class="
-                isValidDate(localTask.date_conclusion) ? 'done' : 'canceled'
-              "
-            />
-          </div>
-
-          <div class="task-column">
-            <router-link
-              :to="{ name: 'taskShow', params: { id: localTask.id } }"
-              class=""
-            >
-              <p class="name">
-                {{ localTask.name }}
-              </p>
-            </router-link>
-          </div>
-
-          <div class="group-column" v-if="showGroupColumn">
-            <router-link
-              :class="getColorClassForName(localTask.opportunity.name)"
-              style="display: flex"
-              v-if="localTask.opportunity"
-              :to="{
-                name: 'opportunityShow',
-                params: { id: localTask.opportunity.id },
-              }"
-            >
-              <p class="group-name">
-                <font-awesome-icon
-                  icon="fa-solid fa-bullseye"
-                  :class="getColorClassForName(localTask.opportunity.name)"
-                />
-                {{ trimName(localTask.opportunity.name) }}
-              </p>
-            </router-link>
-            <router-link
-              style="display: flex"
-              v-else-if="localTask.project"
-              :to="{
-                name: 'projectShow',
-                params: { id: localTask.project.id },
-              }"
-            >
-              <font-awesome-icon
-                icon="fa-solid fa-folder-open"
-                :class="getColorClassForName(localTask.project.name)"
+        <div v-for="(tasks, date) in groupedTasks" :key="date">
+          <p class="date-group" :class="getDeadlineClass(date)">
+            {{ formatDateGroup(date) }}
+          </p>
+          <div
+            v-for="task in tasks"
+            class="list-line"
+            :class="{ highlight: task.id === newTaskId }"
+            v-bind:key="task.id"
+          >
+            <div class="icons-column">
+              <img
+                v-if="userData.photo"
+                :src="urlImagePhoto"
+                :alt="userData.name"
+                class="user-image"
               />
-              <p
-                class="group-name"
-                :style="{ color: getColorClassForName(localTask.project.name) }"
-              >
-                {{ trimName(localTask.project.name) }}
-              </p>
-            </router-link>
-            <div v-else class="">
-              <p>----</p>
+              <font-awesome-icon
+                v-else
+                icon="fa-solid fa-user"
+                class="primary pe-2"
+              />
+              <font-awesome-icon
+                icon="fas fa-check-circle"
+                class="checked-icon"
+                :class="isValidDate(task.date_conclusion) ? 'done' : 'canceled'"
+              />
             </div>
-          </div>
 
-          <div class="date-column">
-            <DateTimeValue
-              v-if="isValidDate(localTask.date_conclusion)"
-              v-model="localTask.date_conclusion"
-              classText="done"
-              classIcon="done"
-              @save="updateTask('date_conclusion', $event, localTask.id)"
-            />
-            <DateTimeEditableInput
-              v-else
-              v-model="localTask.date_due"
-              :classText="getDeadlineClass(localTask.date_due)"
-              :classIcon="getDeadlineClass(localTask.date_due)"
-              @save="updateTask('date_due', $event, localTask.id)"
-            />
-            <div class="" v-if="showTaskDuration">
-              <p class="">
-                {{ formatDuration(localTask.duration_time) }}
-              </p>
+            <div class="task-column">
+              <router-link
+                :to="{ name: 'taskShow', params: { id: task.id } }"
+                class=""
+              >
+                <p class="name">
+                  {{ task.name }}
+                </p>
+              </router-link>
+            </div>
+
+            <div class="group-column">
+              <router-link
+                :class="getColorClassForName(task.opportunity.name)"
+                style="display: flex"
+                v-if="task.opportunity"
+                :to="{
+                  name: 'opportunityShow',
+                  params: { id: task.opportunity.id },
+                }"
+              >
+                <p class="group-name">
+                  <font-awesome-icon
+                    icon="fa-solid fa-bullseye"
+                    :class="getColorClassForName(task.opportunity.name)"
+                  />
+                  {{ trimName(task.opportunity.name) }}
+                </p>
+              </router-link>
+              <router-link
+                style="display: flex"
+                v-else-if="task.project"
+                :to="{ name: 'projectShow', params: { id: task.project.id } }"
+              >
+                <font-awesome-icon
+                  icon="fa-solid fa-folder-open"
+                  :class="getColorClassForName(task.project.name)"
+                />
+                <p
+                  class="group-name"
+                  :style="{ color: getColorClassForName(task.project.name) }"
+                >
+                  {{ trimName(task.project.name) }}
+                </p>
+              </router-link>
+              <div v-else class="">
+                <p>----</p>
+              </div>
+            </div>
+
+            <div class="date-column">
+              <DateTimeValue
+                v-if="isValidDate(task.date_conclusion)"
+                v-model="task.date_conclusion"
+                classText="done"
+                classIcon="done"
+                @save="updateTask('date_conclusion', $event, task.id)"
+              />
+              <DateTimeEditableInput
+                v-else
+                v-model="task.date_due"
+                :classText="getDeadlineClass(task.date_due)"
+                :classIcon="getDeadlineClass(task.date_due)"
+                @save="updateTask('date_due', $event, task.id)"
+              />
+              <div class="" v-if="showTaskDuration">
+                <p class="">
+                  {{ formatDuration(task.duration_time) }}
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -141,23 +145,17 @@ import {
   TASK_URL_PARAMETER,
   TASK_PRIORIZED_URL,
 } from "@/config/apiConfig";
-import { index } from "@/utils/requests/httpUtils";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import DateTimeValue from "../fields/datetime/DateTimeValue.vue";
 import { mapState } from "vuex";
 
 export default {
-  name: "TasksList",
   props: {
     tasks: {
       type: Array,
       required: false,
     },
-    // project: {
-    //   type: Object,
-    //   required: false,
-    // },
     template: {
       type: String,
       required: true,
@@ -167,11 +165,10 @@ export default {
     return {
       formatedDate: "",
       formatedTime: "",
-      showGroupColumn: false,
       showTaskDuration: false,
       percentage: 0,
       searchTerm: "",
-      localTasks: this.localTasks,
+      localTasks: this.tasks,
       totalTasks: 0,
       completedTasks: 0,
       newTaskId: null,
@@ -244,14 +241,7 @@ export default {
 
       return `${statusClass} ${priorityClass}`;
     },
-    async getTasks() {
-      try {
-        this.localTasks = await index(`tasks`);
-      } catch (error) {
-        console.error("Erro ao acessar tarefas:", error);
-      }
-    },
-    getTasksPriorized() {
+    async getTasksPriorized() {
       axios
         .get(`${BACKEND_URL}${TASK_PRIORIZED_URL}`)
         .then((response) => {
@@ -269,28 +259,27 @@ export default {
         return true;
       }
     },
-    async updateTask(fieldName, editedValue, localTaskId) {
+    async updateTask(fieldName, editedValue, taskId) {
       const updatedField = {};
       updatedField[fieldName] = editedValue;
 
       try {
         const response = await axios.put(
-          `${BACKEND_URL}${TASK_URL_PARAMETER}${localTaskId}`,
+          `${BACKEND_URL}${TASK_URL_PARAMETER}${taskId}`,
           updatedField
         );
 
         const updatedTask = response.data.data;
 
-        this.updateTasksList(updatedTask, localTaskId);
+        this.updateTasksList(updatedTask, taskId);
       } catch (error) {
         console.error("Erro ao atualizar a tarefa:", error);
       }
     },
-    updateTasksList(updatedTask, localTaskId) {
-      const index = this.localTasks.findIndex(
-        (localTask) => localTask.id === localTaskId
-      );
+    updateTasksList(updatedTask, taskId) {
+      const index = this.localTasks.findIndex((task) => task.id === taskId);
       this.localTasks.splice(index, 1, updatedTask);
+      this.localTasks = [...this.localTasks];
     },
   },
   computed: {
@@ -302,14 +291,19 @@ export default {
     },
     groupedTasks() {
       if (this.localTasks && this.localTasks.length > 0) {
-        return this.localTasks.reduce((groups, localTask) => {
-          const date = localTask.date_due
-            ? localTask.date_due.split(" ")[0]
-            : "Sem Data";
+        // Ordena as tarefas por data antes de agrupá-las
+        const sortedTasks = [...this.localTasks].sort((a, b) => {
+          const dateA = new Date(a.date_due || "9999-12-31"); // Tarefas sem data vão para o final
+          const dateB = new Date(b.date_due || "9999-12-31");
+          return dateA - dateB;
+        });
+
+        return sortedTasks.reduce((groups, task) => {
+          const date = task.date_due ? task.date_due.split(" ")[0] : "Sem Data";
           if (!groups[date]) {
             groups[date] = [];
           }
-          groups[date].push(localTask);
+          groups[date].push(task);
           return groups;
         }, {});
       } else {
@@ -318,7 +312,7 @@ export default {
     },
   },
   watch: {
-    localTasks: {
+    tasks: {
       handler(newVal) {
         this.localTasks = newVal;
       },
@@ -326,28 +320,7 @@ export default {
     },
   },
   mounted() {
-    if (this.template === "index") {
-      this.showGroupColumn = true;
-      this.getTasks();
-    }
-    if (this.template === "home") {
-      this.showGroupColumn = true;
-      this.getTasksPriorized();
-    }
-    // if (this.template === 'opportunity') {
-    //   if (this.opportunity) {
-    //     this.localTasks = this.opportunity.localTasks;
-    //   }
-    //   this.showTaskDuration = true;
-    //   this.localTaskColumnClass = "col-7";
-    // }
-    // if (this.template === 'project') {
-    //   if (this.project) {
-    //     this.localTasks = this.project.localTasks;
-    //   }
-    //   this.showTaskDuration = true;
-    //   this.localTaskColumnClass = "col-7";
-    // }
+    this.getTasksPriorized();
   },
 };
 </script>

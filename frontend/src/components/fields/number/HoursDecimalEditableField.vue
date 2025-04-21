@@ -3,7 +3,8 @@
     <label class="form-label" :for="name">{{ label }}</label>
     <div v-if="!editing"  @click="startEditing">
       <div v-if="localValue">
-        <p class="text-end">
+        <p class="number-editable">
+          <font-awesome-icon icon="edit" class="edit-icon" />
         {{ localValue }}
         </p>
       </div>
@@ -62,6 +63,12 @@ export default {
 </script>
 
 <style scoped>
+.edit-icon {
+  display: none;
+  margin-left: 5px;
+  color: var(--green);
+}
+
 label {
   font-size: 1rem;
 }
@@ -69,6 +76,15 @@ label {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
+}
+
+.number-editable:hover .edit-icon {
+  display: inline;
+}
+
+.number-editable {
+  cursor: pointer;
+  color: var(--primary);
 }
 
 .show-label {

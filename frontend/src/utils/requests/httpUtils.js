@@ -18,6 +18,23 @@ export const destroy = async (model, id) => {
   }
 };
 
+export const destroyRelationship = async (parentModel, parentId, relatedModel, relatedId) => {
+  validateModel(parentModel);
+  validateModel(relatedModel);
+
+  try {
+    const response = await axios.delete(
+      `${BACKEND_URL}${parentModel}/${parentId}/${relatedModel}/${relatedId}`
+    );
+
+    const { data } = response.data;
+    return data;
+  } catch (error) {
+    console.error(`Erro ao deletar o relacionamento entre ${parentModel} e ${relatedModel}:`, error);
+    throw error;
+  }
+};
+
 // get total of a model
 export const getTotalProposals = async () => {
   const url = `${BACKEND_URL}proposals/report`;
@@ -136,8 +153,32 @@ export const updateField = async (model, id, fieldName, value) => {
   }
 };
 
+export const updateRelationshipField = async (parentModel, parentId, payload) => {
+  validateModel(parentModel);
+
+  try {
+    const response = await axios.patch(
+      `${BACKEND_URL}${parentModel}/${parentId}`,
+      payload
+    );
+
+    const { data } = response.data;
+    return data;
+
+  } catch (error) {
+    console.error("Error updating relationship field:", error);
+
+    if (!error.response) {
+      throw new Error("Ocorreu um erro ao atualizar o campo do relacionamento. Tente novamente.");
+    } else {
+      throw error;
+    }
+  }
+};
+
 // validate model
 export const validateModel = (model) => {
+  
   const VALID_MODELS = [
     "accounts",
     "companies",

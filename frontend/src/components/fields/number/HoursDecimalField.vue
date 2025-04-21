@@ -35,6 +35,9 @@ export default {
       this.localValue = this.convertSecondsToDecimal(newValue);
     },
   },
+  mounted() {
+    console.log("mounted", this.localValue);
+  },
 };
 </script>
 

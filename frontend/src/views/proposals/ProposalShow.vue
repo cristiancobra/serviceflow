@@ -1,52 +1,55 @@
 <template>
   <div class="page-container">
     <div class="page-header">
-      <div class="title-container">
-        <font-awesome-icon icon="fa-solid fa-tools" class="icon" />
+      <div class="page-title">
+        <font-awesome-icon icon="fa-solid fa-tools" class="page-icon" />
         <h1>PROPOSTA</h1>
       </div>
       <div class="action-container">
-        <select-status-button :status="proposal.status" @update:modelValue="updateProposal('status', $event)" />
+        <select-status-button
+          :status="proposal.status"
+          @update:modelValue="updateProposal('status', $event)"
+        />
       </div>
     </div>
 
     <div class="section-container">
-      <div class="column-2">
+      <div class="column-50">
         <div class="row-simple">
-          <opportunities-select-editable-field label="Oportunidade" v-model="proposal.opportunity_id"
-            @update:modelValue="updateTask('opportunity_id', $event)" fieldNull="Nenhum" />
+          <opportunities-select-editable-field
+            label="Oportunidade"
+            v-model="proposal.opportunity_id"
+            @update:modelValue="updateTask('opportunity_id', $event)"
+            fieldNull="Nenhum"
+          />
         </div>
       </div>
-      <div class="column-2">
-        <p class="mt-1 mb-1 text-end">
-          Rascunhada: {{ proposal.draft_at }}
-        </p>
-        <p class="mt-1 mb-1 text-end">
-          Enviada: {{ proposal.submitted_at }}
-        </p>
-        <p class="mt-1 mb-1 text-end">
-          Aceita: {{ proposal.accepted_at }}
-        </p>
-        <p class="mt-1 mb-1 text-end">
-          Rejeitada: {{ proposal.rejected_at }}
-        </p>
-        <p class="mt-1 mb-1 text-end">
-          Cancelada: {{ proposal.canceled_at }}
-        </p>
-      </div>
+
+      <timeline-proposal :proposal="proposal" />
     </div>
 
     <description-section :description="proposal.description" />
 
-    <proposal-itens-section :services="proposal.proposalServices" />
+    <proposal-services-section
+      :services="proposal.proposalServices"
+      @update-proposal="updateProposalFromServices"
+    />
 
-    <proposal-costs-section :proposal="proposal" @update-total-third-party-cost="updateTotalThirdPartyCost" />
-
-    <profit-margin-section :proposal="proposal" />
+    <div class="table-row">
+      <div class="column-50">
+        <proposal-profit-margin-section :proposal="proposal" />
+      </div>
+      <div class="column-50">
+        <proposal-costs-section
+          :proposal="proposal"
+          @update-total-third-party-cost="updateTotalThirdPartyCost"
+        />
+      </div>
+    </div>
 
     <installment-section :proposal="proposal" />
 
-     <div class="table-row">
+    <div class="table-row">
       <div class="">
         <button class="button delete me-5" @click="deleteProposal()">
           excluir
@@ -54,14 +57,17 @@
       </div>
       <div class="">
         <div class="toggle-switch">
-          <input type="checkbox" id="toggle" class="toggle-checkbox" v-model="isVisibleQuantity">
+          <input
+            type="checkbox"
+            id="toggle"
+            class="toggle-checkbox"
+            v-model="isVisibleQuantity"
+          />
           <label for="toggle" class="toggle-label">quantidades</label>
         </div>
       </div>
       <div class="">
-        <button class="button" @click="exportPDF()">
-          Gerar PDF
-        </button>
+        <button class="button" @click="exportPDF()">Gerar PDF</button>
       </div>
     </div>
   </div>
@@ -70,14 +76,19 @@
 
 <script>
 import { BACKEND_URL } from "@/config/apiConfig";
-import { destroy, show, updateField } from "@/utils/requests/httpUtils";
+import {
+  destroy,
+  show,
+  updateRelationshipField,
+} from "@/utils/requests/httpUtils";
 import DescriptionSection from "@/components/show/DescriptionSection.vue";
-import OpportunitiesSelectEditableField from '../../components/fields/selects/OpportunitiesSelectEditableField.vue';
-import ProfitMarginSection from "@/components/show/ProfitMarginSection.vue";
-import ProposalItensSection from "@/components/show/ProposalItensSection.vue";
+import OpportunitiesSelectEditableField from "../../components/fields/selects/OpportunitiesSelectEditableField.vue";
+import ProposalProfitMarginSection from "@/components/show/ProposalProfitMarginSection.vue";
+import ProposalServicesSection from "@/components/show/ProposalServicesSection.vue";
 import ProposalCostsSection from "@/components/show/ProposalCostsSection.vue";
-import SelectStatusButton from '../../components/buttons/SelectStatusButton.vue';
+import SelectStatusButton from "../../components/buttons/SelectStatusButton.vue";
 import InstallmentSection from "@/components/show/InstallmentSection.vue";
+import TimelineProposal from "@/components/TimelineProposal.vue";
 
 export default {
   data() {
@@ -93,21 +104,22 @@ export default {
     DescriptionSection,
     InstallmentSection,
     OpportunitiesSelectEditableField,
-    ProfitMarginSection,
+    ProposalProfitMarginSection,
     ProposalCostsSection,
-    ProposalItensSection,
+    ProposalServicesSection,
     SelectStatusButton,
+    TimelineProposal,
   },
   methods: {
     destroy,
     show,
-    updateField,
+    updateRelationshipField,
     addInvoiceCreated(newInvoices) {
       console.log(newInvoices);
       this.proposal.invoices.push(...newInvoices);
     },
     async deleteProposal() {
-      this.response = await destroy('proposals', this.proposalId);
+      this.response = await destroy("proposals", this.proposalId);
       this.$router.push({
         name: "opportunityShow",
         params: { id: this.proposal.opportunity_id },
@@ -129,16 +141,42 @@ export default {
     exportPDF() {
       console.log(this.isVisibleQuantity);
       const url = `${BACKEND_URL}proposals/${this.proposal.id}/pdf?isVisibleQuantity=${this.isVisibleQuantity}`;
-      window.open(url, '_blank');
+      window.open(url, "_blank");
     },
     async getProposal() {
-      this.proposal = await show('proposals', this.proposalId);
+      this.proposal = await show("proposals", this.proposalId);
     },
     setProposalId(proposalId) {
       this.proposalId = proposalId;
     },
-    async updateProposal(fieldName, editedValue) {
-      this.proposal = await updateField("proposals", this.proposalId, fieldName, editedValue);
+    async updateProposalFromServices(fieldName, serviceId, editedValue) {
+      console.log(
+        "updateProposalFromServices",
+        fieldName,
+        serviceId,
+        editedValue
+      );
+      const payload = {
+        proposalServices: [
+          {
+            service_id: serviceId,
+            [fieldName]: editedValue,
+          },
+        ],
+      };
+
+      try {
+        const updatedProposal = await updateRelationshipField(
+          "proposals",
+          this.proposalId,
+          payload
+        );
+
+        this.proposal = updatedProposal;
+        console.log("Proposta atualizada com sucesso:", updatedProposal);
+      } catch (error) {
+        console.error("Erro ao atualizar a proposta:", error);
+      }
     },
     updateTotalThirdPartyCost(newTotalThirdPartyCost) {
       this.proposal.total_third_party_cost = newTotalThirdPartyCost;
@@ -249,11 +287,11 @@ a:active {
   transition: transform 0.2s;
 }
 
-.toggle-checkbox:checked+.toggle-label {
+.toggle-checkbox:checked + .toggle-label {
   background-color: var(--primary);
 }
 
-.toggle-checkbox:checked+.toggle-label::before {
+.toggle-checkbox:checked + .toggle-label::before {
   transform: translateX(26px);
 }
 </style>

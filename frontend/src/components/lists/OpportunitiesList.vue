@@ -1,15 +1,16 @@
 <template>
     <div class="page-container">
         <div class="page-header">
-            <div class="title-container">
-                <font-awesome-icon icon="fa-solid fa-bullseye" class="icon" />
+            <div class="page-title">
+                <font-awesome-icon icon="fa-solid fa-bullseye" class="page-icon" />
                 <h1>OPORTUNIDADES</h1>
             </div>
-            <div class="action-container">
+            <div class="page-action">
                 <OpportunityCreateForm @new-opportunity-event="addOpportunityCreated" />
             </div>
         </div>
 
+        <section class="section-container">
         <div class="search-container">
             <input type="text" class="search-input" v-model="searchTerm" placeholder="Digite para buscar" />
         </div>
@@ -41,6 +42,7 @@
                     @save="updateProject('date_due', $event, opportunity.id)" />
             </div>
         </div>
+        </section>
     </div>
 </template>
 

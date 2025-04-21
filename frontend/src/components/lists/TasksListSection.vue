@@ -1,12 +1,12 @@
 <template>
-  <div class="page-container">
-    <div class="page-header">
-      <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-tasks" class="page-icon" />
-        <h1>TAREFAS</h1>
+  <div class="section-container">
+    <div class="section-header">
+      <div class="section-title">
+        <font-awesome-icon icon="fa-solid fa-localTasks" class="icon" />
+        <h2>TAREFAS</h2>
       </div>
-      <div class="page-action">
-        <TaskCreateForm @new-task-event="addTaskCreated" />
+      <div class="section-action">
+        <TaskCreateForm @new-localTask-event="addTaskCreated" />
       </div>
     </div>
 
@@ -24,7 +24,6 @@
         <div
           v-for="localTask in localTasks"
           class="list-line"
-          :class="{ 'highlight': localTask.id === newTaskId }"
           v-bind:key="localTask.id"
         >
           <div class="icons-column">
@@ -34,7 +33,11 @@
               :alt="userData.name"
               class="user-image"
             />
-            <font-awesome-icon v-else icon="fa-solid fa-user" class="primary" />
+            <font-awesome-icon
+              v-else
+              icon="fa-solid fa-user"
+              class="primary pe-2"
+            />
             <font-awesome-icon
               icon="fas fa-check-circle"
               class="checked-icon"
@@ -43,18 +46,6 @@
               "
             />
           </div>
-
-          <div class="task-column">
-            <router-link
-              :to="{ name: 'taskShow', params: { id: localTask.id } }"
-              class=""
-            >
-              <p class="name">
-                {{ localTask.name }}
-              </p>
-            </router-link>
-          </div>
-
           <div class="group-column" v-if="showGroupColumn">
             <router-link
               :class="getColorClassForName(localTask.opportunity.name)"
@@ -97,6 +88,17 @@
             </div>
           </div>
 
+          <div class="task-column">
+            <router-link
+              :to="{ name: 'taskShow', params: { id: localTask.id } }"
+              class=""
+            >
+              <p class="name">
+                {{ localTask.name }}
+              </p>
+            </router-link>
+          </div>
+
           <div class="date-column">
             <DateTimeValue
               v-if="isValidDate(localTask.date_conclusion)"
@@ -123,8 +125,8 @@
     </section>
   </div>
 </template>
-
-<script>
+  
+  <script>
 import axios from "axios";
 import { convertUtcToLocal, formatDuration } from "@/utils/date/dateUtils";
 import {
@@ -154,14 +156,6 @@ export default {
       type: Array,
       required: false,
     },
-    // project: {
-    //   type: Object,
-    //   required: false,
-    // },
-    template: {
-      type: String,
-      required: true,
-    },
   },
   data() {
     return {
@@ -174,7 +168,6 @@ export default {
       localTasks: this.localTasks,
       totalTasks: 0,
       completedTasks: 0,
-      newTaskId: null,
     };
   },
   components: {
@@ -193,7 +186,6 @@ export default {
     trimName,
     addTaskCreated(newTask) {
       this.localTasks.unshift(newTask);
-      this.highlightNewTask(newTask.id);
     },
     formatDateGroup(date) {
       const dateParts = date.split("-");
@@ -227,17 +219,21 @@ export default {
         return "";
       }
     },
-    highlightNewTask(taskId) {
-      this.newTaskId = taskId;
-      setTimeout(() => {
-        this.newTaskId = null;
-      }, 2000);
-    },
     trimDescription(description) {
       if (description) {
         return description.substring(0, 110);
       }
     },
+    // getColumnClass(columns) {
+    //   switch (columns) {
+    //     case 1:
+    //       return "col-12 g-4";
+    //     case 2:
+    //       return "col-6 g-4";
+    //     default:
+    //       return "col-12";
+    //   }
+    // },
     getCombinedClasses(status, priority) {
       const statusClass = getPriorityClass(status);
       const priorityClass = getPriorityClass(priority);
@@ -318,42 +314,18 @@ export default {
     },
   },
   watch: {
-    localTasks: {
+    tasks: {
       handler(newVal) {
         this.localTasks = newVal;
       },
       deep: true,
     },
   },
-  mounted() {
-    if (this.template === "index") {
-      this.showGroupColumn = true;
-      this.getTasks();
-    }
-    if (this.template === "home") {
-      this.showGroupColumn = true;
-      this.getTasksPriorized();
-    }
-    // if (this.template === 'opportunity') {
-    //   if (this.opportunity) {
-    //     this.localTasks = this.opportunity.localTasks;
-    //   }
-    //   this.showTaskDuration = true;
-    //   this.localTaskColumnClass = "col-7";
-    // }
-    // if (this.template === 'project') {
-    //   if (this.project) {
-    //     this.localTasks = this.project.localTasks;
-    //   }
-    //   this.showTaskDuration = true;
-    //   this.localTaskColumnClass = "col-7";
-    // }
-  },
 };
 </script>
-
-<style scoped>
-a {
+  
+  <style scoped>
+/* a {
   text-decoration: none;
   color: inherit;
 }
@@ -401,5 +373,6 @@ a:active {
 .small-date {
   font-size: 0.8rem;
   font-weight: 400;
-}
+} */
 </style>
+  

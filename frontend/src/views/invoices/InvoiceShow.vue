@@ -1,7 +1,7 @@
 <template>
   <div class="page-container">
     <div class="page-header">
-      <div class="title-container">
+      <div class="page-title">
         <font-awesome-icon icon="fa-solid fa-file-invoice" class="icon" />
         <h1>FATURA</h1>
       </div>
@@ -54,7 +54,7 @@
 
     <div class="section-container">
       <div class="section-header">
-        <div class="subtitle-container">
+        <div class="section-title">
           <font-awesome-icon icon="fas fa-coins" class="icon" />
           <h2>
             Pagamentos recebidos

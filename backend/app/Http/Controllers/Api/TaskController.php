@@ -94,6 +94,7 @@ class TaskController extends Controller
 
             return TasksResource::make($task)->additional([
                 'project' => $task->project,
+                'opportunity' => $task->opportunity,
             ]);
         } catch (ValidationException $validationException) {
             return response()->json([
@@ -225,16 +226,19 @@ class TaskController extends Controller
      */
     public function prioritizedTasks()
     {
-        $tasks = Task::with('project')
-            ->with([
+        $tasks = Task::with([
                 'project',
                 'opportunity'
             ])
-            // ->whereNull('date_canceled')
-            ->whereHas('opportunity', function ($query) {
-                $query->whereNull('date_canceled');
-            })
             ->where('account_id', auth()->user()->account_id)
+            ->where(function ($query) {
+                // Inclui tarefas com oportunidades não canceladas
+                $query->whereHas('opportunity', function ($subQuery) {
+                    $subQuery->whereNull('date_canceled');
+                })
+                // Ou tarefas que não têm oportunidade associada
+                ->orWhereDoesntHave('opportunity');
+            })
             ->where('date_conclusion', null)
             ->orderBy('date_due', 'asc')
             // ->paginate(20);
