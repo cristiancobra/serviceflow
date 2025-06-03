@@ -152,12 +152,10 @@
       />
     </section>
 
-    <div class="table-row">
-      <div class="">
+    <div class="final-row">
         <button class="button delete" @click="deleteOpportunity()">
           excluir
         </button>
-      </div>
     </div>
   </div>
 </template>

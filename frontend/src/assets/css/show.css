@@ -416,3 +416,15 @@
   background-color: var(--purple-light);
   color: var(--purple);
 }
+
+.final-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  /* width: 100%; */
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  margin-top: 4rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
+}

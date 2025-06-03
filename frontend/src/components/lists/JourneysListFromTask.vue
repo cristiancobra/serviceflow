@@ -91,7 +91,7 @@ export default {
   },
   data() {
     return {
-      journeys: this.task.journeys,
+      journeys: [],
       localTask: this.task,
       messageStatus: "",
       messageText: "",
@@ -251,10 +251,6 @@ export default {
       },
       deep: true,
     },
-  },
-  mounted() {
-    console.log("task", this.task);
-    console.log("journeys", this.journeys);
   },
 };
 </script>

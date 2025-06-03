@@ -6,7 +6,7 @@
         <h2>TAREFAS</h2>
       </div>
       <div class="section-action">
-        <TaskCreateForm @new-localTask-event="addTaskCreated" />
+        <TaskCreateForm @new-task-event="addTaskCreated" />
       </div>
     </div>
 
@@ -141,9 +141,7 @@ import {
   BACKEND_URL,
   IMAGES_PATH,
   TASK_URL_PARAMETER,
-  TASK_PRIORIZED_URL,
 } from "@/config/apiConfig";
-import { index } from "@/utils/requests/httpUtils";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import DateTimeValue from "../fields/datetime/DateTimeValue.vue";
@@ -165,7 +163,7 @@ export default {
       showTaskDuration: false,
       percentage: 0,
       searchTerm: "",
-      localTasks: this.localTasks,
+      localTasks: this.tasks,
       totalTasks: 0,
       completedTasks: 0,
     };
@@ -239,21 +237,6 @@ export default {
       const priorityClass = getPriorityClass(priority);
 
       return `${statusClass} ${priorityClass}`;
-    },
-    async getTasks() {
-      try {
-        this.localTasks = await index(`tasks`);
-      } catch (error) {
-        console.error("Erro ao acessar tarefas:", error);
-      }
-    },
-    getTasksPriorized() {
-      axios
-        .get(`${BACKEND_URL}${TASK_PRIORIZED_URL}`)
-        .then((response) => {
-          this.localTasks = response.data.data;
-        })
-        .catch((error) => console.log(error));
     },
     isValidDate(date) {
       if (

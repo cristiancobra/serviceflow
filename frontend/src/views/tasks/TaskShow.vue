@@ -142,12 +142,12 @@
         />
       </section>
 
-      <div class="table-row">
-        <task-clone-form :task="task" />
+      <div class="final-row">
         <button class="button delete" @click="deleteTask()">
           <font-awesome-icon icon="fa-solid fa-trash" class="" />
           excluir
         </button>
+        <task-clone-form :task="task" />
       </div>
     </div>
   </div>
@@ -155,6 +155,7 @@
 
 <script>
 import axios from "axios";
+import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import { BACKEND_URL, TASK_URL_PARAMETER } from "@/config/apiConfig";
 import { convertUtcToLocal } from "@/utils/date/dateUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
@@ -162,7 +163,7 @@ import { formatDateTimeBr } from "@/utils/date/dateUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
 import { getStatusClass } from "@/utils/card/cardUtils";
 import { getStatusIcon } from "@/utils/card/cardUtils";
-import { show } from "@/utils/requests/httpUtils.js";
+import { show, updateField } from "@/utils/requests/httpUtils.js";
 import { scrollToSection } from "@/utils/layout/navigationUtils";
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
@@ -180,6 +181,7 @@ import TimelineTask from "@/components/show/TimelineTask.vue";
 export default {
   name: "TaskShow",
   components: {
+    AddMessage,
     DateEditableInput,
     OpportunitiesSelectEditableField,
     ProjectsSelectEditableField,
@@ -199,12 +201,9 @@ export default {
       messageText: "",
       project: [],
       showEndTaskButton: false,
-      task: {
-        date_conclusion: null,
-        journeys: [],
-      },
+      task: {},
       updatedField: [],
-      taskId: "",
+      taskId: this.$route.params.id,
     };
   },
   computed: {
@@ -216,7 +215,6 @@ export default {
       const sortedJourneys = [...this.task.journeys].sort(
         (a, b) => new Date(b.end) - new Date(a.end)
       );
-      console.log("sortedJourneys", sortedJourneys);
       return sortedJourneys[0].end;
     },
     endTaskTitle() {
@@ -236,8 +234,13 @@ export default {
     translateStatus,
     translatePriority,
     convertUtcToLocal,
+    updateField,
     async getTask() {
       this.task = await show("tasks", this.taskId);
+      console.log("task", this.task);
+      if (!this.task.date_conclusion && this.task.journeys.length > 0) {
+        this.showEndTaskButton = true;
+      }
       this.project = this.task.project;
       this.taskLoaded = true; // Marque a tarefa como carregada
     },
@@ -266,15 +269,23 @@ export default {
       this.project = this.task.project;
       this.taskLoaded = true; // Marque a tarefa como carregada
     },
-    setTaskId(taskId) {
-      this.taskId = taskId;
-    },
     updateDateConclusion() {
-      if (this.journeyEnd) {
-        this.updateTask("date_conclusion", this.journeyEnd);
+      if (this.task.journeys && this.task.journeys.length > 0) {
+        // Ordena as jornadas e pega a data de término da mais recente
+        const sortedJourneys = [...this.task.journeys].sort(
+          (a, b) => new Date(b.end) - new Date(a.end)
+        );
+        const journeyEnd = sortedJourneys[0].end;
+
+        // Passa o valor de journeyEnd para o método updateTask
+        this.updateTask("date_conclusion", this.taskId, journeyEnd);
         this.showEndTaskButton = false;
+        this.messageStatus = "success";
+        this.messageText = `Tarefa finalizada com data da última jornada`;
       } else {
-        console.log("Nenhum item encontrado na lista de journeys");
+        console.log(
+          "Nenhuma jornada encontrada para calcular a data de conclusão."
+        );
       }
     },
     updateEndTaskButtonVisibility(journeyEnd) {
@@ -295,17 +306,21 @@ export default {
     //     this.journeysData[index] = updatedJourney;
     //   }
     // },
-    async updateTask(fieldName, editedValue) {
-      const updatedField = {};
-      updatedField[fieldName] = editedValue;
+    async updateTask(fieldName, taskId, editedValue) {
+      const updatedTask = await updateField(
+        "tasks",
+        taskId,
+        fieldName,
+        editedValue
+      );
 
       try {
-        const response = await axios.put(
-          `${BACKEND_URL}${TASK_URL_PARAMETER}${this.taskId}`,
-          updatedField
-        );
+        this.task = { ...updatedTask };
 
-        this.task = response.data.data;
+        if (!this.task.journeys) {
+          this.task.journeys = [];
+        }
+
         this.project = this.task.project;
       } catch (error) {
         console.error("Erro ao atualizar a tarefa:", error);
@@ -329,7 +344,6 @@ export default {
     },
   },
   async mounted() {
-    this.setTaskId(this.$route.params.id);
     this.getTask();
   },
 };
@@ -446,6 +460,7 @@ a:active {
   background-color: #ffa1a1;
   border-color: #c82333;
   color: #c82333;
+  margin-right: 1rem;
 }
 
 .delete:hover {

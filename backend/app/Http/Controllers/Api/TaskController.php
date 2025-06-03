@@ -92,10 +92,15 @@ class TaskController extends Controller
 
             $task->save();
 
-            return TasksResource::make($task)->additional([
-                'project' => $task->project,
-                'opportunity' => $task->opportunity,
-            ]);
+            $updatedTask = Task::with(['journeys' => function ($query) {
+                $query->orderBy('start', 'desc');
+            },
+                'project',
+                'opportunity'
+            ])->find($task->id);
+    
+            return TasksResource::make($updatedTask);
+            
         } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",
