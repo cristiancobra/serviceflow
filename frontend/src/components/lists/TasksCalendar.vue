@@ -3,7 +3,7 @@
     <div class="page-header">
       <div class="page-title">
         <font-awesome-icon icon="fa-solid fa-tasks" class="page-icon" />
-        <h1>TAREFAS</h1>
+        <h1>AGENDA</h1>
       </div>
       <div class="page-action">
         <TaskCreateForm @new-task-event="addTaskCreated" />
@@ -155,10 +155,6 @@ export default {
     tasks: {
       type: Array,
       required: false,
-    },
-    template: {
-      type: String,
-      required: true,
     },
   },
   data() {

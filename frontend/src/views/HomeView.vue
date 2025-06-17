@@ -1,13 +1,13 @@
 <template>
   <div>
-    <div class="home-date">
+    <!-- <div class="home-date">
       <p>
         Bem vindo, hoje é
         <span style="font-weight: bolder">
           {{ dateNow }}
         </span>
       </p>
-    </div>
+    </div> -->
 
     <!-- <div style="display: flex">
       <div class="small-container">
@@ -17,7 +17,7 @@
         <total-proposal-open />
       </div>
     </div> -->
-      <TasksCalendar template="home" />
+      <TasksCalendar />
   </div>
 </template>
 

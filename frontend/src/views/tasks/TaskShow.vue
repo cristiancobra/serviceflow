@@ -237,7 +237,6 @@ export default {
     updateField,
     async getTask() {
       this.task = await show("tasks", this.taskId);
-      console.log("task", this.task);
       if (!this.task.date_conclusion && this.task.journeys.length > 0) {
         this.showEndTaskButton = true;
       }
@@ -306,10 +305,10 @@ export default {
     //     this.journeysData[index] = updatedJourney;
     //   }
     // },
-    async updateTask(fieldName, taskId, editedValue) {
+    async updateTask(fieldName, editedValue) {
       const updatedTask = await updateField(
         "tasks",
-        taskId,
+        this.taskId,
         fieldName,
         editedValue
       );

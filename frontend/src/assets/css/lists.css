@@ -226,6 +226,14 @@
   margin: 0rem;
 }
 
+.list-line .time-column {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+}
+
 .list-line .user-image {
   width: 26px;
   height: 26px;
@@ -250,7 +258,7 @@
   border-style: solid;
   border-color: lightgray;
   border-radius: 20px 20px 20px 20px;
-  margin: 0 0 3rem 0;
+  margin: 0 0 2rem 0;
   color: black;
   /* width: 100%; */
   box-sizing: border-box; 

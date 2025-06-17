@@ -21,104 +21,71 @@
       </div>
 
       <section class="list-container">
-        <div
-          v-for="localTask in localTasks"
-          class="list-line"
-          v-bind:key="localTask.id"
-        >
-          <div class="icons-column">
-            <img
-              v-if="userData.photo"
-              :src="urlImagePhoto"
-              :alt="userData.name"
-              class="user-image"
-            />
-            <font-awesome-icon
-              v-else
-              icon="fa-solid fa-user"
-              class="primary pe-2"
-            />
-            <font-awesome-icon
-              icon="fas fa-check-circle"
-              class="checked-icon"
-              :class="
-                isValidDate(localTask.date_conclusion) ? 'done' : 'canceled'
-              "
-            />
-          </div>
-          <div class="group-column" v-if="showGroupColumn">
-            <router-link
-              :class="getColorClassForName(localTask.opportunity.name)"
-              style="display: flex"
-              v-if="localTask.opportunity"
-              :to="{
-                name: 'opportunityShow',
-                params: { id: localTask.opportunity.id },
-              }"
-            >
-              <p class="group-name">
-                <font-awesome-icon
-                  icon="fa-solid fa-bullseye"
-                  :class="getColorClassForName(localTask.opportunity.name)"
-                />
-                {{ trimName(localTask.opportunity.name) }}
-              </p>
-            </router-link>
-            <router-link
-              style="display: flex"
-              v-else-if="localTask.project"
-              :to="{
-                name: 'projectShow',
-                params: { id: localTask.project.id },
-              }"
-            >
-              <font-awesome-icon
-                icon="fa-solid fa-folder-open"
-                :class="getColorClassForName(localTask.project.name)"
+        <div v-for="localTask in localTasks" v-bind:key="localTask.id">
+          <div class="list-line">
+            <div class="icons-column">
+              <img
+                v-if="userData.photo"
+                :src="urlImagePhoto"
+                :alt="userData.name"
+                class="user-image"
               />
-              <p
-                class="group-name"
-                :style="{ color: getColorClassForName(localTask.project.name) }"
+              <font-awesome-icon
+                v-else
+                icon="fa-solid fa-user"
+                class="primary pe-2"
+              />
+              <font-awesome-icon
+                icon="fas fa-check-circle"
+                class="checked-icon"
+                :class="
+                  isValidDate(localTask.date_conclusion) ? 'done' : 'canceled'
+                "
+              />
+            </div>
+
+            <div class="task-column">
+              <router-link
+                :to="{ name: 'taskShow', params: { id: localTask.id } }"
+                class=""
               >
-                {{ trimName(localTask.project.name) }}
-              </p>
-            </router-link>
-            <div v-else class="">
-              <p>----</p>
+                <p class="name">
+                  {{ localTask.name }}
+                </p>
+              </router-link>
+            </div>
+
+            <div class="time-column">
+              {{ formatDuration(localTask.duration_time) }}
+            </div>
+
+            <div class="date-column">
+              <DateTimeValue
+                v-if="isValidDate(localTask.date_conclusion)"
+                v-model="localTask.date_conclusion"
+                classText="done"
+                classIcon="done"
+                @save="updateTask('date_conclusion', $event, localTask.id)"
+              />
+              <DateTimeEditableInput
+                v-else
+                v-model="localTask.date_due"
+                :classText="getDeadlineClass(localTask.date_due)"
+                :classIcon="getDeadlineClass(localTask.date_due)"
+                @save="updateTask('date_due', $event, localTask.id)"
+              />
             </div>
           </div>
 
-          <div class="task-column">
-            <router-link
-              :to="{ name: 'taskShow', params: { id: localTask.id } }"
-              class=""
-            >
-              <p class="name">
-                {{ localTask.name }}
-              </p>
-            </router-link>
-          </div>
-
-          <div class="date-column">
-            <DateTimeValue
-              v-if="isValidDate(localTask.date_conclusion)"
-              v-model="localTask.date_conclusion"
-              classText="done"
-              classIcon="done"
-              @save="updateTask('date_conclusion', $event, localTask.id)"
+          <div
+            class="journeys-line"
+            v-if="localTask.journeys && localTask.journeys.length > 0"
+          >
+            <journeys-list-from-opportunity
+              :journeys="localTask.journeys"
+              @update-task-duration="updateTaskDuration()"
+              @last-journey-end="updateEndTaskButtonVisibility"
             />
-            <DateTimeEditableInput
-              v-else
-              v-model="localTask.date_due"
-              :classText="getDeadlineClass(localTask.date_due)"
-              :classIcon="getDeadlineClass(localTask.date_due)"
-              @save="updateTask('date_due', $event, localTask.id)"
-            />
-            <div class="" v-if="showTaskDuration">
-              <p class="">
-                {{ formatDuration(localTask.duration_time) }}
-              </p>
-            </div>
           </div>
         </div>
       </section>
@@ -142,6 +109,7 @@ import {
   IMAGES_PATH,
   TASK_URL_PARAMETER,
 } from "@/config/apiConfig";
+import JourneysListFromOpportunity from "@/components/lists/JourneysListFromOpportunity.vue";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import DateTimeValue from "../fields/datetime/DateTimeValue.vue";
@@ -160,7 +128,6 @@ export default {
       formatedDate: "",
       formatedTime: "",
       showGroupColumn: false,
-      showTaskDuration: false,
       percentage: 0,
       searchTerm: "",
       localTasks: this.tasks,
@@ -171,6 +138,7 @@ export default {
   components: {
     DateTimeEditableInput,
     DateTimeValue,
+    JourneysListFromOpportunity,
     TaskCreateForm,
   },
   methods: {
@@ -222,16 +190,6 @@ export default {
         return description.substring(0, 110);
       }
     },
-    // getColumnClass(columns) {
-    //   switch (columns) {
-    //     case 1:
-    //       return "col-12 g-4";
-    //     case 2:
-    //       return "col-6 g-4";
-    //     default:
-    //       return "col-12";
-    //   }
-    // },
     getCombinedClasses(status, priority) {
       const statusClass = getPriorityClass(status);
       const priorityClass = getPriorityClass(priority);
@@ -306,56 +264,3 @@ export default {
   },
 };
 </script>
-  
-  <style scoped>
-/* a {
-  text-decoration: none;
-  color: inherit;
-}
-
-a:visited {
-  color: inherit;
-}
-
-a:hover {
-  color: inherit;
-}
-
-a:active {
-  color: inherit;
-}
-
-.checked-icon {
-  font-size: 1.4rem;
-  padding-top: 0.2rem;
-}
-
-.date-group {
-  font-size: 1rem;
-  font-weight: 600;
-  margin-top: 1.2rem;
-  margin-bottom: 0.2rem;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-}
-
-.progress {
-  background-color: #e9ecef;
-  border-radius: 1.5rem;
-  height: 1.5rem;
-}
-
-.progress-bar {
-  background-color: var(--primary);
-  color: white;
-  text-align: center;
-  line-height: 1.5rem;
-  font-weight: 600;
-}
-
-.small-date {
-  font-size: 0.8rem;
-  font-weight: 400;
-} */
-</style>
-  
