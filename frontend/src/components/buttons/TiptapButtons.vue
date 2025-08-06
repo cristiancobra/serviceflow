@@ -149,7 +149,7 @@ h6 {
   line-height: 1.1;
 }
 
-button {
+.button {
   /* width: 100px; */
   padding-left: 0.8rem;
   padding-right: 0.8rem;

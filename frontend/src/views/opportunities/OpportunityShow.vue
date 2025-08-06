@@ -6,6 +6,7 @@
       :messageText="messageText"
     >
     </AddMessage>
+
     <div class="page-header">
       <div class="page-title">
         <font-awesome-icon icon="fa-solid fa-bullseye" class="page-icon" />

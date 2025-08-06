@@ -17,7 +17,7 @@ services:
       - ./database/db:/var/lib/mysql
     
   php:
-    container_name: php-serviceflow
+    container_name: backend-serviceflow
     build:
       context: .
       dockerfile: Dockerfile
@@ -37,3 +37,14 @@ services:
       - '8190:80'  # Mapeie a porta do phpMyAdmin para a porta desejada
     # networks:
     #   - serviceflow-network
+
+  frontend:
+    container_name: frontend-serviceflow
+    image: node:18
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - ./frontend/node_modules:/app/node_modules
+    ports:
+      - '8080:8080'  # Porta para o servidor de desenvolvimento do frontend
+    command: sh -c "npm run serve"

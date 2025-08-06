@@ -31,6 +31,7 @@ class TasksResource extends JsonResource
 			"date_start" => $this->date_start,
 			"date_due" => $this->date_due,
 			"date_conclusion" => $this->date_conclusion,
+			"date_canceled" => $this->date_canceled,
 			"duration_days" => $this->duration_days,
 			'duration_time' => $this->duration_time,
 			"description" => $this->description,

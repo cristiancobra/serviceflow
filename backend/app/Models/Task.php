@@ -30,6 +30,7 @@ class Task extends Model
         'date_due',
         'date_start',
         'date_conclusion',
+        'date_canceled',
         'duration_days',
         'duration_time',
         'status',

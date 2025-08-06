@@ -2,13 +2,6 @@
   <div class="section-container">
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
-    <div class="section-header">
-      <div class="section-title">
-      </div>
-      <div class="section-action">
-        <journey-create-form @new-journey-event="addJourneyCreated" />
-      </div>
-    </div>
 
     <div calss="list-line" v-if="localJourneys.length > 0">
       <div class="">
@@ -67,14 +60,12 @@ import { formatDuration } from "@/utils/date/dateUtils";
 import { mapMutations } from 'vuex';
 import DateEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import TimeEditableInput from "@/components/forms/inputs/time/TimeEditableInput.vue";
-import JourneyCreateForm from "@/components/forms/JourneyCreateForm.vue";
 import PaginateNav from "@/components/layout/PaginateNav.vue";
 
 export default {
   name: "JourneysList",
   components: {
     DateEditableInput,
-    JourneyCreateForm,
     PaginateNav,
     TimeEditableInput,
   },

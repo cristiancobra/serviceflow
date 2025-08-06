@@ -51,14 +51,9 @@
             </div>
 
             <div class="task-column">
-              <router-link
-                :to="{ name: 'taskShow', params: { id: task.id } }"
-                class=""
-              >
                 <p class="name">
                   {{ task.name }}
                 </p>
-              </router-link>
             </div>
 
             <div class="group-column">
@@ -115,6 +110,13 @@
                 :classIcon="getDeadlineClass(task.date_due)"
                 @save="updateTask('date_due', $event, task.id)"
               />
+              <add-last-journey-date-button
+              v-if="task.journeys && task.journeys.length > 0"
+              :task="task"
+              :showEndTaskButton="task.date_conclusion === null"
+              @add-last-journey-date="updateDateConclusion(task)"
+              @update-task="updateTask"
+            />
               <div class="" v-if="showTaskDuration">
                 <p class="">
                   {{ formatDuration(task.duration_time) }}
@@ -145,6 +147,7 @@ import {
   TASK_URL_PARAMETER,
   TASK_PRIORIZED_URL,
 } from "@/config/apiConfig";
+import AddLastJourneyDateButton from "@/components/tasks/buttons/AddLastJourneyDateButton.vue";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import DateTimeValue from "../fields/datetime/DateTimeValue.vue";
@@ -171,6 +174,7 @@ export default {
     };
   },
   components: {
+    AddLastJourneyDateButton,
     DateTimeEditableInput,
     DateTimeValue,
     TaskCreateForm,

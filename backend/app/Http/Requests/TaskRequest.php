@@ -39,7 +39,9 @@ class TaskRequest extends FormRequest
             'date_start' => 'nullable|date',
             'date_due' => 'nullable|date|after_or_equal:start',
             'date_conclusion' => 'nullable|date|after_or_equal:start',
-            'duration' => 'nullable|integer',
+            'date_canceled' => 'nullable|date|after_or_equal:start',
+            'duration_days' => 'nullable|integer|min:0',
+            'duration_time' => 'nullable|integer|min:0',
         ];
 
     }

@@ -127,8 +127,8 @@ export default {
         status: "to-do",
         user_id: null,
       },
-      isActiveCompany: false,
-      isActiveLead: false,
+      isActiveFormCompany: false,
+      isActiveFormLead: false,
       isModalVisible: false,
       leads: [],
       message: null,
@@ -186,17 +186,17 @@ export default {
 
     },
     toggleCompany() {
-      this.isActiveCompany = !this.isActiveCompany;
+      this.isActiveFormCompany = !this.isActiveFormCompany;
 
-      if (this.isActiveCompany) {
-        this.isActiveLead = false;
+      if (this.isActiveFormCompany) {
+        this.isActiveFormLead = false;
       }
     },
     toggleLead() {
-      this.isActiveLead = !this.isActiveLead;
+      this.isActiveFormLead = !this.isActiveFormLead;
 
-      if (this.isActiveLead) {
-        this.isActiveCompany = false;
+      if (this.isActiveFormLead) {
+        this.isActiveFormCompany = false;
       }
     },
     updateForm(field, value) {

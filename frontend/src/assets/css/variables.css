@@ -1,4 +1,7 @@
 :root {
+  --primary: #B1388D;
+  --primary-light: #DFBAD9;
+  
   --background-light: rgb(235, 235, 235);
   --background-container-color:  rgb(256, 256, 256);
 
@@ -19,7 +22,6 @@
   --done-color: #2CB48D;
   --doing-color: #3498db;
   --wait-color: #808080;
-  --primary: #B1388D;
   --to-do-color: #E78D1F;
 
   --low: #E78D1F;

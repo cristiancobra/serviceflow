@@ -75,6 +75,27 @@
                 @save="updateTask('date_due', $event, localTask.id)"
               />
             </div>
+
+            <journey-create-form
+              :taskId="localTask.id"
+              @new-journey-event="addJourneyCreated"
+            />
+
+            <DateEditableInput
+              class="flex justify-end"
+              name="date_conclusion"
+              label="Conclusão:"
+              v-model="localTask.date_conclusion"
+              @save="emitUpdateTask('date_conclusion', $event)"
+            />
+
+            <add-last-journey-date-button
+              v-if="localTask.journeys && localTask.journeys.length > 0"
+              :task="localTask"
+              :showEndTaskButton="localTask.date_conclusion === null"
+              @add-last-journey-date="updateDateConclusion(localTask)"
+              @update-task="updateTask"
+            />
           </div>
 
           <div
@@ -109,10 +130,13 @@ import {
   IMAGES_PATH,
   TASK_URL_PARAMETER,
 } from "@/config/apiConfig";
-import JourneysListFromOpportunity from "@/components/lists/JourneysListFromOpportunity.vue";
-import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
+import AddLastJourneyDateButton from "@/components/tasks/buttons/AddLastJourneyDateButton.vue";
+import DateEditableInput from "@/components/fields/datetime/DateTimeEditableInput.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import DateTimeValue from "../fields/datetime/DateTimeValue.vue";
+import JourneyCreateForm from "@/components/forms/JourneyCreateForm.vue";
+import JourneysListFromOpportunity from "@/components/lists/JourneysListFromOpportunity.vue";
+import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import { mapState } from "vuex";
 
 export default {
@@ -136,8 +160,11 @@ export default {
     };
   },
   components: {
+    AddLastJourneyDateButton,
+    DateEditableInput,
     DateTimeEditableInput,
     DateTimeValue,
+    JourneyCreateForm,
     JourneysListFromOpportunity,
     TaskCreateForm,
   },
@@ -152,6 +179,20 @@ export default {
     trimName,
     addTaskCreated(newTask) {
       this.localTasks.unshift(newTask);
+    },
+    addJourneyCreated({ journey, taskId }) {
+      console.log("Journey created:", journey, "for task ID:", taskId);
+      const task = this.localTasks.find((t) => t.id === taskId);
+
+      if (task) {
+        // Garante que journeys exista como array
+        if (!task.journeys) task.journeys = [];
+
+        task.journeys.unshift(journey);
+        this.highlightNewJourney(journey.id);
+      } else {
+        console.warn("Tarefa não encontrada para o ID:", taskId);
+      }
     },
     formatDateGroup(date) {
       const dateParts = date.split("-");
@@ -196,6 +237,12 @@ export default {
 
       return `${statusClass} ${priorityClass}`;
     },
+    highlightNewJourney(journeyId) {
+      this.newJourneyId = journeyId;
+      setTimeout(() => {
+        this.newJourneyId = null;
+      }, 2000);
+    },
     isValidDate(date) {
       if (
         date != "1969-12-31 18:00:00" &&
@@ -204,6 +251,30 @@ export default {
         date != null
       ) {
         return true;
+      }
+    },
+      updateDateConclusion(task) {
+        console.log("Updating date conclusion for task:", task.id);
+      if (task.journeys && task.journeys.length > 0) {
+        // Ordena as jornadas e pega a data de término da mais recente
+        const sortedJourneys = [...task.journeys].sort(
+          (a, b) => new Date(b.end) - new Date(a.end)
+        );
+        const journeyEnd = sortedJourneys[0].end;
+
+        // Passa o valor de journeyEnd para o método updateTask
+        this.updateTask(
+        "date_conclusion",
+        journeyEnd,
+        task.id
+      );
+        this.showEndTaskButton = false;
+        this.messageStatus = "success";
+        this.messageText = `Tarefa finalizada com data da última jornada`;
+      } else {
+        console.log(
+          "Nenhuma jornada encontrada para calcular a data de conclusão."
+        );
       }
     },
     async updateTask(fieldName, editedValue, localTaskId) {

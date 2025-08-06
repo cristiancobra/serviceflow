@@ -1,107 +1,124 @@
 <template>
-  <div id="line-container" class="row mb-5">
-    <div class="card" v-for="company in companies" :key="company.id">
-      <router-link
-        :to="
-          isLinkDisabled(company.id)
-            ? ''
-            : { name: 'companyShow', params: { id: company.id } }
-        "
-        class="row router-link"
+  <div class="page-container">
+    <div class="page-header">
+      <div class="page-title">
+        <font-awesome-icon icon="fa-solid fa-briefcase" class="page-icon" />
+        <h1>EMPRESAS</h1>
+      </div>
+      <div class="page-action">
+        <CompanyCreateForm @new-company-event="addCompanyCreated" />
+      </div>
+    </div>
+
+    <section class="section-container">
+      <div class="search-container">
+        <input
+          type="text"
+          class="search-input"
+          v-model="searchTerm"
+          placeholder="Digite para buscar"
+        />
+      </div>
+
+      <div
+        class="list-line"
+        v-for="company in companies"
+        v-bind:key="company.id"
       >
         <!-- Coluna para a imagem -->
-        <div class="col-4 d-flex align-items-top">
-          <span class="icon big">
-            <font-awesome-icon icon="fa-solid fa-briefcase" />
-          </span>
+        <div class="icons-column">
+          <font-awesome-icon
+            icon="fa-solid fa-briefcase"
+            class="primary big-icon"
+          />
         </div>
 
         <!-- Coluna para as demais informações -->
-        <div class="col-8">
-          <div
-            class="infos-container"
-            @mouseover="showCopyName(company.id)"
-            @mouseleave="hideCopyName(company.id)"
-          >
-          <div v-if="company.business_name">
-            <p class="name">
-              {{ company.business_name }}
-            </p>
-            <CopyContentClipboard
-              class="CopyContentClipboard"
-              :data="company.business_name"
-              :key="'name_' + company.id"
-              v-show="isMouseOverName[company.id]"
-            />
-          </div>
-          <div v-else>
-            <p class="name">
-              {{ company.legal_name }}
-            </p>
-            <CopyContentClipboard
-              class="CopyContentClipboard"
-              :data="company.legal_name"
-              :key="'name_' + company.id"
-              v-show="isMouseOverName[company.id]"
-            />
-          </div>
+
+        <div class="task-column">
+        <router-link
+          :to="
+            isLinkDisabled(company.id)
+              ? ''
+              : { name: 'companyShow', params: { id: company.id } }
+          "
+        >
+            <div v-if="company.business_name">
+              <p class="name">
+                {{ company.business_name }}
+              </p>
+              <CopyContentClipboard
+                class="CopyContentClipboard"
+                :data="company.business_name"
+                :key="'name_' + company.id"
+                v-show="isMouseOverName[company.id]"
+              />
+            </div>
+            <div v-else-if="company.legal_name">
+              <p class="name">
+                {{ company.legal_name }}
+              </p>
+              <CopyContentClipboard
+                class="CopyContentClipboard"
+                :data="company.legal_name"
+                :key="'name_' + company.id"
+                v-show="isMouseOverName[company.id]"
+              />
+            </div>
+          </router-link>
         </div>
 
         <div
-            v-if="company.cnpj"
-            class="infos-container"
-            @mouseover="showCopyEmail(company.id)"
-            @mouseleave="hideCopyEmail(company.id)"
-          >
-            <p class="cnpj">
-              {{ company.cnpj }}
-            </p>
-            <CopyContentClipboard
-              class="CopyContentClipboard"
-              :data="company.cnpj"
-              :key="'cnpj_' + company.id"
-              v-show="isMouseOverEmail[company.id]"
-            />
-          </div>
-
-          <div
-            v-if="company.email"
-            class="infos-container"
-            @mouseover="showCopyEmail(company.id)"
-            @mouseleave="hideCopyEmail(company.id)"
-          >
-            <p class="email">
-              {{ company.email }}
-            </p>
-            <CopyContentClipboard
-              class="CopyContentClipboard"
-              :data="company.email"
-              :key="'email_' + company.id"
-              v-show="isMouseOverEmail[company.id]"
-            />
-          </div>
-
-          <div
-            v-if="company.cel_phone"
-            class="infos-container"
-            @mouseover="showCopyCelPhone(company.id)"
-            @mouseleave="hideCopyCelPhone(company.id)"
-          >
-            <p class="cel_phone">
-              {{ company.cel_phone }}
-            </p>
-            <CopyContentClipboard
-              class="CopyContentClipboard"
-              :data="company.cel_phone"
-              :key="'cel_phone_' + company.id"
-              v-show="isMouseOverCelPhone[company.id]"
-            />
-          </div>
+          class="date-column"
+          @mouseover="showCopyEmail(company.id)"
+          @mouseleave="hideCopyEmail(company.id)"
+        >
+          <p v-if="company.cnpj" class="cnpj">
+            {{ company.cnpj }}
+          </p>
+          <CopyContentClipboard
+            class="CopyContentClipboard"
+            :data="company.cnpj"
+            :key="'cnpj_' + company.id"
+            v-show="isMouseOverEmail[company.id]"
+          />
         </div>
-      </router-link>
-    </div>
 
-    <router-view />
+        <div
+          class="date-column"
+          @mouseover="showCopyEmail(company.id)"
+          @mouseleave="hideCopyEmail(company.id)"
+        >
+          <p v-if="company.email" class="email">
+            {{ company.email }}
+          </p>
+          <CopyContentClipboard
+            class="CopyContentClipboard"
+            :data="company.email"
+            :key="'email_' + company.id"
+            v-show="isMouseOverEmail[company.id]"
+          />
+        </div>
+
+        <div
+          class="date-column"
+          @mouseover="showCopyCelPhone(company.id)"
+          @mouseleave="hideCopyCelPhone(company.id)"
+        >
+          <p v-if="company.cel_phone" class="cel_phone">
+            {{ company.cel_phone }}
+          </p>
+          <CopyContentClipboard
+            class="CopyContentClipboard"
+            :data="company.cel_phone"
+            :key="'cel_phone_' + company.id"
+            v-show="isMouseOverCelPhone[company.id]"
+          />
+        </div>
+      </div>
+
+      <router-view />
+    </section>
   </div>
 </template>
 
@@ -164,12 +181,6 @@ export default {
   z-index: 1;
   /* pointer-events: none; */
 }
-.infos-container {
-  display: flex;
-  align-items: center;
-  position: relative;
-  z-index: 2;
-}
 .name {
   text-align: left;
   font-size: 16px;
@@ -179,21 +190,6 @@ export default {
 .big {
   font-size: 56px;
   color: var(--blue);
-}
-.card {
-  border-style: solid;
-  border-width: 2px;
-  border-color: var(--blue);
-  border-radius: 6px;
-  padding: 10px;
-  margin-right: 1%;
-  margin-top: 2%;
-  background-color: var(--blue-light);
-  width: 24%;
-}
-.card:hover {
-  border-width: 5px;
-  border-radius: 14px;
 }
 .copyContentClipbord {
   position: absolute;
@@ -209,12 +205,6 @@ export default {
   text-align: left;
   font-size: 14px;
   font-weight: 400;
-}
-.icon {
-  text-align: center;
-  font-weight: 400;
-}
-.icon:hover {
 }
 .icon-col {
   z-index: 3;
@@ -268,23 +258,6 @@ a:hover {
 }
 a:active {
   text-decoration: none;
-}
-.list-line {
-  margin-top: 3px;
-  padding: 0px;
-  padding-top: 14px;
-  padding-bottom: 0px;
-  width: auto;
-  height: auto;
-  background-color: white;
-  text-align: left;
-  margin-right: 0;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-  border-left-style: solid;
-  border-left-width: 12px;
-  border-color: #007e8b;
-  border-radius: 0px 0 0 0px;
 }
 .slot {
   display: block;

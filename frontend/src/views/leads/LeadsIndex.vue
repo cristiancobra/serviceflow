@@ -1,22 +1,39 @@
 <template>
   <div class="container">
+    <form-modal
+        :is-visible="isModalVisible"
+        title="Criar nova empresa"
+        icon="fa-solid fa-building"
+        @close="toggle"
+        @submit="toggle"
+      >
+      <LeadCreateForm
+          template="index"
+          @new-lead-event="addLeadCreated($event)"
+        />
+    </form-modal>
     <LeadsList template="index" />
   </div>
 </template>
 
 <script>
+import FormModal from "@/components/layout/FormModal.vue";
 import LeadsList from "@/components/lists/LeadsList.vue";
+import LeadCreateForm from "@/components/forms/LeadCreateForm.vue";
 
 export default {
   name: "LeadsIndex",
   components: {
+    FormModal,
     LeadsList,
+    LeadCreateForm,
   },
   data() {
     return {
       isActive: true,
       hasError: false,
       data: null,
+      isModalVisible: false,
       leads: [],
       newLead: {},
     };

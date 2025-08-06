@@ -6,84 +6,86 @@
         <h1>CONTATOS</h1>
       </div>
       <div class="page-action">
-        <LeadCreateForm template="index" @new-lead-event="addLeadCreated($event)" />
+            
+
       </div>
     </div>
 
     <NoLeadsMessage v-if="!leads" />
-    <div v-else id="line-container" class="row mb-5">
-      <div class="card" v-for="lead in leads" :key="lead.id">
-        <router-link
-          :to="
-            isLinkDisabled(lead.id)
-              ? ''
-              : { name: 'leadShow', params: { id: lead.id } }
-          "
-          class="row router-link"
-        >
-          <!-- Coluna para a imagem -->
-          <div class="col-4 d-flex align-items-top">
-            <span class="icon big">
-              <font-awesome-icon icon="fa-solid fa-user-circle" />
-            </span>
-          </div>
 
-          <!-- Coluna para as demais informações -->
-          <div class="col-8">
-            <div
-              class="infos-container"
-              @mouseover="showCopyName(lead.id)"
-              @mouseleave="hideCopyName(lead.id)"
-            >
-              <p class="name">
-                {{ lead.name }}
-              </p>
-              <CopyContentClipboard
-                class="CopyContentClipboard"
-                :data="lead.name"
-                :key="'name_' + lead.id"
-                v-show="isMouseOverName[lead.id]"
-              />
-            </div>
-
-            <div
-              v-if="lead.email"
-              class="infos-container"
-              @mouseover="showCopyEmail(lead.id)"
-              @mouseleave="hideCopyEmail(lead.id)"
-            >
-              <p class="email">
-                {{ lead.email }}
-              </p>
-              <CopyContentClipboard
-                class="CopyContentClipboard"
-                :data="lead.email"
-                :key="'email_' + lead.id"
-                v-show="isMouseOverEmail[lead.id]"
-              />
-            </div>
-
-            <div
-              v-if="lead.cel_phone"
-              class="infos-container"
-              @mouseover="showCopyCelPhone(lead.id)"
-              @mouseleave="hideCopyCelPhone(lead.id)"
-            >
-              <p class="cel_phone">
-                {{ lead.cel_phone }}
-              </p>
-              <CopyContentClipboard
-                class="CopyContentClipboard"
-                :data="lead.cel_phone"
-                :key="'cel_phone_' + lead.id"
-                v-show="isMouseOverCelPhone[lead.id]"
-              />
-            </div>
-          </div>
-        </router-link>
+    <section class="section-container">
+      <div class="search-container">
+        <input
+          type="text"
+          class="search-input"
+          v-model="searchTerm"
+          placeholder="Digite para buscar"
+        />
       </div>
-      <router-view />
-    </div>
+
+      <div class="list-line" v-for="lead in leads" v-bind:key="lead.id">
+        <!-- Coluna para a imagem -->
+        <div class="icons-column">
+          <font-awesome-icon
+            icon="fa-solid fa-user-circle"
+            class="primary big-icon"
+          />
+        </div>
+
+        <div class="task-column">
+          <router-link
+            :to="
+              isLinkDisabled(lead.id)
+                ? ''
+                : { name: 'leadShow', params: { id: lead.id } }
+            "
+          >
+            <p class="name">
+              {{ lead.name }}
+            </p>
+            <CopyContentClipboard
+              class="CopyContentClipboard"
+              :data="lead.name"
+              :key="'name_' + lead.id"
+              v-show="isMouseOverName[lead.id]"
+            />
+          </router-link>
+        </div>
+
+        <div
+          class="date-column"
+          @mouseover="showCopyEmail(lead.id)"
+          @mouseleave="hideCopyEmail(lead.id)"
+        >
+          <p v-if="lead.email" class="email">
+            {{ lead.email }}
+          </p>
+          <CopyContentClipboard
+            class="CopyContentClipboard"
+            :data="lead.email"
+            :key="'email_' + lead.id"
+            v-show="isMouseOverEmail[lead.id]"
+          />
+        </div>
+
+        <div
+          class="date-column"
+          @mouseover="showCopyCelPhone(lead.id)"
+          @mouseleave="hideCopyCelPhone(lead.id)"
+        >
+          <p v-if="lead.cel_phone" class="cel_phone">
+            {{ lead.cel_phone }}
+          </p>
+          <CopyContentClipboard
+            class="CopyContentClipboard"
+            :data="lead.cel_phone"
+            :key="'cel_phone_' + lead.id"
+            v-show="isMouseOverCelPhone[lead.id]"
+          />
+        </div>
+      </div>
+    </section>
+    <router-view />
   </div>
 </template>
 
@@ -91,14 +93,14 @@
 <script>
 import { index } from "@/utils/requests/httpUtils";
 import CopyContentClipboard from "../CopyContentClipboard.vue";
-import LeadCreateForm from "@/components/forms/LeadCreateForm.vue";
+// import LeadCreateForm from "@/components/forms/LeadCreateForm.vue";
 import NoLeadsMessage from "@/components/messages/NoLeadsMessage.vue";
 
 export default {
   name: "LeadsList",
   components: {
     CopyContentClipboard,
-    LeadCreateForm,
+    // LeadCreateForm,
     NoLeadsMessage,
   },
   data() {
@@ -109,6 +111,7 @@ export default {
         email: null,
         cel_phone: null,
       },
+      isModalVisible: false,
       isMouseOverName: {},
       isMouseOverEmail: {},
       isMouseOverCelPhone: {},
@@ -161,13 +164,6 @@ export default {
   /* pointer-events: none; */
 }
 
-.infos-container {
-  display: flex;
-  align-items: center;
-  position: relative;
-  z-index: 2;
-}
-
 .name {
   text-align: left;
   font-size: 16px;
@@ -180,22 +176,6 @@ export default {
   color: var(--blue);
 }
 
-.card {
-  border-style: solid;
-  border-width: 2px;
-  border-color: var(--blue);
-  border-radius: 6px;
-  padding: 10px;
-  margin-right: 1%;
-  margin-top: 2%;
-  background-color: var(--blue-light);
-  width: 24%;
-}
-
-.card:hover {
-  border-width: 5px;
-  border-radius: 14px;
-}
 
 .copyContentClipbord {
   position: absolute;
@@ -213,45 +193,6 @@ export default {
   text-align: left;
   font-size: 14px;
   font-weight: 400;
-}
-
-.icon {
-  text-align: center;
-  font-weight: 400;
-}
-
-.icon:hover {
-}
-
-.icon-col {
-  z-index: 3;
-  font-size: 16px;
-  position: absolute;
-  right: 0;
-  display: inline-block;
-  align-items: center;
-  /* Centraliza verticalmente */
-  justify-content: center;
-  /* Centraliza horizontalmente */
-  width: 35px;
-  height: 35px;
-  margin-right: 12px;
-  margin-top: -8px;
-  padding: 16px;
-  background-color: #f1f1f1;
-  border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  /* Reduz a intensidade do sombreamento */
-  transition: font-size 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-}
-
-.icon-col:hover {
-  font-size: 20px;
-  background-color: #f6f6f6;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
-  transform: perspective(500px) rotateX(10deg);
-  transform-origin: center center;
-  /* Inicia a transformação a partir do centro */
 }
 
 .comments {
@@ -290,23 +231,6 @@ a:active {
   text-decoration: none;
 }
 
-.list-line {
-  margin-top: 3px;
-  padding: 0px;
-  padding-top: 14px;
-  padding-bottom: 0px;
-  width: auto;
-  height: auto;
-  background-color: white;
-  text-align: left;
-  margin-right: 0;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-  border-left-style: solid;
-  border-left-width: 12px;
-  border-color: #007e8b;
-  border-radius: 0px 0 0 0px;
-}
 
 .slot {
   display: block;

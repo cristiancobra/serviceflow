@@ -1,0 +1,18 @@
+@import './variables.css';
+@import './style.css';
+@import './cards.css';
+@import './forms.css';
+@import './lists.css';
+@import './login.css';
+@import './modal.css';
+@import './projects.css';
+@import './proposals.css';
+@import './show.css';
+@import "tailwindcss";
+@plugin "daisyui";
+
+/* @theme {
+  --color-primary: #121063;
+  --color-tahiti: #3ab7bf;
+  --color-bermuda: #78dcca;
+} */

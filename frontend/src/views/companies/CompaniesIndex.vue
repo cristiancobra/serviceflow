@@ -1,12 +1,15 @@
 <template>
   <div class="container">
-
-    <LeadsFilter @toggle="toggle" />
-
-    <div v-bind:class="{ hidden: isActive }">
-      <CompanyCreateForm @new-company-event="addCompanyCreated($event)" />
-    </div>
-
+    <LeadsFilter @toggle="toggle" />    
+      <form-modal
+        :is-visible="isModalVisible"
+        title="Criar nova empresa"
+        icon="fa-solid fa-building"
+        @close="toggle"
+        @submit="toggle"
+      >
+      <company-create-form @new-company-event="addCompanyCreated($event)" />
+      </form-modal>
     <template v-if="companies.length > 0">
       <div class="row">
         <CompaniesList :companies="companies" />
@@ -25,6 +28,7 @@ import axios from "axios";
 import LeadsFilter from "@/components/filters/LeadsFilter.vue";
 import CompaniesList from "@/components/lists/CompaniesList.vue";
 import NoLeadsMessage from '@/components/messages/NoLeadsMessage.vue';
+import FormModal from '../../components/layout/FormModal.vue';
 import CompanyCreateForm from "@/components/forms/CompanyCreateForm.vue";
 
 export default {
@@ -34,10 +38,11 @@ export default {
     CompanyCreateForm,
     CompaniesList,
     NoLeadsMessage,
+    FormModal,
   },
   data() {
     return {
-      isActive: true,
+      isModalVisible: false,
       hasError: false,
       data: null,
       companies: [],
@@ -46,7 +51,7 @@ export default {
   },
   methods: {
     toggle() {
-      this.isActive = !this.isActive;
+      this.isModalVisible = !this.isModalVisible;
     },
     getCompanies() {
       axios
@@ -57,8 +62,11 @@ export default {
         .catch((error) => console.log(error));
     },
     addCompanyCreated(newCompany) {
-      this.companies.push(newCompany.data);
-      console.log("Nova EMPRESA adicionada:", newCompany.data);
+      console.log("Empresa criada:", newCompany);
+      this.companies.push(newCompany);
+      console.log("Nova EMPRESA adicionada:", newCompany.legal_name);
+      this.isModalVisible = false;
+      // this.hasError = false;
       // !this.toggle();
     },
   },

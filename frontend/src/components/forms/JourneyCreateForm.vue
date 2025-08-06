@@ -1,11 +1,14 @@
 <template>
   <div>
-    <AddMessage :messageStatus="messageStatus" :messageText="messageText"
-    @update:messageStatus="messageStatus = $event" />
+    <AddMessage
+      :messageStatus="messageStatus"
+      :messageText="messageText"
+      @update:messageStatus="messageStatus = $event"
+    />
 
-    <div class="row errorBox" v-bind:class="{ 'd-none': datesError }"></div>
-    <form @submit.prevent="submitForm">
-      <div class="form" v-bind:class="{ 'd-none': !isActive }">
+    <div class="errorBox" v-bind:class="{ isActive: datesError }"></div>
+    <div class="form" v-bind:class="{ isActive: isActive }">
+      <form @submit.prevent="submitForm">
         <div class="row mt-0">
           <div class="col">
             <label for="start">Início</label>
@@ -19,32 +22,35 @@
         <div class="row">
           <div class="col">
             <label for="details">Detalhes</label>
-            <textarea name="description" rows="2" cols="50" v-model="form.details" class="form-control"
-              id="details"></textarea>
+            <textarea
+              name="description"
+              rows="2"
+              cols="50"
+              v-model="form.details"
+              class="form-control"
+              id="details"
+            ></textarea>
           </div>
         </div>
         <div class="row d-flex justify-content-center">
           <button type="submit mt-5" class="button-new orange">Enviar</button>
         </div>
-      </div>
-    </form>
-    <div class="row mb-4">
-      <div class="col d-flex justify-content-end">
-        <button class="button me-3" @click="toggle()">
-          <span class="icon-new">
-            <font-awesome-icon icon="fa-solid fa-plus" />
-          </span>
-          NOVA
+      </form>
+    </div>
+    <div class="flex flex-row items-center space-x-2 me-3">
+      <button
+        class="w-7 h-7 flex items-center justify-center rounded-full bg-primary text-white hover:bg-secondary transition duration-200 ease-in-out"
+        @click="toggle()"
+      >
+        <font-awesome-icon icon="fa-solid fa-plus" />
+      </button>
+      <form @submit.prevent="submitQuickForm">
+        <button
+          class="w-7 h-7 flex items-center justify-center rounded-full bg-primary text-white hover:bg-secondary transition duration-200 ease-in-out"
+        >
+          <font-awesome-icon icon="fa-solid fa-bolt" />
         </button>
-        <form @submit.prevent="submitQuickForm">
-          <button class="button">
-            <span class="icon-new">
-              <font-awesome-icon icon="fa-solid fa-bolt" />
-            </span>
-            INICIAR
-          </button>
-        </form>
-      </div>
+      </form>
     </div>
   </div>
 </template>
@@ -53,7 +59,7 @@
 import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import { BACKEND_URL, JOURNEY_URL } from "@/config/apiConfig";
 import { convertDateTimeForServer } from "@/utils/date/dateUtils";
-import { mapMutations } from 'vuex';
+import { mapMutations } from "vuex";
 import axios from "axios";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
@@ -64,10 +70,16 @@ export default {
     VueDatePicker,
     AddMessage,
   },
+  props: {
+    taskId: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       form: {
-        task_id: this.$route.params.id,
+        task_id: this.taskId,
         details: null,
         start: null,
         end: null,
@@ -75,7 +87,7 @@ export default {
       messageStatus: "",
       messageText: "",
       quickForm: {
-        task_id: this.$route.params.id,
+        task_id: this.taskId,
       },
       isActive: false,
       datesError: false,
@@ -110,7 +122,7 @@ export default {
         this.isFirstStartChange = false;
       }
     },
-    ...mapMutations(['setOpenJourney']),
+    ...mapMutations(["setOpenJourney"]),
     setMessageStatus(status) {
       this.messageStatus = status;
 
@@ -125,7 +137,6 @@ export default {
       }, 20000);
     },
     async submitForm() {
-
       this.checkDates();
 
       try {
@@ -138,7 +149,7 @@ export default {
             this.toggle();
             this.setMessageStatus("success");
             if (this.newJourney.end == null) {
-              console.log('form-end', this.form.end);
+              console.log("form-end", this.form.end);
               this.setOpenJourney(this.newJourney.task);
             }
           });
@@ -147,31 +158,33 @@ export default {
       }
     },
     async submitQuickForm() {
-
       try {
         this.quickForm.start = new Date();
+        this.quickForm.task_id = this.taskId;
 
         axios
           .post(`${BACKEND_URL}${JOURNEY_URL}`, this.quickForm)
           .then((response) => {
             this.newJourney = response.data.data;
-            this.$emit("new-journey-event", this.newJourney);
+            this.$emit("new-journey-event", {
+              journey: this.newJourney,
+              taskId: this.taskId,
+            });
             this.setMessageStatus("success");
             this.setOpenJourney(this.newJourney.task);
           });
       } catch (error) {
         this.setMessageStatus("error");
       }
-
     },
     toggle() {
       this.isActive = !this.isActive;
     },
   },
   watch: {
-    'form.start': function (newVal) {
+    "form.start": function (newVal) {
       this.handleStartChange(newVal);
-    }
+    },
   },
 };
 </script>
@@ -187,6 +200,10 @@ export default {
   text-align: center;
   font-size: 16px;
   font-weight: 400;
+}
+
+.form.isActive {
+  display: flex;
 }
 
 .icon {
@@ -230,6 +247,7 @@ export default {
 }
 
 .form {
+  display: none;
   padding: 1rem;
   background-color: var(--orange-light);
   border-color: var(--orange);

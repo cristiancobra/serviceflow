@@ -3,78 +3,79 @@
     <ErrorMessage v-if="isError" :formResponse="formResponse" />
     <SuccessMessage v-if="isSuccess" :formResponse="formResponse" />
 
-    <form @submit.prevent="submitForm">
-      <div class="row">
-        <div class="col">
-          <TextInput
-            label="Razão social"
-            type="text"
-            name="legal_name"
-            v-model="form.legal_name"
-            placeholder="nome legal da empresa"
-          />
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col">
-          <TextInput
-            label="Nome fantasia"
-            type="text"
-            name="business_name"
-            v-model="form.business_name"
-            placeholder="nome fantasia da empresa"
-          />
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-6">
-          <TextInput
-            label="CNPJ"
-            type="text"
-            name="cnpj"
-            v-model="form.cnpj"
-            placeholder="Cadastro nacional de Pessoa Jurídica"
-          />
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-6">
-          <TextInput
-            label="Email"
-            type="text"
-            name="email"
-            v-model="form.email"
-            placeholder="email da empresa"
-          />
+      <form @submit.prevent="submitForm">
+        <div class="row">
+          <div class="col">
+            <TextInput
+              label="Razão social"
+              type="text"
+              name="legal_name"
+              v-model="form.legal_name"
+              placeholder="nome legal da empresa"
+            />
+          </div>
         </div>
 
-        <div class="col-6">
-          <TextInput
-            label="Telefone celular"
-            type="text"
-            name="cel_phone"
-            v-model="form.cel_phone"
-            placeholder="telefone celular da empresa"
-          />
+        <div class="row">
+          <div class="col">
+            <TextInput
+              label="Nome fantasia"
+              type="text"
+              name="business_name"
+              v-model="form.business_name"
+              placeholder="nome fantasia da empresa"
+            />
+          </div>
         </div>
-      </div>
 
-      <div class="row ms-5 me-5 mt-4 mb-2">
-        <button type="submit" class="button-new">Criar</button>
-      </div>
-    </form>
+        <div class="row">
+          <div class="col-6">
+            <TextInput
+              label="CNPJ"
+              type="text"
+              name="cnpj"
+              v-model="form.cnpj"
+              placeholder="Cadastro nacional de Pessoa Jurídica"
+            />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-6">
+            <TextInput
+              label="Email"
+              type="text"
+              name="email"
+              v-model="form.email"
+              placeholder="email da empresa"
+            />
+          </div>
+
+          <div class="col-6">
+            <TextInput
+              label="Telefone celular"
+              type="text"
+              name="cel_phone"
+              v-model="form.cel_phone"
+              placeholder="telefone celular da empresa"
+            />
+          </div>
+        </div>
+
+        <div class="row ms-5 me-5 mt-4 mb-2">
+          <button type="submit" class="button-new">Criar</button>
+        </div>
+      </form>
+
   </div>
 </template>
 
 <script>
 import { BACKEND_URL, COMPANY_URL } from "@/config/apiConfig";
 import axios from "axios";
-import TextInput from "./inputs/text/TextInput";
 import ErrorMessage from "./messages/ErrorMesssage.vue";
 import SuccessMessage from "./messages/SuccessMessage.vue";
+import TextInput from "./inputs/text/TextInput";
 
 export default {
   name: "CompanyCreateForm",
@@ -113,12 +114,11 @@ export default {
         this.data = response.data.data;
         this.isSuccess = true;
         this.isError = false;
-        console.log(this.data);
         this.newCompanyEvent(this.data);
         this.successMessage(this.data);
         this.clearForm();
       } catch (error) {
-        console.error(error); // Imprima o objeto de erro para análise
+      
         if (error.response.status == 422) {
           this.isError = true;
           this.isSuccess = false;
@@ -139,16 +139,14 @@ export default {
       this.form.cel_phone = null;
     },
     newCompanyEvent(data) {
-      // if (this.update === 'index') {
+      this.isSuccess = true;
+      this.isError = false;
+      this.formResponse = "Empresa criada com sucesso!";
       this.$emit("new-company-event", data);
-      // }
-      // if (this.update === 'select') {
-      //   this.$emit("new-company-event", data);
-      // }
     },
     successMessage(data) {
       this.formResponse =
-        "Empresa " + data.data.legal_name + " criada com sucesso!";
+        "Empresa " + data.legal_name + " criada com sucesso!";
     },
     updateForm(value) {
       this.form.business_name = value;
