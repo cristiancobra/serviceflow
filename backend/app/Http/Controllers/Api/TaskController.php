@@ -60,9 +60,10 @@ class TaskController extends Controller
     public function show(Task $task)
     {
 
-        return TasksResource::make(Task::with(['journeys' => function ($query) {
-            $query->orderBy('start', 'desc');
-        },
+        return TasksResource::make(Task::with([
+            'journeys' => function ($query) {
+                $query->orderBy('start', 'desc');
+            },
             'links',
             'project',
             'opportunity'
@@ -92,15 +93,15 @@ class TaskController extends Controller
 
             $task->save();
 
-            $updatedTask = Task::with(['journeys' => function ($query) {
-                $query->orderBy('start', 'desc');
-            },
+            $updatedTask = Task::with([
+                'journeys' => function ($query) {
+                    $query->orderBy('start', 'desc');
+                },
                 'project',
                 'opportunity'
             ])->find($task->id);
-    
+
             return TasksResource::make($updatedTask);
-            
         } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",
@@ -175,6 +176,29 @@ class TaskController extends Controller
     }
 
     /**
+     * Retorna os motivos de cancelamento
+     * @return \Illuminate\Http\Response
+     */
+    public function getCancellationReasons()
+    {
+        $cancellationReasons = [
+            ['id' => 1, 'reason' => 'Cliente não respondeu'],
+            ['id' => 2, 'reason' => 'Cliente desistiu do projeto'],
+            ['id' => 3, 'reason' => 'Mudança de requisitos pelo cliente'],
+            ['id' => 4, 'reason' => 'Falta de recursos (equipe ou materiais)'],
+            ['id' => 5, 'reason' => 'Prioridade alterada pelo gestor'],
+            ['id' => 6, 'reason' => 'Problemas técnicos ou operacionais'],
+            ['id' => 7, 'reason' => 'Tarefa duplicada ou desnecessária'],
+            ['id' => 8, 'reason' => 'Orçamento insuficiente'],
+            ['id' => 9, 'reason' => 'Prazo não atendido'],
+            ['id' => 10, 'reason' => 'Cancelada por decisão estratégica'],
+            ['id' => 11, 'reason' => 'Outros'],
+        ];
+    
+        return response()->json(['data' => $cancellationReasons], 200);
+    }
+
+    /**
      * Display a listing of the resource by task_id.
      *
      * @return \Illuminate\Http\Response
@@ -232,17 +256,17 @@ class TaskController extends Controller
     public function prioritizedTasks()
     {
         $tasks = Task::with([
-                'project',
-                'opportunity'
-            ])
+            'project',
+            'opportunity'
+        ])
             ->where('account_id', auth()->user()->account_id)
             ->where(function ($query) {
                 // Inclui tarefas com oportunidades não canceladas
                 $query->whereHas('opportunity', function ($subQuery) {
                     $subQuery->whereNull('date_canceled');
                 })
-                // Ou tarefas que não têm oportunidade associada
-                ->orWhereDoesntHave('opportunity');
+                    // Ou tarefas que não têm oportunidade associada
+                    ->orWhereDoesntHave('opportunity');
             })
             ->where('date_conclusion', null)
             ->orderBy('date_due', 'asc')

@@ -121,24 +121,26 @@ Route::middleware('auth:sanctum')->group(function () {
 		->names('services');
 
 	//TASKS
-	Route::get('tasks/status', [TaskController::class, 'getTasksStatus'])
-		->name('tasks.status');
+	Route::get('/tasks/cancellation-reasons', [TaskController::class, 'getCancellationReasons']);
 
 	Route::get('tasks/filter-status', [TaskController::class, 'filterTasksByStatus'])
-		->name('tasks.filter-status');
-
+	->name('tasks.filter-status');
+	
 	Route::get('tasks/filter-date', [TaskController::class, 'filterTasksByDate'])
-		->name('tasks.filter-date');
-
+	->name('tasks.filter-date');
+	
 	Route::get('tasks/prioritized', [TaskController::class, 'prioritizedTasks'])
-		->name('tasks.prioritized');
-
+	->name('tasks.prioritized');
+	
 	Route::get('/tasks-by-opportunity-id', [TaskController::class, 'getTasksByOpportunityId'])
-		->name('tasks.opportunity-id');
+	->name('tasks.opportunity-id');
 
 	Route::get('/tasks-by-project-id', [TaskController::class, 'getTasksByProjectId'])
-		->name('tasks.task-id');
-
+	->name('tasks.task-id');
+	
+	Route::get('tasks/status', [TaskController::class, 'getTasksStatus'])
+		->name('tasks.status');
+	
 	Route::apiResource('tasks', TaskController::class)
 		->names('tasks');
 

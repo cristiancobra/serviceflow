@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex">
+  <div class="flex items-center whitespace-nowrap">
     <label v-if="label" class="form-label me-3" :for="name">{{ label }}</label>
     <div v-if="!editing" @click="startEditing">
       <span class="default-text" :class="classText">

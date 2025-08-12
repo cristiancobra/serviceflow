@@ -1,5 +1,11 @@
 <template>
   <div>
+    <AddMessage
+      v-if="messageStatus"
+      :messageStatus="messageStatus"
+      :messageText="messageText"
+    >
+    </AddMessage>
     <button type="button" class="button button-new" @click="openModal">
       <font-awesome-icon icon="fa-solid fa-plus" class="" />
     </button>
@@ -207,6 +213,8 @@ export default {
         date_conclusion: null,
         priority: null,
         status: null,
+        messageStatus: "",
+        messageText: "",
       },
       isActiveFormCompany: false,
       isActiveFormLead: false,
@@ -227,6 +235,9 @@ export default {
         "opportunities",
         this.form
       );
+
+      // this.messageStatus = "deleted";
+      // this.messageText = "Jornada excluída com sucesso!";
 
       if (data) {
         this.isModalVisible = false;

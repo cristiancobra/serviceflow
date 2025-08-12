@@ -1,10 +1,10 @@
 <template>
   <div class="label-input-container">
-    <label class="form-label" :for="name">{{ label }}</label>
+    <label class="form-label" :for="name">{{  label }}</label>
     <select class="form-select" :id="name" :name="name" @input="updateInput" v-model="localValue">
       <option v-if="fieldNull" :value=null>{{ fieldNull }}</option>
-      <option v-if="optionLabel" disabled value="">
-        {{ optionLabel }}
+      <option v-if="placeholder" disabled value="">
+        {{ placeholder }}
       </option>
       <option v-for="(item) in items" :key="item.id" :value="item.id">
         {{ displayItemText(item) }}
@@ -21,8 +21,8 @@ export default {
     items: Array,
     fieldsToDisplay: [String, Array],
     fieldNull: String,
-    optionLabel: String,
     modelValue: [String, Number],
+    placeholder: String,
   },
   data() {
     return {

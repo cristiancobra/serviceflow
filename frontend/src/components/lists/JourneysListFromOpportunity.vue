@@ -1,48 +1,76 @@
 <template>
-  <div class="section-container">
-    <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
+  <div class="mt-3 mb-10">
+    <AddMessage
+      v-if="messageStatus"
+      :messageStatus="messageStatus"
+      :messageText="messageText"
+    >
     </AddMessage>
 
     <div calss="list-line" v-if="localJourneys.length > 0">
       <div class="">
-        <PaginateNav :paginationData="paginationData" @update-data="updatePaginationList" />
+        <PaginateNav
+          :paginationData="paginationData"
+          @update-data="updatePaginationList"
+        />
       </div>
       <div class="p-5" v-if="!localJourneys">
         Ainda não possui nenhuma jornada
       </div>
-      <div v-else class="list-line" v-for="journey in localJourneys" v-bind:key="journey.id"
-        :class="{ 'highlight': journey.id === newJourneyId }">
-        <div class="date-column">
-          <DateEditableInput name="start" v-model="journey.start" @save="updateJourney('start', $event, journey.id)" />
+      <div
+        v-else
+        class="flex mt-5 mb-4"
+        v-for="journey in localJourneys"
+        v-bind:key="journey.id"
+        :class="{ highlight: journey.id === newJourneyId }"
+      >
+        <div class="flex items-center ms-7 mr-4">
+          <font-awesome-icon icon="fa-solid fa-clock" class="primary" />
         </div>
-        <div class="date-column">
-          <TimeEditableInput class="ps-5" name="end" v-model="journey.end"
-            @save="updateJourney('end', $event, journey.id)" />
+        <div class="flex items-center mr-5">
+          <DateEditableInput
+            name="start"
+            v-model="journey.start"
+            @save="updateJourney('start', $event, journey.id)"
+          />
         </div>
-        <div class="date-column">
+        <div class="flex items-center mr-5">
+          <TimeEditableInput
+            class="ps-5"
+            name="end"
+            v-model="journey.end"
+            @save="updateJourney('end', $event, journey.id)"
+          />
+        </div>
+        <div class="flex items-center mr-5">
           <p class="time-bold ps-5">
             {{ formatDuration(journey.duration) }}
           </p>
         </div>
-        <div v-if="task" class="task-column">
-          <router-link :to="{ name: 'taskShow', params: { id: task.id } }">
-            {{ task.name }}
-          </router-link>
-        </div>
-        <div class="icons-column">
-          <button v-if="!journey.end" class="button-circular stop" @click="stopJourney(journey.id)">
+        <div class="flex items-center mr-5">
+          <button
+            v-if="!journey.end"
+            class="button-circular stop"
+            @click="stopJourney(journey.id)"
+          >
             <span class="stop">
               <font-awesome-icon icon="fa-solid fa-hand" />
             </span>
           </button>
-          <button class="button-circular delete" @click="deleteItem(journey)">
-            <span class="delete">
+          <button
+             class="w-7 h-7 pt-1 flex items-center justify-center rounded-full bg-red-500 hover:bg-red-800 transition duration-200 ease-in-out"
+            @click="deleteItem(journey)"
+          >
+            <span class="text-white">
               <font-awesome-icon icon="fa-solid fa-trash-alt" />
             </span>
           </button>
         </div>
       </div>
-      <PaginateNav :paginationData="paginationData" @update-data="updatePaginationList" />
+      <PaginateNav
+        :paginationData="paginationData"
+        @update-data="updatePaginationList"
+      />
     </div>
   </div>
 </template>
@@ -57,7 +85,7 @@ import { formatDateBr } from "@/utils/date/dateUtils";
 import { formatTimeToLocal } from "@/utils/date/dateUtils";
 import { convertDateTimeForServer } from "@/utils/date/dateUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
-import { mapMutations } from 'vuex';
+import { mapMutations } from "vuex";
 import DateEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import TimeEditableInput from "@/components/forms/inputs/time/TimeEditableInput.vue";
 import PaginateNav from "@/components/layout/PaginateNav.vue";
@@ -119,7 +147,6 @@ export default {
       setTimeout(() => {
         this.newJourneyId = null;
       }, 2000);
-
     },
 
     cancelEditDateTime(event, journey) {
@@ -127,7 +154,9 @@ export default {
       if (event.keyCode === 27) {
         journey.editing = false;
         // Remove o event listener após cancelar a edição
-        document.removeEventListener('keydown', (event) => this.cancelEditDateTime(event, journey));
+        document.removeEventListener("keydown", (event) =>
+          this.cancelEditDateTime(event, journey)
+        );
       }
     },
     deleteItem(item) {
@@ -171,7 +200,7 @@ export default {
     // },
     emitLastJourneyEnd() {
       if (this.journeys.length === 0) {
-        this.$emit('last-journey-end', null)
+        this.$emit("last-journey-end", null);
         return null;
       }
 
@@ -184,24 +213,24 @@ export default {
       const lastJourney = sortedJourneys[sortedJourneys.length - 1];
 
       if (!lastJourney.end) {
-        this.$emit('last-journey-end', null)
+        this.$emit("last-journey-end", null);
         return null;
       }
 
       try {
-        this.$emit('last-journey-end', lastJourney.end)
+        this.$emit("last-journey-end", lastJourney.end);
       } catch (error) {
-        console.error('Erro ao converter a data:', error);
+        console.error("Erro ao converter a data:", error);
         return null;
       }
     },
-    ...mapMutations(['setOpenJourney']),
+    ...mapMutations(["setOpenJourney"]),
     async stopJourney(journeyId) {
-      const fieldName = 'end';
+      const fieldName = "end";
       const now = new Date();
       const endValue = this.convertDateTimeForServer(now);
       this.updateJourney(fieldName, endValue, journeyId);
-      this.$store.commit('setOpenJourney', null);
+      this.$store.commit("setOpenJourney", null);
     },
     async updateJourney(fieldName, editedValue, journeyId) {
       const editedJourney = {
@@ -223,7 +252,9 @@ export default {
       }
     },
     updateJourneyInList(updatedJourney) {
-      const index = this.journeys.findIndex(journey => journey.id === updatedJourney.id);
+      const index = this.journeys.findIndex(
+        (journey) => journey.id === updatedJourney.id
+      );
       if (index !== -1) {
         this.localJourneys.splice(index, 1, updatedJourney);
       }
@@ -271,26 +302,6 @@ export default {
   color: white;
 }
 
-.icon-clock {
-  font-size: 1.8rem;
-  font-weight: 400;
-  color: var(--gray);
-}
-
-.icon-clock-new {
-  font-size: 26px;
-  font-weight: 900;
-  color: white;
-}
-
-icon-clock-new:hover {
-  font-size: 2.5rem;
-  text-align: center;
-  font-weight: 400;
-  color: var(--purple);
-}
-
-
 .journey-container {
   border-style: solid;
   border-width: 2px;
@@ -299,48 +310,12 @@ icon-clock-new:hover {
   padding: 1rem;
 }
 
-
-
 .comments {
   text-align: left;
   font-size: 14px;
   margin-top: 20px;
 }
 
-a {
-  color: rgb(61, 61, 61);
-}
-
-a:link {
-  text-decoration: none;
-}
-
-a:visited {
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: none;
-}
-
-a:active {
-  text-decoration: none;
-}
-
-
-.new {
-  display: flex;
-  justify-content: end;
-  padding-top: 1rem;
-}
-
-.col-big {
-  flex: 6;
-}
-
-.col-medium {
-  flex: 2;
-}
 
 /* paginate */
 /* Adapte as cores e estilos conforme necessário */
@@ -399,17 +374,4 @@ a:active {
   cursor: not-allowed;
 }
 
-.taskCard {
-  background-color: var(--purple-light);
-  color: black;
-  border-radius: 12px;
-  padding: 10px;
-  margin-bottom: 10px;
-  font-weight: 600;
-  text-align: left;
-}
-
-.title {
-  text-align: left;
-}
 </style>

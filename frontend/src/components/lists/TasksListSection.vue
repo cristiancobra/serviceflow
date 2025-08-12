@@ -20,9 +20,9 @@
         />
       </div>
 
-      <section class="list-container">
+      <section class="">
         <div v-for="localTask in localTasks" v-bind:key="localTask.id">
-          <div class="list-line">
+          <div class="list-line flex items-center space-x-10 pt-5 pb-5">
             <div class="icons-column">
               <img
                 v-if="userData.photo"
@@ -45,14 +45,12 @@
             </div>
 
             <div class="task-column">
-              <router-link
-                :to="{ name: 'taskShow', params: { id: localTask.id } }"
-                class=""
-              >
-                <p class="name">
-                  {{ localTask.name }}
-                </p>
-              </router-link>
+              <text-editable-field
+                name="name"
+                v-model="localTask.name"
+                placeholder="descrição detalhada da tarefa"
+                @save="updateTask('name', $event, localTask.id)"
+              />
             </div>
 
             <div class="time-column">
@@ -60,15 +58,11 @@
             </div>
 
             <div class="date-column">
-              <DateTimeValue
-                v-if="isValidDate(localTask.date_conclusion)"
-                v-model="localTask.date_conclusion"
-                classText="done"
-                classIcon="done"
-                @save="updateTask('date_conclusion', $event, localTask.id)"
+              <font-awesome-icon
+                icon="fa-solid fa-exclamation-circle"
+                class="text-primary me-2"
               />
-              <DateTimeEditableInput
-                v-else
+              <date-time-editable-input
                 v-model="localTask.date_due"
                 :classText="getDeadlineClass(localTask.date_due)"
                 :classIcon="getDeadlineClass(localTask.date_due)"
@@ -76,17 +70,33 @@
               />
             </div>
 
+            <div class="date-column">
+              <font-awesome-icon
+                icon="fa-solid fa-check-circle"
+                class="text-primary me-2"
+              />
+              <date-time-editable-input
+                name="date_conclusion"
+                v-model="localTask.date_conclusion"
+                @save="emitUpdateTask('date_conclusion', $event)"
+              />
+            </div>
+
+            <!-- Botão de Toggle -->
+            <button
+              class="w-7 h-7 flex items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-700 transition"
+              @click="toggleCancelLine"
+            >
+              <font-awesome-icon
+                :icon="
+                  showCancelLine ? 'fa-solid fa-minus' : 'fa-solid fa-times-circle'
+                "
+              />
+            </button>
+
             <journey-create-form
               :taskId="localTask.id"
               @new-journey-event="addJourneyCreated"
-            />
-
-            <DateEditableInput
-              class="flex justify-end"
-              name="date_conclusion"
-              label="Conclusão:"
-              v-model="localTask.date_conclusion"
-              @save="emitUpdateTask('date_conclusion', $event)"
             />
 
             <add-last-journey-date-button
@@ -96,11 +106,59 @@
               @add-last-journey-date="updateDateConclusion(localTask)"
               @update-task="updateTask"
             />
+            <button
+              v-if="localTask.journeys && localTask.journeys.length > 0"
+              class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-700 transition relative"
+              @click="toggleJourneys(localTask.id)"
+            >
+              <font-awesome-icon icon="fa-solid fa-eye" />
+              <span
+                class="absolute -top-1 -right-2 bg-red-400 text-xs rounded-full px-2 py-0.5"
+              >
+                {{ localTask.journeys.length }}
+              </span>
+            </button>
+            <button
+              v-else
+              class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-300 text-gray-500 cursor-not-allowed"
+              disabled
+            >
+              <font-awesome-icon icon="fa-solid fa-eye-slash" />
+            </button>
+          </div>
+
+          <div
+            id="cancel-line"
+            class="flex items-center space-x-20 pt-4 pb-4"
+            v-if="showCancelLine"
+          >
+            cancelada:
+            <font-awesome-icon
+              icon="fa-solid fa-times-circle"
+              class="text-primary ms-3 me-2"
+            />
+            <date-time-editable-input
+              name="date_canceled"
+              v-model="localTask.date_canceled"
+              @save="updateTask('date_canceled', $event, localTask.id)"
+            />
+
+            <cancellation-reason-select-input
+              name="cancellation_reason"
+              v-model="localTask.cancellation_reason"
+              @update:modelValue="
+                updateTask('cancellation_reason', $event, localTask.id)
+              "
+            />
           </div>
 
           <div
             class="journeys-line"
-            v-if="localTask.journeys && localTask.journeys.length > 0"
+            v-if="
+              localTask.journeys &&
+              localTask.journeys.length > 0 &&
+              showJourneys[localTask.id]
+            "
           >
             <journeys-list-from-opportunity
               :journeys="localTask.journeys"
@@ -131,12 +189,12 @@ import {
   TASK_URL_PARAMETER,
 } from "@/config/apiConfig";
 import AddLastJourneyDateButton from "@/components/tasks/buttons/AddLastJourneyDateButton.vue";
-import DateEditableInput from "@/components/fields/datetime/DateTimeEditableInput.vue";
-import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
-import DateTimeValue from "../fields/datetime/DateTimeValue.vue";
+import CancellationReasonSelectInput from "@/components/forms/selects/CancellationReasonSelectInput.vue";
+import DateTimeEditableInput from "@/components/fields/datetime/DateTimeEditableInput.vue";
 import JourneyCreateForm from "@/components/forms/JourneyCreateForm.vue";
 import JourneysListFromOpportunity from "@/components/lists/JourneysListFromOpportunity.vue";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
+import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 import { mapState } from "vuex";
 
 export default {
@@ -149,27 +207,30 @@ export default {
   },
   data() {
     return {
+      completedTasks: 0,
       formatedDate: "",
       formatedTime: "",
-      showGroupColumn: false,
+      localTasks: this.tasks,
       percentage: 0,
       searchTerm: "",
-      localTasks: this.tasks,
+      showCancelLine: false,
+      showGroupColumn: false,
+      showJourneys: {},
       totalTasks: 0,
-      completedTasks: 0,
     };
   },
   components: {
     AddLastJourneyDateButton,
-    DateEditableInput,
+    CancellationReasonSelectInput,
     DateTimeEditableInput,
-    DateTimeValue,
     JourneyCreateForm,
     JourneysListFromOpportunity,
     TaskCreateForm,
+    TextEditableField,
   },
   methods: {
     convertUtcToLocal,
+    TextEditableField,
     formatDuration,
     getColorClassForName,
     getStatusColor,
@@ -181,7 +242,6 @@ export default {
       this.localTasks.unshift(newTask);
     },
     addJourneyCreated({ journey, taskId }) {
-      console.log("Journey created:", journey, "for task ID:", taskId);
       const task = this.localTasks.find((t) => t.id === taskId);
 
       if (task) {
@@ -253,8 +313,13 @@ export default {
         return true;
       }
     },
-      updateDateConclusion(task) {
-        console.log("Updating date conclusion for task:", task.id);
+    toggleCancelLine() {
+      this.showCancelLine = !this.showCancelLine;
+    },
+    toggleJourneys(taskId) {
+      this.showJourneys[taskId] = !this.showJourneys[taskId];
+    },
+    updateDateConclusion(task) {
       if (task.journeys && task.journeys.length > 0) {
         // Ordena as jornadas e pega a data de término da mais recente
         const sortedJourneys = [...task.journeys].sort(
@@ -263,11 +328,7 @@ export default {
         const journeyEnd = sortedJourneys[0].end;
 
         // Passa o valor de journeyEnd para o método updateTask
-        this.updateTask(
-        "date_conclusion",
-        journeyEnd,
-        task.id
-      );
+        this.updateTask("date_conclusion", journeyEnd, task.id);
         this.showEndTaskButton = false;
         this.messageStatus = "success";
         this.messageText = `Tarefa finalizada com data da última jornada`;
