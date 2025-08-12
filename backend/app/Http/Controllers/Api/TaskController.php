@@ -268,6 +268,7 @@ class TaskController extends Controller
                     // Ou tarefas que não têm oportunidade associada
                     ->orWhereDoesntHave('opportunity');
             })
+            ->whereNull('date_canceled')
             ->where('date_conclusion', null)
             ->orderBy('date_due', 'asc')
             // ->paginate(20);
