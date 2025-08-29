@@ -39,16 +39,28 @@
     </div>
 
     <nav class="section-menu">
-      <button class="item-menu" @click="scrollToSection('info')">
+      <button
+        class="w-8 h-8 ms-1 me-1 flex items-center justify-center rounded-full bg-primary text-white hover:bg-secondary transition duration-200 ease-in-out"
+        @click="scrollToSection('info')"
+      >
         <font-awesome-icon icon="fas fa-file-invoice" class="icon" />
       </button>
-      <button class="item-menu" @click="scrollToSection('proposals')">
+      <button
+        class="w-8 h-8 ms-1 me-1 flex items-center justify-center rounded-full bg-primary text-white hover:bg-secondary transition duration-200 ease-in-out"
+        @click="scrollToSection('proposals')"
+      >
         <font-awesome-icon icon="fas fa-money-bill" class="icon" />
       </button>
-      <button class="item-menu" @click="scrollToSection('attachments')">
+      <button
+        class="w-8 h-8 ms-1 me-1 flex items-center justify-center rounded-full bg-primary text-white hover:bg-secondary transition duration-200 ease-in-out"
+        @click="scrollToSection('attachments')"
+      >
         <font-awesome-icon icon="fas fa-link" class="icon" />
       </button>
-      <button class="item-menu" @click="scrollToSection('journeys')">
+      <button
+        class="w-8 h-8 ms-1 me-1 flex items-center justify-center rounded-full bg-primary text-white hover:bg-secondary transition duration-200 ease-in-out"
+        @click="scrollToSection('journeys')"
+      >
         <font-awesome-icon icon="fas fa-clock" class="icon" />
       </button>
     </nav>
@@ -154,9 +166,9 @@
     </section>
 
     <div class="final-row">
-        <button class="button delete" @click="deleteOpportunity()">
-          excluir
-        </button>
+      <button class="button delete" @click="deleteOpportunity()">
+        excluir
+      </button>
     </div>
   </div>
 </template>
@@ -184,7 +196,7 @@ import ProposalsListSection from "@/components/lists/ProposalsListSection.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField";
 import TextEditor from "@/components/forms/inputs/TextEditor.vue";
 import UsersSelectEditableField from "@/components/fields/selects/UsersSelectEditableField.vue";
-import TasksListSection from '../../components/lists/TasksListSection.vue';
+import TasksListSection from "../../components/lists/TasksListSection.vue";
 
 export default {
   name: "ProjectShow",

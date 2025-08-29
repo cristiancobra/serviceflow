@@ -65,7 +65,9 @@ class OpportunityController extends Controller
 
         return OpportunitiesResource::make(Opportunity::with([
             'tasks' => function ($query) {
-                $query->orderBy('date_start', 'desc')->with('journeys');
+                $query->orderByRaw('date_conclusion IS NOT NULL ASC')
+                ->orderBy('date_start', 'desc')
+                ->with('journeys');
             },
             'company',
             'lead',

@@ -5,7 +5,7 @@
       <span class="default-text" :class="classText">
         {{ formatedDate }}
       </span>
-      <font-awesome-icon icon="fa-solid fa-clock" class="ms-2 me-1" />
+      <font-awesome-icon icon="fa-solid fa-clock" class="ms-2 me-1 text-gray-400" />
       <span class="default-text" :class="classText">
         {{ formatedTime }}
       </span>

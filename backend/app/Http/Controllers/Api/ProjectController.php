@@ -53,14 +53,26 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        return new ProjectResource(Project::with('tasks')
-            ->find($project->id));
-
-        if (!$project) {
-            return response()->json(['error' => 'Project not found'], 404);
+        try {
+            $projectWithRelations = Project::with([
+                'tasks' => function ($query) {
+                    $query->orderByRaw('date_conclusion IS NOT NULL ASC')
+                        ->orderBy('date_start', 'desc')
+                        ->with('journeys');
+                },
+            ])->find($project->id);
+    
+            if (!$projectWithRelations) {
+                return response()->json(['error' => 'Project not found'], 404);
+            }
+    
+            return ProjectResource::make($projectWithRelations);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while retrieving the project.',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-
-        return new ProjectResource($project);
     }
 
     /**

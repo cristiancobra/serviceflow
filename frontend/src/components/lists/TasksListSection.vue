@@ -22,7 +22,7 @@
 
       <section class="">
         <div v-for="localTask in localTasks" v-bind:key="localTask.id">
-          <div class="list-line flex items-center space-x-10 pt-5 pb-5">
+          <div class="list-line flex items-center space-x-10 pt-1 pb-1">
             <div class="icons-column">
               <img
                 v-if="userData.photo"
@@ -44,7 +44,7 @@
               />
             </div>
 
-            <div class="task-column">
+            <div class="flex flex-row flex-[6] items-center justify-start m-0">
               <text-editable-field
                 name="name"
                 v-model="localTask.name"
@@ -53,7 +53,7 @@
               />
             </div>
 
-            <div class="time-column">
+            <div class="flex items-center justify-center text-center mr-4">
               {{ formatDuration(localTask.duration_time) }}
             </div>
 
@@ -78,7 +78,7 @@
               <date-time-editable-input
                 name="date_conclusion"
                 v-model="localTask.date_conclusion"
-                @save="emitUpdateTask('date_conclusion', $event)"
+                @save="updateTask('date_conclusion', $event, localTask.id)"
               />
             </div>
 

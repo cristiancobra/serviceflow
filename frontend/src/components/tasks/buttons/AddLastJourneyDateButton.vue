@@ -8,6 +8,7 @@
     >
       <font-awesome-icon icon="fa-solid fa-check-square" />
     </button>
+    <div v-else class="w-8 h-8"></div>
   </div>
 </template>
 
