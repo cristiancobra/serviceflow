@@ -89,7 +89,9 @@
             >
               <font-awesome-icon
                 :icon="
-                  showCancelLine ? 'fa-solid fa-minus' : 'fa-solid fa-times-circle'
+                  showCancelLine
+                    ? 'fa-solid fa-minus'
+                    : 'fa-solid fa-times-circle'
                 "
               />
             </button>
@@ -248,6 +250,7 @@ export default {
         // Garante que journeys exista como array
         if (!task.journeys) task.journeys = [];
 
+        this.setJourneysVisible(taskId);
         task.journeys.unshift(journey);
         this.highlightNewJourney(journey.id);
       } else {
@@ -312,6 +315,12 @@ export default {
       ) {
         return true;
       }
+    },
+    setJourneysVisible(taskId) {
+      if (!this.showJourneys) {
+        this.showJourneys = {}; // Garante que showJourneys seja inicializado
+      }
+      this.showJourneys[taskId] = true;
     },
     toggleCancelLine() {
       this.showCancelLine = !this.showCancelLine;

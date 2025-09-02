@@ -177,6 +177,7 @@ class JourneyController extends Controller
                     'details' => $openJourney->details,
                     'start' => $openJourney->start,
                     'duration' => $openJourney->duration,
+                    'opportunity_id' => $openJourney->task->opportunity_id,
                 ]
             ]);
         } else {

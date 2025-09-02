@@ -59,7 +59,7 @@
       </button>
       <button
         class="w-8 h-8 ms-1 me-1 flex items-center justify-center rounded-full bg-primary text-white hover:bg-secondary transition duration-200 ease-in-out"
-        @click="scrollToSection('journeys')"
+        @click="scrollToSection('tasks')"
       >
         <font-awesome-icon icon="fas fa-clock" class="icon" />
       </button>
@@ -290,7 +290,13 @@ export default {
   },
   mounted() {
     this.setOpportunityId(this.$route.params.id);
-    this.getOpportunity();
+    this.getOpportunity().then(() => {
+      this.$nextTick(() => {
+        if (this.$route.query.scrollTo) {
+          this.scrollToSection(this.$route.query.scrollTo);
+        }
+      });
+    });
   },
 };
 </script>

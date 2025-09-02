@@ -16,7 +16,8 @@
     <div v-if="dropdownVisible" class="dropdown-menu">
       <router-link
         v-if="openJourney"
-        :to="{ name: 'taskShow', params: { id: openJourney.task_id } }"
+        
+  :to="{ name: 'opportunityShow', params: { id: openJourney.opportunity_id }, query: { scrollTo: 'tasks' } }"
         class="dropdown-item"
       >
         <font-awesome-icon icon="fas fa-play" class="play" />

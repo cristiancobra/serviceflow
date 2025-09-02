@@ -50,10 +50,10 @@
         <div class="flex items-center mr-5">
           <button
             v-if="!journey.end"
-            class="button-circular stop"
+            class="w-7 h-7 pt-1 flex items-center justify-center rounded-full text-white bg-blue-500 hover:bg-blue-800 transition duration-200 ease-in-out"
             @click="stopJourney(journey.id)"
           >
-            <span class="stop">
+            <span class="">
               <font-awesome-icon icon="fa-solid fa-hand" />
             </span>
           </button>

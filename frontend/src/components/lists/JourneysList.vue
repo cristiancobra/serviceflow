@@ -62,7 +62,10 @@
           </div>
         </div>
         <div class="icons-column">
-          <button v-if="!journey.end" class="button-circular stop" @click="stopJourney(journey.id)">
+          <button v-if="!journey.end" 
+          class="button-circular stop"
+           @click="stopJourney(journey.id)"
+           >
             <span class="stop">
               <font-awesome-icon icon="fa-solid fa-hand" />
             </span>

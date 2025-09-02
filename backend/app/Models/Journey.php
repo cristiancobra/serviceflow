@@ -53,7 +53,7 @@ class Journey extends Model
     {
         return self::whereNotNull('start')
             ->whereNull('end')
-            ->with('task')
+            ->with(['task', 'task.opportunity'])
             ->first();
     }
 }
