@@ -7,7 +7,7 @@
     >
     </AddMessage>
 
-    <div calss="list-line" v-if="localJourneys.length > 0">
+    <div class="" v-if="localJourneys.length > 0">
       <div class="">
         <PaginateNav
           :paginationData="paginationData"
@@ -19,7 +19,7 @@
       </div>
       <div
         v-else
-        class="flex mt-5 mb-4"
+        class="flex mt-1 mb-1"
         v-for="journey in localJourneys"
         v-bind:key="journey.id"
         :class="{ highlight: journey.id === newJourneyId }"

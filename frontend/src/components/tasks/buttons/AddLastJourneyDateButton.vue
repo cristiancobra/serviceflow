@@ -1,14 +1,25 @@
 <template>
   <div class="flex flex-row items-center space-x-4">
-    <button
-      v-if="showEndTaskButton"
-      class="w-8 h-8 flex items-center justify-center rounded-full bg-primary text-white hover:bg-secondary transition duration-200 ease-in-out"
-      @click="emitUpdateDateConclusion"
-      :title="endTaskTitle"
+    <div
+      v-if="showEndTaskButton && task.journeys && task.journeys.length > 0"
+      class="w-8 h-8"
     >
-      <font-awesome-icon icon="fa-solid fa-check-square" />
-    </button>
-    <div v-else class="w-8 h-8"></div>
+      <button
+        class="w-8 h-8 flex items-center justify-center rounded-full bg-primary text-white hover:bg-secondary transition duration-200 ease-in-out"
+        @click="emitUpdateDateConclusion"
+        :title="endTaskTitle"
+      >
+        <font-awesome-icon icon="fa-solid fa-check-square" />
+      </button>
+    </div>
+    <div v-else class="w-8 h-8">
+      <button
+              class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-300 text-gray-500 cursor-not-allowed"
+              disabled
+            >
+        <font-awesome-icon icon="fa-solid fa-check-square" />
+      </button>
+    </div>
   </div>
 </template>
 

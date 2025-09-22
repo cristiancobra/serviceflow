@@ -102,7 +102,6 @@
             />
 
             <add-last-journey-date-button
-              v-if="localTask.journeys && localTask.journeys.length > 0"
               :task="localTask"
               :showEndTaskButton="localTask.date_conclusion === null"
               @add-last-journey-date="updateDateConclusion(localTask)"
@@ -110,7 +109,7 @@
             />
             <button
               v-if="localTask.journeys && localTask.journeys.length > 0"
-              class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-700 transition relative"
+              class="w-7 h-7 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-700 transition relative"
               @click="toggleJourneys(localTask.id)"
             >
               <font-awesome-icon icon="fa-solid fa-eye" />

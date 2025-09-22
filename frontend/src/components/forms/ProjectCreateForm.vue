@@ -58,9 +58,6 @@
                                     <LeadsSelectInput label="Contato" name="contact_id" v-model="form.contact_id"
                                         fieldsToDisplay="name" fieldNull="Não possui" />
                                 </div>
-                                <div class="col">
-                                    <StatusLinearRadioInput :status="form.status" @status-change="updateFormStatus" />
-                                </div>
                             </div>
 
                             <div class="row mb-5 mt-5">
@@ -74,10 +71,6 @@
                                         placeholder="prazo final" />
                                 </div>
 
-                                <div class="col-md-4">
-                                    <TimeInput v-model="form.date_conclusion" label="Data de conclusão"
-                                        name="date_conclusion" placeholder="data quando a projeto foi finalizada" />
-                                </div>
                             </div>
 
                             <div class="modal-footer">
@@ -99,7 +92,6 @@ import axios from 'axios'
 import CompaniesSelectInput from "@/components/forms/selects/CompaniesSelectInput.vue";
 import TimeInput from "@/components/forms/inputs/time/TimeInput.vue";
 import LeadsSelectInput from "@/components/forms/selects/LeadsSelectInput.vue";
-import StatusLinearRadioInput from "@/components/forms/inputs/StatusLinearRadioInput.vue";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
 
 export default {
@@ -110,7 +102,6 @@ export default {
         CompaniesSelectInput,
         TimeInput,
         LeadsSelectInput,
-        StatusLinearRadioInput,
         UsersSelectInput
     },
     data() {

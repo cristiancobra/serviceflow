@@ -65,7 +65,7 @@ export default createStore({
     },
     async login({ commit }, credentials) {
       try {
-        axios.defaults.withCredentials = true;
+        // axios.defaults.withCredentials = true;
         await axios.get(API_SANCTUM_URL);
         const response = await axios.post(`${BACKEND_URL}${LOGIN_URL}`,credentials);
         commit('setAuthenticated', true);
@@ -77,6 +77,7 @@ export default createStore({
         }, 600);
       } catch (error) {
         console.error('Erro ao realizar login:', error);
+        
         commit('setAuthenticated', false);
         router.push({ name: 'login' });
       }

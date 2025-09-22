@@ -65,76 +65,64 @@
       </button>
     </nav>
 
-    <section id="info" class="section-container">
-      <div class="section-title">
-        <font-awesome-icon icon="fas fa-file-invoice" class="icon" />
-        <h2>Informações</h2>
+    <section id="info" class="section-container mb-6">
+      <div class="section-title flex items-center mb-4">
+        <font-awesome-icon
+          icon="fas fa-file-invoice"
+          class="text-primary text-xl mr-2"
+        />
+        <h2 class="text-xl font-semibold">Informações</h2>
       </div>
-      <div class="table-row">
-        <div class="column-70">
-          <div class="table-row">
-            <companies-select-editable-field
-              label="Empresa"
-              name="company_id"
-              v-model="opportunity.company_id"
-              @update:modelValue="updateOpportunity('company_id', $event)"
-            />
-          </div>
-          <div class="table-row">
-            <leads-select-editable-field
-              label="Cliente"
-              name="lead_id"
-              v-model="opportunity.lead_id"
-              @update:modelValue="updateOpportunity('lead_id', $event)"
-            />
-          </div>
-          <div class="table-row">
-            <users-select-editable-field
-              label="Responsável"
-              name="user_id"
-              v-model="opportunity.user_id"
-              @update:modelValue="updateOpportunity('user_id', $event)"
-            />
-          </div>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="col-span-2 space-y-4">
+          <companies-select-editable-field
+            label="Empresa"
+            name="company_id"
+            v-model="opportunity.company_id"
+            @update:modelValue="updateOpportunity('company_id', $event)"
+          />
+          <leads-select-editable-field
+            label="Cliente"
+            name="lead_id"
+            v-model="opportunity.lead_id"
+            @update:modelValue="updateOpportunity('lead_id', $event)"
+          />
+          <users-select-editable-field
+            label="Responsável"
+            name="user_id"
+            v-model="opportunity.user_id"
+            @update:modelValue="updateOpportunity('user_id', $event)"
+          />
         </div>
-        <div class="column-30">
-          <div class="table-row">
-            <DateEditableInput
-              class="d-flex justify-content-end"
-              name="date_start"
-              label="Início:"
-              v-model="opportunity.date_start"
-              @save="updateOpportunity('date_start', $event)"
-            />
-          </div>
-
-          <div class="table-row">
-            <DateEditableInput
-              class="d-flex justify-content-end"
-              name="date_due"
-              label="Prazo:"
-              v-model="opportunity.date_due"
-              @save="updateOpportunity('date_due', $event)"
-            />
-          </div>
-          <div class="table-row">
-            <DateEditableInput
-              class="d-flex justify-content-end"
-              name="date_conclusion"
-              label="Conclusão:"
-              v-model="opportunity.date_conclusion"
-              @save="updateOpportunity('date_conclusion', $event)"
-            />
-          </div>
-          <div class="table-row">
-            <DateEditableInput
-              class="d-flex justify-content-end"
-              name="date_conclusion"
-              label="Cancelado:"
-              v-model="opportunity.date_canceled"
-              @save="updateOpportunity('date_canceled', $event)"
-            />
-          </div>
+        <div class="space-y-4">
+          <DateEditableInput
+            class="text-right"
+            name="date_start"
+            label="Início:"
+            v-model="opportunity.date_start"
+            @save="updateOpportunity('date_start', $event)"
+          />
+          <DateEditableInput
+            class="text-right"
+            name="date_due"
+            label="Prazo:"
+            v-model="opportunity.date_due"
+            @save="updateOpportunity('date_due', $event)"
+          />
+          <DateEditableInput
+            class="text-right"
+            name="date_conclusion"
+            label="Conclusão:"
+            v-model="opportunity.date_conclusion"
+            @save="updateOpportunity('date_conclusion', $event)"
+          />
+          <DateEditableInput
+            class="text-right"
+            name="date_canceled"
+            label="Cancelado:"
+            v-model="opportunity.date_canceled"
+            @save="updateOpportunity('date_canceled', $event)"
+          />
         </div>
       </div>
     </section>
