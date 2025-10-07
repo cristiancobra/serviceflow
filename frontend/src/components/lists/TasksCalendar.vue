@@ -51,14 +51,13 @@
             </div>
 
             <div class="task-column">
-                <p class="name">
-                  {{ task.name }}
-                </p>
+              <p class="name">
+                {{ task.name }}
+              </p>
             </div>
 
             <div class="group-column">
               <router-link
-                :class="getColorClassForName(task.opportunity.name)"
                 style="display: flex"
                 v-if="task.opportunity"
                 :to="{
@@ -66,7 +65,9 @@
                   params: { id: task.opportunity.id },
                 }"
               >
-                <p class="group-name">
+                <p class="group-name"
+                  :class="getColorClassForName(task.opportunity.name)"
+                >
                   <font-awesome-icon
                     icon="fa-solid fa-bullseye"
                     :class="getColorClassForName(task.opportunity.name)"
@@ -85,7 +86,7 @@
                 />
                 <p
                   class="group-name"
-                  :style="{ color: getColorClassForName(task.project.name) }"
+                  :class="getColorClassForName(task.project.name)"
                 >
                   {{ trimName(task.project.name) }}
                 </p>
@@ -111,12 +112,12 @@
                 @save="updateTask('date_due', $event, task.id)"
               />
               <add-last-journey-date-button
-              v-if="task.journeys && task.journeys.length > 0"
-              :task="task"
-              :showEndTaskButton="task.date_conclusion === null"
-              @add-last-journey-date="updateDateConclusion(task)"
-              @update-task="updateTask"
-            />
+                v-if="task.journeys && task.journeys.length > 0"
+                :task="task"
+                :showEndTaskButton="task.date_conclusion === null"
+                @add-last-journey-date="updateDateConclusion(task)"
+                @update-task="updateTask"
+              />
               <div class="" v-if="showTaskDuration">
                 <p class="">
                   {{ formatDuration(task.duration_time) }}
