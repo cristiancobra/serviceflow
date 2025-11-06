@@ -11,9 +11,8 @@
         </div>
 
         <section class="section-container">
-        <div class="search-container">
-            <input type="text" class="search-input" v-model="searchTerm" placeholder="Digite para buscar" />
-        </div>
+            
+        <SearchInput v-model="searchTerm" placeholder="Digite para buscar oportunidades" />
 
         <div class="list-line" v-for="opportunity in filteredOpportunities" v-bind:key="opportunity.id">
             <div class="icons-column">
@@ -52,29 +51,40 @@ import { getDeadlineClass } from "@/utils/card/cardUtils";
 import DateTimeEditableInput from "@/components/fields/datetime/DateTimeEditableInput.vue";
 import DateTimeValue from "@/components/fields/datetime/DateTimeValue.vue";
 import OpportunityCreateForm from "../forms/OpportunityCreateForm.vue";
+import SearchInput from "@/components/filters/SearchInput.vue";
 
 export default {
     components: {
         DateTimeEditableInput,
         DateTimeValue,
         OpportunityCreateForm,
+        SearchInput,
     },
     data() {
         return {
             isActive: true,
             searchTerm: "",
             opportunities: [],
-            filteredOpportunities: [],
         };
+    },
+    computed: {
+        filteredOpportunities() {
+            if (!this.searchTerm) {
+                return this.opportunities;
+            }
+            return this.opportunities.filter(opportunity => 
+                opportunity.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+            );
+        }
     },
     methods: {
         getDeadlineClass,
         addOpportunityCreated(newOpportunity) {
-            this.filteredOpportunities.unshift(newOpportunity);
+            this.opportunities.unshift(newOpportunity);
         },
         async getOpportunities() {
             try {
-                this.filteredOpportunities = await index(`opportunities`);
+                this.opportunities = await index(`opportunities`);
             } catch (error) {
                 console.error("Erro ao acessar oportunidades:", error);
             }

@@ -19,14 +19,12 @@
       </div>
       <div
         v-else
-        class="flex mt-1 mb-1"
+        class="flex mt-0 mb-0 ml-15"
         v-for="journey in localJourneys"
         v-bind:key="journey.id"
         :class="{ highlight: journey.id === newJourneyId }"
       >
-        <div class="flex items-center ms-7 mr-4">
-          <font-awesome-icon icon="fa-solid fa-clock" class="primary" />
-        </div>
+
         <div class="flex items-center mr-5">
           <DateEditableInput
             name="start"

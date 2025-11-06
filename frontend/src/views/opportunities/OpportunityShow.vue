@@ -65,67 +65,17 @@
       </button>
     </nav>
 
-    <section id="info" class="section-container mb-6">
-      <div class="section-title flex items-center mb-4">
-        <font-awesome-icon
-          icon="fas fa-file-invoice"
-          class="text-primary text-xl mr-2"
-        />
-        <h2 class="text-xl font-semibold">Informações</h2>
-      </div>
-      <div class="grid grid-cols-3 gap-4">
-        <div class="col-span-2 space-y-4">
-          <companies-select-editable-field
-            label="Empresa"
-            name="company_id"
-            v-model="opportunity.company_id"
-            @update:modelValue="updateOpportunity('company_id', $event)"
-          />
-          <leads-select-editable-field
-            label="Cliente"
-            name="lead_id"
-            v-model="opportunity.lead_id"
-            @update:modelValue="updateOpportunity('lead_id', $event)"
-          />
-          <users-select-editable-field
-            label="Responsável"
-            name="user_id"
-            v-model="opportunity.user_id"
-            @update:modelValue="updateOpportunity('user_id', $event)"
-          />
-        </div>
-        <div class="space-y-4">
-          <DateEditableInput
-            class="text-right"
-            name="date_start"
-            label="Início:"
-            v-model="opportunity.date_start"
-            @save="updateOpportunity('date_start', $event)"
-          />
-          <DateEditableInput
-            class="text-right"
-            name="date_due"
-            label="Prazo:"
-            v-model="opportunity.date_due"
-            @save="updateOpportunity('date_due', $event)"
-          />
-          <DateEditableInput
-            class="text-right"
-            name="date_conclusion"
-            label="Conclusão:"
-            v-model="opportunity.date_conclusion"
-            @save="updateOpportunity('date_conclusion', $event)"
-          />
-          <DateEditableInput
-            class="text-right"
-            name="date_canceled"
-            label="Cancelado:"
-            v-model="opportunity.date_canceled"
-            @save="updateOpportunity('date_canceled', $event)"
-          />
-        </div>
-      </div>
-    </section>
+    <div class="flex mt-6 mb-6 gap-10">
+      <opportunity-info-section
+        :opportunity="opportunity"
+        @update-field="handleUpdateField"
+      />
+
+      <opportunity-dates-section
+        :opportunity="opportunity"
+        @update-field="handleUpdateField"
+      />
+    </div>
 
     <section class="section-container">
       <div class="table-row">
@@ -138,13 +88,21 @@
       </div>
     </section>
 
-    <section id="proposals">
-      <proposals-list-section :opportunityId="opportunityId" />
-    </section>
+    <div class="flex gap-10">
+      <section
+        id="proposals"
+        class="flex-1 ml-10 border border-primary rounded-lg"
+      >
+        <proposals-list-section :opportunityId="opportunityId" />
+      </section>
 
-    <section id="attachments">
-      <links-list :links="opportunity.links" :opportunityId="opportunityId" />
-    </section>
+      <section
+        id="attachments"
+        class="flex-1 mr-10 border border-primary rounded-lg"
+      >
+        <links-list :links="opportunity.links" :opportunityId="opportunityId" />
+      </section>
+    </div>
 
     <section id="tasks">
       <tasks-list-section
@@ -176,27 +134,23 @@ import { scrollToSection } from "@/utils/layout/navigationUtils";
 import { provide, ref } from "vue";
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
-import CompaniesSelectEditableField from "../../components/fields/selects/CompaniesSelectEditableField.vue";
-import DateEditableInput from "@/components/fields/datetime/DateTimeEditableInput";
-import LeadsSelectEditableField from "../../components/fields/selects/LeadsSelectEditableField.vue";
 import LinksList from "@/components/lists/LinksList.vue";
+import OpportunityInfoSection from "@/components/show/OpportunityInfoSection.vue";
+import OpportunityDatesSection from "@/components/show/OpportunityDatesSection.vue";
 import ProposalsListSection from "@/components/lists/ProposalsListSection.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField";
 import TextEditor from "@/components/forms/inputs/TextEditor.vue";
-import UsersSelectEditableField from "@/components/fields/selects/UsersSelectEditableField.vue";
 import TasksListSection from "../../components/lists/TasksListSection.vue";
 
 export default {
   name: "ProjectShow",
   components: {
-    CompaniesSelectEditableField,
-    DateEditableInput,
-    LeadsSelectEditableField,
     LinksList,
+    OpportunityInfoSection,
+    OpportunityDatesSection,
     ProposalsListSection,
     TextEditableField,
     TextEditor,
-    UsersSelectEditableField,
     TasksListSection,
   },
   data() {
@@ -252,6 +206,14 @@ export default {
       }
     },
     async updateOpportunity(fieldName, editedValue) {
+      this.opportunity = await updateField(
+        "opportunities",
+        this.opportunityId,
+        fieldName,
+        editedValue
+      );
+    },
+    async handleUpdateField(fieldName, editedValue) {
       this.opportunity = await updateField(
         "opportunities",
         this.opportunityId,

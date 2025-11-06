@@ -11,14 +11,8 @@
     </div>
 
     <section class="section-container">
-      <div class="search-container">
-        <input
-          type="text"
-          class="search-input"
-          v-model="searchTerm"
-          placeholder="Digite para buscar"
-        />
-      </div>
+
+      <SearchInput v-model="searchTerm" placeholder="Buscar por tarefa, oportunidade ou projeto" />
 
       <section class="list-container">
         <div v-for="(tasks, date) in groupedTasks" :key="date">
@@ -152,6 +146,7 @@ import AddLastJourneyDateButton from "@/components/tasks/buttons/AddLastJourneyD
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import DateTimeValue from "../fields/datetime/DateTimeValue.vue";
+import SearchInput from "@/components/filters/SearchInput.vue";
 import { mapState } from "vuex";
 
 export default {
@@ -178,6 +173,7 @@ export default {
     AddLastJourneyDateButton,
     DateTimeEditableInput,
     DateTimeValue,
+    SearchInput,
     TaskCreateForm,
   },
   methods: {
@@ -290,10 +286,20 @@ export default {
     urlImagePhoto() {
       return `${IMAGES_PATH}${this.userData.photo}`;
     },
+    filteredTasks() {
+      if (!this.searchTerm || !this.localTasks) {
+        return this.localTasks;
+      }
+      return this.localTasks.filter(task => 
+        task.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        (task.opportunity && task.opportunity.name.toLowerCase().includes(this.searchTerm.toLowerCase())) ||
+        (task.project && task.project.name.toLowerCase().includes(this.searchTerm.toLowerCase()))
+      );
+    },
     groupedTasks() {
-      if (this.localTasks && this.localTasks.length > 0) {
+      if (this.filteredTasks && this.filteredTasks.length > 0) {
         // Ordena as tarefas por data antes de agrupá-las
-        const sortedTasks = [...this.localTasks].sort((a, b) => {
+        const sortedTasks = [...this.filteredTasks].sort((a, b) => {
           const dateA = new Date(a.date_due || "9999-12-31"); // Tarefas sem data vão para o final
           const dateB = new Date(b.date_due || "9999-12-31");
           return dateA - dateB;

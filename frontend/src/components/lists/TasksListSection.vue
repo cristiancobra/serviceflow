@@ -11,17 +11,10 @@
     </div>
 
     <section class="section-container">
-      <div class="search-container">
-        <input
-          type="text"
-          class="search-input"
-          v-model="searchTerm"
-          placeholder="Digite para buscar"
-        />
-      </div>
+      <SearchInput v-model="searchTerm" placeholder="Buscar tarefas" />
 
       <section class="">
-        <div v-for="localTask in localTasks" v-bind:key="localTask.id">
+        <div v-for="localTask in filteredTasks" v-bind:key="localTask.id">
           <div class="list-line flex items-center space-x-10 pt-1 pb-1">
             <div class="icons-column">
               <img
@@ -196,6 +189,7 @@ import JourneyCreateForm from "@/components/forms/JourneyCreateForm.vue";
 import JourneysListFromOpportunity from "@/components/lists/JourneysListFromOpportunity.vue";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField.vue";
+import SearchInput from "@/components/filters/SearchInput.vue";
 import { mapState } from "vuex";
 
 export default {
@@ -228,6 +222,7 @@ export default {
     JourneysListFromOpportunity,
     TaskCreateForm,
     TextEditableField,
+    SearchInput,
   },
   methods: {
     convertUtcToLocal,
@@ -376,6 +371,19 @@ export default {
     }),
     urlImagePhoto() {
       return `${IMAGES_PATH}${this.userData.photo}`;
+    },
+    filteredTasks() {
+      if (!this.localTasks || !Array.isArray(this.localTasks)) {
+        return [];
+      }
+      
+      if (!this.searchTerm) {
+        return this.localTasks;
+      }
+      
+      return this.localTasks.filter((task) =>
+        task.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+      );
     },
     groupedTasks() {
       if (this.localTasks && this.localTasks.length > 0) {

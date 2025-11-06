@@ -21,7 +21,6 @@ import ProjectShow from '../views/projects/ProjectShow.vue'
 import ProposalsIndex from '@/views/proposals/ProposalsIndex.vue'
 import ProposalShow from '@/views/proposals/ProposalShow.vue'
 import TasksIndex from '../views/tasks/TasksIndex.vue'
-import TaskShow from '../views/tasks/TaskShow.vue'
 import UserShow from '@/views/users/UserShow.vue'
 
 
@@ -130,11 +129,6 @@ const routes = [
     path: '/tasks',
     name: 'tasksIndex',
     component: TasksIndex
-  },
-  {
-    path: '/tasks/:id',
-    name: 'taskShow',
-    component: TaskShow
   },
   {
     path: '/users/:id',
