@@ -130,6 +130,9 @@ class InvoiceController extends Controller
                 $invoice->update($validatedData);
             }
 
+            // Atualiza o status da invoice após qualquer alteração
+            $invoice->updateStatus();
+
             return InvoicesResource::make($invoice->load([
                 'proposal.opportunity',
                 'proposal.opportunity.company', 

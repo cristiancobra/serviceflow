@@ -2,7 +2,10 @@
   <div class="page-container">
     <div class="page-header">
       <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-file-invoice-dollar" class="page-icon" />
+        <font-awesome-icon
+          icon="fa-solid fa-file-invoice-dollar"
+          class="page-icon"
+        />
         <h1>FATURAS</h1>
       </div>
       <div class="page-action">
@@ -23,7 +26,7 @@
         />
       </div>
 
-      <div class="list-header">
+      <div class="flex items-center py-4 px-3 border-b border-gray-200 bg-gray-50">
         <div class="w-1/10 text-black text-center font-bold">Status</div>
         <div class="w-1/10 text-black text-center font-bold">Data</div>
         <div class="w-3/10 text-black text-center font-bold">Oportunidade</div>
@@ -40,10 +43,7 @@
         class="list-line"
       >
         <div class="w-1/10 column-icon" id="col-status">
-          <select-status-button
-            :status="invoice.status"
-            @update:modelValue="updateInvoice('status', invoice.id, $event)"
-          />
+          <invoice-status-badge :status="invoice.status" />
         </div>
         <router-link
           class="list-line-link"
@@ -53,15 +53,16 @@
             {{ formatDateBr(invoice.date_due) }}
           </div>
           <div class="w-3/10">
-            <p v-if="invoice.proposal?.opportunity?.name" class="text-black text-sm">
+            <p
+              v-if="invoice.proposal?.opportunity?.name"
+              class="text-black text-sm"
+            >
               {{ invoice.proposal.opportunity.name }}
             </p>
             <p v-else class="text-gray-500">-</p>
           </div>
           <div class="w-2/10 text-black text-sm">
-            <p class="name" v-if="!invoice.proposal">
-              sem proposta associada
-            </p>
+            <p class="name" v-if="!invoice.proposal">sem proposta associada</p>
             <p
               class="group-name"
               v-else-if="invoice.proposal?.opportunity?.company?.business_name"
@@ -74,13 +75,19 @@
             >
               {{ invoice.proposal.opportunity.company.legal_name }}
             </p>
-            <p class="group-name" v-else-if="invoice.proposal?.opportunity?.lead?.name">
+            <p
+              class="group-name"
+              v-else-if="invoice.proposal?.opportunity?.lead?.name"
+            >
               {{ invoice.proposal.opportunity.lead.name }}
             </p>
             <p class="text-black" v-else>sem associação</p>
           </div>
           <div class="w-2/10">
-            <p v-html="getShortDescription(invoice)" class="text-black  text-sm ps-2"></p>
+            <p
+              v-html="getShortDescription(invoice)"
+              class="text-black text-sm ps-2"
+            ></p>
           </div>
           <div class="w-1/10 text-sm">
             <money-field name="price" v-model="invoice.price" />
@@ -89,10 +96,13 @@
             <money-field name="total_paid" v-model="invoice.total_paid" />
           </div>
           <div class="w-1/10 text-black text-sm">
-            <money-field 
-              name="balance" 
-              :modelValue="invoice.price - invoice.total_paid" 
-              :class="{ 'text-red-600 font-bold': (invoice.price - invoice.total_paid) > 0 }"
+            <money-field
+              name="balance"
+              :modelValue="invoice.price - invoice.total_paid"
+              :class="{
+                'text-red-600 font-bold':
+                  invoice.price - invoice.total_paid > 0,
+              }"
               readonly
             />
           </div>
@@ -109,12 +119,12 @@ import { formatDateBr } from "@/utils/date/dateUtils";
 import { getDeadlineClass } from "@/utils/card/cardUtils";
 import { index, updateField } from "@/utils/requests/httpUtils";
 import MoneyField from "../fields/number/MoneyField.vue";
-import SelectStatusButton from "../buttons/SelectStatusButton.vue";
+import InvoiceStatusBadge from "../badges/InvoiceStatusBadge.vue";
 
 export default {
   components: {
     MoneyField,
-    SelectStatusButton,
+    InvoiceStatusBadge,
   },
   props: {
     proposalId: {
@@ -134,35 +144,53 @@ export default {
       if (!this.searchTerm) {
         return this.invoices;
       }
-      return this.invoices.filter(invoice => {
+      return this.invoices.filter((invoice) => {
         const searchLower = this.searchTerm.toLowerCase();
-        
+
         // Busca no número da fatura
-        if (invoice.invoice_number && invoice.invoice_number.toString().toLowerCase().includes(searchLower)) {
+        if (
+          invoice.invoice_number &&
+          invoice.invoice_number.toString().toLowerCase().includes(searchLower)
+        ) {
           return true;
         }
-        
+
         // Busca na descrição
-        if (invoice.description && invoice.description.toLowerCase().includes(searchLower)) {
+        if (
+          invoice.description &&
+          invoice.description.toLowerCase().includes(searchLower)
+        ) {
           return true;
         }
-        
+
         // Busca no nome da empresa/lead
-        if (invoice.proposal?.opportunity?.company?.business_name?.toLowerCase().includes(searchLower)) {
+        if (
+          invoice.proposal?.opportunity?.company?.business_name
+            ?.toLowerCase()
+            .includes(searchLower)
+        ) {
           return true;
         }
-        
-        if (invoice.proposal?.opportunity?.company?.legal_name?.toLowerCase().includes(searchLower)) {
+
+        if (
+          invoice.proposal?.opportunity?.company?.legal_name
+            ?.toLowerCase()
+            .includes(searchLower)
+        ) {
           return true;
         }
-        
-        if (invoice.proposal?.opportunity?.lead?.name?.toLowerCase().includes(searchLower)) {
+
+        if (
+          invoice.proposal?.opportunity?.lead?.name
+            ?.toLowerCase()
+            .includes(searchLower)
+        ) {
           return true;
         }
-        
+
         return false;
       });
-    }
+    },
   },
   methods: {
     formatDateBr,
@@ -236,101 +264,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.page-container {
-  padding: 20px;
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
-.page-title {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.page-icon {
-  font-size: 2rem;
-  color: #ff3eb5;
-}
-
-.section-container {
-  background: white;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.search-container {
-  margin-bottom: 20px;
-}
-
-.search-input {
-  width: 100%;
-  padding: 10px 15px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 16px;
-}
-
-.list-header {
-  display: flex;
-  align-items: center;
-  padding: 15px 10px;
-  border-bottom: 1px solid #eee;
-  background-color: #f8f9fa;
-}
-
-.list-line {
-  display: flex;
-  align-items: center;
-  padding: 15px 10px;
-  border-bottom: 1px solid #eee;
-  transition: background-color 0.2s;
-}
-
-.list-line:hover {
-  background-color: #f8f9fa;
-}
-
-.list-line-link {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  text-decoration: none;
-  color: inherit;
-}
-
-.column-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.column-date {
-  font-weight: 600;
-  color: #666;
-}
-
-.column-name .name,
-.column-name .group-name {
-  margin: 0;
-  font-weight: 500;
-}
-
-.column-name .group-name {
-  color: #333;
-}
-
-.column-price {
-  display: flex;
-  justify-content: flex-end;
-  font-weight: 600;
-}
-</style>
