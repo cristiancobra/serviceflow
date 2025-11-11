@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-5 flex flex-col items-start">
+  <div class="w-full mb-5 flex flex-col items-start">
     <label class="text-left font-bold mb-2" :for="name">{{ label }}:</label>
 
     <div
