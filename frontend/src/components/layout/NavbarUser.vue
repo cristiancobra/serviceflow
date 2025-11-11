@@ -112,6 +112,16 @@
                   <span class="text-white ps-2">MOVIMENTAÇÕES</span>
                 </li>
               </router-link>
+              <router-link to="/bank-accounts">
+                <li
+                  class="nav-item"
+                  @mouseover="toggleActive('bank-accounts')"
+                  :class="{ active: activeItem === 'bank-accounts' }"
+                >
+                  <font-awesome-icon icon="fas fa-building-columns" />
+                  <span class="text-white ps-2">CONTAS BANCÁRIAS</span>
+                </li>
+              </router-link>
               <router-link to="/services">
                 <li
                   class="nav-item"

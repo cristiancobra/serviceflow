@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import AccountShow from '../views/accounts/AccountShow.vue'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
+import BankAccountsIndex from '../views/bank-accounts/BankAccountsIndex.vue'
+import BankAccountShow from '../views/bank-accounts/BankAccountShow.vue'
 import CompaniesIndex from '../views/companies/CompaniesIndex.vue'
 import CompanyShow from '../views/companies/CompanyShow.vue'
 import CostsIndex from '../views/costs/CostsIndex.vue'
@@ -36,6 +38,16 @@ const routes = [
     path: '/accounts/:id',
     name: 'accountShow',
     component: AccountShow
+  },
+  {
+    path: '/bank-accounts',
+    name: 'bank-accounts',
+    component: BankAccountsIndex
+  },
+  {
+    path: '/bank-accounts/:id',
+    name: 'bank-accounts-show',
+    component: BankAccountShow
   },
   {
     path: '/companies',

@@ -49,6 +49,21 @@ Route::middleware('auth:sanctum')->group(function () {
 		->names('accounts');
 
 	// BANK ACCOUNTS
+	Route::get('bank_accounts/options/types', [BankAccountController::class, 'typeOptions'])
+		->name('bank_accounts.typeOptions');
+	
+	Route::post('bank_accounts/{bank_account}/update-balance', [BankAccountController::class, 'updateBalance'])
+		->name('bank_accounts.updateBalance');
+	
+	Route::post('bank_accounts/{bank_account}/toggle-active', [BankAccountController::class, 'toggleActive'])
+		->name('bank_accounts.toggleActive');
+	
+	Route::post('bank_accounts/{id}/restore', [BankAccountController::class, 'restore'])
+		->name('bank_accounts.restore');
+	
+	Route::delete('bank_accounts/{id}/force-delete', [BankAccountController::class, 'forceDelete'])
+		->name('bank_accounts.forceDelete');
+
 	Route::apiResource('bank_accounts', BankAccountController::class)
 		->names('bank_accounts');
 

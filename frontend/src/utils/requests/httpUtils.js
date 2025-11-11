@@ -199,3 +199,53 @@ export const validateModel = (model) => {
     throw new Error(`Invalid model: ${model}`);
   }
 };
+
+// Generic GET request for custom routes (não valida modelo)
+export const get = async (endpoint) => {
+  const url = `${BACKEND_URL}${endpoint}`;
+  try {
+    const response = await axios.get(url);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+};
+
+// Generic POST request for custom routes (não valida modelo)
+export const post = async (endpoint, data = {}) => {
+  const url = `${BACKEND_URL}${endpoint}`;
+  try {
+    const response = await axios.post(url, data);
+    return response.data;
+  } catch (error) {
+    console.error("Error posting data:", error);
+    throw error;
+  }
+};
+
+// Generic PUT/PATCH request for updating resources
+export const update = async (model, id, data) => {
+  validateModel(model);
+  const url = `${BACKEND_URL}${model}/${id}`;
+  try {
+    const response = await axios.put(url, data);
+    return response.data.data;
+  } catch (error) {
+    console.error("Error updating data:", error);
+    throw error;
+  }
+};
+
+// Generic POST request for storing new resources
+export const store = async (model, data) => {
+  validateModel(model);
+  const url = `${BACKEND_URL}${model}`;
+  try {
+    const response = await axios.post(url, data);
+    return response.data.data;
+  } catch (error) {
+    console.error("Error storing data:", error);
+    throw error;
+  }
+};
