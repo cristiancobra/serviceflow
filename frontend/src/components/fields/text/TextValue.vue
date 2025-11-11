@@ -1,8 +1,8 @@
 <template>
-  <div v-if="modelValue" class="">
+  <div v-if="modelValue" class="text-black">
     {{ modelValue }}
   </div>
-  <div v-else>
+  <div v-else class="text-black">
     não informado
   </div>
 </template>

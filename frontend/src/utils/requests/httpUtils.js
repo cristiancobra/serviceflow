@@ -181,6 +181,7 @@ export const validateModel = (model) => {
   
   const VALID_MODELS = [
     "accounts",
+    "bank_accounts",
     "companies",
     "costs",
     "leads",
@@ -191,6 +192,7 @@ export const validateModel = (model) => {
     "opportunities",
     "services",
     "tasks",
+    "transactions",
     "users"
   ];
   if (!VALID_MODELS.includes(model)) {

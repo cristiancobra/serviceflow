@@ -12,7 +12,7 @@
           @new-lead-event="addLeadCreated($event)"
         />
     </form-modal>
-    <LeadsList template="index" />
+    <leads-list template="index" />
   </div>
 </template>
 

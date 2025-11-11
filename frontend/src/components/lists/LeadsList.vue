@@ -2,7 +2,7 @@
   <div class="page-container">
     <div class="page-header">
       <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-tasks" class="icon pe-3 primary" />
+        <font-awesome-icon icon="fa-solid fa-tasks" class="icon pe-3 text-white 2xl" />
         <h1>CONTATOS</h1>
       </div>
       <div class="page-action">
@@ -14,25 +14,18 @@
     <NoLeadsMessage v-if="!leads" />
 
     <section class="section-container">
-      <div class="search-container">
-        <input
-          type="text"
-          class="search-input"
-          v-model="searchTerm"
-          placeholder="Digite para buscar"
-        />
-      </div>
+      <search-input v-model="searchTerm" placeholder="Buscar por contato, email ou telefone" />
 
-      <div class="list-line" v-for="lead in leads" v-bind:key="lead.id">
+      <div class="flex w-full border-b border-gray-300 pb-2 items-end" v-for="lead in filteredLeads" v-bind:key="lead.id">
         <!-- Coluna para a imagem -->
-        <div class="icons-column">
+        <div class="w-1/10">
           <font-awesome-icon
             icon="fa-solid fa-user-circle"
-            class="primary big-icon"
+            class="text-primary text-2xl"
           />
         </div>
 
-        <div class="task-column">
+        <div class="w-4/10">
           <router-link
             :to="
               isLinkDisabled(lead.id)
@@ -40,7 +33,7 @@
                 : { name: 'leadShow', params: { id: lead.id } }
             "
           >
-            <p class="name">
+            <p class="text-black font-bold">
               {{ lead.name }}
             </p>
             <CopyContentClipboard
@@ -53,11 +46,11 @@
         </div>
 
         <div
-          class="date-column"
+          class="w-3/10"
           @mouseover="showCopyEmail(lead.id)"
           @mouseleave="hideCopyEmail(lead.id)"
         >
-          <p v-if="lead.email" class="email">
+          <p v-if="lead.email" class="text-black">
             {{ lead.email }}
           </p>
           <CopyContentClipboard
@@ -73,7 +66,7 @@
           @mouseover="showCopyCelPhone(lead.id)"
           @mouseleave="hideCopyCelPhone(lead.id)"
         >
-          <p v-if="lead.cel_phone" class="cel_phone">
+          <p v-if="lead.cel_phone" class="text-black text-right">
             {{ lead.cel_phone }}
           </p>
           <CopyContentClipboard
@@ -93,6 +86,7 @@
 <script>
 import { index } from "@/utils/requests/httpUtils";
 import CopyContentClipboard from "../CopyContentClipboard.vue";
+import SearchInput from "../filters/SearchInput.vue";
 // import LeadCreateForm from "@/components/forms/LeadCreateForm.vue";
 import NoLeadsMessage from "@/components/messages/NoLeadsMessage.vue";
 
@@ -100,6 +94,7 @@ export default {
   name: "LeadsList",
   components: {
     CopyContentClipboard,
+    SearchInput,
     // LeadCreateForm,
     NoLeadsMessage,
   },
@@ -115,6 +110,7 @@ export default {
       isMouseOverName: {},
       isMouseOverEmail: {},
       isMouseOverCelPhone: {},
+      searchTerm: "",
       // isLinkDisabled: {},
       leads: [],
     };
@@ -149,6 +145,18 @@ export default {
         this.isMouseOverName[id] ||
         this.isMouseOverEmail[id] ||
         this.isMouseOverCelPhone[id]
+      );
+    },
+  },
+  computed: {
+    filteredLeads() {
+      if (!this.searchTerm || !this.leads) {
+        return this.leads;
+      }
+      return this.leads.filter(lead => 
+        lead.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        (lead.email && lead.email.toLowerCase().includes(this.searchTerm.toLowerCase())) ||
+        (lead.cel_phone && lead.cel_phone.toLowerCase().includes(this.searchTerm.toLowerCase()))
       );
     },
   },

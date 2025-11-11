@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\BankAccount;
+use App\Http\Resources\BankAccountsResource;
 
 class BankAccountController extends Controller
 {
@@ -14,7 +16,10 @@ class BankAccountController extends Controller
      */
     public function index()
     {
-        //
+        $bankAccounts = BankAccount::orderBy('account_name')
+            ->paginate(100);
+
+        return BankAccountsResource::collection($bankAccounts);
     }
 
     /**

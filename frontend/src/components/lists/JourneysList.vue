@@ -21,10 +21,10 @@
       <div v-else class="list-line" v-for="journey in journeys" v-bind:key="journey.id"
         :class="{ 'highlight': journey.id === newJourneyId }">
         <div class="date-column">
-          <DateEditableInput name="start" v-model="journey.start" @save="updateJourney('start', $event, journey.id)" />
+          <date-editable-input name="start" v-model="journey.start" @save="updateJourney('start', $event, journey.id)" />
         </div>
         <div class="date-column">
-          <TimeEditableInput class="ps-5" name="end" v-model="journey.end"
+          <time-editable-input class="ps-5" name="end" v-model="journey.end"
             @save="updateJourney('end', $event, journey.id)" />
         </div>
         <div class="date-column">
@@ -33,9 +33,10 @@
           </p>
         </div>
         <div v-if="journey.task" class="task-column">
-          <router-link :to="{ name: 'taskShow', params: { id: journey.task_id } }">
+          <router-link v-if="getTaskLink(journey.task)" :to="getTaskLink(journey.task)">
             {{ journey.task.name }}
           </router-link>
+          <span v-else>{{ journey.task.name }}</span>
         </div>
         <div class="group-column">
           <router-link :class="getColorClassForName(journey.task.opportunity.name)" style="display: flex;"
@@ -260,6 +261,15 @@ export default {
     },
     updatePaginationList(newData) {
       this.journeys = newData;
+    },
+    getTaskLink(task) {
+      if (task.opportunity) {
+        return { name: 'opportunityShow', params: { id: task.opportunity.id } };
+      } else if (task.project) {
+        return { name: 'projectShow', params: { id: task.project.id } };
+      } else {
+        return null;
+      }
     },
   },
   mounted() {

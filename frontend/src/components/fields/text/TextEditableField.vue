@@ -1,15 +1,17 @@
 <template>
-  <div class="main-container">
+  <div>
     <label v-if="label" class="" :for="name">{{ label }}</label>
     <div v-if="!editing" @click="startEditing">
       <div v-if="modelValue" class="">
+        <p class="text-black font-medium">
         {{ modelValue }}
+        </p>
       </div>
       <div v-else>não informado</div>
     </div>
-    <div v-else>
+    <div v-else-if="editing">
       <input
-        class="text-input"
+        class="text-black w-100 border border-primary-500 rounded-md px-3 py-2 focus:border-primary-600 focus:ring-2 focus:ring-primary-200 focus:outline-none"
         type="text"
         :name="name"
         v-model="localValue"
@@ -57,16 +59,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.main-container {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-}
-
-.show-label {
-  text-align: left;
-  font-weight: 800;
-}
-</style>

@@ -8,7 +8,7 @@
         </p>
     </div>
     <div v-else>
-      <input type="number" v-model="localValue" :placeholder="placeholder" @keydown.esc="cancelEditing" @blur="emitSave" @keydown.enter.prevent="emitSave" />
+      <input class="text-end" type="number" v-model="localValue" :placeholder="placeholder" @keydown.esc="cancelEditing" @blur="emitSave" @keydown.enter.prevent="emitSave" />
     </div>
   </div>
 </template>

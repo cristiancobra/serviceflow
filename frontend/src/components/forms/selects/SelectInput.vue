@@ -1,12 +1,18 @@
 <template>
-  <div class="label-input-container">
-    <label class="form-label" :for="name">{{  label }}</label>
-    <select class="form-select" :id="name" :name="name" @input="updateInput" v-model="localValue">
-      <option v-if="fieldNull" :value=null>{{ fieldNull }}</option>
-      <option v-if="placeholder" disabled value="">
+  <div class="mb-4">
+    <label class="block text-sm font-semibold text-gray-900 mb-2" :for="name">{{ label }}</label>
+    <select 
+      class="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ease-in-out hover:border-gray-400" 
+      :id="name" 
+      :name="name" 
+      @input="updateInput" 
+      v-model="localValue"
+    >
+      <option v-if="fieldNull" :value="null" class="text-gray-600">{{ fieldNull }}</option>
+      <option v-if="placeholder" disabled value="" class="text-gray-400">
         {{ placeholder }}
       </option>
-      <option v-for="(item) in items" :key="item.id" :value="item.id">
+      <option v-for="(item) in items" :key="item.id" :value="item.id" class="text-gray-900">
         {{ displayItemText(item) }}
       </option>
     </select>
@@ -76,7 +82,5 @@ export default {
 </script>
 
 <style scoped>
-.input-field {
-  margin-bottom: 1rem;
-}
+/* Removido CSS customizado - usando apenas Tailwind CSS */
 </style>

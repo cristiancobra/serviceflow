@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BankAccountController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\CostController;
 use App\Http\Controllers\Api\InvoiceController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\ProposalController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\TaskController;
+use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\UserController;
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +47,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	Route::apiResource('accounts', AccountController::class)
 		->names('accounts');
+
+	// BANK ACCOUNTS
+	Route::apiResource('bank_accounts', BankAccountController::class)
+		->names('bank_accounts');
 
 	// COMPANIES
 	Route::apiResource('companies', CompanyController::class)
@@ -152,4 +158,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	Route::post('users/{user}/photo', [UserController::class, 'updatePhoto'])
 	->name('users.updatePhoto');
+
+// TRANSACTIONS
+	Route::apiResource('transactions', TransactionController::class)
+		->names('transactions');
 });

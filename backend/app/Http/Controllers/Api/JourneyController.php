@@ -178,6 +178,7 @@ class JourneyController extends Controller
                     'start' => $openJourney->start,
                     'duration' => $openJourney->duration,
                     'opportunity_id' => $openJourney->task->opportunity_id,
+                    'project_id' => $openJourney->task->project_id,
                 ]
             ]);
         } else {

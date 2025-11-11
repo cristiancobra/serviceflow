@@ -14,7 +14,7 @@
     </div>
 
     <div class="section-container">
-      <div class="column-50">
+      <div class="w-1/2">
         <div class="row-simple">
           <opportunities-select-editable-field
             label="Oportunidade"
@@ -35,11 +35,14 @@
       @update-proposal="updateProposalFromServices"
     />
 
-    <div class="table-row">
-      <div class="column-50">
-        <proposal-profit-margin-section :proposal="proposal" />
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div>
+        <proposal-profit-margin-section 
+          :proposal="proposal" 
+          @update-proposal="updateProposal"
+        />
       </div>
-      <div class="column-50">
+      <div>
         <proposal-costs-section
           :proposal="proposal"
           @update-total-third-party-cost="updateTotalThirdPartyCost"
@@ -49,25 +52,35 @@
 
     <installment-section :proposal="proposal" />
 
-    <div class="table-row">
-      <div class="">
-        <button class="button delete me-5" @click="deleteProposal()">
-          excluir
+    <div class="flex flex-wrap items-center justify-between px-10 gap-6 py-6 mt-8 border-t border-gray-200">
+      <button class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm" 
+              @click="deleteProposal()">
+        Excluir
+      </button>
+      
+      <div class="flex items-center gap-4">
+        <!-- Toggle Switch usando apenas Tailwind -->
+        <label class="flex items-center gap-2 cursor-pointer">
+          <div class="relative">
+            <input
+              type="checkbox"
+              class="sr-only"
+              v-model="isVisibleQuantity"
+            />
+            <div class="w-11 h-6 bg-gray-200 rounded-full shadow-inner transition-colors duration-200 ease-in-out" 
+                 :class="isVisibleQuantity ? 'bg-blue-600' : 'bg-gray-300'">
+            </div>
+            <div class="absolute w-4 h-4 bg-white rounded-full shadow top-1 transition-transform duration-200 ease-in-out transform" 
+                 :class="isVisibleQuantity ? 'translate-x-6' : 'translate-x-1'">
+            </div>
+          </div>
+          <span class="text-sm text-gray-700 font-medium">quantidades</span>
+        </label>
+        
+        <button class="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm" 
+                @click="exportPDF()">
+          Gerar PDF
         </button>
-      </div>
-      <div class="">
-        <div class="toggle-switch">
-          <input
-            type="checkbox"
-            id="toggle"
-            class="toggle-checkbox"
-            v-model="isVisibleQuantity"
-          />
-          <label for="toggle" class="toggle-label">quantidades</label>
-        </div>
-      </div>
-      <div class="">
-        <button class="button" @click="exportPDF()">Gerar PDF</button>
       </div>
     </div>
   </div>
@@ -79,6 +92,7 @@ import { BACKEND_URL } from "@/config/apiConfig";
 import {
   destroy,
   show,
+  updateField,
   updateRelationshipField,
 } from "@/utils/requests/httpUtils";
 import DescriptionSection from "@/components/show/DescriptionSection.vue";
@@ -113,6 +127,7 @@ export default {
   methods: {
     destroy,
     show,
+    updateField,
     updateRelationshipField,
     addInvoiceCreated(newInvoices) {
       console.log(newInvoices);
@@ -181,6 +196,15 @@ export default {
     updateTotalThirdPartyCost(newTotalThirdPartyCost) {
       this.proposal.total_third_party_cost = newTotalThirdPartyCost;
     },
+    async updateProposal(fieldName, editedValue) {
+      try {
+        const updatedProposal = await updateField("proposals", this.proposalId, fieldName, editedValue);
+        this.proposal = updatedProposal;
+        console.log("Proposta atualizada com sucesso:", updatedProposal);
+      } catch (error) {
+        console.error("Erro ao atualizar a proposta:", error);
+      }
+    },
   },
   async mounted() {
     this.setProposalId(this.$route.params.id);
@@ -246,52 +270,5 @@ a:active {
   margin-right: 180px;
   margin-bottom: 60px;
   margin-top: 60px;
-}
-
-/* switch */
-.toggle-switch {
-  position: relative;
-  width: 60px;
-  height: 34px;
-  margin-right: 6px;
-  margin-top: 3px;
-}
-
-.toggle-checkbox {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.toggle-label {
-  position: absolute;
-  cursor: pointer;
-  background-color: #ccc;
-  border-radius: 34px;
-  width: 100%;
-  height: 100%;
-  transition: background-color 0.2s;
-  padding-left: 60px;
-  padding-top: 4px;
-}
-
-.toggle-label::before {
-  content: "";
-  position: absolute;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background-color: white;
-  top: 4px;
-  left: 4px;
-  transition: transform 0.2s;
-}
-
-.toggle-checkbox:checked + .toggle-label {
-  background-color: var(--primary);
-}
-
-.toggle-checkbox:checked + .toggle-label::before {
-  transform: translateX(26px);
 }
 </style>

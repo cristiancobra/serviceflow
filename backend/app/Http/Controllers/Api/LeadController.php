@@ -69,8 +69,12 @@ class LeadController extends Controller
      */
     public function show(Lead $lead)
     {
+        $leadWithProposals = Lead::with([
+            'opportunities.proposals.invoices',
+            'opportunities.proposals.opportunity'
+        ])->find($lead->id);
 
-        return new LeadResource(Lead::find($lead->id));
+        return new LeadResource($leadWithProposals);
     }
 
     /**

@@ -1,5 +1,5 @@
 <template>
-   <div class="label-input-container">
+   <div class="label-input-container text-black">
     <label class="form-label" :for="name">{{ label }}</label>
     <textarea
       class="form-control"

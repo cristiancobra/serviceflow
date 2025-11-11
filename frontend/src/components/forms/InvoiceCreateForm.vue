@@ -1,97 +1,127 @@
 <template>
   <div>
-    <button v-if="installmentStatus === 'notIssued'" type="button" class="button p-2" @click="openModal">
-      <font-awesome-icon icon="fa-solid fa-file-invoice" class="me-2" />
-      GERAR {{ proposal.installment_quantity }} FATURAS
+    <button v-if="installmentStatus === 'notIssued'" type="button" class="button p-2 flex items-center" @click="openModal">
+      <font-awesome-icon icon="fa-solid fa-plus-circle" class="mr-2" />
+      <span class="pt-1">{{ proposal.installment_quantity }}</span>
     </button>
-    <div v-else-if="installmentStatus === 'issued'" class="button disabled p-2">
-      <font-awesome-icon icon="fa-solid fa-circle-check" class="me-0" />
+    <div v-else-if="installmentStatus === 'issued'" class="button disabled p-2 flex items-center">
+      <font-awesome-icon icon="fa-solid fa-circle-check" class="mr-2" />
       FATURAS GERADAS
     </div>
-    <div v-else-if="installmentStatus === 'pending'" class="button delete p-2">
-      <font-awesome-icon icon="fa-solid fa-circle-check" class="me-0" />
+    <div v-else-if="installmentStatus === 'pending'" class="button delete p-2 flex items-center">
+      <font-awesome-icon icon="fa-solid fa-circle-check" class="mr-2" />
       APROVAÇÃO PENDENTE
     </div>
 
     <div v-if="isModalVisible" class="myModal">
-      <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-          <div class="modal-header">
-            <font-awesome-icon icon="fa-solid fa-file-invoice" class="icon pe-3 primary" />
-            <h5 class="modal-title" id="taskModalLabel">Nova fatura</h5>
-            <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
+      <div class="max-w-6xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg  mt-25">
+          <div class="flex items-center justify-between p-4 border-b">
+            <div class="flex items-center">
+              <font-awesome-icon icon="fa-solid fa-file-invoice" class="icon pr-3 primary" />
+              <h5 class="text-lg font-semibold text-black" id="taskModalLabel">Nova fatura</h5>
+            </div>
+            <button type="button" class="text-gray-400 hover:text-gray-600" @click="closeModal" aria-label="Close">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
           </div>
-          <div class="modal-body">
-            <form @submit.prevent="submitForm">
-
-              <div class="row mt-4">
-                <TextAreaInput label="Observações:" name="observations" v-model="form.observations"
-                  placeholder="Detalhamento da tarefa" :rows="5" />
+          <div class="p-6 space-y-6">
+            <form @submit.prevent="submitForm" class="space-y-6">
+              <div class="bg-gray-50 rounded-lg p-4">
+                <TextAreaInput 
+                  label="Observações:" 
+                  name="observations" 
+                  v-model="form.observations"
+                  placeholder="Detalhamento da tarefa" 
+                  :rows="4" 
+                />
               </div>
 
-              <div class="row mb-4 mt-4">
-                <div class="col">
-                  <div>
-                    <label for="proposal" class="form-label">Proposta</label>
-                    <text-value v-model="localProposal.date" class="selected" />
-                  </div>
+              <div class="flex flex-col lg:flex-row gap-6">
+                <div class="flex-1 space-y-2">
+                  <label for="proposal" class="block text-sm font-semibold text-gray-700">Proposta</label>
+                  <text-value v-model="localProposal.date" class="selected" />
                 </div>
-                <div class="col">
-                  <div>
-                    <label for="installment_quantity" class="form-label">Quantidade de Parcelas</label>
-                    <br>
-                    {{ proposal.installment_quantity }}
+                <div class="flex-1 space-y-2">
+                  <label for="installment_quantity" class="block text-sm font-semibold text-gray-700">Quantidade de Parcelas</label>
+                  <div class="px-3 py-2 bg-gray-100 rounded-lg">
+                    <span class="text-lg font-bold text-gray-900">{{ proposal.installment_quantity }}</span>
                   </div>
                 </div>
               </div>
 
-              <div class="row mb-4 mt-4">
-                <div class="col">
+              <div class="flex flex-col lg:flex-row gap-6">
+                <div class="flex-1">
                   <UsersSelectInput label="Responsável" v-model="form.user_id" fieldsToDisplay="name" autoSelect=true />
                 </div>
-                <div class="col">
-                  <date-input v-model="form.date_due" label="Data de vencimento" name="date_due" :autoFillNow="true"
-                    placeholder="data quando a fatura vence" @update="updateForm" />
+                <div class="flex-1">
+                  <date-input 
+                    v-model="form.date_due" 
+                    label="Data de vencimento" 
+                    name="date_due" 
+                    :autoFillNow="true"
+                    placeholder="data quando a fatura vence" 
+                    @update="updateForm" 
+                  />
                 </div>
               </div>
 
-              <div class="row mt-5">
-                <div class="col">
-                  <p class="title">
-                    PARCELAMENTO
-                  </p>
+              <div class="border-t border-gray-200 pt-6">
+                <div class="flex items-center space-x-2 mb-4">
+                  <div class="w-2 h-8 bg-blue-500 rounded-full"></div>
+                  <h4 class="text-lg font-bold text-gray-900 uppercase tracking-wide">
+                    Parcelamento
+                  </h4>
+                </div>
+
+                <div class="space-y-4">
+                  <div 
+                    v-for="index in proposal.installment_quantity" 
+                    :key="index"
+                    class="flex flex-col md:flex-row gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200"
+                  >
+                    <div class="flex items-center flex-1">
+                      <span class="inline-flex items-center justify-center w-8 h-8 bg-blue-100 text-blue-800 text-sm font-bold rounded-full mr-3">
+                        {{ index }}
+                      </span>
+                      <label :for="'price-' + index" class="text-sm font-semibold text-gray-700">
+                        Valor da Parcela {{ index }}
+                      </label>
+                    </div>
+                    <div class="flex-1 md:max-w-xs">
+                      <money-editable-field 
+                        :name="'price-' + index" 
+                        v-model="form.prices[index - 1]"
+                        @update="adjustPrices(index - 1, $event)" 
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-6 p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
+                  <div class="flex flex-col md:flex-row gap-4 items-center">
+                    <div class="flex-1">
+                      <label for="total" class="text-sm font-semibold text-blue-700">Total Geral</label>
+                    </div>
+                    <div class="flex-1 md:max-w-xs">
+                      <money-field v-model="totalPrices" class="selected font-bold text-lg" readonly />
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div class="row mb-2 mt-2" v-for="index in proposal.installment_quantity" :key="index">
-                <div class="col-3">
-                  <label :for="'price-' + index" class="form-label">Valor da Parcela {{ index }}</label>
-                </div>
-                <div class="col-3">
-                  <money-editable-field :name="'price-' + index" v-model="form.prices[index - 1]"
-                    @update="adjustPrices(index - 1, $event)" />
-                </div>
-              </div>
-
-              <div class="row mb-2 mt-2">
-                <div class="col-3">
-                  <label for="total" class="form-label">Total</label>
-                </div>
-                <div class="col-3">
-                  <money-field v-model="totalPrices" class="selected" readonly />
-                </div>
-              </div>
-
-              <div v-if="errorMessage" class="row mt-5">
-                <div class="col">
-                  <p class="error">
+              <div v-if="errorMessage" class="mt-8">
+                <div>
+                  <p class="error text-black">
                     {{ errorMessage }}
                   </p>
                 </div>
               </div>
 
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" @click=closeModal>Fechar</button>
+              <div class="flex justify-end gap-3 mt-6 pt-4 border-t">
+                <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600" @click="closeModal">Fechar</button>
                 <button type="submit" class="button-new">criar</button>
               </div>
             </form>
@@ -289,7 +319,6 @@ export default {
 .button.disabled {
   font-size: 1rem;
   text-align: center;
-  display: flex;
   background-color: gray;
   color: white;
   border-color: gray;

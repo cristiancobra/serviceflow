@@ -15,6 +15,7 @@ class Invoice extends Model
         'user_id',
         'date_due',
         'price',
+        'total_paid',
     ];
 
     public function proposal()
@@ -22,8 +23,23 @@ class Invoice extends Model
         return $this->belongsTo(Proposal::class);
     }
 
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Recalculate and update the total_paid based on transactions
+     */
+    public function updateTotalPaid()
+    {
+        $totalPaid = $this->transactions()->sum('amount');
+        $this->update(['total_paid' => $totalPaid]);
+        return $totalPaid;
     }
 }

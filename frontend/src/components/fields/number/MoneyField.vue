@@ -1,5 +1,5 @@
 <template>
-  <div class="money-container">
+  <div class="text-black text-right">
     <div v-if="localValue" class="price">
       <p>
         {{ formatCurrencySymbol(localValue) }}
@@ -33,15 +33,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.money-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-}
-
-.money-container .disabled {
-background-color: lightgrey;
-}
-</style>

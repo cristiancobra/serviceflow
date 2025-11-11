@@ -4,14 +4,6 @@ module.exports = {
     './public/index.html', // Inclua o HTML principal
     './src/**/*.{vue,js,ts,jsx,tsx}', // Inclua todos os arquivos Vue e JS
   ],
-  theme: {
-    extend: {
-      colors: {
-        primary: 'rgb(var(--primary) / <alpha-value>)', // Substitua pela sua variável CSS
-        secondary: 'rgb(var(--secondary) / <alpha-value>)', // Outra cor personalizada
-      },
-    },
-  },
   plugins: [
     require('daisyui'), // Inclua o DaisyUI se estiver usando
   ],
@@ -19,7 +11,7 @@ module.exports = {
     themes: [
       {
         mytheme: {
-          primary: '#FF0000', // Vermelho intenso como exemplo
+          primary: '#B1388D', // Cor primária atualizada
           secondary: '#f59e0b',
           accent: '#10b981',
           neutral: '#374151',
@@ -27,5 +19,6 @@ module.exports = {
         },
       },
     ],
+    theme: "mytheme", // Define o tema padrão
   },
 };

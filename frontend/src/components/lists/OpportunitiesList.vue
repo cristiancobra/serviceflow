@@ -26,7 +26,7 @@
             <div class="task-column">
                 <router-link :to="{ name: 'opportunityShow', params: { id: opportunity.id } }">
                     <div class="title">
-                        <p class="name ps-2">
+                        <p class="text-black ps-2">
                             {{ opportunity.name }}
                         </p>
                     </div>

@@ -42,6 +42,7 @@ class OpportunitiesResource extends JsonResource
             'lead' => new LeadsResource($this->whenLoaded('lead')),
             'links' => LinksResource::collection($this->whenLoaded('links')),
             'tasks' => TasksResource::collection($this->whenLoaded('tasks')),
+            'proposals' => ProposalsResource::collection($this->whenLoaded('proposals')),
 			];
     }
 }

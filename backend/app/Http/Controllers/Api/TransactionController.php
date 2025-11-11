@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\TransactionRequest;
+use App\Models\Transaction;
+use App\Http\Resources\TransactionsResource;
+use Illuminate\Validation\ValidationException;
 
 class TransactionController extends Controller
 {
@@ -14,18 +17,38 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        //
+        $transactions = Transaction::with([
+            'invoice.proposal.opportunity.company',
+            'invoice.proposal.opportunity.lead',
+            'bankAccount'
+        ])
+            ->orderBy('transaction_date', 'desc')
+            ->paginate(500);
+
+        return TransactionsResource::collection($transactions);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  TransactionRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TransactionRequest $request)
     {
-        //
+        try {
+            $validated = $request->validated();
+
+            $transaction = Transaction::create($validated);
+
+            return TransactionsResource::make($transaction->load('invoice', 'bankAccount'));
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => "Erro interno do servidor",
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**

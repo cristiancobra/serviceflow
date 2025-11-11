@@ -2,17 +2,17 @@
   <section class="section-container">
     <div class="section-title">
       <font-awesome-icon icon="fas fa-dollar" class="icon" />
-      <h2>Custos e margem de lucro</h2>
+      <h2>Operacional e margem de lucro</h2>
     </div>
-    <div class="table-row">
-      <div class="column-5 column-icon">
-        <font-awesome-icon icon="fa fa-clock" class="list-icon" />
+    <div class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-gray-200 py-1">
+      <div class="flex items-center justify-center">
+        <font-awesome-icon icon="fa fa-clock" class="list-icon text-black" />
       </div>
-      <div class="column-65 column-name">
+      <div class="flex items-center justify-start text-black">
         Custo operacional
       </div>
-      <div class="column-10 column-integer">
-        <div style="display: flex; align-items: center; justify-content: center">
+      <div class="flex items-center justify-center">
+        <div class="flex items-center justify-center text-black">
         <hours-decimal-field
           name="total_hours"
           class="list-integer"
@@ -23,7 +23,7 @@
         h
         </div>
       </div>
-      <div class="column-20 column-price">
+      <div class="flex items-center justify-end">
         <money-field
           name="total_operational_cost"
           v-model="localProposal.total_operational_cost	"
@@ -31,13 +31,13 @@
       </div>
     </div>
 
-    <div class="table-row">
-      <div class="column-5 column-icon">
-        <font-awesome-icon icon="fas fa-percent" />
+    <div class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-gray-200 py-2">
+      <div class="flex items-center justify-center">
+        <font-awesome-icon icon="fas fa-percent" class="text-black" />
       </div>
-      <div class="column-55 column-name">Lucro:</div>
-      <div class="column-20 column-price">
-        <div style="display: flex; align-items: center; justify-content: center">
+      <div class="flex items-center justify-start text-black">Lucro:</div>
+      <div class="flex items-center justify-center">
+        <div class="flex items-center justify-center text-black">
         <decimal-field
           name="total_profit_percentage"
           v-model="localProposal.total_profit_percentage"
@@ -47,28 +47,29 @@
         %
         </div>
       </div>
-      <div class="column-20 column-price">
+      <div class="flex items-center justify-end">
         <money-field name="total_profit" v-model="localProposal.total_profit" />
       </div>
     </div>
 
-    <div class="table-row">
-      <div class="column-5 column-icon">
-        <font-awesome-icon icon="fas fa-dollar-sign" />
+    <div class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-gray-200 py-2">
+      <div class="flex items-center justify-center">
+        <font-awesome-icon icon="fas fa-dollar-sign" class="text-black" />
       </div>
-      <div class="column-75 column-name">Preço base:</div>
-      <div class="column-20 column-price">
+      <div class="flex items-center justify-start text-black">Preço base:</div>
+      <div class="col-span-1"></div>
+      <div class="flex items-center justify-end">
         <money-field name="price" v-model="localProposal.total_price" />
       </div>
     </div>
 
-
-    <div class="table-row" :class="{ highlight: isHighlighted }">
-      <div class="column-5 column-icon">
-        <font-awesome-icon icon="fa fa-clock" />
+    <div class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-gray-200 py-2" :class="{ highlight: isHighlighted }">
+      <div class="flex items-center justify-center">
+        <font-awesome-icon icon="fa fa-clock" class="text-black" />
       </div>
-      <div class="column-75 column-name">Custos de propdução</div>
-      <div class="column-20 column-price">
+      <div class="flex items-center justify-start text-black">Custos de propdução</div>
+      <div class="col-span-1"></div>
+      <div class="flex items-center justify-end">
         <money-field
           name="total_third_party_cost"
           v-model="localProposal.total_third_party_cost"
@@ -76,28 +77,31 @@
       </div>
     </div>
 
-    <div class="table-row">
-      <div class="column-5 column-icon">
-        <font-awesome-icon icon="fas fa-dollar-sign" />
+    <div class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-gray-200 py-2">
+      <div class="flex items-center justify-center">
+        <font-awesome-icon icon="fas fa-dollar-sign" class="text-black" />
       </div>
-      <div class="column-75 column-name">Preço com custos:</div>
-      <div class="column-20 column-total-price">
+      <div class="flex items-center justify-start text-black">Preço com custos:</div>
+      <div class="col-span-1"></div>
+      <div class="flex items-center justify-end font-bold text-black">
         <money-field name="total_price" v-model="localProposal.total_price" />
       </div>
     </div>
 
-    <div class="table-row">
-      <div class="column-5 column-icon">
-        <font-awesome-icon icon="fas fa-credit-card" />
+    <div class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-gray-200 py-2">
+      <div class="flex items-center justify-center">
+        <font-awesome-icon icon="fas fa-credit-card" class="text-black" />
       </div>
-      <div class="column-85 column-name">Parcelamento:</div>
-      <div class="column-10 column-integer">
+      <div class="flex items-center justify-start text-black">Parcelamento:</div>
+      <div class="col-span-1"></div>
+      <div class="flex items-center justify-end text-black">
         <integer-editable-field
           v-model="localProposal.installment_quantity"
           name="installment_quantity"
           @save="updateProposal('installment_quantity', $event)"
           placeholder="quantidade de parcelas"
         />
+        x
       </div>
     </div>
   </section>

@@ -10,38 +10,35 @@
       <font-awesome-icon v-else icon="fas fa-user" class="user-faicon" />
     </div>
     <div class="play-container">
-      <font-awesome-icon v-if="openJourney" icon="fas fa-play" class="play" />
-      <font-awesome-icon v-else icon="fas fa-pause" class="off" />
+      <template v-if="openJourney">
+        <font-awesome-icon icon="fas fa-play" class="play" />
+      </template>
+      <template v-else>
+        <font-awesome-icon icon="fas fa-pause" class="off" />
+      </template>
     </div>
     <div v-if="dropdownVisible" class="dropdown-menu">
       <router-link
         v-if="openJourney"
-        
-  :to="{ name: 'opportunityShow', params: { id: openJourney.opportunity_id }, query: { scrollTo: 'tasks' } }"
+        :to="taskLink"
         class="dropdown-item"
       >
         <font-awesome-icon icon="fas fa-play" class="play" />
-        {{ openJourney.name }}
+        {{ taskDisplayName }}
       </router-link>
       <router-link :to="`/users/${userData.id}`" class="dropdown-item">
         CONTA
       </router-link>
-      <router-link to="/journeys" class="dropdown-item"> JORNADAS </router-link>
+      <router-link to="/journeys" class="dropdown-item">JORNADAS</router-link>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 import { IMAGES_PATH } from "@/config/apiConfig";
 
 export default {
-  propos: {
-    openJourney: {
-      type: Object,
-      default: null,
-    },
-  },
   data() {
     return {
       dropdownVisible: false,
@@ -52,11 +49,46 @@ export default {
       userData: (state) => state.userData,
       openJourney: (state) => state.openJourney,
     }),
+    taskLink() {    
+      if (!this.openJourney) {
+        return null;
+      }
+      
+      if (this.openJourney.opportunity_id) {
+        return { 
+          name: 'opportunityShow', 
+          params: { id: this.openJourney.opportunity_id }, 
+          query: { scrollTo: 'tasks' } 
+        };
+      } else if (this.openJourney.project_id) {
+        return { 
+          name: 'projectShow', 
+          params: { id: this.openJourney.project_id }, 
+          query: { scrollTo: 'tasks' } 
+        };
+      }
+      
+      // Se não há opportunity_id nem project_id, retorna uma rota padrão ou null
+      return null;
+    },
+    taskDisplayName() {
+      return this.openJourney.task?.name || this.openJourney.name || 'Tarefa sem nome';
+    },
     urlImagePhoto() {
       return `${IMAGES_PATH}${this.userData.photo}`;
     },
   },
+  watch: {
+    openJourney: {
+      handler(newVal, oldVal) {
+        console.log("openJourney mudou:", { oldVal, newVal });
+      },
+      immediate: true,
+      deep: true
+    }
+  },
   methods: {
+    ...mapActions(['checkOpenJourneys']),
     toggleDropdown() {
       this.dropdownVisible = !this.dropdownVisible;
     },
@@ -71,7 +103,10 @@ export default {
   },
   mounted() {
     document.addEventListener("click", this.handleClickOutside);
-    console.log("openJourney", this.openJourney);
+    // Verificar se precisa carregar openJourney
+    if (this.openJourney === false) {
+      this.checkOpenJourneys();
+    }
   },
   beforeUnmount() {
     document.removeEventListener("click", this.handleClickOutside);

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log;
 use App\Models\Cost;
 use App\Models\Proposal;
 use App\Models\Service;
@@ -98,8 +100,6 @@ class ProposalController extends Controller
                 $proposalCost->proposal_id = $proposal->id;
                 $proposalCost->save();
             }
-
-            $service->final_price = $service->price + $productionCosts;
 
             return ProposalsResource::make($proposal->load('proposalServices'));
         } catch (ValidationException $validationException) {
@@ -212,8 +212,8 @@ class ProposalController extends Controller
             $this->updateTotalThirdPartyCost($proposal);
             $this->calculateProposalTotals($proposal);
 
-
             $proposal->load([
+                'invoices',
                 'proposalServices',
                 'proposalCosts',
             ]);

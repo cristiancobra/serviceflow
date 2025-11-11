@@ -53,7 +53,7 @@
         <router-link :to="{ name: 'projectShow', params: { id: project.id } }">
           <div class="row title">
             <div class="col">
-              <p class="name ps-2">
+              <p class="text-black ps-2">
                 {{ project.name }}
               </p>
             </div>

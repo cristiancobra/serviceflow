@@ -2,117 +2,133 @@
   <div class="page-container">
     <div class="page-header">
       <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-file-invoice" class="icon" />
+        <font-awesome-icon icon="fa-solid fa-file-invoice-dollar" class="page-icon" />
         <h1>FATURA</h1>
       </div>
       <div class="action-container">
-        {{ invoice.id }}
-      </div>
-    </div>
-
-    <div class="row mt-1 mb-5">
-      <div class="col-6">
-        <p v-if="invoice.proposal && invoice.proposal.opportunity">
-          {{ invoice.proposal.opportunity.name }}
-        </p>
-      </div>
-    </div>
-
-    <div class="row pt-0 ">
-      <div class="col-3 d-flex justify-content-start">
-        <p>
-          <font-awesome-icon icon="fa fa-calendar-alt" />
-          <span class="label"> Data de criação: </span>
-        </p>
-      </div>
-      <div class="col-1 text-end">
-        {{ formatDateBr(invoice.created_at) }}
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-2 d-flex justify-content-start">
-        <font-awesome-icon icon="fas fa-credit-card" />
-        <span class="label"> Parcelamento: </span>
-      </div>
-      <div v-if="invoice && invoice.proposal" class="col-2 text-end">
-        {{ invoice.proposal.installment_quantity }}
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-2 d-flex justify-content-start">
-        <p>
-          <font-awesome-icon icon="fas fa-dollar-sign" />
-          <span class="label"> Preço: </span>
-        </p>
-      </div>
-      <div class="col-2 text-end">
-        <money-field name="price" v-model="invoice.price" />
+        <select-status-button
+          :status="invoice.status"
+          @update:modelValue="updateInvoice('status', $event)"
+        />
       </div>
     </div>
 
     <div class="section-container">
-      <div class="section-header">
-        <div class="section-title">
-          <font-awesome-icon icon="fas fa-coins" class="icon" />
-          <h2>
-            Pagamentos recebidos
-          </h2>
-        </div>
-        <div class="action-container">
-          <transaction-create-form :invoice="invoice" @new-transaction-event="addTransactionCreated" />
-        </div>
-      </div>
-
-      <div v-if="!invoice.transactions" class="row pt-1 pb-1">
-        <div class="col-12">
-          <p>
-            Nenhum pagamento recebido
-          </p>
-        </div>
-      </div>
-      <div class="row service-item pt-1 pb-1" v-for="transaction in invoice.transactions" :key="transaction.id">
-        <router-link :to="{ name: 'transactionShow', params: { id: transaction.id } }" class="col-12">
-          <div class="row">
-            <div class="col-2">
-              {{ transaction.date_due }}
-            </div>
-            <div class="col-2">
-              <money-field name="price" v-model="transaction.price" />
-            </div>
+      <div class="w-1/2">
+        <div class="row-simple">
+          <div class="field-container">
+            <label class="text-black font-bold">Proposta</label>
+            <p v-if="invoice.proposal" class="text-black">
+              {{ invoice.proposal.opportunity?.name || 'Sem oportunidade associada' }}
+            </p>
+            <p v-else class="text-black text-gray-500">
+              Sem proposta associada
+            </p>
           </div>
-        </router-link>
+        </div>
       </div>
     </div>
 
-    <div class="row mt-5 mb-5">
-      <div class="col-2 d-flex justify-content-start">
+    <div class="section-container">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="field-container">
+          <label class="text-black font-bold">
+            <font-awesome-icon icon="fa fa-calendar-alt" class="mr-2" />
+            Data de Vencimento
+          </label>
+          <p class="text-black">{{ formatDateBr(invoice.date_due) }}</p>
+        </div>
+
+        <div class="field-container">
+          <label class="text-black font-bold">
+            <font-awesome-icon icon="fas fa-dollar-sign" class="mr-2" />
+            Preço
+          </label>
+          <div class="text-black">
+            <money-field name="price" v-model="invoice.price" />
+          </div>
+        </div>
+
+        <div class="field-container" v-if="invoice.proposal">
+          <label class="text-black font-bold">
+            <font-awesome-icon icon="fas fa-credit-card" class="mr-2" />
+            Parcelamento
+          </label>
+          <p class="text-black">{{ invoice.proposal.installment_quantity }}x</p>
+        </div>
+
+        <div class="field-container">
+          <label class="text-black font-bold">
+            <font-awesome-icon icon="fa fa-calendar-plus" class="mr-2" />
+            Data de Criação
+          </label>
+          <p class="text-black">{{ formatDateBr(invoice.created_at) }}</p>
+        </div>
+      </div>
+    </div>
+
+    <description-section :description="invoice.description" />
+
+    <div class="section-container">
+      <div class="section-header">
+        <div class="section-title">
+          <font-awesome-icon icon="fas fa-coins" class="section-icon text-xl pe-3" />
+          <h2>Pagamentos Recebidos</h2>
+        </div>
+        <div class="section-action">
+          <transaction-create-form 
+            :invoice="invoice" 
+            @new-transaction-event="addTransactionCreated" 
+          />
+        </div>
+      </div>
+
+      <div v-if="!invoice.transactions || invoice.transactions.length === 0" class="empty-state">
+        <p>Nenhum pagamento recebido</p>
+      </div>
+      
+      <div v-else class="transactions-list">
+        <div 
+          v-for="transaction in invoice.transactions" 
+          :key="transaction.id"
+          class="transaction-item"
+        >
+          <div class="w-2/10 text-black font-bold">
+            {{ formatDateBr(transaction.transaction_date) }}
+          </div>
+          <div class="transaction-amount">
+            <money-field name="amount" v-model="transaction.amount" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-start gap-4 py-4">
+      <div>
         <button class="button delete me-5" @click="deleteInvoice()">
           excluir
         </button>
       </div>
-      <div class="col-6 d-flex justify-content-end">
+      <div>
         <div class="toggle-switch">
           <input type="checkbox" id="toggle" class="toggle-checkbox" v-model="isVisibleQuantity">
           <label for="toggle" class="toggle-label">quantidades</label>
         </div>
       </div>
-      <div class="col-4 d-flex justify-content-end">
-        <button class="button" @click="exportPDF()">
-          Gerar PDF
-        </button>
+      <div>
+        <button class="button" @click="exportPDF()">Gerar PDF</button>
       </div>
     </div>
   </div>
 </template>
-
 
 <script>
 import { BACKEND_URL } from "@/config/apiConfig";
 import { destroy, show, updateField } from "@/utils/requests/httpUtils";
 import MoneyField from '../../components/fields/number/MoneyField.vue';
 import TransactionCreateForm from "../../components/forms/TransactionCreateForm.vue";
+import SelectStatusButton from "../../components/buttons/SelectStatusButton.vue";
+import DescriptionSection from "@/components/show/DescriptionSection.vue";
 
 export default {
   data() {
@@ -125,11 +141,22 @@ export default {
   components: {
     MoneyField,
     TransactionCreateForm,
+    SelectStatusButton,
+    DescriptionSection,
   },
   methods: {
     destroy,
     show,
     updateField,
+    addTransactionCreated(newTransaction) {
+      // Inicializa o array de transactions se não existir
+      if (!this.invoice.transactions) {
+        this.invoice.transactions = [];
+      }
+      // Adiciona a nova transação ao início da lista
+      this.invoice.transactions.unshift(newTransaction);
+      console.log('Nova transação adicionada:', newTransaction);
+    },
     async deleteInvoice() {
       this.response = await destroy('invoices', this.invoiceId);
       this.$router.push({

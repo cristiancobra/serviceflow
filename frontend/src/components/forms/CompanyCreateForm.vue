@@ -73,7 +73,7 @@
 <script>
 import { BACKEND_URL, COMPANY_URL } from "@/config/apiConfig";
 import axios from "axios";
-import ErrorMessage from "./messages/ErrorMesssage.vue";
+import ErrorMessage from "./messages/ErrorMessage.vue";
 import SuccessMessage from "./messages/SuccessMessage.vue";
 import TextInput from "./inputs/text/TextInput";
 

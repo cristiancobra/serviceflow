@@ -2,7 +2,7 @@
   <div>
     <button type="button" class="button button-new" @click=openModal>
       <font-awesome-icon icon="fa-solid fa-cogs" class="button-icon" />
-      <span class="button-text"> novo custo</span>
+      <span class="button-text"></span>
     </button>
 
     <div v-if="isModalVisible" class="myModal">

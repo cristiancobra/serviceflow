@@ -6,31 +6,27 @@
                 <h2>
                     Custos de propdução
                 </h2>
-            </div>
-            <div class="action-container">
+            
                 <cost-create-form @new-cost-event="addCostCreated" />
                 <proposal-cost-create-form @new-proposal-cost-event="addProposalCostCreated"
                     :proposalId="proposal.id" />
             </div>
         </div>
-        <div class="table-row" v-for="localCost in localCosts" v-bind:key="localCost.id"
+        <div class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-gray-200 py-2" v-for="localCost in localCosts" v-bind:key="localCost.id"
             :class="{ 'highlight': highlightProposalCostIds.includes(localCost.id) }">
-            <div class="icon-column">
-                <font-awesome-icon icon="fa-solid fa-coins" class="primary" />
+            <div class="flex items-center justify-center">
+                <font-awesome-icon icon="fa-solid fa-coins" class="primary text-black" />
             </div>
-            <div class="title-column">
-                <p class="name">
+            <div class="flex items-center justify-start">
+                <p class="text-black">
                     {{ localCost.name }}
                 </p>
             </div>
-            <div class="integer-column">
+            <div class="flex items-center justify-center text-black">
                 {{ localCost.quantity }} x
             </div>
-            <div class="price-column">
+            <div class="flex items-center justify-end">
                 <money-field name="price" v-model="localCost.price" />
-            </div>
-            <div class="total-price-column">
-                <money-field name="total_price" v-model="localCost.total_price" />
             </div>
         </div>
     </div>
@@ -94,41 +90,4 @@ export default {
 </script>
 
 <style scoped>
-.icon-column {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    margin: 1rem;
-    flex-basis: 0%;
-}
-
-.integer-column {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-basis: 5%;
-}
-
-.price-column {
-    display: flex;
-    align-items: center;
-    justify-content: right;
-    flex-basis: 10%;
-}
-
-.total-price-column {
-    display: flex;
-    align-items: center;
-    justify-content: right;
-    flex-basis: 15%;
-    font-weight: 800;
-}
-
-.title-column {
-    display: flex;
-    align-items: left;
-    justify-content: left;
-    flex-basis: 70%;
-}
 </style>

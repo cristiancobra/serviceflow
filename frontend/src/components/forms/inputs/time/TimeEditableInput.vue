@@ -1,8 +1,21 @@
 <template>
   <div>
     <label v-if="label" class="ms-2" :for="name">{{ label }}</label>
-      <TimeValue v-if="!editing" :id="name" :name="name" v-model="localValue" @click="startEditing" />
-      <TimeInput v-else @update:modelValue="emitSave" @editing="cancelEditing" v-model="localValue" ref="editableInputRef" />
+    <TimeValue
+      v-if="!editing"
+      :id="name"
+      class="text-black"
+      :name="name"
+      v-model="localValue"
+      @click="startEditing"
+    />
+    <TimeInput
+      v-else
+      @update:modelValue="emitSave"
+      @editing="cancelEditing"
+      v-model="localValue"
+      ref="editableInputRef"
+    />
   </div>
 </template>
 
@@ -33,7 +46,6 @@ export default {
       this.editing = true;
     },
     emitSave(editedValue) {
-
       this.$emit("save", editedValue);
 
       this.editing = false;
@@ -45,7 +57,7 @@ export default {
   watch: {
     modelValue(newValue) {
       this.localValue = newValue;
-      console.log('timeeditabela', newValue);
+      console.log("timeeditabela", newValue);
     },
   },
   mounted() {
@@ -54,6 +66,5 @@ export default {
   beforeUnmount() {
     document.removeEventListener("keydown", this.cancelEditing);
   },
- 
 };
 </script>

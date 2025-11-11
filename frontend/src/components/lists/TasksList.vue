@@ -46,10 +46,12 @@
 
           <div class="task-column">
             <router-link
-              :to="{ name: 'taskShow', params: { id: localTask.id } }"
-              class=""
+              v-if="getGroupLink(localTask)"
+              :to="getGroupLink(localTask)"
+              :class="getGroupColorClass(localTask)"
+              style="display: flex"
             >
-              <p class="name">
+              <p class="text-black text-sm">
                 {{ localTask.name }}
               </p>
             </router-link>
@@ -57,42 +59,20 @@
 
           <div class="group-column" v-if="showGroupColumn">
             <router-link
-              :class="getColorClassForName(localTask.opportunity.name)"
+              v-if="getGroupLink(localTask)"
+              :to="getGroupLink(localTask)"
+              :class="getGroupColorClass(localTask)"
               style="display: flex"
-              v-if="localTask.opportunity"
-              :to="{
-                name: 'opportunityShow',
-                params: { id: localTask.opportunity.id },
-              }"
-            >
-              <p class="group-name">
-                <font-awesome-icon
-                  icon="fa-solid fa-bullseye"
-                  :class="getColorClassForName(localTask.opportunity.name)"
-                />
-                {{ trimName(localTask.opportunity.name) }}
-              </p>
-            </router-link>
-            <router-link
-              style="display: flex"
-              v-else-if="localTask.project"
-              :to="{
-                name: 'projectShow',
-                params: { id: localTask.project.id },
-              }"
             >
               <font-awesome-icon
-                icon="fa-solid fa-folder-open"
-                :class="getColorClassForName(localTask.project.name)"
+                :icon="getGroupIcon(localTask)"
+                :class="getGroupColorClass(localTask)"
               />
-              <p
-                class="group-name"
-                :style="{ color: getColorClassForName(localTask.project.name) }"
-              >
-                {{ trimName(localTask.project.name) }}
+              <p class="text-sm font-semibold ps-2" :class="getGroupColorClass(localTask)">
+                {{ getGroupName(localTask) }}
               </p>
             </router-link>
-            <div v-else class="">
+            <div v-else>
               <p>----</p>
             </div>
           </div>
@@ -291,6 +271,48 @@ export default {
         (localTask) => localTask.id === localTaskId
       );
       this.localTasks.splice(index, 1, updatedTask);
+    },
+    getGroupLink(localTask) {
+      if (localTask.opportunity) {
+        return {
+          name: "opportunityShow",
+          params: { id: localTask.opportunity.id },
+        };
+      } else if (localTask.project) {
+        return {
+          name: "projectShow",
+          params: { id: localTask.project.id },
+        };
+      } else {
+        return null;
+      }
+    },
+    getGroupColorClass(localTask) {
+      if (localTask.opportunity) {
+        return getColorClassForName(localTask.opportunity.name);
+      } else if (localTask.project) {
+        return getColorClassForName(localTask.project.name);
+      } else {
+        return "";
+      }
+    },
+    getGroupIcon(localTask) {
+      if (localTask.opportunity) {
+        return "fa-solid fa-bullseye";
+      } else if (localTask.project) {
+        return "fa-solid fa-folder-open";
+      } else {
+        return "";
+      }
+    },
+    getGroupName(localTask) {
+      if (localTask.opportunity) {
+        return trimName(localTask.opportunity.name);
+      } else if (localTask.project) {
+        return trimName(localTask.project.name);
+      } else {
+        return "----";
+      }
     },
   },
   computed: {

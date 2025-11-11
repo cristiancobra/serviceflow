@@ -2,7 +2,7 @@
     <div>
         <button type="button" class="button button-new" @click="openModal">
             <font-awesome-icon icon="fa-solid fa-plus" class="button-icon" />
-            <span class="button-text"> adicionar custo</span>
+            <span class="button-text"></span>
         </button>
 
         <div v-if="isModalVisible" class="myModal">

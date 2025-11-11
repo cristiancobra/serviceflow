@@ -4,34 +4,30 @@
       <font-awesome-icon icon="fas fa-file-invoice" class="icon" />
       <h2>Itens da proposta</h2>
     </div>
-    <div class="table-row" v-for="service in services" v-bind:key="service.id">
-      <div class="column-5 icon-column">
-        <font-awesome-icon icon="fa-solid fa-coins" class="primary" />
+    <div class="flex w-full" v-for="service in services" v-bind:key="service.id">
+      <div class="w-1/12 flex justify-center items-center ps-5">
+        <font-awesome-icon icon="fa-solid fa-coins" class="primary text-black" />
       </div>
       <router-link
-        class="column-45 no-link"
+        class="no-link w-6/12 flex items-center"
         :to="{ name: 'serviceShow', params: { id: service.service_id } }"
         :key="service.service_id"
       >
-        <div class="column-name">
+        <div class="text-black">
             {{ service.name }}
         </div>
       </router-link>
-      <div class="column-10 column-integer">
-        <div
-          style="display: flex; align-items: center; justify-content: center"
-        >
-          <integer-editable-field
-            v-model="service.quantity"
-            @save="emitUpdateProposal('quantity', service.service_id, $event)"
-          />
-          <span class="unity">x</span>
-        </div>
+      <div class="w-2/12 flex items-center justify-center">
+        <integer-editable-field
+          v-model="service.quantity"
+          @save="emitUpdateProposal('quantity', service.service_id, $event)"
+        />
+        <span class="text-black font-bold ps-1">x</span>
       </div>
-      <div class="column-20 column-price">
+      <div class="w-2/12 flex items-center justify-end text-black">
         <money-field name="price" v-model="service.price" />
       </div>
-      <div class="column-20 column-total-price">
+      <div class="w-2/12 flex items-center justify-end font-bold text-black">
         <money-field name="total_price" v-model="service.total_price" />
       </div>
     </div>

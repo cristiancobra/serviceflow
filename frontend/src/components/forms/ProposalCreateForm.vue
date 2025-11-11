@@ -1,26 +1,31 @@
 <template>
   <div>
-    <button type="button" class="button button-new" @click="openModal">
-      <font-awesome-icon icon="fa-solid fa-plus" class="" />
-    </button>
+    <ButtonNew 
+      icon="fa-solid fa-plus"
+      @click="openModal"
+    />
 
-    <div v-if="isModalVisible" class="myModal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1>Nova proposta</h1>
+    <div v-if="isModalVisible" class="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center p-4">
+      <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-auto">
+        <div class="bg-gray-50 rounded-t-lg">
+          <div class="flex justify-between items-center p-6 border-b border-gray-200">
+            <h1 class="text-xl font-semibold text-gray-800">Nova proposta</h1>
             <button
               type="button"
-              class="btn-close"
+              class="text-gray-400 hover:text-gray-600 focus:outline-none"
               @click="closeModal"
               aria-label="Close"
-            ></button>
+            >
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
           </div>
-          <div class="modal-body">
+          <div class="p-6">
             <form @submit.prevent="submitForm">
-              <div class="table-row">
+              <div class="mb-6">
                 <TextAreaInput
-                  class="text-start"
+                  class="text-left"
                   label="Detalhamento:"
                   name="description"
                   v-model="form.description"
@@ -28,18 +33,18 @@
                   :rows="4"
                 />
               </div>
-              <div class="table-row">
-                <div class="column-50">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
                   <UsersSelectInput
-                    class="text-start"
+                    class="text-left"
                     label="Responsável"
                     v-model="form.user_id"
                     fieldsToDisplay="name"
                     autoSelect="true"
                   />
                 </div>
-                <div class="column-50">
-                  <label for="installment_quantity" class="form-label">
+                <div>
+                  <label for="installment_quantity" class="block text-sm font-medium text-gray-700 mb-2">
                     Quantidade de Parcelas
                   </label>
                   <input
@@ -50,17 +55,14 @@
                     min="1"
                     max="99"
                     step="1"
-                    class="form-control"
+                    class="w-full px-3 py-2 text-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </div>
-              <div class="table-row">
-                <div class="column-50">
-                  <div
-                    v-if="currentProject"
-                    class="d-flex justify-content-start"
-                  >
-                    <label for="project" class="form-label">Projeto</label>
+              <div class="mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div v-if="currentProject" class="flex flex-col">
+                    <label for="project" class="block text-sm font-medium text-gray-700 mb-2">Projeto</label>
                     <input
                       type="hidden"
                       id="project"
@@ -80,10 +82,10 @@
                   </div>
                 </div>
               </div>
-              <div class="table-row">
-                <div class="column-50">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
                   <DateInput
-                    class="text-start"
+                    class="text-left"
                     v-model="form.date"
                     label="Início"
                     name="date"
@@ -92,105 +94,106 @@
                     @update="updateForm"
                   />
                 </div>
-                <div class="column-50">
-                  <label for="duration" class="form-label"
-                    >Validade da proposta</label
-                  >
+                <div>
+                  <label for="duration" class="block text-sm font-medium text-gray-700 mb-2">
+                    Validade da proposta
+                  </label>
                   <input
                     type="number"
-                    class="form-control"
+                    class="w-full px-3 py-2 text-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     v-model="form.validity_days"
                     name="duration"
                     placeholder="validade da proposta em dias"
                   />
                 </div>
               </div>
-              <div v-if="services.length === 0" class="table-row">
-                <p>Você ainda não possui serviços cadastrados.</p>
+              <div v-if="services.length === 0" class="mb-6">
+                <p class="text-gray-600">Você ainda não possui serviços cadastrados.</p>
               </div>
-              <div v-else class="section-container">
-                <div class="section-header">
-                  <div class="section-title">
-                    <font-awesome-icon icon="fa-solid fa-tools" class="icon" />
-                    <h2>Serviços</h2>
+              <div v-else class="bg-gray-50 rounded-lg border border-gray-200 p-4 mb-6">
+                <div class="mb-4">
+                  <div class="flex items-center mb-2">
+                    <font-awesome-icon icon="fa-solid fa-tools" class="text-blue-600 mr-2" />
+                    <h2 class="text-lg font-medium text-gray-800">Serviços</h2>
                   </div>
                 </div>
-                <div class="list-container">
+                <div class="space-y-2">
                   <div
-                    class="table-row"
+                    class="flex items-center space-x-4 p-2 bg-white rounded border"
                     v-for="service in services"
                     :key="service.id"
                   >
-                    <div class="column-10">
+                    <div class="w-20">
                       <input
                         type="number"
                         min="0"
                         :id="service.id"
                         v-model.number="service.quantity"
                         placeholder="0"
-                        class="input-number"
+                        class="w-full px-2 py-1 border border-gray-300 rounded text-right text-black focus:outline-none focus:ring-1 focus:ring-blue-500"
                       />
                     </div>
-                    <div class="column-60">
-                      <label :for="service.id">
+                    <div class="flex-1">
+                      <label :for="service.id" class="text-gray-700">
                         {{ service.name }}
                       </label>
                     </div>
-                    <div class="column-20">
+                    <div class="w-32">
                       <money-editable-field
                         :name="service.id"
                         v-model="service.price"
                       />
                     </div>
+                    <div class="w-32 text-right text-gray-700 font-medium">
+                      R$ {{ formatCurrency((service.quantity || 0) * (service.price || 0)) }}
+                    </div>
                   </div>
                 </div>
               </div>
-              <div v-if="costs.length === 0" class="table-row">
-                <p>Você ainda não possui custos cadastrados.</p>
+              <div v-if="costs.length === 0" class="mb-6">
+                <p class="text-gray-600">Você ainda não possui custos cadastrados.</p>
               </div>
-              <div v-else class="section-container">
-                <div class="section-header">
-                  <div class="section-title">
-                    <font-awesome-icon icon="fa-solid fa-tools" class="icon" />
-                    <h2>Custos de produção</h2>
+              <div v-else class="bg-gray-50 rounded-lg border border-gray-200 p-4 mb-6">
+                <div class="mb-4">
+                  <div class="flex items-center mb-2">
+                    <font-awesome-icon icon="fa-solid fa-tools" class="text-orange-600 mr-2" />
+                    <h2 class="text-lg font-medium text-gray-800">Custos de produção</h2>
                   </div>
                 </div>
-                <div class="list-container">
-                  <div class="table-row" v-for="cost in costs" :key="cost.id">
-                    <div class="column-10">
+                <div class="space-y-2">
+                  <div class="flex items-center space-x-4 p-2 bg-white rounded border" v-for="cost in costs" :key="cost.id">
+                    <div class="w-20">
                       <input
                         type="number"
                         min="0"
                         :id="cost.id"
                         v-model.number="cost.quantity"
                         placeholder="0"
-                        class="input-number"
+                        class="w-full px-2 py-1 border border-gray-300 rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
                       />
                     </div>
-                    <div class="column-60">
-                      <label :for="cost.id">
+                    <div class="flex-1">
+                      <label :for="cost.id" class="text-gray-700">
                         {{ cost.name }}
                       </label>
                     </div>
-                    <div class="column-20">R$ {{ cost.price }}</div>
+                    <div class="w-32 text-gray-600">R$ {{ cost.price }}</div>
                   </div>
                 </div>
               </div>
-              <div class="modal-footer">
+              <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200 mt-6">
                 <button
                   type="button"
-                  class="btn btn-secondary"
-                  data-bs-dismiss="modal"
+                  class="px-4 py-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors duration-200"
                   @click="closeModal"
                 >
                   Fechar
                 </button>
                 <button
                   type="submit"
-                  class="button-new"
-                  data-bs-dismiss="modal"
+                  class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200"
                 >
-                  criar
+                  Criar
                 </button>
               </div>
             </form>
@@ -208,9 +211,11 @@ import DateInput from "@/components/forms/inputs/date/DateInput.vue";
 import TextAreaInput from "./inputs/textarea/TextAreaInput";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
 import MoneyEditableField from "../fields/number/MoneyEditableField.vue";
+import ButtonNew from "@/components/ui/ButtonNew.vue";
 
 export default {
   components: {
+    ButtonNew,
     DateInput,
     MoneyEditableField,
     TextAreaInput,
@@ -284,6 +289,12 @@ export default {
       if (error) {
         this.errors = error;
       }
+    },
+    formatCurrency(value) {
+      return value.toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      });
     },
   },
   mounted() {

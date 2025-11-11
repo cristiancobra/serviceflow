@@ -40,4 +40,9 @@ class Lead extends Model
     {
         return $this->belongsToMany(Company::class);
     }
+
+    public function opportunities()
+    {
+        return $this->hasMany(Opportunity::class);
+    }
 }

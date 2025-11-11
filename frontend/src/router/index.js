@@ -11,6 +11,7 @@ import JourneysIndex from '../views/journeys/JourneysIndex.vue'
 import LeadsIndex from '../views/leads/LeadsIndex.vue'
 import LeadShow from '../views/leads/LeadShow.vue'
 import InvoiceShow from '@/views/invoices/InvoiceShow.vue'
+import InvoicesIndex from '@/views/invoices/InvoicesIndex.vue'
 import OpportunitiesIndex from '../views/opportunities/OpportunitiesIndex.vue'
 import OpportunityShow from '../views/opportunities/OpportunityShow.vue'
 import ServicesIndex from '../views/services/ServicesIndex.vue'
@@ -21,6 +22,7 @@ import ProjectShow from '../views/projects/ProjectShow.vue'
 import ProposalsIndex from '@/views/proposals/ProposalsIndex.vue'
 import ProposalShow from '@/views/proposals/ProposalShow.vue'
 import TasksIndex from '../views/tasks/TasksIndex.vue'
+import TransactionsIndex from '../views/transactions/TransactionsIndex.vue'
 import UserShow from '@/views/users/UserShow.vue'
 
 
@@ -64,6 +66,11 @@ const routes = [
     path: '/invoices/:id',
     name: 'invoiceShow',
     component: InvoiceShow
+  },
+  {
+    path: '/invoices',
+    name: 'invoicesIndex',
+    component: InvoicesIndex
   },
   {
     path: '/leads',
@@ -129,6 +136,11 @@ const routes = [
     path: '/tasks',
     name: 'tasksIndex',
     component: TasksIndex
+  },
+  {
+    path: '/transactions',
+    name: 'transactionsIndex',
+    component: TransactionsIndex
   },
   {
     path: '/users/:id',

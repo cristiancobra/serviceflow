@@ -18,7 +18,17 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        //
+        $invoices = Invoice::with([
+            'proposal',
+            'proposal.opportunity',
+            'proposal.opportunity.company',
+            'proposal.opportunity.lead',
+            'transactions',
+        ])
+            ->orderBy('date_due', 'desc')
+            ->paginate(500);
+
+        return InvoicesResource::collection($invoices);
     }
 
     /**
@@ -75,10 +85,16 @@ class InvoiceController extends Controller
     public function show(Invoice $invoice)
     {
         if($invoice) {
-            return InvoicesResource::make($invoice->load('proposal.opportunity', 'user'));
+            return InvoicesResource::make($invoice->load([
+                'proposal.opportunity',
+                'proposal.opportunity.company',
+                'proposal.opportunity.lead',
+                'user',
+                'transactions'
+            ]));
         }
         return response()->json([
-            'message' => 'Proposta não encontrada',
+            'message' => 'Fatura não encontrada',
         ], 404);
     }
 

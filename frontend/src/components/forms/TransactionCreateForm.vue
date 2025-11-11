@@ -1,73 +1,134 @@
 <template>
   <div>
-    <button type="button" class="button button-new d-flex justify-content-center" @click="showModal"
-            data-bs-toggle="modal" data-bs-target="#taskModal">
-            <font-awesome-icon icon="fa-solid fa-plus" class="" />
-        </button>
+    <button type="button" class="button button-new" @click="openModal">
+      <font-awesome-icon icon="fa-solid fa-plus" class="" />
+    </button>
 
     <div v-if="isModalVisible" class="myModal">
-      <div class="modal-dialog modal-xl">
+      <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <font-awesome-icon icon="fa-solid fa-file-invoice" class="icon pe-3 primary" />
-            <h5 class="modal-title" id="taskModalLabel">Adicionar recebimento</h5>
-            <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
+            <h1>Novo recebimento</h1>
+            <button
+              type="button"
+              class="btn-close"
+              @click="closeModal"
+              aria-label="Close"
+            ></button>
           </div>
           <div class="modal-body">
             <form @submit.prevent="submitForm">
-
-              <div class="row mt-4">
-                <TextAreaInput label="Observações:" name="observations" v-model="form.observations"
-                  placeholder="Detalhamento da tarefa" :rows="5" />
+              <div class="mb-6">
+                <TextAreaInput
+                  class="text-start"
+                  label="Observações:"
+                  name="observations"
+                  v-model="form.observations"
+                  placeholder="Detalhes do recebimento"
+                  :rows="4"
+                />
               </div>
-
-              <div class="row mb-4 mt-4">
-                <div class="col">
-                  <div>
-                    <label for="invoice" class="form-label">Proposta</label>
-                    <text-value v-model="localProposal.date" class="selected" />
-                  </div>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                  <label for="invoice" class="block text-sm font-semibold text-gray-900 mb-2">Fatura</label>
+                  <TextValue v-model="invoiceDisplay" class="selected" />
                 </div>
-                <div class="col">
-                  <div>
-                    <label for="installment_quantity" class="form-label">Quantidade de Parcelas</label>
-                    <br>
-                    {{ invoice.installment_quantity }}
-                  </div>
-                </div>
-              </div>
-
-              <div class="row mb-4 mt-4">
-                <div class="col">
-                  <UsersSelectInput label="Responsável" v-model="form.user_id" fieldsToDisplay="name" autoSelect=true />
-                </div>
-                <div class="col">
-                  <date-input v-model="form.date_due" label="Data de vencimento" name="date_due" :autoFillNow="true"
-                    placeholder="data quando a fatura vence" @update="updateForm" />
-                </div>
-              </div>
-
-
-              <div class="row mb-2 mt-2">
-                <div class="col-3">
-                  <label for="total" class="form-label">Total</label>
-                </div>
-                <div class="col-3">
-                  <money-field v-model="totalPrices" class="selected" readonly />
+                <div>
+                  <label for="price" class="block text-sm font-semibold text-gray-900 mb-2">Valor</label>
+                  <input
+                    type="number"
+                    id="price"
+                    name="price"
+                    v-model="form.amount"
+                    step="0.01"
+                    min="0"
+                    placeholder="0,00"
+                    class="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ease-in-out hover:border-gray-400 text-right"
+                  />
                 </div>
               </div>
 
-              <div v-if="errorMessage" class="row mt-5">
-                <div class="col">
-                  <p class="error">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                  <label for="bank_account_id" class="block text-sm font-semibold text-gray-900 mb-2">Conta Bancária</label>
+                  <select 
+                    id="bank_account_id"
+                    v-model="form.bank_account_id"
+                    class="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ease-in-out hover:border-gray-400"
+                  >
+                    <option 
+                      v-for="account in bankAccounts" 
+                      :key="account.id" 
+                      :value="account.id"
+                      class="text-gray-900"
+                    >
+                      {{ account.account_name }} - {{ account.bank_name }}
+                    </option>
+                  </select>
+                </div>
+                <div>
+                  <label for="method" class="block text-sm font-semibold text-gray-900 mb-2">Método de Pagamento</label>
+                  <select 
+                    id="method"
+                    v-model="form.method"
+                    class="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ease-in-out hover:border-gray-400"
+                  >
+                    <option value="bank_transfer" class="text-gray-900">Transferência Bancária</option>
+                    <option value="pix" class="text-gray-900">PIX</option>
+                    <option value="cash" class="text-gray-900">Dinheiro</option>
+                    <option value="credit_card" class="text-gray-900">Cartão de Crédito</option>
+                    <option value="debit_card" class="text-gray-900">Cartão de Débito</option>
+                    <option value="check" class="text-gray-900">Cheque</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                  <UsersSelectInput
+                    class="text-start"
+                    label="Responsável"
+                    v-model="form.user_id"
+                    fieldsToDisplay="name"
+                    autoSelect="true"
+                  />
+                </div>
+                <div>
+                  <DateInput
+                    class="text-start"
+                    v-model="form.transaction_date"
+                    label="Data de recebimento"
+                    name="transaction_date"
+                    placeholder="data do recebimento"
+                    :autoFillNow="true"
+                    @update="updateForm"
+                  />
+                </div>
+              </div>
+
+              <div v-if="errorMessage" class="mb-6">
+                <div class="w-full">
+                  <p class="error text-red-500">
                     {{ errorMessage }}
                   </p>
                 </div>
               </div>
 
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" @click=closeModal>Fechar</button>
-                <button type="submit" class="button-new">criar</button>
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  @click="closeModal"
+                >
+                  Fechar
+                </button>
+                <button
+                  type="submit"
+                  class="button-new"
+                >
+                  criar
+                </button>
               </div>
             </form>
           </div>
@@ -78,23 +139,17 @@
 </template>
 
 <script>
-import { submitFormCreate } from "@/utils/requests/httpUtils";
-// import AddMessage from "@/components/forms/messages/AddMessage.vue";
+import { submitFormCreate, index } from "@/utils/requests/httpUtils";
 import DateInput from "./inputs/date/DateInput.vue";
-import MoneyField from "../fields/number/MoneyField.vue";
-// import MoneyEditableField from "../fields/number/MoneyEditableField.vue";
 import TextAreaInput from "./inputs/textarea/TextAreaInput.vue";
 import TextValue from "../fields/text/TextValue.vue";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
 
 export default {
-  name: "TaskCreateForm",
-  emits: ["new-task-event"],
+  name: "TransactionCreateForm",
+  emits: ["new-transaction-event"],
   components: {
-    // AddMessage,
     DateInput,
-    // MoneyEditableField,
-    MoneyField,
     TextAreaInput,
     TextValue,
     UsersSelectInput,
@@ -107,73 +162,79 @@ export default {
   },
   data() {
     return {
-      allStatus: [],
-      companies: [],
-      data: [],
       form: {
-        date_due: null,
-        date_start: null,
-        invoice_id: this.invoice.id,
-        prices: [],
+        invoice_id: this.invoice?.id || null,
+        bank_account_id: null,
+        amount: this.invoice?.price || 0,
+        transaction_date: null,
+        type: 'credit',
+        method: 'bank_transfer',
+        observations: null,
       },
-      isActiveCompany: false,
-      isActiveLead: false,
       isModalVisible: false,
-      leads: [],
-      localInvoice: this.invoice,
-      message: null,
-      messageStatus: "",
-      messageText: "",
-      newTask: null,
-      // selectedProject: inject('currentProject'),
-      users: [],
+      errorMessage: null,
+      bankAccounts: [],
     };
+  },
+  computed: {
+    invoiceDisplay() {
+      return `Fatura #${this.invoice?.id || '...'}`;
+    },
+  },
+  watch: {
+    invoice: {
+      handler(newInvoice) {
+        if (newInvoice && newInvoice.id) {
+          console.log("Invoice mudou, atualizando formulário:", newInvoice);
+          this.form.invoice_id = newInvoice.id;
+          this.form.amount = newInvoice.price || 0;
+        }
+      },
+      deep: true,
+      immediate: true
+    }
   },
   methods: {
     submitFormCreate,
-    clearForm() {
-      this.form.name = "";
-      this.form.observations = "";
-      this.form.company_id = null;
-      this.form.contact_id = null;
-      this.form.date_start = null;
-      this.form.date_due = "";
-      this.form.date_conclusion = "";
+    index,
+    async getBankAccounts() {
+      try {
+        this.bankAccounts = await this.index("bank_accounts");
+        // Seleciona automaticamente a primeira conta se não houver uma já selecionada
+        if (this.bankAccounts.length > 0 && !this.form.bank_account_id) {
+          this.form.bank_account_id = this.bankAccounts[0].id;
+        }
+      } catch (error) {
+        console.error("Erro ao carregar contas bancárias:", error);
+        this.bankAccounts = [];
+      }
     },
     closeModal() {
       this.isModalVisible = false;
+      this.errorMessage = null;
     },
     openModal() {
       this.isModalVisible = true;
+      this.getBankAccounts();
     },
     async submitForm() {
-      // const totalPrice = this.invoice.total_price;
-      // const totalCalculated = this.form.prices.reduce((acc, price) => acc + (isNaN(price) ? 0 : price), 0);
-
-      // if (totalCalculated > totalPrice) {
-      //   const difference = totalCalculated - totalPrice;
-      //   this.errorMessage = `A soma das parcelas excede o valor total da proposta em ${difference.toFixed(2)}. Ajuste os valores.`;
-      //   return;
-      // }
-console.log("Form:", this.form);
       const { data, error } = await this.submitFormCreate("transactions", this.form);
 
       if (data) {
-        this.messageStatus = "success";
-        this.messageText = "Faturas criadas com sucesso!";
-        this.isError = false;
         this.closeModal();
-        this.clearForm();
         this.$emit("new-transaction-event", data);
       }
       if (error) {
-        this.errorMessage = "Erro ao criar faturas. Tente novamente.";
-        this.errors = error;
+        this.errorMessage = "Erro ao criar transação. Tente novamente.";
+        console.error("Erro:", error);
       }
     },
     updateForm(field, value) {
       this.form[field] = value;
     },
+  },
+  mounted() {
+    this.getBankAccounts();
   },
 };
 </script>

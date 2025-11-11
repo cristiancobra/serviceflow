@@ -12,7 +12,7 @@
 
     <section class="section-container">
 
-      <SearchInput v-model="searchTerm" placeholder="Buscar por tarefa, oportunidade ou projeto" />
+      <search-input v-model="searchTerm" placeholder="Buscar por tarefa, oportunidade ou projeto" />
 
       <section class="list-container">
         <div v-for="(tasks, date) in groupedTasks" :key="date">
@@ -45,7 +45,7 @@
             </div>
 
             <div class="task-column">
-              <p class="name">
+              <p class="text-black text-sm">
                 {{ task.name }}
               </p>
             </div>

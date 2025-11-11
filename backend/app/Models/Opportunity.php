@@ -56,6 +56,11 @@ class Opportunity extends Model
         return $this->hasMany(Task::class);
     }
 
+    public function proposals()
+    {
+        return $this->hasMany(Proposal::class);
+    }
+
     // Update the Opportunity duration time duration_time
     public function updateDuration()
     {

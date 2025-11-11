@@ -3,7 +3,7 @@
     <label v-if="label" class="form-label" :for="name">{{ label }}</label>
     <div v-if="!editing"  @click="startEditing">
       <div v-if="localValue">
-        <p class="price-editable">
+        <p class="price-editable text-right">
           <font-awesome-icon icon="edit" class="edit-icon" />
           {{ formatCurrencySymbol(localValue) }}
         </p>
@@ -13,7 +13,7 @@
       </div>
     </div>
     <div v-else class="">
-        <input class="input-money" type="text" :name="name" 
+        <input class="input-money text-black" type="text" :name="name" 
         v-model="localValue" :placeholder="placeholder" @keydown.esc="cancelEditing" @blur="emitSave" @keydown.enter.prevent="emitSave" />
     </div>
 

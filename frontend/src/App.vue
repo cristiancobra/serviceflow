@@ -44,6 +44,7 @@ export default {
 
 <style>
 .app-container {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -51,6 +52,15 @@ export default {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  background-color: var(--background-light);
+}
+
+.main {
+  margin-left: 8%;
+  margin-right: 8%;
+  /* margin-bottom: 5vh; falta o rodape */
+  padding: 0%;
+  transition: all 0.5s;
 }
 
 .router-view {

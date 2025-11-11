@@ -26,46 +26,46 @@
       <div
         v-for="proposal in proposals"
         v-bind:key="proposal.id"
-        class="list-line"
+        class="list-line flex w-full"
       >
-        <div class="column-20 column-icon" id="col-user">
+        <div class="w-1/10 flex justify-center" id="col-user">
           <select-status-button
             :status="proposal.status"
             @update:modelValue="updateProposal('status', proposal.id, $event)"
           />
         </div>
         <router-link
-          class="list-line-link"
+          class="list-line-link flex flex-1"
           :to="{ name: 'proposalShow', params: { id: proposal.id } }"
         >
-          <div class="column-20 column-date">
+          <div class="w-1/9 text-center text-black">
             {{ formatDateBr(proposal.date) }}
           </div>
-          <div class="column-20 column-name">
+          <div class="w-3/9 column-name text-black">
             <p class="name" v-if="!proposal.opportunity">
               sem oportunidade associada
             </p>
             <p
-              class="group-name"
+              class="group-name text-black"
               v-else-if="proposal.opportunity?.company?.business_name"
             >
               {{ proposal.opportunity.company.business_name }}
             </p>
             <p
-              class="group-name"
+              class="group-name text-black"
               v-else-if="proposal.opportunity?.company?.legal_name"
             >
               {{ proposal.opportunity.company.legal_name }}
             </p>
-            <p class="group-name" v-else-if="proposal.opportunity?.lead?.name">
+            <p class="group-name text-black" v-else-if="proposal.opportunity?.lead?.name">
               {{ proposal.opportunity.lead.name }}
             </p>
-            <p class="name" v-else>sem associação</p>
+            <p class="text-black" v-else>sem associação</p>
           </div>
-          <div class="column-30">
+          <div class="w-4/9 text-black">
             <p v-html="getShortDescription(proposal)" class="name ps-2"></p>
           </div>
-          <div class="column-20 column-price">
+          <div class="w-1/9 column-price text-black">
             <money-field name="total_price" v-model="proposal.total_price" />
           </div>
         </router-link>
@@ -115,7 +115,7 @@ export default {
       let description = "";
       if (proposal.description) {
         description = proposal.description.trim();
-      } else if (proposal.opportunity) {
+      } else if (proposal.opportunity.description) {
         description = proposal.opportunity.description.trim();
       } else {
         return "---";

@@ -12,25 +12,78 @@
       </div>
     </div>
 
-    <div class="table-row" v-for="invoice in proposal.invoices" :key="invoice.id">
-      <router-link :to="{ name: 'invoiceShow', params: { id: invoice.id } }" class="router-row">
-        <div class="icon-column">
-          <font-awesome-icon icon="fa fa-calendar" />
-        </div>
-        <div class="date-column">
-          {{ invoice.date_due }}
-        </div>
-        <div class="price-column">
-          <money-field name="price" v-model="invoice.price" />
-        </div>
-      </router-link>
+    <!-- Mensagem quando não há faturas -->
+    <div v-if="localInvoices.length === 0" class="flex flex-col items-center justify-center py-8 px-4 text-center bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+      <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mb-4">
+        <font-awesome-icon icon="fa-solid fa-file-invoice" class="text-2xl text-gray-400" />
+      </div>
+      <h3 class="text-lg font-medium text-gray-600 mb-2">Nenhuma fatura criada</h3>
+      <p class="text-sm text-gray-500 max-w-sm">
+        Use o botão acima para gerar as faturas desta proposta automaticamente.
+      </p>
+    </div>
+
+    <!-- Lista de faturas existentes -->
+    <div v-else class="space-y-3">
+      <div 
+        v-for="invoice in localInvoices" 
+        :key="invoice.id"
+        class="bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200"
+      >
+        <router-link 
+          :to="{ name: 'invoiceShow', params: { id: invoice.id } }" 
+          class="flex items-center justify-between p-4 text-gray-800 hover:text-blue-600 transition-colors duration-200 no-underline"
+        >
+          <div class="flex items-center gap-4">
+            <div class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full">
+              <font-awesome-icon icon="fa fa-calendar" class="text-blue-600" />
+            </div>
+            <div class="flex flex-col">
+              <span class="text-sm font-medium text-gray-600">Vencimento</span>
+              <span class="text-base font-semibold">{{ invoice.date_due }}</span>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-6">
+            <div class="flex items-center">
+              <font-awesome-icon icon="fas fa-dollar-sign" class="text-gray-400 mr-2 w-4" />
+              <span class="font-medium mr-1 text-sm">Valor:</span>
+              <span class="text-blue-600 font-bold">
+                {{ formatCurrency(invoice.price) }}
+              </span>
+            </div>
+            
+            <div class="flex items-center">
+              <font-awesome-icon icon="fas fa-check-circle" class="text-gray-400 mr-2 w-4" />
+              <span class="font-medium mr-1 text-sm">Pago:</span>
+              <span class="text-green-600 font-bold">
+                {{ formatCurrency(invoice.total_paid || 0) }}
+              </span>
+            </div>
+            
+            <div class="flex items-center">
+              <font-awesome-icon icon="fas fa-balance-scale" class="text-gray-400 mr-2 w-4" />
+              <span class="font-medium mr-1 text-sm">Saldo:</span>
+              <span 
+                :class="calculateInvoiceBalance(invoice) === 0 ? 'text-gray-600' : 'text-orange-600'"
+                class="font-bold"
+              >
+                {{ formatCurrency(calculateInvoiceBalance(invoice)) }}
+              </span>
+            </div>
+            
+            <div class="w-6 h-6 flex items-center justify-center">
+              <font-awesome-icon icon="fa-solid fa-chevron-right" class="text-gray-400 text-sm" />
+            </div>
+          </div>
+        </router-link>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import InvoiceCreateForm from "@/components/forms/InvoiceCreateForm.vue";
-import MoneyField from "@/components/fields/number/MoneyField.vue";
 
 export default {
   props: {
@@ -41,46 +94,42 @@ export default {
   },
   data() {
     return {
-      localInvoices: this.proposal.invoices,
+      localInvoices: [...(this.proposal?.invoices || [])],
     };
+  },
+  watch: {
+    'proposal.invoices': {
+      handler(newInvoices) {
+        this.localInvoices = [...(newInvoices || [])];
+      },
+      deep: true,
+    },
   },
   components: {
     InvoiceCreateForm,
-    MoneyField,
+  },
+  methods: {
+    addInvoiceCreated(newInvoices) {
+      // Adiciona as novas faturas aos dados locais
+      if (Array.isArray(newInvoices)) {
+        this.localInvoices.push(...newInvoices);
+      } else {
+        this.localInvoices.push(newInvoices);
+      }
+      
+      // Emite evento para o componente pai atualizar a proposta original
+      this.$emit('invoices-updated', this.localInvoices);
+    },
+    formatCurrency(value) {
+      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+    },
+    calculateInvoiceBalance(invoice) {
+      return invoice.price - (invoice.total_paid || 0);
+    },
   },
 };
 </script>
 
 <style scoped>
-.icon-column {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.3rem;
-  margin: 1rem;
-  flex-basis: 0%;
-}
-
-.date-column {
-    display: flex;
-    align-items: center;
-    justify-content: left;
-    flex-basis: 80%;
-}
-
-.price-column {
-    display: flex;
-    align-items: center;
-    justify-content: right;
-    flex-basis: 20%;
-}
-
-.router-row {
-  display: flex;
-  align-items: left;
-  justify-content: left;
-  width: 100%;
-  text-decoration: none;
-  color: black;
-}
+/* Removi todas as classes CSS personalizadas que foram substituídas por Tailwind */
 </style>

@@ -25,7 +25,7 @@
               @mouseover="toggleActive('home')"
               :class="{ active: activeItem === 'home' }"
             >
-              <font-awesome-icon icon="fas fa-calendar" />
+              <font-awesome-icon icon="fas fa-calendar" class="router-link-text" />
               <span class="router-link-text">AGENDA</span>
             </li>
           </router-link>
@@ -36,7 +36,7 @@
               @mouseover="toggleActive('contacts')"
               :class="{ active: activeItem === 'contacts' }"
             >
-              <font-awesome-icon icon="fas fa-user" />
+              <font-awesome-icon icon="fas fa-user" class="router-link-text" />
               <span class="router-link-text">CONTATOS</span>
             </li>
           </router-link>
@@ -47,7 +47,7 @@
               @mouseover="toggleActive('companies')"
               :class="{ active: activeItem === 'companies' }"
             >
-              <font-awesome-icon icon="fas fa-briefcase" />
+              <font-awesome-icon icon="fas fa-briefcase" class="router-link-text" />
               <span class="router-link-text">EMPRESAS</span>
             </li>
           </router-link>
@@ -58,7 +58,7 @@
               @mouseover="toggleActive('opportunities')"
               :class="{ active: activeItem === 'opportunities' }"
             >
-              <font-awesome-icon icon="fas fa-bullseye" />
+              <font-awesome-icon icon="fas fa-bullseye" class="router-link-text" />
               <span class="router-link-text">OPORTUNIDADES</span>
             </li>
           </router-link>
@@ -69,7 +69,7 @@
             @mouseleave="hideSubmenu('financeiro')"
             :class="{ active: activeItem === 'financeiro' }"
           >
-            <font-awesome-icon icon="fas fa-cogs" />
+            <font-awesome-icon icon="fas fa-cogs" class="router-link-text" />
             <span class="router-link-text">FINANCEIRO</span>
             <ul class="submenu" v-show="submenus.financeiro">
               <router-link to="/financial">
@@ -79,7 +79,7 @@
                   :class="{ active: activeItem === 'financial-report' }"
                 >
                   <font-awesome-icon icon="fas fa-chart-line" />
-                  <span class="router-link-text">RELATÓRIOS</span>
+                  <span class="text-white ps-2">RELATÓRIOS</span>
                 </li>
               </router-link>
               <router-link to="/proposals">
@@ -89,7 +89,27 @@
                   :class="{ active: activeItem === 'proposals' }"
                 >
                   <font-awesome-icon icon="fas fa-file-invoice-dollar" />
-                  <span class="router-link-text">PROPOSTAS</span>
+                  <span class="text-white ps-2">PROPOSTAS</span>
+                </li>
+              </router-link>
+              <router-link to="/invoices">
+                <li
+                  class="nav-item"
+                  @mouseover="toggleActive('invoices')"
+                  :class="{ active: activeItem === 'invoices' }"
+                >
+                  <font-awesome-icon icon="fas fa-receipt" />
+                  <span class="text-white ps-2">FATURAS</span>
+                </li>
+              </router-link>
+              <router-link to="/transactions">
+                <li
+                  class="nav-item"
+                  @mouseover="toggleActive('transactions')"
+                  :class="{ active: activeItem === 'transactions' }"
+                >
+                  <font-awesome-icon icon="fas fa-exchange-alt" />
+                  <span class="text-white ps-2">MOVIMENTAÇÕES</span>
                 </li>
               </router-link>
               <router-link to="/services">
@@ -99,7 +119,7 @@
                   :class="{ active: activeItem === 'services' }"
                 >
                   <font-awesome-icon icon="fas fa-coins" />
-                  <span class="router-link-text">SERVIÇOS</span>
+                  <span class="text-white ps-2">SERVIÇOS</span>
                 </li>
               </router-link>
               <router-link to="/costs">
@@ -109,7 +129,7 @@
                   :class="{ active: activeItem === 'costs' }"
                 >
                   <font-awesome-icon icon="fas fa-dollar-sign" />
-                  <span class="router-link-text">CUSTOS</span>
+                  <span class="text-white ps-2">CUSTOS</span>
                 </li>
               </router-link>
             </ul>
@@ -121,7 +141,7 @@
               @mouseover="toggleActive('projects')"
               :class="{ active: activeItem === 'projects' }"
             >
-              <font-awesome-icon icon="fas fa-project-diagram" />
+              <font-awesome-icon icon="fas fa-project-diagram" class="router-link-text" />
               <span class="router-link-text">PROJETOS</span>
             </li>
           </router-link>
@@ -132,7 +152,7 @@
               @mouseover="toggleActive('tasks')"
               :class="{ active: activeItem === 'tasks' }"
             >
-              <font-awesome-icon icon="fas fa-tasks" />
+              <font-awesome-icon icon="fas fa-tasks" class="router-link-text" />
               <span class="router-link-text">TAREFAS</span>
             </li>
           </router-link>
@@ -143,7 +163,7 @@
             @mouseleave="hideSubmenu('configuracoes')"
             :class="{ active: activeItem === 'configuracoes' }"
           >
-            <font-awesome-icon icon="fas fa-cogs" />
+            <font-awesome-icon icon="fas fa-cogs" class="router-link-text" />
             <span class="router-link-text">CONFIGURAÇÕES</span>
             <ul class="submenu" v-show="submenus.configuracoes">
               <router-link :to="`/accounts/${accountId}`">
@@ -153,7 +173,7 @@
                   :class="{ active: activeItem === 'account' }"
                 >
                   <font-awesome-icon icon="fas fa-user" />
-                  <span class="router-link-text">CONTA</span>
+                  <span class="text-white ps-2">CONTA</span>
                 </li>
               </router-link>
             </ul>
@@ -165,13 +185,13 @@
               @mouseover="toggleActive('submitLogout')"
               :class="{ active: activeItem === 'logout' }"
             >
-              <font-awesome-icon icon="fas fa-sign-out" />
+              <font-awesome-icon icon="fas fa-sign-out" class="router-link-text" />
               <span class="router-link-text">SAIR</span>
             </li>
           </router-link>
         </ul>
 
-        <navbar-user-menu :openJourney="openJourney" />
+        <navbar-user-menu />
       </div>
     </nav>
   </div>
@@ -217,7 +237,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(["accountId", "openJourney"]),
+    ...mapState(["accountId"]),
   },
 };
 </script>
@@ -226,8 +246,9 @@ export default {
 .navbar-container {
   position: sticky;
   top: 0;
-  color: white;
-  background-color: var(--primary);
+  color:  var(--primary);
+  background-color: rgba(var(--primary-rgb), 0.8);
+  backdrop-filter: blur(10px);
   z-index: 1000;
   height: auto;
 }
@@ -345,7 +366,7 @@ export default {
 }
 
 .router-link-text {
-  color: #fff;
+  color:  var(--primary);
   text-decoration: none;
   margin-left: 0.5rem;
   font-size: 0.8rem;
