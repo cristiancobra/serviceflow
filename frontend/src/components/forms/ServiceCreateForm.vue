@@ -118,7 +118,7 @@
                     type="text"
                     name="profit_percentage"
                     v-model="form.profit_percentage"
-                    @input="onProfitInput"
+                    @input="onProfitPercentageInput"
                   />
                 </div>
                 <div class="column-5">

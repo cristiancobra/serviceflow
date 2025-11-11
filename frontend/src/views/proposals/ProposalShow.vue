@@ -28,7 +28,10 @@
       <timeline-proposal :proposal="proposal" />
     </div>
 
-    <description-section :description="proposal.description" />
+    <description-section 
+      :description="proposal.description"
+      @update:description="updateProposal('description', $event)"
+    />
 
     <proposal-services-section
       :services="proposal.proposalServices"

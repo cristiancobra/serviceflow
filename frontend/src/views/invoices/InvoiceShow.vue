@@ -67,7 +67,10 @@
       </div>
     </div>
 
-    <description-section :description="invoice.description" />
+    <description-section 
+      :description="invoice.description"
+      @update:description="updateInvoice('description', $event)"
+    />
 
     <div class="section-container">
       <div class="section-header">
