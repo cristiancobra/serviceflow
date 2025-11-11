@@ -45,7 +45,7 @@
             Preço
           </label>
           <div class="text-black">
-            <money-field name="price" v-model="invoice.price" />
+            <money-editable-field name="price" v-model="invoice.price" @save="updateInvoice('price', $event)" />
           </div>
         </div>
 
@@ -106,20 +106,35 @@
       </div>
     </div>
 
-    <div class="flex items-center justify-start gap-4 py-4">
-      <div>
-        <button class="button delete me-5" @click="deleteInvoice()">
-          excluir
+    <div class="flex flex-wrap items-center justify-between px-10 gap-6 py-6 mt-8 border-t border-gray-200">
+      <button class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm" 
+              @click="deleteInvoice()">
+        Excluir
+      </button>
+      
+      <div class="flex items-center gap-4">
+        <!-- Toggle Switch usando apenas Tailwind -->
+        <label class="flex items-center gap-2 cursor-pointer">
+          <div class="relative">
+            <input
+              type="checkbox"
+              class="sr-only"
+              v-model="isVisibleQuantity"
+            />
+            <div class="w-11 h-6 bg-gray-200 rounded-full shadow-inner transition-colors duration-200 ease-in-out" 
+                 :class="isVisibleQuantity ? 'bg-blue-600' : 'bg-gray-300'">
+            </div>
+            <div class="absolute w-4 h-4 bg-white rounded-full shadow top-1 transition-transform duration-200 ease-in-out transform" 
+                 :class="isVisibleQuantity ? 'translate-x-6' : 'translate-x-1'">
+            </div>
+          </div>
+          <span class="text-sm text-gray-700 font-medium">quantidades</span>
+        </label>
+        
+        <button class="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm" 
+                @click="exportPDF()">
+          Gerar PDF
         </button>
-      </div>
-      <div>
-        <div class="toggle-switch">
-          <input type="checkbox" id="toggle" class="toggle-checkbox" v-model="isVisibleQuantity">
-          <label for="toggle" class="toggle-label">quantidades</label>
-        </div>
-      </div>
-      <div>
-        <button class="button" @click="exportPDF()">Gerar PDF</button>
       </div>
     </div>
   </div>
@@ -132,6 +147,7 @@ import MoneyField from '../../components/fields/number/MoneyField.vue';
 import TransactionCreateForm from "../../components/forms/TransactionCreateForm.vue";
 import SelectStatusButton from "../../components/buttons/SelectStatusButton.vue";
 import DescriptionSection from "@/components/show/DescriptionSection.vue";
+import MoneyEditableField from '../../components/fields/number/MoneyEditableField.vue';
 
 export default {
   data() {
@@ -146,6 +162,7 @@ export default {
     TransactionCreateForm,
     SelectStatusButton,
     DescriptionSection,
+    MoneyEditableField,
   },
   methods: {
     destroy,

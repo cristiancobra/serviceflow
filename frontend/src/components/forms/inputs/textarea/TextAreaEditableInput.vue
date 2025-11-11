@@ -13,7 +13,7 @@
 
     <div v-else class="w-full">
       <textarea
-        class="w-full border border-gray-300 rounded-md p-3 mr-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none overflow-hidden"
+        class="w-full border border-gray-300 rounded-md p-3 mr-3 focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none overflow-hidden"
         :value="modelValue"
         :id="name"
         :name="name"
@@ -26,7 +26,7 @@
       ></textarea>
       <div class="flex gap-2 mt-2">
         <button 
-          class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-1 px-3 rounded text-sm mr-2" 
+          class="bg-primary-500 hover:bg-primary-600 text-white font-medium py-1 px-3 rounded text-sm mr-2" 
           @click="saveChanges"
         >
           Salvar

@@ -94,7 +94,7 @@
                       <money-editable-field 
                         :name="'price-' + index" 
                         v-model="form.prices[index - 1]"
-                        @update="adjustPrices(index - 1, $event)" 
+                        @save="adjustPrices(index - 1, $event)" 
                       />
                     </div>
                   </div>

@@ -113,13 +113,106 @@ class InvoiceController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  InvoiceRequest  $request
+     * @param  \App\Models\Invoice  $invoice
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(InvoiceRequest $request, Invoice $invoice)
     {
-        //
+        try {
+            $validatedData = $request->validated();
+
+            // Se o preço está sendo atualizado, ajustar as faturas subsequentes
+            if (isset($validatedData['price'])) {
+                $this->adjustInvoicePrices($invoice, $validatedData['price']);
+            } else {
+                // Atualiza apenas os campos enviados na requisição (exceto preço)
+                $invoice->update($validatedData);
+            }
+
+            return InvoicesResource::make($invoice->load([
+                'proposal.opportunity',
+                'proposal.opportunity.company', 
+                'proposal.opportunity.lead',
+                'user',
+                'transactions'
+            ]));
+
+        } catch (ValidationException $validationException) {
+            return response()->json([
+                'message' => "Erro de validação",
+                'errors' => $validationException->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao atualizar fatura',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Ajusta os preços das faturas subsequentes quando uma fatura é atualizada
+     *
+     * @param Invoice $changedInvoice
+     * @param float $newPrice
+     * @return void
+     */
+    private function adjustInvoicePrices(Invoice $changedInvoice, float $newPrice)
+    {
+        // Busca a proposta para obter o valor total
+        $proposal = $changedInvoice->proposal;
+        $totalPrice = $proposal->total_price;
+
+        // Busca todas as faturas da proposta ordenadas por data de vencimento
+        $allInvoices = Invoice::where('proposal_id', $proposal->id)
+            ->orderBy('date_due')
+            ->get();
+
+        // Encontra o índice da fatura que está sendo alterada
+        $changedIndex = $allInvoices->search(function ($invoice) use ($changedInvoice) {
+            return $invoice->id === $changedInvoice->id;
+        });
+
+        if ($changedIndex === false) {
+            throw new \Exception('Fatura não encontrada na proposta');
+        }
+
+        // Calcula a soma das faturas anteriores à fatura alterada
+        $sumBefore = $allInvoices->slice(0, $changedIndex)->sum('price');
+        $remaining = $totalPrice - $sumBefore;
+
+        // Verifica se o novo valor não excede o valor restante
+        if ($newPrice > $remaining) {
+            $newPrice = $remaining;
+        }
+
+        // Atualiza a fatura alterada
+        $changedInvoice->update(['price' => $newPrice]);
+
+        // Calcula o valor restante após a alteração
+        $remainingAfterChange = $totalPrice - $sumBefore - $newPrice;
+        $remainingInvoices = $allInvoices->slice($changedIndex + 1);
+        $remainingInvoicesCount = $remainingInvoices->count();
+
+        if ($remainingInvoicesCount > 0) {
+            // Calcula o novo valor por fatura restante
+            $newPricePerInvoice = round($remainingAfterChange / $remainingInvoicesCount, 2);
+
+            // Atualiza todas as faturas seguintes com o valor calculado
+            foreach ($remainingInvoices as $index => $invoice) {
+                $invoice->update(['price' => $newPricePerInvoice]);
+            }
+
+            // Ajusta a última fatura para compensar diferenças de arredondamento
+            $totalCalculated = $sumBefore + $newPrice + ($newPricePerInvoice * $remainingInvoicesCount);
+            $difference = $totalPrice - $totalCalculated;
+            
+            if ($difference != 0 && $remainingInvoicesCount > 0) {
+                $lastInvoice = $remainingInvoices->last();
+                $lastInvoice->update(['price' => $newPricePerInvoice + $difference]);
+            }
+        }
     }
 
     /**
