@@ -88,21 +88,13 @@
       </div>
     </section>
 
-    <div class="flex gap-10">
-      <section
-        id="proposals"
-        class="flex-1 ml-10 border border-primary rounded-lg"
-      >
-        <proposals-list-section :opportunityId="opportunityId" />
-      </section>
+    <section id="proposals">
+      <proposals-list-section :opportunityId="opportunityId" />
+    </section>
 
-      <section
-        id="attachments"
-        class="flex-1 mr-10 border border-primary rounded-lg"
-      >
-        <links-list :links="opportunity.links" :opportunityId="opportunityId" />
-      </section>
-    </div>
+    <section id="attachments">
+      <links-list :links="opportunity.links" :opportunityId="opportunityId" />
+    </section>
 
     <section id="tasks">
       <tasks-list-section

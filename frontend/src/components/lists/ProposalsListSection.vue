@@ -10,9 +10,11 @@
             </div>
         </div>
 
-        <div class="table-row">
-            <input type="text" class="form-control search-container" v-model="searchTerm"
-                placeholder="Digite para buscar" />
+        <div class="w-full">
+            <search-input
+                v-model="searchTerm"
+                placeholder="Digite para buscar propostas"
+            />
         </div>
 
         <div v-for="proposal in proposals" v-bind:key="proposal.id" class="list-line">
@@ -61,12 +63,14 @@ import { index, updateField } from "@/utils/requests/httpUtils";
 import MoneyField from '../fields/number/MoneyField.vue';
 import ProposalCreateForm from "../forms/ProposalCreateForm.vue";
 import SelectStatusButton from "../buttons/SelectStatusButton.vue";
+import SearchInput from '../filters/SearchInput.vue';
 
 export default {
     components: {
         ProposalCreateForm,
         MoneyField,
         SelectStatusButton,
+        SearchInput,
     },
     props: {
         opportunityId: {

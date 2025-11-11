@@ -17,16 +17,16 @@
     </div>
 
     <section class="section-container">
-      <div class="search-container">
-        <input
-          type="text"
-          class="search-input"
+      <div class="w-full">
+        <search-input
           v-model="searchTerm"
           placeholder="Digite para buscar faturas"
         />
       </div>
 
-      <div class="flex items-center py-4 px-3 border-b border-gray-200 bg-gray-50">
+      <div
+        class="flex items-center py-4 px-3 border-b border-gray-200 bg-gray-50"
+      >
         <div class="w-1/10 text-black text-center font-bold">Status</div>
         <div class="w-1/10 text-black text-center font-bold">Data</div>
         <div class="w-3/10 text-black text-center font-bold">Oportunidade</div>
