@@ -4,30 +4,73 @@
       <font-awesome-icon icon="fas fa-file-invoice" class="icon" />
       <h2>Itens da proposta</h2>
     </div>
-    <div class="flex w-full" v-for="service in services" v-bind:key="service.id">
-      <div class="w-1/12 flex justify-center items-center ps-5">
-        <font-awesome-icon icon="fa-solid fa-coins" class="primary text-black" />
-      </div>
+    
+    <!-- Cabeçalho das colunas -->
+    <div class="flex w-full text-xs text-gray-600 font-semibold pb-2 pt-2 border-b border-gray-300 bg-gray-100">
+      <div class="w-[24%] ps-2 text-center">Serviço</div>
+      <div class="w-[7%] text-center">Qtd</div>
+      <div class="w-[9%] text-center">Horas</div>
+      <div class="w-[11%] text-center">Taxa/h</div>
+      <div class="w-[11%] text-center">Custo Op.</div>
+      <div class="w-[9%] text-center">Margem %</div>
+      <div class="w-[11%] text-center">Lucro unitário</div>
+      <div class="w-[11%] text-center">Lucro total</div>
+      <div class="w-[11%] text-center">Preço unitário</div>
+      <div class="w-[13%] text-center">Preço final</div>
+    </div>
+
+    <div class="flex w-full py-2 border-b border-gray-100 hover:bg-gray-50 text-sm" v-for="service in proposalServices" v-bind:key="service.id">
       <router-link
-        class="no-link w-6/12 flex items-center"
+        class="no-link w-[24%] flex items-center ps-2 gap-2"
         :to="{ name: 'serviceShow', params: { id: service.service_id } }"
         :key="service.service_id"
       >
-        <div class="text-black">
+        <font-awesome-icon icon="fa-solid fa-coins" class="primary text-black text-xs flex-shrink-0" />
+        <div class="text-black truncate text-sm">
             {{ service.name }}
         </div>
       </router-link>
-      <div class="w-2/12 flex items-center justify-center">
+      <div class="w-[7%] flex items-center justify-center text-black text-sm">
         <integer-editable-field
           v-model="service.quantity"
           @save="emitUpdateProposal('quantity', service.service_id, $event)"
         />
-        <span class="text-black font-bold ps-1">x</span>
       </div>
-      <div class="w-2/12 flex items-center justify-end text-black">
+      <div class="w-[9%] flex items-center justify-center text-black text-sm">
+        <hours-decimal-editable-field
+          v-model="service.labor_hours"
+          @save="emitUpdateProposal('labor_hours', service.service_id, $event)"
+        />
+      </div>
+      <div class="w-[11%] flex items-center justify-end text-black pr-2 text-sm">
+        <money-editable-field
+          v-model="service.labor_hourly_rate"
+          @save="emitUpdateProposal('labor_hourly_rate', service.service_id, $event)"
+        />
+      </div>
+      <div class="w-[11%] flex items-center justify-end text-black pr-2 text-sm">
+        <money-field name="labor_hourly_rate_total" v-model="service.labor_hourly_rate_total" />
+      </div>
+      <div class="w-[9%] flex items-center justify-center text-black text-sm">
+        <decimal-editable-field
+          v-model="service.profit_percentage"
+          @save="emitUpdateProposal('profit_percentage', service.service_id, $event)"
+        />
+        <span class="ps-1 text-[10px]">%</span>
+      </div>
+      <div class="w-[11%] flex items-center justify-end text-black pr-2 text-sm">
+        <money-editable-field
+          v-model="service.profit"
+          @save="emitUpdateProposal('profit', service.service_id, $event)"
+        />
+      </div>
+      <div class="w-[11%] flex items-center justify-end text-black pr-2 text-sm">
+        <money-field name="total_profit" v-model="service.total_profit" />
+      </div>
+      <div class="w-[11%] flex items-center justify-end text-black pr-2 text-sm">
         <money-field name="price" v-model="service.price" />
       </div>
-      <div class="w-2/12 flex items-center justify-end font-bold text-black">
+      <div class="w-[13%] flex items-center color-primary-500 justify-end font-bold pr-2 text-sm">
         <money-field name="total_price" v-model="service.total_price" />
       </div>
     </div>
@@ -36,22 +79,49 @@
 
 <script>
 import MoneyField from "@/components/fields/number/MoneyField.vue";
+import MoneyEditableField from "@/components/fields/number/MoneyEditableField.vue";
 import IntegerEditableField from "../fields/number/IntegerEditableField.vue";
+import DecimalEditableField from "../fields/number/DecimalEditableField.vue";
+import HoursDecimalEditableField from "../fields/number/HoursDecimalEditableField.vue";
 
 export default {
   props: {
-    services: {
+    proposalServices: {
       type: Array,
       required: false,
     },
   },
   components: {
     MoneyField,
+    MoneyEditableField,
     IntegerEditableField,
+    DecimalEditableField,
+    HoursDecimalEditableField,
+  },
+  data() {
+    return {
+      editingProfitPercentage: {},
+      editingProfitPercentageValue: {},
+    };
   },
   methods: {
     async emitUpdateProposal(fieldName, serviceId, editedValue) {
       this.$emit("update-proposal", fieldName, serviceId, editedValue);
+    },
+    startEditingProfitPercentage(serviceId) {
+      this.$set(this.editingProfitPercentage, serviceId, true);
+      this.$set(this.editingProfitPercentageValue, serviceId, this.proposalServices.find(service => service.service_id === serviceId).profit_percentage);
+      this.$nextTick(() => {
+        this.$refs.profitPercentageInput.focus();
+      });
+    },
+    cancelEditingProfitPercentage(serviceId) {
+      this.$set(this.editingProfitPercentage, serviceId, false);
+    },
+    saveEditingProfitPercentage(serviceId) {
+      const editedValue = this.editingProfitPercentageValue[serviceId];
+      this.emitUpdateProposal('profit_percentage', serviceId, editedValue);
+      this.$set(this.editingProfitPercentage, serviceId, false);
     },
   },
 };

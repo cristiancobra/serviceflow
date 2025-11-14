@@ -4,6 +4,7 @@
       <font-awesome-icon icon="fas fa-dollar" class="icon" />
       <h2>Custos e margem de lucro</h2>
     </div>
+
     <div class="table-row">
       <div class="column-5 column-icon">
         <font-awesome-icon icon="fa fa-clock" />
@@ -37,6 +38,22 @@
         />
       </div>
     </div>
+
+
+    <div class="table-row">
+      <div class="column-5 column-icon">
+        <font-awesome-icon icon="fa fa-coins" />
+      </div>
+      <div class="column-75 column-name">Custos de produção</div>
+      <div class="column-20 column-total-price">
+        <money-field
+          name="production_costs"
+          v-model="localService.production_costs"
+        />
+      </div>
+    </div>
+
+
     <div class="table-row">
       <div class="column-5 column-icon">
         <font-awesome-icon icon="fas fa-percent" />
@@ -70,19 +87,6 @@
       <div class="column-75 column-name">Preço base:</div>
       <div class="column-20 column-total-price">
         <money-field name="price" v-model="localService.price" />
-      </div>
-    </div>
-
-    <div class="table-row">
-      <div class="column-5 column-icon">
-        <font-awesome-icon icon="fa fa-coins" />
-      </div>
-      <div class="column-75 column-name">Custos de produção</div>
-      <div class="column-20 column-total-price">
-        <money-field
-          name="production_costs"
-          v-model="localService.production_costs"
-        />
       </div>
     </div>
 

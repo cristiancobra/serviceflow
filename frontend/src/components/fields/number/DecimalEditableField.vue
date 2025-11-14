@@ -2,14 +2,16 @@
   <div class="main-container">
     <label class="form-label" :for="name">{{ label }}</label>
     <div v-if="!editing"  @click="startEditing">
-      <div v-if="localValue">
+      <div v-if="localValue !== null && localValue !== undefined && localValue !== ''">
         <p class="number-editable">
           <font-awesome-icon icon="edit" class="edit-icon" />
         {{ localValue }}
         </p>
       </div>
       <div v-else>
+        <p class="text-center">
         não informado
+        </p>
       </div>
     </div>
     <div v-else>
@@ -27,7 +29,7 @@ export default {
   data() {
     return {
       editing: false,
-      localValue: this.modelValue ? parseFloat(this.modelValue).toFixed(2) : '',
+      localValue: (this.modelValue !== null && this.modelValue !== undefined) ? parseFloat(this.modelValue).toFixed(2) : '',
     };
   },
   props: {
@@ -47,12 +49,13 @@ export default {
     },
     cancelEditing() {
       this.editing = false;
-      this.localValue = this.modelValue ? parseFloat(this.modelValue).toFixed(2) : '';
+      this.localValue = (this.modelValue !== null && this.modelValue !== undefined) ? parseFloat(this.modelValue).toFixed(2) : '';
     },
+      
   },
   watch: {
     modelValue(newValue) {
-      this.localValue = newValue ? parseFloat(newValue).toFixed(2) : '';
+      this.localValue = (newValue !== null && newValue !== undefined) ? parseFloat(newValue).toFixed(2) : '';
     },
   },
   mounted() {

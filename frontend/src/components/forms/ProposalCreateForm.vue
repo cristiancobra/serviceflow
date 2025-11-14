@@ -5,23 +5,19 @@
       @click="openModal"
     />
 
-    <div v-if="isModalVisible" class="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-auto">
-        <div class="bg-gray-50 rounded-t-lg">
-          <div class="flex justify-between items-center p-6 border-b border-gray-200">
-            <h1 class="text-xl font-semibold text-gray-800">Nova proposta</h1>
+    <div v-if="isModalVisible" class="myModal">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Nova proposta</h5>
             <button
               type="button"
-              class="text-gray-400 hover:text-gray-600 focus:outline-none"
+              class="btn-close"
               @click="closeModal"
               aria-label="Close"
-            >
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-              </svg>
-            </button>
+            ></button>
           </div>
-          <div class="p-6">
+          <div class="modal-body">
             <form @submit.prevent="submitForm">
               <div class="mb-6">
                 <TextAreaInput
@@ -169,7 +165,7 @@
                         :id="cost.id"
                         v-model.number="cost.quantity"
                         placeholder="0"
-                        class="w-full px-2 py-1 border border-gray-300 rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        class="w-full px-2 py-1 border border-gray-300 rounded text-right text-black focus:outline-none focus:ring-1 focus:ring-blue-500"
                       />
                     </div>
                     <div class="flex-1">
@@ -177,21 +173,29 @@
                         {{ cost.name }}
                       </label>
                     </div>
-                    <div class="w-32 text-gray-600">R$ {{ cost.price }}</div>
+                    <div class="w-32">
+                      <money-editable-field
+                        :name="cost.id"
+                        v-model="cost.price"
+                      />
+                    </div>
+                    <div class="w-32 text-right text-gray-700 font-medium">
+                      R$ {{ formatCurrency((cost.quantity || 0) * (cost.price || 0)) }}
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200 mt-6">
+              <div class="modal-footer">
                 <button
                   type="button"
-                  class="px-4 py-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors duration-200"
+                  class="btn btn-secondary"
                   @click="closeModal"
                 >
                   Fechar
                 </button>
                 <button
                   type="submit"
-                  class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200"
+                  class="button-new"
                 >
                   Criar
                 </button>

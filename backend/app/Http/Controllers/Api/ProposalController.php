@@ -149,14 +149,44 @@ class ProposalController extends Controller
     public function update(ProposalRequest $request, Proposal $proposal)
     {
         try {
-            // dd($request->all());
             $validatedData = $request->validated();
 
             // Se o status foi alterado, atualize a coluna correspondente
             if (isset($validatedData['status']) && $validatedData['status'] != $proposal->status) {
-                $proposal->status = $validatedData['status'];
-                $statusColumn = $validatedData['status'] . '_at';
-                $proposal->$statusColumn = now();
+                $this->updateProposalStatus($proposal, $validatedData['status']);
+            }
+
+            // Se está atualizando apenas total_profit_percentage manualmente
+            if (isset($validatedData['total_profit_percentage']) && 
+                !$request->has('proposalServices') && 
+                !$request->has('proposalCosts')) {
+                
+                $this->recalculateProfitFromPercentage($proposal, $validatedData['total_profit_percentage']);
+                
+                $proposal->load([
+                    'invoices',
+                    'proposalServices',
+                    'proposalCosts',
+                ]);
+                
+                return ProposalsResource::make($proposal);
+            }
+
+            // Se está atualizando apenas total_profit (valor absoluto) manualmente
+            if (isset($validatedData['total_profit']) && 
+                !$request->has('proposalServices') && 
+                !$request->has('proposalCosts') &&
+                !isset($validatedData['total_profit_percentage'])) {
+                
+                $this->recalculatePriceFromProfit($proposal, $validatedData['total_profit']);
+                
+                $proposal->load([
+                    'invoices',
+                    'proposalServices',
+                    'proposalCosts',
+                ]);
+                
+                return ProposalsResource::make($proposal);
             }
 
             $proposal->fill($validatedData);
@@ -164,53 +194,21 @@ class ProposalController extends Controller
 
             // Atualiza ou cria os serviços relacionados à proposta
             if ($request->has('proposalServices')) {
-                $servicesFormData = $request->input('proposalServices', []);
-
-                foreach ($servicesFormData as $serviceData) {
-                    $proposalService = ProposalService::where('proposal_id', $proposal->id)
-                        ->where('service_id', $serviceData['service_id'])
-                        ->first();
-
-                    if (!$proposalService) {
-                        // Se o registro não existir, crie um novo
-                        $proposalService = new ProposalService([
-                            'proposal_id' => $proposal->id,
-                            'service_id' => $serviceData['service_id'],
-                        ]);
-                    }
-
-                    // Atualiza apenas os campos enviados no payload
-                    $proposalService->quantity = $serviceData['quantity'] ?? $proposalService->quantity;
-                    $proposalService->price = $serviceData['price'] ?? $proposalService->price;
-                    $proposalService->profit = $serviceData['profit'] ?? $proposalService->profit;
-                    $proposalService->profit_percentage = $serviceData['profit_percentage'] ?? $proposalService->profit_percentage;
-                    $proposalService->labor_hours = $serviceData['labor_hours'] ?? $proposalService->labor_hours;
-                    $proposalService->labor_hourly_rate = $serviceData['labor_hourly_rate'] ?? $proposalService->labor_hourly_rate;
-
-                    // Recalcula os campos derivados
-                    $proposalService->labor_hours_total = $proposalService->quantity * $proposalService->labor_hours;
-                    $proposalService->labor_hourly_rate_total = $proposalService->quantity * ($proposalService->labor_hourly_rate * ($proposalService->labor_hours / 3600));
-                    $proposalService->total_price = $proposalService->quantity * $proposalService->price;
-                    $proposalService->total_profit = $proposalService->quantity * $proposalService->profit;
-
-                    // Salva o registro atualizado
-                    $proposalService->save();
-                }
+                $this->updateProposalServices($proposal, $request->input('proposalServices', []));
+                $this->calculateProposalTotals($proposal);
             }
 
-            // proposal costs
+            // Atualiza os custos e recalcula preço mantendo a margem de lucro
             if ($request->has('proposalCosts')) {
-                $costsFormData = $request->input('proposalCosts', []);
-                $proposalCosts = $this->updateOrCreateProposalCostsObjects($costsFormData, $proposal->id);
-
-                foreach ($proposalCosts as $proposalCost) {
-                    $proposalCost->proposal_id = $proposal->id;
-                    $proposalCost->save();
-                }
+                // Guarda a margem de lucro atual antes de atualizar
+                $currentProfitPercentage = $proposal->total_profit_percentage;
+                
+                $this->updateProposalCosts($proposal, $request->input('proposalCosts', []));
+                $this->updateTotalThirdPartyCost($proposal);
+                
+                // Recalcula o preço mantendo a margem de lucro (reutiliza o método existente)
+                $this->recalculateProfitFromPercentage($proposal, $currentProfitPercentage);
             }
-
-            $this->updateTotalThirdPartyCost($proposal);
-            $this->calculateProposalTotals($proposal);
 
             $proposal->load([
                 'invoices',
@@ -559,5 +557,179 @@ class ProposalController extends Controller
         $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
 
         return $base64;
+    }
+
+    /**
+     * Recalculate profit and price based on new profit percentage.
+     *
+     * @param  Proposal  $proposal
+     * @param  float  $newProfitPercentage
+     * @return void
+     */
+    private function recalculateProfitFromPercentage(Proposal $proposal, $newProfitPercentage)
+    {
+        $proposal->load(['proposalServices', 'proposalCosts']);
+        
+        $operationalCost = $proposal->total_operational_cost;
+        $thirdPartyCost = $proposal->total_third_party_cost;
+        
+        // Fórmula: Preço = (Custo Operacional + Custo Terceiros) / (1 - Margem/100)
+        $totalCost = $operationalCost + $thirdPartyCost;
+        $newTotalPrice = $totalCost / (1 - ($newProfitPercentage / 100));
+        $newTotalProfit = $newTotalPrice - $totalCost;
+        
+        $proposal->total_profit_percentage = $newProfitPercentage;
+        $proposal->total_profit = $newTotalProfit;
+        $proposal->total_price = $newTotalPrice;
+        $proposal->save();
+    }
+
+    /**
+     * Recalculate price based on new profit value.
+     *
+     * @param  Proposal  $proposal
+     * @param  float  $newProfit
+     * @return void
+     */
+    private function recalculatePriceFromProfit(Proposal $proposal, $newProfit)
+    {
+        $proposal->load(['proposalServices', 'proposalCosts']);
+        
+        $operationalCost = $proposal->total_operational_cost;
+        $thirdPartyCost = $proposal->total_third_party_cost;
+        
+        // Fórmula: Preço = Custo Total + Novo Lucro
+        $totalCost = $operationalCost + $thirdPartyCost;
+        $newTotalPrice = $totalCost + $newProfit;
+        $newProfitPercentage = ($newProfit / $newTotalPrice) * 100;
+        
+        $proposal->total_profit_percentage = $newProfitPercentage;
+        $proposal->total_profit = $newProfit;
+        $proposal->total_price = $newTotalPrice;
+        $proposal->save();
+    }
+
+    /**
+     * Update the status of the proposal.
+     *
+     * @param  Proposal  $proposal
+     * @param  string  $status
+     * @return void
+     */
+    private function updateProposalStatus(Proposal $proposal, $status)
+    {
+        $proposal->status = $status;
+        $statusColumn = $status . '_at';
+        $proposal->$statusColumn = now();
+        $proposal->save();
+    }
+
+    /**
+     * Update the services of the proposal.
+     *
+     * @param  Proposal  $proposal
+     * @param  array  $servicesFormData
+     * @return void
+     */
+    private function updateProposalServices(Proposal $proposal, array $servicesFormData)
+    {
+        foreach ($servicesFormData as $serviceData) {
+            $proposalService = ProposalService::where('proposal_id', $proposal->id)
+                ->where('service_id', $serviceData['service_id'])
+                ->first();
+
+            if (!$proposalService) {
+                // Se o registro não existir, crie um novo
+                $proposalService = new ProposalService([
+                    'proposal_id' => $proposal->id,
+                    'service_id' => $serviceData['service_id'],
+                ]);
+            }
+
+            // Atualiza campos básicos
+            $proposalService->quantity = $serviceData['quantity'] ?? $proposalService->quantity;
+            $proposalService->labor_hours = $serviceData['labor_hours'] ?? $proposalService->labor_hours;
+            $proposalService->labor_hourly_rate = $serviceData['labor_hourly_rate'] ?? $proposalService->labor_hourly_rate;
+
+            // Recalcula labor_hours_total e labor_hourly_rate_total
+            $proposalService->labor_hours_total = $proposalService->quantity * $proposalService->labor_hours;
+            $proposalService->labor_hourly_rate_total = $proposalService->quantity * ($proposalService->labor_hourly_rate * ($proposalService->labor_hours / 3600));
+            
+            // Calcula o custo operacional unitário (base para cálculos de lucro)
+            $laborHourlyTotal = $proposalService->labor_hourly_rate * ($proposalService->labor_hours / 3600);
+
+            // Se profit_percentage foi alterado, recalcula profit e price
+            if (isset($serviceData['profit_percentage'])) {
+                $proposalService->profit_percentage = $serviceData['profit_percentage'];
+                
+                // Fórmula: price = laborHourlyTotal / (1 - profit_percentage/100)
+                // profit = price - laborHourlyTotal
+                if ($proposalService->profit_percentage > 0 && $proposalService->profit_percentage < 100) {
+                    $proposalService->price = $laborHourlyTotal / (1 - ($proposalService->profit_percentage / 100));
+                    $proposalService->profit = $proposalService->price - $laborHourlyTotal;
+                } else if ($proposalService->profit_percentage == 0) {
+                    $proposalService->price = $laborHourlyTotal;
+                    $proposalService->profit = 0;
+                } else {
+                    // Se a margem for inválida (>= 100%), mantém valores atuais
+                    $proposalService->price = $serviceData['price'] ?? $proposalService->price;
+                    $proposalService->profit = $serviceData['profit'] ?? $proposalService->profit;
+                }
+            }
+            // Se profit foi alterado, recalcula profit_percentage e price
+            else if (isset($serviceData['profit'])) {
+                $proposalService->profit = $serviceData['profit'];
+                $proposalService->price = $laborHourlyTotal + $proposalService->profit;
+                
+                // Recalcula a porcentagem de lucro
+                if ($proposalService->price > 0) {
+                    $proposalService->profit_percentage = ($proposalService->profit / $proposalService->price) * 100;
+                } else {
+                    $proposalService->profit_percentage = 0;
+                }
+            }
+            // Se price foi alterado diretamente, recalcula profit e profit_percentage
+            else if (isset($serviceData['price'])) {
+                $proposalService->price = $serviceData['price'];
+                $proposalService->profit = $proposalService->price - $laborHourlyTotal;
+                
+                // Recalcula a porcentagem de lucro
+                if ($proposalService->price > 0) {
+                    $proposalService->profit_percentage = ($proposalService->profit / $proposalService->price) * 100;
+                } else {
+                    $proposalService->profit_percentage = 0;
+                }
+            }
+            // Se nenhum dos campos de lucro/preço foi alterado, mantém valores atuais
+            else {
+                $proposalService->price = $serviceData['price'] ?? $proposalService->price;
+                $proposalService->profit = $serviceData['profit'] ?? $proposalService->profit;
+                $proposalService->profit_percentage = $serviceData['profit_percentage'] ?? $proposalService->profit_percentage;
+            }
+
+            // Recalcula totais
+            $proposalService->total_price = $proposalService->quantity * $proposalService->price;
+            $proposalService->total_profit = $proposalService->quantity * $proposalService->profit;
+
+            // Salva o registro atualizado
+            $proposalService->save();
+        }
+    }
+
+    /**
+     * Update the costs of the proposal.
+     *
+     * @param  Proposal  $proposal
+     * @param  array  $costsFormData
+     * @return void
+     */
+    private function updateProposalCosts(Proposal $proposal, array $costsFormData)
+    {
+        $proposalCosts = $this->updateOrCreateProposalCostsObjects($costsFormData, $proposal->id);
+
+        foreach ($proposalCosts as $proposalCost) {
+            $proposalCost->proposal_id = $proposal->id;
+            $proposalCost->save();
+        }
     }
 }

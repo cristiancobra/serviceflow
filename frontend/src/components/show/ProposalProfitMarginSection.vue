@@ -4,6 +4,7 @@
       <font-awesome-icon icon="fas fa-dollar" class="icon" />
       <h2>Operacional e margem de lucro</h2>
     </div>
+
     <div class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-gray-200 py-1">
       <div class="flex items-center justify-center">
         <font-awesome-icon icon="fa fa-clock" class="list-icon text-black" />
@@ -13,53 +14,19 @@
       </div>
       <div class="flex items-center justify-center">
         <div class="flex items-center justify-center text-black">
-        <hours-decimal-field
-          name="total_hours"
-          class="list-integer"
-          v-model="localProposal.total_hours"
-          placeholder="quantidade total de horas"
-          @save="updateProposal('total_hours', $event)"
-        />
-        h
+          <hours-decimal-field
+            name="total_hours"
+            class="list-integer"
+            v-model="localProposal.total_hours"
+          />
+          h
         </div>
       </div>
       <div class="flex items-center justify-end">
         <money-field
           name="total_operational_cost"
-          v-model="localProposal.total_operational_cost	"
+          v-model="localProposal.total_operational_cost"
         />
-      </div>
-    </div>
-
-    <div class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-gray-200 py-2">
-      <div class="flex items-center justify-center">
-        <font-awesome-icon icon="fas fa-percent" class="text-black" />
-      </div>
-      <div class="flex items-center justify-start text-black">Lucro:</div>
-      <div class="flex items-center justify-center">
-        <div class="flex items-center justify-center text-black">
-        <decimal-field
-          name="total_profit_percentage"
-          v-model="localProposal.total_profit_percentage"
-          placeholder="percentual do lucro"
-          @save="updateProposal('total_profit_percentage', $event)"
-        />
-        %
-        </div>
-      </div>
-      <div class="flex items-center justify-end">
-        <money-field name="total_profit" v-model="localProposal.total_profit" />
-      </div>
-    </div>
-
-    <div class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-gray-200 py-2">
-      <div class="flex items-center justify-center">
-        <font-awesome-icon icon="fas fa-dollar-sign" class="text-black" />
-      </div>
-      <div class="flex items-center justify-start text-black">Preço base:</div>
-      <div class="col-span-1"></div>
-      <div class="flex items-center justify-end">
-        <money-field name="price" v-model="localProposal.total_price" />
       </div>
     </div>
 
@@ -79,9 +46,28 @@
 
     <div class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-gray-200 py-2">
       <div class="flex items-center justify-center">
+        <font-awesome-icon icon="fas fa-percent" class="text-black" />
+      </div>
+      <div class="flex items-center justify-start text-black">Margem de lucro:</div>
+      <div class="flex items-center justify-center">
+        <div class="flex items-center justify-center text-black">
+          {{ localProposal.total_profit_percentage }}
+          %
+        </div>
+      </div>
+      <div class="flex items-center justify-end">
+        <money-field 
+          name="total_profit" 
+          v-model="localProposal.total_profit"
+        />
+      </div>
+    </div>
+
+    <div class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-gray-200 py-2">
+      <div class="flex items-center justify-center">
         <font-awesome-icon icon="fas fa-dollar-sign" class="text-black" />
       </div>
-      <div class="flex items-center justify-start text-black">Preço com custos:</div>
+      <div class="flex items-center justify-start text-black">Preço final:</div>
       <div class="col-span-1"></div>
       <div class="flex items-center justify-end font-bold text-black">
         <money-field name="total_price" v-model="localProposal.total_price" />
@@ -109,7 +95,6 @@
 
 <script>
 import { formatDateBr } from "@/utils/date/dateUtils";
-import DecimalField from "@/components/fields/number/DecimalField";
 import IntegerEditableField from "@/components/fields/number/IntegerEditableField.vue";
 import HoursDecimalField from "../fields/number/HoursDecimalField.vue";
 import MoneyField from "@/components/fields/number/MoneyField.vue";
@@ -128,7 +113,6 @@ export default {
     };
   },
   components: {
-    DecimalField,
     IntegerEditableField,
     HoursDecimalField,
     MoneyField,

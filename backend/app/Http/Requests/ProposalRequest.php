@@ -32,6 +32,7 @@ class ProposalRequest extends FormRequest
             'date' => 'sometimes|date',
             'opportunity_id' => 'nullable|exists:opportunities,id',
             'total_profit_percentage' => 'nullable|numeric',
+            'total_profit' => 'nullable|numeric',
             'status' => 'nullable|string',
             'installment_quantity' => 'sometimes|integer|min:1|max:99',
             // 'services' => 'nullable|array',

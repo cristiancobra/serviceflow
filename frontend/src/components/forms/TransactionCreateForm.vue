@@ -74,8 +74,8 @@
                     v-model="form.method"
                     class="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ease-in-out hover:border-gray-400"
                   >
+                  <option value="pix" class="text-gray-900">PIX</option>
                     <option value="bank_transfer" class="text-gray-900">Transferência Bancária</option>
-                    <option value="pix" class="text-gray-900">PIX</option>
                     <option value="cash" class="text-gray-900">Dinheiro</option>
                     <option value="credit_card" class="text-gray-900">Cartão de Crédito</option>
                     <option value="debit_card" class="text-gray-900">Cartão de Débito</option>

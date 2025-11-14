@@ -26,7 +26,7 @@ class ProposalServiceResource extends JsonResource
             'labor_hours_total' => $this->labor_hours_total,
             'labor_hourly_rate' => $this->labor_hourly_rate,
             'labor_hourly_rate_total' => $this->labor_hourly_rate_total,
-            'profit_percentage' => $this->profit_percentage_total,
+            'profit_percentage' => $this->profit_percentage,
             'profit' => $this->profit,
             'price' => $this->price,
             'total_profit' => $this->total_profit,

@@ -34,7 +34,7 @@
     />
 
     <proposal-services-section
-      :services="proposal.proposalServices"
+      :proposalServices="proposal.proposalServices"
       @update-proposal="updateProposalFromServices"
     />
 
@@ -203,7 +203,6 @@ export default {
       try {
         const updatedProposal = await updateField("proposals", this.proposalId, fieldName, editedValue);
         this.proposal = updatedProposal;
-        console.log("Proposta atualizada com sucesso:", updatedProposal);
       } catch (error) {
         console.error("Erro ao atualizar a proposta:", error);
       }
