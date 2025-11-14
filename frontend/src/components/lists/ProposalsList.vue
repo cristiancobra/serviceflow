@@ -23,6 +23,28 @@
         />
       </div>
 
+      <!-- Cabeçalho da tabela -->
+      <div class="list-line flex w-full bg-gray-100 mb-3 font-semibold border-b-2 border-gray-300">
+        <div class="w-1/10 flex justify-center">
+          <span class="text-sm text-gray-700">Status</span>
+        </div>
+        <div class="w-1/9 text-center text-sm text-gray-700">
+          Data
+        </div>
+        <div class="w-2/9 text-sm text-gray-700 ps-2">
+          Empresa/Lead
+        </div>
+        <div class="w-2/9 text-sm text-gray-700 ps-2">
+          Oportunidade
+        </div>
+        <div class="w-3/9 text-sm text-gray-700 ps-2">
+          Descrição
+        </div>
+        <div class="w-1/9 text-sm text-gray-700 text-center">
+          Valor
+        </div>
+      </div>
+
       <div
         v-for="proposal in proposals"
         v-bind:key="proposal.id"
@@ -35,14 +57,14 @@
           />
         </div>
         <router-link
-          class="list-line-link flex flex-1"
+          class="list-line-link flex flex-1 text-sm"
           :to="{ name: 'proposalShow', params: { id: proposal.id } }"
         >
           <div class="w-1/9 text-center text-black">
             {{ formatDateBr(proposal.date) }}
           </div>
-          <div class="w-3/9 column-name text-black">
-            <p class="name" v-if="!proposal.opportunity">
+          <div class="w-2/9 column-name text-black">
+            <p class="" v-if="!proposal.opportunity">
               sem oportunidade associada
             </p>
             <p
@@ -52,21 +74,26 @@
               {{ proposal.opportunity.company.business_name }}
             </p>
             <p
-              class="group-name text-black"
+              class="text-black text-sm font-bold"
               v-else-if="proposal.opportunity?.company?.legal_name"
             >
               {{ proposal.opportunity.company.legal_name }}
             </p>
-            <p class="group-name text-black" v-else-if="proposal.opportunity?.lead?.name">
+            <p class="text-black text-sm font-bold" v-else-if="proposal.opportunity?.lead?.name">
               {{ proposal.opportunity.lead.name }}
             </p>
             <p class="text-black" v-else>sem associação</p>
           </div>
-          <div class="w-4/9 text-black">
-            <p v-html="getShortDescription(proposal)" class="name ps-2"></p>
+          <div class="w-2/9 text-black">
+            <p class="ps-2">
+              {{ proposal.opportunity?.name || '---' }}
+            </p>
+          </div>
+          <div class="w-3/9 text-black">
+            <p v-html="getShortDescription(proposal)" class="ps-2"></p>
           </div>
           <div class="w-1/9 column-price text-black">
-            <money-field name="total_price" v-model="proposal.total_price" />
+            <money-field name="total_price text-sm" v-model="proposal.total_price" />
           </div>
         </router-link>
       </div>

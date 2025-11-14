@@ -101,7 +101,13 @@ class ProposalController extends Controller
                 $proposalCost->save();
             }
 
-            return ProposalsResource::make($proposal->load('proposalServices'));
+            return ProposalsResource::make($proposal->load([
+                'proposalServices',
+                'proposalCosts',
+                'opportunity',
+                'opportunity.company',
+                'opportunity.lead',
+            ]));
         } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",
