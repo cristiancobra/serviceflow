@@ -28,7 +28,7 @@
       <timeline-proposal :proposal="proposal" />
     </div>
 
-    <description-section 
+    <description-section
       :description="proposal.description"
       @update:description="updateProposal('description', $event)"
     />
@@ -38,29 +38,29 @@
       @update-proposal="updateProposalFromServices"
     />
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div>
-        <proposal-profit-margin-section 
-          :proposal="proposal" 
-          @update-proposal="updateProposal"
-        />
-      </div>
-      <div>
-        <proposal-costs-section
-          :proposal="proposal"
-          @update-total-third-party-cost="updateTotalThirdPartyCost"
-        />
-      </div>
-    </div>
+    <proposal-costs-section
+      :proposal="proposal"
+      @update-proposal-cost="updateProposalFromCosts"
+      @update-total-third-party-cost="updateTotalThirdPartyCost"
+    />
+
+    <proposal-profit-margin-section
+      :proposal="proposal"
+      @update-proposal="updateProposal"
+    />
 
     <installment-section :proposal="proposal" />
 
-    <div class="flex flex-wrap items-center justify-between px-10 gap-6 py-6 mt-8 border-t border-gray-200">
-      <button class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm" 
-              @click="deleteProposal()">
+    <div
+      class="flex flex-wrap items-center justify-between px-10 gap-6 py-6 mt-8 border-t border-gray-200"
+    >
+      <button
+        class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm"
+        @click="deleteProposal()"
+      >
         Excluir
       </button>
-      
+
       <div class="flex items-center gap-4">
         <!-- Toggle Switch usando apenas Tailwind -->
         <label class="flex items-center gap-2 cursor-pointer">
@@ -70,18 +70,22 @@
               class="sr-only"
               v-model="isVisibleQuantity"
             />
-            <div class="w-11 h-6 bg-gray-200 rounded-full shadow-inner transition-colors duration-200 ease-in-out" 
-                 :class="isVisibleQuantity ? 'bg-blue-600' : 'bg-gray-300'">
-            </div>
-            <div class="absolute w-4 h-4 bg-white rounded-full shadow top-1 transition-transform duration-200 ease-in-out transform" 
-                 :class="isVisibleQuantity ? 'translate-x-6' : 'translate-x-1'">
-            </div>
+            <div
+              class="w-11 h-6 bg-gray-200 rounded-full shadow-inner transition-colors duration-200 ease-in-out"
+              :class="isVisibleQuantity ? 'bg-blue-600' : 'bg-gray-300'"
+            ></div>
+            <div
+              class="absolute w-4 h-4 bg-white rounded-full shadow top-1 transition-transform duration-200 ease-in-out transform"
+              :class="isVisibleQuantity ? 'translate-x-6' : 'translate-x-1'"
+            ></div>
           </div>
           <span class="text-sm text-gray-700 font-medium">quantidades</span>
         </label>
-        
-        <button class="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm" 
-                @click="exportPDF()">
+
+        <button
+          class="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm"
+          @click="exportPDF()"
+        >
           Gerar PDF
         </button>
       </div>
@@ -168,12 +172,6 @@ export default {
       this.proposalId = proposalId;
     },
     async updateProposalFromServices(fieldName, serviceId, editedValue) {
-      console.log(
-        "updateProposalFromServices",
-        fieldName,
-        serviceId,
-        editedValue
-      );
       const payload = {
         proposalServices: [
           {
@@ -191,23 +189,49 @@ export default {
         );
 
         this.proposal = updatedProposal;
-        console.log("Proposta atualizada com sucesso:", updatedProposal);
       } catch (error) {
         console.error("Erro ao atualizar a proposta:", error);
       }
     },
-    updateTotalThirdPartyCost(newTotalThirdPartyCost) {
-      this.proposal.total_third_party_cost = newTotalThirdPartyCost;
+    async updateProposalFromCosts(fieldName, costId, editedValue) {
+      const payload = {
+        proposalCosts: [
+          {
+            cost_id: costId,
+            [fieldName]: editedValue,
+          },
+        ],
+      };
+
+      try {
+        const updatedProposal = await updateRelationshipField(
+          "proposals",
+          this.proposalId,
+          payload
+        );
+
+        this.proposal = updatedProposal;
+      } catch (error) {
+        console.error("Erro ao atualizar os custos da proposta:", error);
+      }
     },
     async updateProposal(fieldName, editedValue) {
       try {
-        const updatedProposal = await updateField("proposals", this.proposalId, fieldName, editedValue);
+        const updatedProposal = await updateField(
+          "proposals",
+          this.proposalId,
+          fieldName,
+          editedValue
+        );
         this.proposal = updatedProposal;
       } catch (error) {
         console.error("Erro ao atualizar a proposta:", error);
       }
     },
   },
+  updateTotalThirdPartyCost(newTotalThirdPartyCost) {
+      this.proposal.total_third_party_cost = newTotalThirdPartyCost;
+    },
   async mounted() {
     this.setProposalId(this.$route.params.id);
     this.getProposal();

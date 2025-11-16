@@ -143,7 +143,7 @@ export default {
       if (proposal.description) {
         description = proposal.description.trim();
       } else if (proposal.opportunity.description) {
-        description = proposal.opportunity.description.trim();
+        description = proposal?.opportunity?.description?.trim?.() ?? "sem descrição";
       } else {
         return "---";
       }

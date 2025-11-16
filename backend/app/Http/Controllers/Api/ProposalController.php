@@ -731,10 +731,33 @@ class ProposalController extends Controller
      */
     private function updateProposalCosts(Proposal $proposal, array $costsFormData)
     {
-        $proposalCosts = $this->updateOrCreateProposalCostsObjects($costsFormData, $proposal->id);
+        foreach ($costsFormData as $costData) {
+    
+            // Busca o registro de custo correspondente
+            $proposalCost = ProposalCost::where('proposal_id', $proposal->id)
+                ->where('cost_id', $costData['cost_id'])
+                ->first();
 
-        foreach ($proposalCosts as $proposalCost) {
-            $proposalCost->proposal_id = $proposal->id;
+            // Se não existir, cria um novo
+            if (!$proposalCost) {
+                $proposalCost = new ProposalCost([
+                    'proposal_id' => $proposal->id,
+                    'cost_id' => $costData['cost_id'],
+                ]);
+            }
+    
+            // Atualiza campos simples
+            $proposalCost->quantity = $costData['quantity'] ?? $proposalCost->quantity;
+            $proposalCost->price = $costData['price'] ?? $proposalCost->price;
+    
+            // Recalcula total
+            if ($proposalCost->quantity !== null && $proposalCost->price !== null) {
+                $proposalCost->total_price = $proposalCost->quantity * $proposalCost->price;
+            }
+    
+            $proposalCost->description = $costData['description'] ?? $proposalCost->description;
+    
+            // Salva o registro atualizado
             $proposalCost->save();
         }
     }

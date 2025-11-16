@@ -17,7 +17,7 @@ class ProposalCostResource extends JsonResource
         return [
             'id' => $this->id,
             'proposal_id' => $this->proposal_id,
-            'cost_id' => $this->service_id,
+            'cost_id' => $this->cost_id,
             'account_id' => $this->account_id,
             'name' => $this->name,
             'quantity' => $this->quantity,

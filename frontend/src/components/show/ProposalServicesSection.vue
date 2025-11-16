@@ -2,7 +2,7 @@
   <div class="section-container">
     <div class="section-title">
       <font-awesome-icon icon="fas fa-file-invoice" class="icon" />
-      <h2>Itens da proposta</h2>
+      <h2>Serviços</h2>
     </div>
     
     <!-- Cabeçalho das colunas -->
