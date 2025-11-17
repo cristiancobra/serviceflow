@@ -1,23 +1,39 @@
 <template>
   <div>
-    <button type="button" class="button button-new" @click=openModal>
-      <font-awesome-icon icon="fa-solid fa-cogs" class="button-icon" />
-      <span class="button-text"></span>
+    <button
+      type="button"
+      @click="openModal"
+      class="flex items-center justify-center w-10 h-10 rounded-full bg-primary-500 hover:bg-gray-300 text-white hover:text-gray-900 transition cursor-pointer"
+    >
+      <font-awesome-icon icon="fa-solid fa-cogs" class="text-lg" />
     </button>
 
     <div v-if="isModalVisible" class="myModal">
       <div class="modal-dialog modal-xl">
         <div class="modal-content">
           <div class="modal-header">
-            <font-awesome-icon icon="fa-solid fa-tasks" class="icon pe-3 primary" />
+            <font-awesome-icon
+              icon="fa-solid fa-tasks"
+              class="icon pe-3 primary"
+            />
             <h2 class="modal-title" id="taskModalLabel">Novo custo</h2>
-            <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
+            <button
+              type="button"
+              class="btn-close"
+              @click="closeModal"
+              aria-label="Close"
+            ></button>
           </div>
           <div class="modal-body">
             <form @submit.prevent="submitForm">
               <div class="">
                 <div class="col-12">
-                  <TextInput label="Nome" name="name" v-model="form.name" placeholder="nome do custo" />
+                  <TextInput
+                    label="Nome"
+                    name="name"
+                    v-model="form.name"
+                    placeholder="nome do custo"
+                  />
                   <div class="error-row" v-if="errors.name">
                     <span class="error-text">* {{ errors.name[0] }}</span>
                   </div>
@@ -28,24 +44,40 @@
                   <label class="labels" for="observations"> Descrição </label>
                 </div>
                 <div class="col-10">
-                  <input class="form-control" type="text" id="observations" v-model="form.observations"
-                    placeholder="Descreva o custo" />
+                  <input
+                    class="form-control"
+                    type="text"
+                    id="observations"
+                    v-model="form.observations"
+                    placeholder="Descreva o custo"
+                  />
                 </div>
               </div>
               <div class="row">
                 <div class="col-4">
-                  <label class="labels" for="price">
-                    Preço</label>
+                  <label class="labels" for="price"> Preço</label>
                 </div>
                 <div class="col">
-                  <input class="form-control" type="text" name="price" v-model="form.price" v-mask-decimal.br="2" />
+                  <input
+                    class="form-control"
+                    type="text"
+                    name="price"
+                    v-model="form.price"
+                    v-mask-decimal.br="2"
+                  />
                   <div class="error-row" v-if="errors.price">
                     <span class="error-text">* {{ errors.price[0] }}</span>
                   </div>
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" @click="closeModal">Fechar</button>
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  @click="closeModal"
+                >
+                  Fechar
+                </button>
                 <button type="submit" class="button-new">criar</button>
               </div>
             </form>
@@ -89,7 +121,7 @@ export default {
     },
     async submitForm() {
       if (this.form.price) {
-        this.form.price = parseFloat(this.form.price.replace(',', '.'));
+        this.form.price = parseFloat(this.form.price.replace(",", "."));
       }
       const { data, error } = await this.submitFormCreate("costs", this.form);
 
@@ -119,14 +151,13 @@ export default {
 </script>
 
 <style scoped>
-
 .button-icon {
-    margin-right: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 .button-text {
-    font-size: 1rem;
-    font-weight: 600;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 .container {

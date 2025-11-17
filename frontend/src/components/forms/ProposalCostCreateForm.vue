@@ -1,9 +1,12 @@
 <template>
     <div>
-        <button type="button" class="button button-new" @click="openModal">
-            <font-awesome-icon icon="fa-solid fa-plus" class="button-icon" />
-            <span class="button-text"></span>
-        </button>
+        <button
+      type="button"
+      @click="openModal"
+      class="flex items-center justify-center w-10 h-10 rounded-full bg-primary-500 hover:bg-gray-300 text-white hover:text-gray-900 transition cursor-pointer"
+    >
+      <font-awesome-icon icon="fa-solid fa-plus" class="text-lg" />
+    </button>
 
         <div v-if="isModalVisible" class="myModal">
             <div class="modal-dialog modal-xl">
