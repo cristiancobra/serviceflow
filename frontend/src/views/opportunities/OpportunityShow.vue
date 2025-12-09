@@ -13,6 +13,7 @@
         <h1>
           <TextEditableField
             name="name"
+            class="text-white text-2xl font-bold"
             v-model="opportunity.name"
             placeholder="descrição detalhada da tarefa"
             @save="updateOpportunity('name', $event)"

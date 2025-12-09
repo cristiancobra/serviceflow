@@ -3,7 +3,7 @@
     <label v-if="label" class="" :for="name">{{ label }}</label>
     <div v-if="!editing" @click="startEditing">
       <div v-if="modelValue" class="">
-        <p class="text-black font-medium">
+        <p>
         {{ modelValue }}
         </p>
       </div>

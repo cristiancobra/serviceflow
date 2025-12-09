@@ -14,7 +14,7 @@
         <font-awesome-icon icon="fas fa-play" class="play" />
       </template>
       <template v-else>
-        <font-awesome-icon icon="fas fa-pause" class="off" />
+        <font-awesome-icon icon="fas fa-pause" class="text-white" />
       </template>
     </div>
     <div v-if="dropdownVisible" class="dropdown-menu">
