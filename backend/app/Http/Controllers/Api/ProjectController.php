@@ -88,7 +88,17 @@ class ProjectController extends Controller
             $project->fill($request->validated());
             $project->save();
 
-            return ProjectResource::make($project);
+            return ProjectResource::make(Project::with([
+                'tasks' => function ($query) {
+                    $query->orderByRaw('date_conclusion IS NOT NULL ASC')
+                        ->orderBy('date_start', 'desc')
+                        ->with('journeys');
+                },
+                'company',
+                'lead',
+                'links',
+            ])->find($project->id));
+            
         } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",
