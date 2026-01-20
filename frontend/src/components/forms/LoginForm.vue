@@ -8,11 +8,11 @@
         <form @submit.prevent="submit">
           <div class="email-container">
             <label class="label" for="email">email</label>
-            <input class="input" type="email" id="email" name="email" v-model="form.email" required />
+            <input class="input-login" type="email" id="email" name="email" v-model="form.email" required />
           </div>
           <div class="password-container">
             <label class="label" for="password">password</label>
-            <input class="input" type="password" id="password" name="password" v-model="form.password" required />
+            <input class="input-login" type="password" id="password" name="password" v-model="form.password" required />
           </div>
           <div class="button-container">
             <button class="button-login" type="submit">ENTRAR</button>

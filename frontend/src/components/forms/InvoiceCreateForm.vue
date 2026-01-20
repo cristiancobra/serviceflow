@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button v-if="installmentStatus === 'notIssued'" type="button" class="button p-2 flex items-center" @click="openModal">
+    <button v-if="installmentStatus === 'notIssued'" type="button" class="button-new" @click="openModal">
       <font-awesome-icon icon="fa-solid fa-plus-circle" class="mr-2" />
       <span class="pt-1">{{ proposal.installment_quantity }}</span>
     </button>

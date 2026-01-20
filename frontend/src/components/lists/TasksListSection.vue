@@ -2,7 +2,7 @@
   <div class="section-container">
     <div class="section-header">
       <div class="section-title">
-        <font-awesome-icon icon="fa-solid fa-localTasks" class="icon" />
+        <font-awesome-icon icon="fa-solid fa-tasks" class="icon" />
         <h2>TAREFAS</h2>
       </div>
       <div class="section-action">

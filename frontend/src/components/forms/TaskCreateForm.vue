@@ -1,79 +1,165 @@
 <template>
   <div>
-    <button type="button" class="button button-new" @click="openModal">
-      <font-awesome-icon icon="fa-solid fa-plus" class="" />
+    <button type="button" class="btn btn-primary" @click="openModal">
+      <font-awesome-icon icon="fa-solid fa-plus" class="text-white" />
     </button>
 
     <div v-if="isModalVisible" class="myModal">
-      <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-          <div class="modal-header">
-            <font-awesome-icon icon="fa-solid fa-tasks" class="icon primary" />
-            <h5 class="modal-title" id="taskModalLabel">Nova tarefa</h5>
-            <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
+      <div class="bg-white rounded-lg shadow-lg mt-25">
+        <div class="flex items-center justify-between p-4 border-b">
+          <div class="flex items-center">
+            <font-awesome-icon
+              icon="fa-solid fa-tasks"
+              class="text-primary text-xl mr-2"
+            />
+            <h5 class="text-primary text-lg font-semibold">Nova tarefa</h5>
           </div>
-          <div class="modal-body">
-            <form @submit.prevent="submitForm">
-
-              <div class="row">
-                <div class="col-12">
-                  <TextInput label="Nome" name="name" v-model="form.name" placeholder="nome da tarefa" />
-                </div>
+          <button
+            type="button"
+            class="text-gray-400 hover:text-gray-600"
+            @click="closeModal"
+            aria-label="Close"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+        </div>
+        <div class="p-4">
+          <form id="taskForm" @submit.prevent="submitForm">
+            <div class="mb-4">
+              <div class="form-control w-full">
+                <label class="text-black" :for="name"> Nome da tarefa </label>
+                <input
+                  class="input input-bordered w-full"
+                  type="text"
+                  name="name"
+                  v-model="form.name"
+                  @input="$emit('update:modelValue', $event.target.value)"
+                />
               </div>
+            </div>
 
-              <div class="row mt-4">
-                <TextAreaInput label="Descrição:" name="description" v-model="form.description"
-                  placeholder="Detalhamento da tarefa" :rows="5" />
-              </div>
-              <div class="row mb-4 mt-4">
-                <div class="col">
+            <div class="mb-4">
+              <label class="text-black" :for="description"> Detalhamento </label>
+              <textarea
+                class="input input-bordered w-full"
+                name="description"
+                v-model="form.description"
+                placeholder="Detalhamento da tarefa"
+                rows=5
+                @input="$emit('update:modelValue', $event.target.value)"
+              ></textarea>
+            </div>
+            <div class="mb-4">
+              <div class="flex flex-wrap -mx-2">
+                <div class="w-full md:w-1/2 px-2">
                   <div v-if="currentOpportunity">
-                    <label for="opportunity" class="form-label">Oportunidade</label>
-                    <input type="hidden" id="opportunity" name="opportunity_id" v-model="currentOpportunity.id" />
-                    <TextValue v-model="currentOpportunity.name" class="selected" />
+                    <label
+                      for="opportunity"
+                      class="block text-sm font-medium text-gray-700 mb-1"
+                      >Oportunidade</label
+                    >
+                    <input
+                      type="hidden"
+                      id="opportunity"
+                      name="opportunity_id"
+                      v-model="currentOpportunity.id"
+                    />
+                    <TextValue
+                      v-model="currentOpportunity.name"
+                      class="selected"
+                    />
                   </div>
                   <div v-else>
-                    <OpportunitiesSelectInput label="Oportunidade" v-model="form.opportunity_id" fieldsToDisplay="name"
-                      :autoSelect="false" fieldNull="Nenhum" />
+                    <OpportunitiesSelectInput
+                      label="Oportunidade"
+                      v-model="form.opportunity_id"
+                      fieldsToDisplay="name"
+                      :autoSelect="false"
+                      fieldNull="Nenhum"
+                    />
                   </div>
                 </div>
-                <div class="col">
+                <div class="w-full md:w-1/2 px-2">
                   <div v-if="currentProject">
-                    <label for="project" class="form-label">Projeto</label>
-                    <input type="hidden" id="project" name="project_id" v-model="currentProject.id" />
+                    <label
+                      for="project"
+                      class="block text-sm font-medium text-gray-700 mb-1"
+                      >Projeto</label
+                    >
+                    <input
+                      type="hidden"
+                      id="project"
+                      name="project_id"
+                      v-model="currentProject.id"
+                    />
                     <TextValue v-model="currentProject.name" class="selected" />
                   </div>
                   <div v-else>
-                    <ProjectsSelectInput label="Projeto" v-model="form.project_id" fieldsToDisplay="name"
-                      :autoSelect="false" fieldNull="Nenhum" />
+                    <ProjectsSelectInput
+                      label="Projeto"
+                      v-model="form.project_id"
+                      fieldsToDisplay="name"
+                      :autoSelect="false"
+                      fieldNull="Nenhum"
+                    />
                   </div>
                 </div>
               </div>
+            </div>
 
-              <div class="row mb-4 mt-4">
-                <div class="col">
-                  <UsersSelectInput label="Responsável" v-model="form.user_id" fieldsToDisplay="name" autoSelect=true />
+            <div class="mb-4">
+              <div class="w-full">
+                <UsersSelectInput
+                  label="Responsável"
+                  v-model="form.user_id"
+                  fieldsToDisplay="name"
+                  autoSelect="true"
+                />
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <div class="flex flex-wrap -mx-2">
+                <div class="w-full md:w-1/2 px-2">
+                  <DateInput
+                    v-model="form.date_start"
+                    label="Início"
+                    name="date_start"
+                    placeholder="início do prazo"
+                    :autoFillNow="true"
+                    @update="updateForm"
+                  />
+                </div>
+                <div class="w-full md:w-1/2 px-2">
+                  <DateInput
+                    v-model="form.date_due"
+                    label="Prazo final"
+                    name="date_due"
+                    placeholder="prazo final"
+                    @update="updateForm"
+                  />
                 </div>
               </div>
-
-              <div class="row mb-4 mt-4">
-                <div class="col-md-6">
-                  <DateInput v-model="form.date_start" label="Início" name="date_start" placeholder="início do prazo"
-                    :autoFillNow="true" @update="updateForm" />
-                </div>
-
-                <div class="col-md-6">
-                  <DateInput v-model="form.date_due" label="Prazo final" name="date_due" placeholder="prazo final"
-                    @update="updateForm" />
-                </div>
-              </div>
-
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" @click=closeModal>Fechar</button>
-                <button type="submit" class="button-new">criar</button>
-              </div>
-            </form>
-          </div>
+            </div>
+          </form>
+        </div>
+        <div class="flex justify-end p-4 border-t bg-gray-50">
+          <button type="button" class="btn" @click="closeModal">Fechar</button>
+          <button type="submit" class="btn btn-primary" form="taskForm">
+            criar
+          </button>
         </div>
       </div>
     </div>
@@ -89,9 +175,7 @@ import DateInput from "./inputs/date/DateInput";
 import OpportunitiesSelectInput from "./selects/OpportunitiesSelectInput.vue";
 import ProjectsSelectInput from "./selects/ProjectsSelectInput.vue";
 // import SuccessMessage from "./messages/SuccessMessage.vue";
-import TextAreaInput from "./inputs/textarea/TextAreaInput";
-import TextInput from "./inputs/text/TextInput";
-import TextValue from "../fields/text/TextValue";
+import TextValue from "../fields/text/TextValue.vue";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
 
 export default {
@@ -104,8 +188,6 @@ export default {
     OpportunitiesSelectInput,
     ProjectsSelectInput,
     // SuccessMessage,
-    TextAreaInput,
-    TextInput,
     TextValue,
     UsersSelectInput,
   },
@@ -139,10 +221,7 @@ export default {
       users: [],
     };
   },
-  inject: [
-    'currentProject',
-    'currentOpportunity',
-  ],
+  inject: ["currentProject", "currentOpportunity"],
   methods: {
     submitFormCreate,
     addLeadCreated(newLead) {
@@ -170,7 +249,7 @@ export default {
     },
     async submitForm() {
       const { data, error } = await this.submitFormCreate("tasks", this.form);
-      console.log('form', this.form);
+      console.log("form", this.form);
 
       if (data) {
         this.messageStatus = "success";
@@ -183,7 +262,6 @@ export default {
       if (error) {
         this.errors = error;
       }
-
     },
     toggleCompany() {
       this.isActiveFormCompany = !this.isActiveFormCompany;

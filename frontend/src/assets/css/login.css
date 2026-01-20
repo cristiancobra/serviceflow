@@ -37,7 +37,7 @@
 }
 
 
-.input {
+.input-login {
     background: var(--purple);
     color: white;
     border-radius: 20px;
@@ -46,14 +46,14 @@
     border-style: solid;
 }
 
-.input:hover,
-.input:focus {
+.input-login:hover,
+.input-login:focus {
     background-color: var(--purple);
     color: var(--orange);
     /* Se desejar alterar a cor do texto ao focar */
 }
 
-.input:focus-visible {
+.input-login:focus-visible {
     border-color: none;
 }
 

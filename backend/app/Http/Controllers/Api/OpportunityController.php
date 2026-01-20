@@ -88,7 +88,16 @@ class OpportunityController extends Controller
             $opportunity->fill($request->validated());
             $opportunity->save();
 
-            return OpportunitiesResource::make($opportunity);
+            return OpportunitiesResource::make(Opportunity::with([
+                'tasks' => function ($query) {
+                    $query->orderByRaw('date_conclusion IS NOT NULL ASC')
+                        ->orderBy('date_start', 'desc')
+                        ->with('journeys');
+                },
+                'company',
+                'lead',
+                'links',
+            ])->find($opportunity->id));
         } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",

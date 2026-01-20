@@ -105,7 +105,7 @@
     </section>
 
     <div class="final-row">
-      <button class="button delete" @click="deleteOpportunity()">
+      <button class="btn btn-error" @click="deleteOpportunity()">
         excluir
       </button>
     </div>

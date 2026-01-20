@@ -1,12 +1,12 @@
 <template>
-   <div class="label-input-container text-black">
+  <div class="label-input-container text-black">
     <label class="form-label" :for="name">{{ label }}</label>
     <textarea
-      class="form-control"
+      class="input input-bordered w-full"
       :name="name"
       :value="modelValue"
       :placeholder="placeholder"
-      :rows="rows" 
+      :rows="rows"
       @input="$emit('update:modelValue', $event.target.value)"
     ></textarea>
   </div>
