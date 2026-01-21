@@ -664,6 +664,19 @@ class ProposalController extends Controller
             // Calcula o custo operacional unitário (base para cálculos de lucro)
             $laborHourlyTotal = $proposalService->labor_hourly_rate * ($proposalService->labor_hours / 3600);
 
+            // Se labor_hourly_rate foi alterado, recalcula price, profit e profit_percentage mantendo o lucro unitário atual (se existir)
+            if (isset($serviceData['labor_hourly_rate'])) {
+                // Recalcula price como custo operacional + lucro unitário atual
+                $currentUnitProfit = $proposalService->profit ?? 0;
+                $proposalService->price = $laborHourlyTotal + $currentUnitProfit;
+                // Recalcula a porcentagem de lucro
+                if ($proposalService->price > 0) {
+                    $proposalService->profit_percentage = ($currentUnitProfit / $proposalService->price) * 100;
+                } else {
+                    $proposalService->profit_percentage = 0;
+                }
+            }
+
             // Se profit_percentage foi alterado, recalcula profit e price
             if (isset($serviceData['profit_percentage'])) {
                 $proposalService->profit_percentage = $serviceData['profit_percentage'];

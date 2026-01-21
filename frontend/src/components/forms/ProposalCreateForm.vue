@@ -83,7 +83,7 @@
                   <DateInput
                     class="text-left"
                     v-model="form.date"
-                    label="Início"
+                    label="Data de criação"
                     name="date"
                     placeholder="início do prazo"
                     :autoFillNow="true"
