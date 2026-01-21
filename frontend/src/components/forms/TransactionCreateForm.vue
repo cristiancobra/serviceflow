@@ -1,10 +1,6 @@
 <template>
   <div>
-    <button type="button" class="button button-new" @click="openModal">
-      <font-awesome-icon icon="fa-solid fa-plus" class="" />
-    </button>
-
-    <div v-if="isModalVisible" class="myModal">
+    <div v-if="modelValue" class="myModal">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -147,7 +143,7 @@ import UsersSelectInput from "./selects/UsersSelectInput.vue";
 
 export default {
   name: "TransactionCreateForm",
-  emits: ["new-transaction-event"],
+  emits: ["new-transaction-event", "update:modelValue"],
   components: {
     DateInput,
     TextAreaInput,
@@ -158,6 +154,10 @@ export default {
     invoice: {
       type: Object,
       required: true,
+    },
+    modelValue: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -171,7 +171,6 @@ export default {
         method: 'bank_transfer',
         observations: null,
       },
-      isModalVisible: false,
       errorMessage: null,
       bankAccounts: [],
     };
@@ -210,12 +209,8 @@ export default {
       }
     },
     closeModal() {
-      this.isModalVisible = false;
+      this.$emit("update:modelValue", false);
       this.errorMessage = null;
-    },
-    openModal() {
-      this.isModalVisible = true;
-      this.getBankAccounts();
     },
     async submitForm() {
       const { data, error } = await this.submitFormCreate("transactions", this.form);

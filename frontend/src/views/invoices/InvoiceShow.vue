@@ -75,11 +75,15 @@
     <div class="section-container">
       <div class="section-header">
         <div class="section-title">
-          <font-awesome-icon icon="fas fa-coins" class="section-icon text-xl pe-3" />
+          <font-awesome-icon icon="fas fa-coins" class="icon text-xl pe-3" />
           <h2>Pagamentos Recebidos</h2>
         </div>
         <div class="section-action">
+          <button type="button" class="btn btn-primary" @click="isCreateTransactionModalVisible = true">
+            <font-awesome-icon icon="fa-solid fa-plus" class="text-white" />
+          </button>
           <transaction-create-form 
+            v-model="isCreateTransactionModalVisible"
             :invoice="invoice" 
             @new-transaction-event="addTransactionCreated" 
           />
@@ -107,7 +111,7 @@
     </div>
 
     <div class="flex flex-wrap items-center justify-between px-10 gap-6 py-6 mt-8 border-t border-gray-200">
-      <button class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm" 
+      <button class="btn btn-error" 
               @click="deleteInvoice()">
         Excluir
       </button>
@@ -155,6 +159,7 @@ export default {
       invoice: [],
       invoiceId: "",
       isVisibleQuantity: false,
+      isCreateTransactionModalVisible: false,
     };
   },
   components: {
@@ -175,6 +180,7 @@ export default {
       }
       // Adiciona a nova transação ao início da lista
       this.invoice.transactions.unshift(newTransaction);
+      this.isCreateTransactionModalVisible = false;
       console.log('Nova transação adicionada:', newTransaction);
     },
     async deleteInvoice() {
