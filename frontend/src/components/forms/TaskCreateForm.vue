@@ -1,10 +1,6 @@
 <template>
   <div>
-    <button type="button" class="btn btn-primary" @click="openModal">
-      <font-awesome-icon icon="fa-solid fa-plus" class="text-white" />
-    </button>
-
-    <div v-if="isModalVisible" class="myModal">
+    <div v-if="modelValue" class="myModal">
       <div class="bg-white rounded-lg shadow-lg mt-25">
         <div class="flex items-center justify-between p-4 border-b">
           <div class="flex items-center">
@@ -45,7 +41,6 @@
                   type="text"
                   name="name"
                   v-model="form.name"
-                  @input="$emit('update:modelValue', $event.target.value)"
                 />
               </div>
             </div>
@@ -191,6 +186,12 @@ export default {
     TextValue,
     UsersSelectInput,
   },
+  props: {
+    modelValue: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       allStatus: [],
@@ -211,7 +212,6 @@ export default {
       },
       isActiveFormCompany: false,
       isActiveFormLead: false,
-      isModalVisible: false,
       leads: [],
       message: null,
       messageStatus: "",
@@ -242,10 +242,7 @@ export default {
       this.priority = "medium";
     },
     closeModal() {
-      this.isModalVisible = false;
-    },
-    openModal() {
-      this.isModalVisible = true;
+      this.$emit("update:modelValue", false);
     },
     async submitForm() {
       const { data, error } = await this.submitFormCreate("tasks", this.form);

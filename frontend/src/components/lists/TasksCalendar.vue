@@ -1,12 +1,18 @@
 <template>
   <div class="page-container">
-    <div class="bg-color-primary-content">
+    <div class="page-header">
       <div class="page-title">
         <font-awesome-icon icon="fa-solid fa-tasks" class="page-icon" />
-        <h1>AGENDA</h1>
+        <h1 class="">AGENDA</h1>
       </div>
       <div class="page-action">
-        <TaskCreateForm @new-task-event="addTaskCreated" />
+        <button type="button" class="btn btn-primary" @click="isCreateTaskModalVisible = true">
+          <font-awesome-icon icon="fa-solid fa-plus" class="text-white" />
+        </button>
+        <task-create-form
+          v-model="isCreateTaskModalVisible"
+          @new-task-event="addTaskCreated"
+        />
       </div>
     </div>
 
@@ -167,6 +173,7 @@ export default {
       totalTasks: 0,
       completedTasks: 0,
       newTaskId: null,
+      isCreateTaskModalVisible: false,
     };
   },
   components: {
@@ -186,6 +193,7 @@ export default {
     getStatusIcon,
     trimName,
     addTaskCreated(newTask) {
+      this.isCreateTaskModalVisible = false;
       this.localTasks.unshift(newTask);
       this.highlightNewTask(newTask.id);
     },

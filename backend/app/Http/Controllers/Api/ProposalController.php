@@ -694,6 +694,20 @@ class ProposalController extends Controller
                     $proposalService->profit_percentage = 0;
                 }
             }
+            // Se total_profit foi alterado, recalcula profit (unitário), price e profit_percentage
+            else if (isset($serviceData['total_profit'])) {
+                // Evita divisão por zero: se quantity for 0, considera 1 apenas para cálculo unitário
+                $quantity = $proposalService->quantity ?: 1;
+                $proposalService->profit = $quantity > 0 ? ($serviceData['total_profit'] / $quantity) : 0;
+                $proposalService->price = $laborHourlyTotal + $proposalService->profit;
+
+                // Recalcula a porcentagem de lucro
+                if ($proposalService->price > 0) {
+                    $proposalService->profit_percentage = ($proposalService->profit / $proposalService->price) * 100;
+                } else {
+                    $proposalService->profit_percentage = 0;
+                }
+            }
             // Se price foi alterado diretamente, recalcula profit e profit_percentage
             else if (isset($serviceData['price'])) {
                 $proposalService->price = $serviceData['price'];

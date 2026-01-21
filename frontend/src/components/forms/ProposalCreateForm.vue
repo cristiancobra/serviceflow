@@ -1,11 +1,11 @@
 <template>
   <div>
-    <ButtonNew 
+    <!-- <ButtonNew 
       icon="fa-solid fa-plus"
       @click="openModal"
-    />
+    /> -->
 
-    <div v-if="isModalVisible" class="myModal">
+    <div v-if="modelValue" class="myModal">
       <div class="modal-dialog modal-xl">
         <div class="modal-content">
           <div class="modal-header">
@@ -215,20 +215,25 @@ import DateInput from "@/components/forms/inputs/date/DateInput.vue";
 import TextAreaInput from "./inputs/textarea/TextAreaInput";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
 import MoneyEditableField from "../fields/number/MoneyEditableField.vue";
-import ButtonNew from "@/components/ui/ButtonNew.vue";
+// import ButtonNew from "@/components/ui/ButtonNew.vue";
 
 export default {
   components: {
-    ButtonNew,
+    // ButtonNew,
     DateInput,
     MoneyEditableField,
     TextAreaInput,
     UsersSelectInput,
   },
+  emits: ["new-proposal-event", "update:modelValue"],
   props: {
     opportunityId: {
       type: Number,
       required: true,
+    },
+    modelValue: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -243,7 +248,6 @@ export default {
         validity_days: 30,
         installment_quantity: 1,
       },
-      isModalVisible: false,
       modal: false,
       services: [],
       selectedServices: [],
@@ -253,10 +257,7 @@ export default {
     index,
     submitFormCreate,
     closeModal() {
-      this.isModalVisible = false;
-    },
-    openModal() {
-      this.isModalVisible = true;
+      this.$emit("update:modelValue", false);
     },
     async getCosts() {
       this.costs = await this.index("costs");
@@ -287,7 +288,7 @@ export default {
       );
 
       if (data) {
-        this.isModalVisible = false;
+        this.$emit("update:modelValue", false);
         this.$emit("new-proposal-event", data);
       }
       if (error) {

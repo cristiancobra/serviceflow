@@ -6,7 +6,13 @@
                 <h1>OPORTUNIDADES</h1>
             </div>
             <div class="page-action">
-                <OpportunityCreateForm @new-opportunity-event="addOpportunityCreated" />
+                <button type="button" class="btn btn-primary" @click="isCreateOpportunityModalVisible = true">
+                    <font-awesome-icon icon="fa-solid fa-plus" class="text-white" />
+                </button>
+                <opportunity-create-form 
+                    v-model="isCreateOpportunityModalVisible"
+                    @new-opportunity-event="addOpportunityCreated" 
+                />
             </div>
         </div>
 
@@ -65,6 +71,7 @@ export default {
             isActive: true,
             searchTerm: "",
             opportunities: [],
+            isCreateOpportunityModalVisible: false,
         };
     },
     computed: {
@@ -80,6 +87,7 @@ export default {
     methods: {
         getDeadlineClass,
         addOpportunityCreated(newOpportunity) {
+            this.isCreateOpportunityModalVisible = false;
             this.opportunities.unshift(newOpportunity);
         },
         async getOpportunities() {

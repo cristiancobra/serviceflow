@@ -9,7 +9,11 @@
         <h2 class="text-xl font-extrabold text-left mt-1">PROPOSTAS</h2>
       </div>
       <div class="flex-[2] flex justify-center">
-        <ProposalCreateForm
+        <button type="button" class="btn btn-primary ml-auto" @click="isCreateProposalModalVisible = true">
+          <font-awesome-icon icon="fa-solid fa-plus" class="text-white" />
+        </button>
+        <proposal-create-form
+          v-model="isCreateProposalModalVisible"
           @new-proposal-event="addProposalCreated"
           :opportunityId="opportunityId"
         />
@@ -121,12 +125,14 @@ export default {
   data() {
     return {
       isActive: true,
+      isCreateProposalModalVisible: false,
     };
   },
   methods: {
     formatDateBr,
     getDeadlineClass,
     addProposalCreated(newProposal) {
+      this.isCreateProposalModalVisible = false;
       this.addProposal(newProposal);
     },
 

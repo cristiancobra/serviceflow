@@ -6,11 +6,7 @@
       :messageText="messageText"
     >
     </AddMessage>
-    <button type="button" class="button button-new" @click="openModal">
-      <font-awesome-icon icon="fa-solid fa-plus" class="" />
-    </button>
-
-    <div v-if="isModalVisible" class="myModal">
+    <div v-if="modelValue" class="myModal">
       <div class="modal-dialog modal-xl">
         <div class="modal-content">
           <div class="modal-header">
@@ -199,6 +195,13 @@ export default {
     TextInput,
     UsersSelectInput,
   },
+  emits: ["new-opportunity-event", "update:modelValue"],
+  props: {
+    modelValue: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       form: {
@@ -218,17 +221,13 @@ export default {
       },
       isActiveFormCompany: false,
       isActiveFormLead: false,
-      isModalVisible: false,
       modal: true,
     };
   },
   methods: {
     submitFormCreate,
     closeModal() {
-      this.isModalVisible = false;
-    },
-    openModal() {
-      this.isModalVisible = true;
+      this.$emit("update:modelValue", false);
     },
     async submitForm() {
       const { data, error } = await this.submitFormCreate(
@@ -240,7 +239,7 @@ export default {
       // this.messageText = "Jornada excluída com sucesso!";
 
       if (data) {
-        this.isModalVisible = false;
+        this.$emit("update:modelValue", false);
         this.$emit("new-opportunity-event", data);
       }
       if (error) {

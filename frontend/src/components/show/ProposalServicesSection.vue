@@ -65,7 +65,10 @@
         />
       </div>
       <div class="w-[11%] flex items-center justify-end text-black pr-2 text-sm">
-        <money-field name="total_profit" v-model="service.total_profit" />
+        <money-editable-field
+          v-model="service.total_profit"
+          @save="emitUpdateProposal('total_profit', service.service_id, $event)"
+        />
       </div>
       <div class="w-[11%] flex items-center justify-end text-black pr-2 text-sm">
         <money-field name="price" v-model="service.price" />
