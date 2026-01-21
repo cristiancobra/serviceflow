@@ -14,8 +14,8 @@
     </div>
 
     <div class="section-container">
-      <div class="w-1/2">
-        <div class="row-simple">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+        <div>
           <div class="field-container">
             <label class="text-black font-bold">Proposta</label>
             <p v-if="invoice.proposal" class="text-black">
@@ -24,6 +24,31 @@
             <p v-else class="text-black text-gray-500">
               Sem proposta associada
             </p>
+          </div>
+        </div>
+        <div>
+          <div class="field-container">
+            <div class="mt-0">
+              <div class="relative rounded-2xl border-2 border-primary bg-primary-50/60 p-4 shadow-sm">
+                <div class="absolute -top-3 left-4 inline-flex items-center gap-2 rounded-md bg-primary px-2 py-0.5 text-xs font-semibold text-white shadow">
+                  <font-awesome-icon icon="fas fa-badge-dollar" class="hidden" />
+                  <span>VALOR DA FATURA</span>
+                </div>
+                <div class="flex items-center justify-between gap-4">
+                  <div class="flex items-center gap-3">
+                    <div class="grid h-10 w-10 place-items-center rounded-lg bg-primary text-white shadow">
+                      <font-awesome-icon icon="fas fa-dollar-sign" />
+                    </div>
+                    <span class="text-sm font-medium text-primary">Preço</span>
+                  </div>
+                  <div class="min-w-[180px] text-right text-primary">
+                    <div class="inline-flex items-center rounded-lg bg-white px-3 py-2 ring-1 ring-emerald-200 shadow-sm">
+                      <money-editable-field name="price" v-model="invoice.price" @save="updateInvoice('price', $event)" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -37,16 +62,6 @@
             Data de Vencimento
           </label>
           <p class="text-black">{{ formatDateBr(invoice.date_due) }}</p>
-        </div>
-
-        <div class="field-container">
-          <label class="text-black font-bold">
-            <font-awesome-icon icon="fas fa-dollar-sign" class="mr-2" />
-            Preço
-          </label>
-          <div class="text-black">
-            <money-editable-field name="price" v-model="invoice.price" @save="updateInvoice('price', $event)" />
-          </div>
         </div>
 
         <div class="field-container" v-if="invoice.proposal">
@@ -90,21 +105,47 @@
         </div>
       </div>
 
-      <div v-if="!invoice.transactions || invoice.transactions.length === 0" class="empty-state">
-        <p>Nenhum pagamento recebido</p>
+      <div v-if="!invoice.transactions || invoice.transactions.length === 0" class="w-full rounded-xl border border-dashed border-indigo-200 bg-gradient-to-r from-indigo-50 to-sky-50 py-8 text-center text-indigo-700 shadow-sm">
+        <p class="text-sm font-medium">Nenhum pagamento recebido</p>
       </div>
       
-      <div v-else class="transactions-list">
+      <div v-else class="mt-4 space-y-2 rounded-xl border border-gray-200 bg-white p-2 border-t-4 border-t-indigo-500 shadow-sm">
         <div 
           v-for="transaction in invoice.transactions" 
           :key="transaction.id"
-          class="transaction-item"
+          class="group flex items-center justify-between px-4 py-3 rounded-md bg-white even:bg-sky-50/40 hover:bg-sky-100/60 border-l-4 border-transparent hover:border-sky-400 transition-colors"
         >
-          <div class="w-2/10 text-black font-bold">
-            {{ formatDateBr(transaction.transaction_date) }}
+          <div class="min-w-[160px]">
+            <div class="inline-flex items-center gap-2 rounded-full bg-indigo-100 px-3 py-1">
+              <span class="h-2.5 w-2.5 rounded-full bg-sky-500"></span>
+              <span class="text-sm font-semibold text-indigo-700">{{ formatDateBr(transaction.transaction_date) }}</span>
+            </div>
           </div>
-          <div class="transaction-amount">
+          <div class="flex-1"></div>
+          <div class="text-right inline-flex items-center rounded-md bg-emerald-50 px-2 py-1 ring-1 ring-emerald-200 text-emerald-700">
             <money-field name="amount" v-model="transaction.amount" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Totais da fatura -->
+      <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+          <div class="text-xs font-semibold text-gray-500">Total da Fatura</div>
+          <div class="mt-1 text-1xl font-bold text-gray-800">
+            <money-field name="total" :modelValue="invoiceTotal" readonly />
+          </div>
+        </div>
+        <div class="rounded-xl border border-emerald-200 bg-emerald-50 p-4 shadow-sm">
+          <div class="text-xs font-semibold text-emerald-700">Total Recebido</div>
+          <div class="mt-1 text-1xl font-bold text-emerald-800">
+            <money-field name="paid" :modelValue="transactionsTotal" readonly />
+          </div>
+        </div>
+        <div class="rounded-xl border border-sky-200 bg-sky-50 p-4 shadow-sm">
+          <div class="text-xs font-semibold text-sky-700">Saldo</div>
+          <div class="mt-1 text-1xl font-bold" :class="balance >= 0 ? 'text-sky-800' : 'text-red-700'">
+            <money-field name="balance" :modelValue="balance" readonly />
           </div>
         </div>
       </div>
@@ -168,6 +209,20 @@ export default {
     SelectStatusButton,
     DescriptionSection,
     MoneyEditableField,
+  },
+  computed: {
+    invoiceTotal() {
+      const v = Number(this.invoice?.price ?? 0);
+      return isNaN(v) ? 0 : v;
+    },
+    transactionsTotal() {
+      const list = this.invoice?.transactions ?? [];
+      const sum = list.reduce((acc, t) => acc + Number(t?.amount ?? 0), 0);
+      return isNaN(sum) ? 0 : sum;
+    },
+    balance() {
+      return this.invoiceTotal - this.transactionsTotal;
+    },
   },
   methods: {
     destroy,
