@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('invoices', function (Blueprint $table) {
-            $table->string('status')->default('unpaid')->after('price');
+            $table->string('status')->default('pending')->after('price');
         });
     }
 

@@ -11,10 +11,11 @@ class Invoice extends Model
     use HasFactory, SoftDeletes;
 
     // Constantes para os status da fatura
-    const STATUS_UNPAID = 'unpaid';
+    const STATUS_PENDING = 'pending';
     const STATUS_PARTIAL = 'partial';
     const STATUS_PAID = 'paid';
     const STATUS_OVERDUE = 'overdue';
+    const STATUS_CANCELLED = 'cancelled';
 
     protected $fillable = [
         'proposal_id',
@@ -45,7 +46,8 @@ class Invoice extends Model
      */
     public function updateTotalPaid()
     {
-        $totalPaid = $this->transactions()->sum('amount');
+        $totalPaid = $this->transactions()->where('type', 'credit')->sum('amount') -
+                     $this->transactions()->where('type', 'debit')->sum('amount');
         $this->update(['total_paid' => $totalPaid]);
         return $totalPaid;
     }
@@ -57,24 +59,19 @@ class Invoice extends Model
     {
         $totalPaid = $this->total_paid ?? 0;
         $price = $this->price ?? 0;
-        
+
         // Se está totalmente pago
         if ($totalPaid >= $price) {
             return self::STATUS_PAID;
         }
-        
-        // Se tem pagamento parcial
-        if ($totalPaid > 0) {
-            return self::STATUS_PARTIAL;
-        }
-        
-        // Se não tem pagamento e está vencida
+
+        // Se está vencida e não tem pagamento
         if (now()->greaterThan($this->date_due)) {
             return self::STATUS_OVERDUE;
         }
-        
-        // Caso padrão: não pago
-        return self::STATUS_UNPAID;
+
+        // Caso padrão: pendente
+        return self::STATUS_PENDING;
     }
 
     /**
@@ -97,10 +94,11 @@ class Invoice extends Model
     public static function getStatusOptions()
     {
         return [
-            self::STATUS_UNPAID => 'Não Pago',
+            self::STATUS_PENDING => 'Pendente',
             self::STATUS_PARTIAL => 'Parcialmente Pago',
             self::STATUS_PAID => 'Pago',
             self::STATUS_OVERDUE => 'Vencido',
+            self::STATUS_CANCELLED => 'Cancelado',
         ];
     }
 

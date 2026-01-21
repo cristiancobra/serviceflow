@@ -43,7 +43,7 @@ class InvoiceRequest extends FormRequest
                 'date_due' => 'sometimes|date',
                 'price' => 'sometimes|numeric|min:0',
                 'observations' => 'sometimes|string|nullable',
-                'status' => 'sometimes|string|in:pending,paid,overdue,cancelled',
+                'status' => 'sometimes|string|in:pending,partial,paid,overdue,cancelled',
             ];
         }
 
