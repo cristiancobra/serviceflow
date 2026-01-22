@@ -25,13 +25,13 @@
 
     <!-- Lista de faturas existentes -->
     <div v-else class="space-y-3">
-      <div 
-        v-for="invoice in localInvoices" 
+      <div
+        v-for="invoice in localInvoices"
         :key="invoice.id"
         class="bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200"
       >
-        <router-link 
-          :to="{ name: 'invoiceShow', params: { id: invoice.id } }" 
+        <router-link
+          :to="{ name: 'invoiceShow', params: { id: invoice.id } }"
           class="flex items-center justify-between p-4 text-gray-800 hover:text-blue-600 transition-colors duration-200 no-underline"
         >
           <div class="flex items-center gap-4">
@@ -43,7 +43,7 @@
               <span class="text-base font-semibold">{{ invoice.date_due }}</span>
             </div>
           </div>
-          
+
           <div class="flex items-center gap-6">
             <div class="flex items-center">
               <font-awesome-icon icon="fas fa-dollar-sign" class="text-gray-400 mr-2 w-4" />
@@ -52,7 +52,7 @@
                 {{ formatCurrency(invoice.price) }}
               </span>
             </div>
-            
+
             <div class="flex items-center">
               <font-awesome-icon icon="fas fa-check-circle" class="text-gray-400 mr-2 w-4" />
               <span class="font-medium mr-1 text-sm">Pago:</span>
@@ -60,18 +60,18 @@
                 {{ formatCurrency(invoice.total_paid || 0) }}
               </span>
             </div>
-            
+
             <div class="flex items-center">
               <font-awesome-icon icon="fas fa-balance-scale" class="text-gray-400 mr-2 w-4" />
               <span class="font-medium mr-1 text-sm">Saldo:</span>
-              <span 
+              <span
                 :class="calculateInvoiceBalance(invoice) === 0 ? 'text-gray-600' : 'text-orange-600'"
                 class="font-bold"
               >
                 {{ formatCurrency(calculateInvoiceBalance(invoice)) }}
               </span>
             </div>
-            
+
             <div class="w-6 h-6 flex items-center justify-center">
               <font-awesome-icon icon="fa-solid fa-chevron-right" class="text-gray-400 text-sm" />
             </div>
@@ -95,6 +95,28 @@
             <div class="text-right inline-flex items-center rounded-md bg-emerald-50 px-2 py-1 ring-1 ring-emerald-200 text-emerald-700">
               <money-field name="amount" v-model="transaction.amount" readonly />
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Totais das faturas -->
+      <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+          <div class="text-xs font-semibold text-gray-500">Total das Faturas</div>
+          <div class="mt-1 text-1xl font-bold text-gray-800">
+            <money-field name="total" :modelValue="totalInvoices" readonly />
+          </div>
+        </div>
+        <div class="rounded-xl border border-emerald-200 bg-emerald-50 p-4 shadow-sm">
+          <div class="text-xs font-semibold text-emerald-700">Total Recebido</div>
+          <div class="mt-1 text-1xl font-bold text-emerald-800">
+            <money-field name="paid" :modelValue="totalPaid" readonly />
+          </div>
+        </div>
+        <div class="rounded-xl border border-sky-200 bg-sky-50 p-4 shadow-sm">
+          <div class="text-xs font-semibold text-sky-700">Saldo</div>
+          <div class="mt-1 text-1xl font-bold" :class="balance >= 0 ? 'text-sky-800' : 'text-red-700'">
+            <money-field name="balance" :modelValue="balance" readonly />
           </div>
         </div>
       </div>
@@ -124,6 +146,17 @@ export default {
         this.localInvoices = [...(newInvoices || [])];
       },
       deep: true,
+    },
+  },
+  computed: {
+    totalInvoices() {
+      return this.localInvoices.reduce((acc, inv) => acc + Number(inv?.price ?? 0), 0);
+    },
+    totalPaid() {
+      return this.localInvoices.reduce((acc, inv) => acc + Number(inv?.total_paid ?? 0), 0);
+    },
+    balance() {
+      return this.totalInvoices - this.totalPaid;
     },
   },
   components: {

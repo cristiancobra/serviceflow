@@ -18,9 +18,14 @@
         <div>
           <div class="field-container">
             <label class="text-black font-bold">Proposta</label>
-            <p v-if="invoice.proposal" class="text-black">
+            <router-link
+              v-if="invoice.proposal"
+              :to="{ name: 'opportunityShow', params: { id: invoice.proposal.opportunity.id } }"
+              class="text-blue-600 hover:text-blue-800 flex items-center"
+            >
+              <font-awesome-icon icon="fa-solid fa-magnifying-glass" class="mr-2" />
               {{ invoice.proposal.opportunity?.name || 'Sem oportunidade associada' }}
-            </p>
+            </router-link>
             <p v-else class="text-black text-gray-500">
               Sem proposta associada
             </p>
