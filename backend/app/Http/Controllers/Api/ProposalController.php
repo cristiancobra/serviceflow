@@ -130,7 +130,7 @@ class ProposalController extends Controller
     public function show(Proposal $proposal)
     {
         $proposal = Proposal::with([
-            'invoices',
+            'invoices.transactions',
             'proposalServices',
             'proposalCosts',
             'opportunity'
@@ -168,13 +168,13 @@ class ProposalController extends Controller
                 !$request->has('proposalCosts')) {
                 
                 $this->recalculateProfitFromPercentage($proposal, $validatedData['total_profit_percentage']);
-                
+
                 $proposal->load([
-                    'invoices',
+                    'invoices.transactions',
                     'proposalServices',
                     'proposalCosts',
                 ]);
-                
+
                 return ProposalsResource::make($proposal);
             }
 
@@ -185,13 +185,13 @@ class ProposalController extends Controller
                 !isset($validatedData['total_profit_percentage'])) {
                 
                 $this->recalculatePriceFromProfit($proposal, $validatedData['total_profit']);
-                
+
                 $proposal->load([
-                    'invoices',
+                    'invoices.transactions',
                     'proposalServices',
                     'proposalCosts',
                 ]);
-                
+
                 return ProposalsResource::make($proposal);
             }
 
@@ -217,7 +217,7 @@ class ProposalController extends Controller
             }
 
             $proposal->load([
-                'invoices',
+                'invoices.transactions',
                 'proposalServices',
                 'proposalCosts',
             ]);

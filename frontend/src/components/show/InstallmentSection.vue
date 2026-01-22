@@ -77,6 +77,26 @@
             </div>
           </div>
         </router-link>
+
+        <!-- Pagamentos Recebidos -->
+        <div v-if="invoice.transactions && invoice.transactions.length > 0" class="mt-4 space-y-2 rounded-xl border border-gray-200 bg-white p-2 border-t-4  shadow-sm">
+          <div
+            v-for="transaction in invoice.transactions"
+            :key="transaction.id"
+            class="group flex items-center justify-between px-4 py-3 rounded-md bg-white even:bg-sky-50/40 hover:bg-sky-100/60 border-l-4 border-transparent hover:border-sky-400 transition-colors"
+          >
+            <div class="min-w-[160px]">
+              <div class="inline-flex items-center gap-2 rounded-full bg-indigo-100 px-3 py-1">
+                <span class="h-2.5 w-2.5 rounded-full bg-sky-500"></span>
+                <span class="text-sm font-semibold text-indigo-700">{{ formatDateBr(transaction.transaction_date) }}</span>
+              </div>
+            </div>
+            <div class="flex-1"></div>
+            <div class="text-right inline-flex items-center rounded-md bg-emerald-50 px-2 py-1 ring-1 ring-emerald-200 text-emerald-700">
+              <money-field name="amount" v-model="transaction.amount" readonly />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -84,6 +104,7 @@
 
 <script>
 import InvoiceCreateForm from "@/components/forms/InvoiceCreateForm.vue";
+import MoneyField from "../fields/number/MoneyField.vue";
 
 export default {
   props: {
@@ -107,6 +128,7 @@ export default {
   },
   components: {
     InvoiceCreateForm,
+    MoneyField,
   },
   methods: {
     addInvoiceCreated(newInvoices) {
@@ -125,6 +147,19 @@ export default {
     },
     calculateInvoiceBalance(invoice) {
       return invoice.price - (invoice.total_paid || 0);
+    },
+    formatDateBr(date) {
+      if (!date) return "";
+
+      const dateObj = new Date(date);
+      const day = dateObj.getDate();
+      const month = dateObj.getMonth() + 1; // Os meses em JavaScript começam em 0, então adicionamos 1
+      const year = dateObj.getFullYear();
+
+      // Formate a data no formato desejado (exemplo: dd/mm/aaaa)
+      const dateBr = `${day}/${month}/${year}`;
+
+      return dateBr;
     },
   },
 };
