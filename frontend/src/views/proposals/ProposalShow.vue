@@ -49,7 +49,7 @@
       @update-proposal="updateProposal"
     />
 
-    <installment-section :proposal="proposal" />
+    <installment-section :proposal="proposal" @reload-proposal="getProposal" />
 
     <div
       class="flex flex-wrap items-center justify-between px-10 gap-6 py-6 mt-8 border-t border-gray-200"

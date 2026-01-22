@@ -23,6 +23,7 @@ class Invoice extends Model
         'date_due',
         'price',
         'total_paid',
+        'balance',
         'status',
         'fiscal_invoice_number',
     ];
@@ -43,13 +44,14 @@ class Invoice extends Model
     }
 
     /**
-     * Recalculate and update the total_paid based on transactions
+     * Recalculate and update the total_paid and balance based on transactions
      */
     public function updateTotalPaid()
     {
         $totalPaid = $this->transactions()->where('type', 'credit')->sum('amount') -
                      $this->transactions()->where('type', 'debit')->sum('amount');
-        $this->update(['total_paid' => $totalPaid]);
+        $balance = $this->price - $totalPaid;
+        $this->update(['total_paid' => $totalPaid, 'balance' => $balance]);
         return $totalPaid;
     }
 

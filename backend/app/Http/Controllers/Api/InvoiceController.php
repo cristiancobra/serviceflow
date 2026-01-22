@@ -49,6 +49,7 @@ class InvoiceController extends Controller
             foreach ($prices as $index => $price) {
                 $invoiceData = array_merge($validated, [
                     'price' => $price,
+                    'balance' => $price,
                     'date_due' => date('Y-m-d', strtotime("+$index month", strtotime($dateDue)))
                 ]);
                 $invoice = new Invoice;
@@ -181,7 +182,7 @@ class InvoiceController extends Controller
         }
 
         // Atualiza a fatura alterada
-        $changedInvoice->update(['price' => $newPrice]);
+        $changedInvoice->update(['price' => $newPrice, 'balance' => $newPrice]);
 
         // Calcula o valor restante após a alteração
         $remainingAfterChange = $totalPrice - $sumBefore - $newPrice;
@@ -194,7 +195,7 @@ class InvoiceController extends Controller
 
             // Atualiza todas as faturas seguintes com o valor calculado
             foreach ($remainingInvoices as $index => $invoice) {
-                $invoice->update(['price' => $newPricePerInvoice]);
+                $invoice->update(['price' => $newPricePerInvoice, 'balance' => $newPricePerInvoice]);
             }
 
             // Ajusta a última fatura para compensar diferenças de arredondamento
@@ -203,7 +204,7 @@ class InvoiceController extends Controller
             
             if ($difference != 0 && $remainingInvoicesCount > 0) {
                 $lastInvoice = $remainingInvoices->last();
-                $lastInvoice->update(['price' => $newPricePerInvoice + $difference]);
+                $lastInvoice->update(['price' => $newPricePerInvoice + $difference, 'balance' => $newPricePerInvoice + $difference]);
             }
         }
     }

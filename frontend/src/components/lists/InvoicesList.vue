@@ -98,10 +98,9 @@
           <div class="w-1/10 text-black text-sm">
             <money-field
               name="balance"
-              :modelValue="invoice.price - invoice.total_paid"
+              :modelValue="invoice.balance"
               :class="{
-                'text-red-600 font-bold':
-                  invoice.price - invoice.total_paid > 0,
+                'text-red-600 font-bold': invoice.balance > 0,
               }"
               readonly
             />

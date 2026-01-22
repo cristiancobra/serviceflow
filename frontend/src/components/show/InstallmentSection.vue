@@ -74,6 +74,7 @@
             </div>
 
             <button
+              v-if="invoice.balance > 0"
               @click.prevent.stop="openTransactionModal(invoice)"
               class="btn btn-primary"
               title="Adicionar Transação"
@@ -212,8 +213,8 @@ export default {
         // Atualizar total_paid
         invoice.total_paid = (invoice.total_paid || 0) + Number(newTransaction.amount);
       }
-      // Emite evento para o pai se necessário
-      this.$emit('transaction-created', newTransaction);
+      // Emite evento para o pai recarregar a proposta
+      this.$emit('reload-proposal');
     },
     formatCurrency(value) {
       return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);

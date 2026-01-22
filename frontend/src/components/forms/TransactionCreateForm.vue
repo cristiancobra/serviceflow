@@ -38,7 +38,7 @@
                   <label
                     for="price"
                     class="block text-sm font-semibold text-gray-900 mb-2"
-                    >Valor</label
+                    >Valor {{ form.amount }}</label
                   >
                   <input
                     type="number"
@@ -182,7 +182,7 @@ export default {
       form: {
         invoice_id: this.invoice?.id || null,
         bank_account_id: null,
-        amount: this.invoice?.price || 0,
+        amount: this.invoice?.balance || 0,
         transaction_date: null,
         type: "credit",
         method: "pix",
@@ -203,7 +203,7 @@ export default {
         if (newInvoice && newInvoice.id) {
           console.log("Invoice mudou, atualizando formulário:", newInvoice);
           this.form.invoice_id = newInvoice.id;
-          this.form.amount = newInvoice.price || 0;
+          this.form.amount = newInvoice.balance || 0;
         }
       },
       deep: true,
