@@ -24,6 +24,7 @@ class Invoice extends Model
         'price',
         'total_paid',
         'status',
+        'fiscal_invoice_number',
     ];
 
     public function proposal()

@@ -78,7 +78,23 @@ class TransactionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $transaction = Transaction::findOrFail($id);
+
+        $validated = $request->validate([
+            'transaction_date' => 'nullable|date',
+            'amount' => 'nullable|numeric',
+        ]);
+
+        $transaction->fill($validated);
+        $transaction->save();
+
+        // Atualiza o total_paid e status da invoice
+        if ($transaction->invoice) {
+            $transaction->invoice->updateTotalPaid();
+            $transaction->invoice->updateStatus();
+        }
+
+        return TransactionsResource::make($transaction->load('invoice', 'bankAccount'));
     }
 
     /**

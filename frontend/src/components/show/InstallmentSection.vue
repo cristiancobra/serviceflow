@@ -1,4 +1,5 @@
 <template>
+  <div>
   <div class="section-container">
     <div class="section-header">
       <div class="section-title">
@@ -72,6 +73,14 @@
               </span>
             </div>
 
+            <button
+              @click.prevent.stop="openTransactionModal(invoice)"
+              class="btn btn-primary"
+              title="Adicionar Transação"
+            >
+              <font-awesome-icon icon="fas fa-plus" class="text-sm" />
+            </button>
+
             <div class="w-6 h-6 flex items-center justify-center">
               <font-awesome-icon icon="fa-solid fa-chevron-right" class="text-gray-400 text-sm" />
             </div>
@@ -122,11 +131,21 @@
       </div>
     </div>
   </div>
+
+  <transaction-create-form
+    v-if="showTransactionModal"
+    :modelValue="showTransactionModal"
+    :invoice="selectedInvoice"
+    @update:modelValue="showTransactionModal = $event"
+    @new-transaction-event="handleNewTransaction"
+  />
+  </div>
 </template>
 
 <script>
 import InvoiceCreateForm from "@/components/forms/InvoiceCreateForm.vue";
 import MoneyField from "../fields/number/MoneyField.vue";
+import TransactionCreateForm from "@/components/forms/TransactionCreateForm.vue";
 
 export default {
   props: {
@@ -138,6 +157,8 @@ export default {
   data() {
     return {
       localInvoices: [...(this.proposal?.invoices || [])],
+      showTransactionModal: false,
+      selectedInvoice: null,
     };
   },
   watch: {
@@ -162,6 +183,7 @@ export default {
   components: {
     InvoiceCreateForm,
     MoneyField,
+    TransactionCreateForm,
   },
   methods: {
     addInvoiceCreated(newInvoices) {
@@ -171,9 +193,27 @@ export default {
       } else {
         this.localInvoices.push(newInvoices);
       }
-      
+
       // Emite evento para o componente pai atualizar a proposta original
       this.$emit('invoices-updated', this.localInvoices);
+    },
+    openTransactionModal(invoice) {
+      this.selectedInvoice = invoice;
+      this.showTransactionModal = true;
+    },
+    handleNewTransaction(newTransaction) {
+      // Encontrar a invoice correspondente e adicionar a transação
+      const invoice = this.localInvoices.find(inv => inv.id === newTransaction.invoice_id);
+      if (invoice) {
+        if (!invoice.transactions) {
+          invoice.transactions = [];
+        }
+        invoice.transactions.push(newTransaction);
+        // Atualizar total_paid
+        invoice.total_paid = (invoice.total_paid || 0) + Number(newTransaction.amount);
+      }
+      // Emite evento para o pai se necessário
+      this.$emit('transaction-created', newTransaction);
     },
     formatCurrency(value) {
       return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);

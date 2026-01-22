@@ -123,12 +123,12 @@
           <div class="min-w-[160px]">
             <div class="inline-flex items-center gap-2 rounded-full bg-indigo-100 px-3 py-1">
               <span class="h-2.5 w-2.5 rounded-full bg-sky-500"></span>
-              <span class="text-sm font-semibold text-indigo-700">{{ formatDateBr(transaction.transaction_date) }}</span>
+              <date-time-editable-input name="transaction_date" :modelValue="transaction.transaction_date" @save="updateTransaction('transaction_date', $event, transaction.id)" class-text="text-sm font-semibold text-indigo-700" />
             </div>
           </div>
           <div class="flex-1"></div>
           <div class="text-right inline-flex items-center rounded-md bg-emerald-50 px-2 py-1 ring-1 ring-emerald-200 text-emerald-700">
-            <money-field name="amount" v-model="transaction.amount" />
+            <money-editable-field name="amount" :modelValue="transaction.amount" @save="updateTransaction('amount', $event, transaction.id)" />
           </div>
         </div>
       </div>
@@ -198,6 +198,7 @@ import TransactionCreateForm from "../../components/forms/TransactionCreateForm.
 import SelectStatusButton from "../../components/buttons/SelectStatusButton.vue";
 import DescriptionSection from "@/components/show/DescriptionSection.vue";
 import MoneyEditableField from '../../components/fields/number/MoneyEditableField.vue';
+import DateTimeEditableInput from '../../components/fields/datetime/DateTimeEditableInput.vue';
 
 export default {
   data() {
@@ -214,6 +215,7 @@ export default {
     SelectStatusButton,
     DescriptionSection,
     MoneyEditableField,
+    DateTimeEditableInput,
   },
   computed: {
     invoiceTotal() {
@@ -276,6 +278,14 @@ export default {
     },
     async updateInvoice(fieldName, editedValue) {
       this.invoice = await updateField("invoices", this.invoiceId, fieldName, editedValue);
+    },
+    async updateTransaction(fieldName, editedValue, transactionId) {
+      const updatedTransaction = await updateField("transactions", transactionId, fieldName, editedValue);
+      // Update local transaction
+      const index = this.invoice.transactions.findIndex(t => t.id === transactionId);
+      if (index !== -1) {
+        this.invoice.transactions[index] = updatedTransaction;
+      }
     },
   },
   mounted() {
