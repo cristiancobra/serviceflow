@@ -55,22 +55,29 @@
         v-bind:key="transaction.id"
         class="list-line flex w-full"
       >
-        <div class="w-1/10 text-center text-black">
+        <div class="w-1/10 text-center text-black font-semibold">
           {{ formatDateBr(transaction.transaction_date) }}
         </div>
         
         <div class="w-3/10 text-left text-black">
-          <p v-if="transaction.invoice?.proposal?.opportunity?.name" class="font-medium">
+          <router-link
+            v-if="transaction.invoice?.proposal?.opportunity?.name"
+            :to="{ name: 'opportunityShow', params: { id: transaction.invoice.proposal.opportunity.id } }"
+            class="font-medium text-blue-600 hover:text-blue-800"
+          >
             {{ transaction.invoice.proposal.opportunity.name }}
-          </p>
+          </router-link>
           <p v-else class="text-gray-500">-</p>
         </div>
         
         <div class="w-3/10 text-left text-black">
           <div v-if="transaction.invoice">
-            <p class="font-semibold">
+            <router-link
+              :to="{ name: 'invoiceShow', params: { id: transaction.invoice.id } }"
+              class="font-semibold text-blue-600 hover:text-blue-800"
+            >
               Fatura #{{ transaction.invoice.id }}
-            </p>
+            </router-link>
             <p class="text-sm text-gray-600" v-if="transaction.invoice.proposal?.opportunity">
               {{ getClientName(transaction.invoice.proposal.opportunity) }}
             </p>
