@@ -24,14 +24,22 @@
                   :rows="4"
                 />
               </div>
-              
+
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div>
-                  <label for="invoice" class="block text-sm font-semibold text-gray-900 mb-2">Fatura</label>
+                  <label
+                    for="invoice"
+                    class="block text-sm font-semibold text-gray-900 mb-2"
+                    >Fatura</label
+                  >
                   <TextValue v-model="invoiceDisplay" class="selected" />
                 </div>
                 <div>
-                  <label for="price" class="block text-sm font-semibold text-gray-900 mb-2">Valor</label>
+                  <label
+                    for="price"
+                    class="block text-sm font-semibold text-gray-900 mb-2"
+                    >Valor</label
+                  >
                   <input
                     type="number"
                     id="price"
@@ -47,15 +55,19 @@
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div>
-                  <label for="bank_account_id" class="block text-sm font-semibold text-gray-900 mb-2">Conta Bancária</label>
-                  <select 
+                  <label
+                    for="bank_account_id"
+                    class="block text-sm font-semibold text-gray-900 mb-2"
+                    >Conta Bancária</label
+                  >
+                  <select
                     id="bank_account_id"
                     v-model="form.bank_account_id"
                     class="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ease-in-out hover:border-gray-400"
                   >
-                    <option 
-                      v-for="account in bankAccounts" 
-                      :key="account.id" 
+                    <option
+                      v-for="account in bankAccounts"
+                      :key="account.id"
                       :value="account.id"
                       class="text-gray-900"
                     >
@@ -64,17 +76,27 @@
                   </select>
                 </div>
                 <div>
-                  <label for="method" class="block text-sm font-semibold text-gray-900 mb-2">Método de Pagamento</label>
-                  <select 
+                  <label
+                    for="method"
+                    class="block text-sm font-semibold text-gray-900 mb-2"
+                    >Método de Pagamento</label
+                  >
+                  <select
                     id="method"
                     v-model="form.method"
                     class="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ease-in-out hover:border-gray-400"
                   >
-                  <option value="pix" class="text-gray-900">PIX</option>
-                    <option value="bank_transfer" class="text-gray-900">Transferência Bancária</option>
+                    <option value="pix" class="text-gray-900">PIX</option>
+                    <option value="bank_transfer" class="text-gray-900">
+                      Transferência Bancária
+                    </option>
                     <option value="cash" class="text-gray-900">Dinheiro</option>
-                    <option value="credit_card" class="text-gray-900">Cartão de Crédito</option>
-                    <option value="debit_card" class="text-gray-900">Cartão de Débito</option>
+                    <option value="credit_card" class="text-gray-900">
+                      Cartão de Crédito
+                    </option>
+                    <option value="debit_card" class="text-gray-900">
+                      Cartão de Débito
+                    </option>
                     <option value="check" class="text-gray-900">Cheque</option>
                   </select>
                 </div>
@@ -119,12 +141,7 @@
                 >
                   Fechar
                 </button>
-                <button
-                  type="submit"
-                  class="button-new"
-                >
-                  criar
-                </button>
+                <button type="submit" class="button-new">criar</button>
               </div>
             </form>
           </div>
@@ -167,8 +184,8 @@ export default {
         bank_account_id: null,
         amount: this.invoice?.price || 0,
         transaction_date: null,
-        type: 'credit',
-        method: 'bank_transfer',
+        type: "credit",
+        method: "pix",
         observations: null,
       },
       errorMessage: null,
@@ -177,7 +194,7 @@ export default {
   },
   computed: {
     invoiceDisplay() {
-      return `Fatura #${this.invoice?.id || '...'}`;
+      return `Fatura #${this.invoice?.id || "..."}`;
     },
   },
   watch: {
@@ -190,8 +207,8 @@ export default {
         }
       },
       deep: true,
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   methods: {
     submitFormCreate,
@@ -213,7 +230,10 @@ export default {
       this.errorMessage = null;
     },
     async submitForm() {
-      const { data, error } = await this.submitFormCreate("transactions", this.form);
+      const { data, error } = await this.submitFormCreate(
+        "transactions",
+        this.form
+      );
 
       if (data) {
         this.closeModal();
