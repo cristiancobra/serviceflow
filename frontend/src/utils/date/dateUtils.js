@@ -71,10 +71,16 @@ export function formatDateBr(date) {
     // Verifica se a data é válida
     if (!date) return "";
 
+    // Converter de UTC para timezone local
     const dateObj = new Date(date);
-    const day = dateObj.getDate();
-    const month = dateObj.getMonth() + 1; // Os meses em JavaScript começam em 0, então adicionamos 1
-    const year = dateObj.getFullYear();
+    const userTimezoneOffset = dateObj.getTimezoneOffset() * 60000;
+    const localDate = new Date(dateObj.getTime() + userTimezoneOffset);
+
+    const padZero = (num) => num.toString().padStart(2, '0');
+
+    const day = padZero(localDate.getDate());
+    const month = padZero(localDate.getMonth() + 1);
+    const year = localDate.getFullYear();
 
     // Formate a data no formato desejado (exemplo: dd/mm/aaaa)
     const dateBr = `${day}/${month}/${year}`;
@@ -138,8 +144,31 @@ export function convertDateTimeToLocal(datetime) {
     return dateTimeLocal;
 }
 
+export function convertDateToLocal(dateString) {
+    if (!dateString) return '';
+    
+    // Para datas puras, apenas retornar como está (YYYY-MM-DD)
+    return dateString.toString();
+}
+
+export function convertDateForServer(dateString) {
+    if (!dateString) return null;
+    
+    // Para datas puras, apenas retornar como está (YYYY-MM-DD)
+    return dateString.toString();
+}
+
 export function displayDate(datetimeLocal) {
     if (datetimeLocal === null || datetimeLocal === undefined) return 'sem data';
+
+    // Se for uma string no formato YYYY-MM-DD, parsear sem criar Date
+    if (typeof datetimeLocal === 'string' && datetimeLocal.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        const parts = datetimeLocal.split('-');
+        const year = parts[0];
+        const month = parts[1];
+        const day = parts[2];
+        return `${day}/${month}/${year}`;
+    }
 
     const dateObj = new Date(datetimeLocal);
 

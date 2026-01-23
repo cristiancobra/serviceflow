@@ -169,7 +169,7 @@
               class="inline-flex items-center gap-2 rounded-full bg-indigo-100 px-3 py-1"
             >
               <span class="h-2.5 w-2.5 rounded-full bg-sky-500"></span>
-              <date-time-editable-input
+              <date-editable-input
                 name="transaction_date"
                 :modelValue="transaction.transaction_date"
                 @save="
@@ -267,7 +267,7 @@ import TransactionCreateForm from "../../components/forms/TransactionCreateForm.
 import SelectStatusButton from "../../components/buttons/SelectStatusButton.vue";
 import DescriptionSection from "@/components/show/DescriptionSection.vue";
 import MoneyEditableField from "../../components/fields/number/MoneyEditableField.vue";
-import DateTimeEditableInput from "../../components/fields/datetime/DateTimeEditableInput.vue";
+import DateEditableInput from "../../components/fields/date/DateEditableInput.vue";
 
 export default {
   data() {
@@ -284,7 +284,7 @@ export default {
     SelectStatusButton,
     DescriptionSection,
     MoneyEditableField,
-    DateTimeEditableInput,
+    DateEditableInput,
   },
   computed: {
     invoiceTotal() {
