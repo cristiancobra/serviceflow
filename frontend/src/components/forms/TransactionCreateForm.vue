@@ -230,9 +230,15 @@ export default {
       this.errorMessage = null;
     },
     async submitForm() {
+      // Adicionar timezone do navegador
+      const formWithTimezone = {
+        ...this.form,
+        user_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+      };
+
       const { data, error } = await this.submitFormCreate(
         "transactions",
-        this.form
+        formWithTimezone
       );
 
       if (data) {

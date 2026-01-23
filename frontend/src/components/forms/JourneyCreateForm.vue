@@ -140,8 +140,14 @@ export default {
       this.checkDates();
 
       try {
+        // Adicionar timezone do navegador
+        const formWithTimezone = {
+          ...this.form,
+          user_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        };
+
         axios
-          .post(`${BACKEND_URL}${JOURNEY_URL}`, this.form)
+          .post(`${BACKEND_URL}${JOURNEY_URL}`, formWithTimezone)
           .then((response) => {
             this.newJourney = response.data.data;
             this.$emit("new-journey-event", this.newJourney);
@@ -161,9 +167,15 @@ export default {
       try {
         this.quickForm.start = new Date();
         this.quickForm.task_id = this.taskId;
+        
+        // Adicionar timezone do navegador
+        const quickFormWithTimezone = {
+          ...this.quickForm,
+          user_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        };
 
         axios
-          .post(`${BACKEND_URL}${JOURNEY_URL}`, this.quickForm)
+          .post(`${BACKEND_URL}${JOURNEY_URL}`, quickFormWithTimezone)
           .then((response) => {
             this.newJourney = response.data.data;
             this.$emit("new-journey-event", {

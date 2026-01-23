@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Services\DateConversionService;
+use App\Services\DateTimeConversionService;
 use HTMLPurifier;
 use HTMLPurifier_Config;
 
@@ -43,15 +43,18 @@ class JourneyStoreRequest extends FormRequest
             'user_id' => auth()->id(),
         ]);
 
+        // Obter o timezone do usuário, ou usar São Paulo como padrão
+        $timezone = $this->input('user_timezone', 'America/Sao_Paulo');
+
         if ($this->has('start')) {
             $this->merge([
-                'start' => DateConversionService::convertToUtc($this->input('start')),
+                'start' => DateTimeConversionService::convertToUtc($this->input('start'), $timezone),
             ]);
         }
 
         if ($this->has('end')) {
             $this->merge([
-                'end' => DateConversionService::convertToUtc($this->input('end')),
+                'end' => DateTimeConversionService::convertToUtc($this->input('end'), $timezone),
             ]);
         }
 

@@ -41,13 +41,17 @@ class TransactionRequest extends FormRequest
         ]);
 
         if ($this->has('transaction_date')) {
+            // Obter o timezone do usuário, ou usar São Paulo como padrão
+            $timezone = $this->input('user_timezone', 'America/Sao_Paulo');
+            
             $this->merge([
-                'transaction_date' => DateConversionService::convertToUtc($this->input('transaction_date')),
+                'transaction_date' => DateConversionService::convertToUtc(
+                    $this->input('transaction_date'),
+                    $timezone
+                ),
             ]);
         }
-
     }
-
 
     /**
      * Get custom error messages for validation rules.
