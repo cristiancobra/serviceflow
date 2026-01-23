@@ -41,71 +41,97 @@
         </div>
       </div>
 
-      <div class="list-header">
-        <div class="w-1/10 text-center font-bold">Data</div>
-        <div class="w-3/10 text-center font-bold">Oportunidade</div>
-        <div class="w-3/10 text-center font-bold">Cliente/Fatura</div>
-        <div class="w-2/10 text-center font-bold">Conta Bancária</div>
-        <div class="w-2/10 text-center font-bold">Valor</div>
-        <div class="w-2/10 text-center font-bold">Status</div>
-      </div>
-
-      <div
-        v-for="transaction in filteredTransactions"
-        v-bind:key="transaction.id"
-        class="list-line flex w-full"
-      >
-        <div class="w-1/10 text-center text-black font-semibold">
-          {{ formatDateBr(transaction.transaction_date) }}
-        </div>
-        
-        <div class="w-3/10 text-left text-black">
-          <router-link
-            v-if="transaction.invoice?.proposal?.opportunity?.name"
-            :to="{ name: 'opportunityShow', params: { id: transaction.invoice.proposal.opportunity.id } }"
-            class="font-medium text-blue-600 hover:text-blue-800"
-          >
-            {{ transaction.invoice.proposal.opportunity.name }}
-          </router-link>
-          <p v-else class="text-gray-500">-</p>
-        </div>
-        
-        <div class="w-3/10 text-left text-black">
-          <div v-if="transaction.invoice">
-            <router-link
-              :to="{ name: 'invoiceShow', params: { id: transaction.invoice.id } }"
-              class="font-semibold text-blue-600 hover:text-blue-800"
+      <div class="overflow-x-auto rounded-lg border border-gray-200">
+        <table class="w-full">
+          <thead class="bg-gray-50 border-b-2 border-gray-200 sticky top-0">
+            <tr class="divide-x divide-gray-200">
+              <th class="col-span-1 text-center font-bold text-sm text-gray-700 px-4 py-3 w-1/12">Data</th>
+              <th class="text-left font-bold text-sm text-gray-700 px-4 py-3 w-2/12">Cliente</th>
+              <th class="text-left font-bold text-sm text-gray-700 px-4 py-3 w-2/12">Oportunidade</th>
+              <th class="text-center font-bold text-sm text-gray-700 px-4 py-3 w-1/12">Proposta</th>
+              <th class="text-left font-bold text-sm text-gray-700 px-4 py-3 w-2/12">Fatura</th>
+              <th class="text-left font-bold text-sm text-gray-700 px-4 py-3 w-2/12">Conta</th>
+              <th class="text-right font-bold text-sm text-gray-700 px-4 py-3 w-1/12">Valor</th>
+              <th class="text-center font-bold text-sm text-gray-700 px-4 py-3 w-1/12">Status</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <tr
+              v-for="transaction in filteredTransactions"
+              v-bind:key="transaction.id"
+              class="hover:bg-gray-50 transition-colors divide-x divide-gray-100"
             >
-              Fatura #{{ transaction.invoice.id }}
-            </router-link>
-            <p class="text-sm text-gray-600" v-if="transaction.invoice.proposal?.opportunity">
-              {{ getClientName(transaction.invoice.proposal.opportunity) }}
-            </p>
-          </div>
-          <div v-else class="text-gray-500">
-            Transação avulsa
-          </div>
-        </div>
-        
-        <div class="w-2/10 text-center text-black">
-          <p v-if="transaction.bank_account">
-            {{ transaction.bank_account.name || transaction.bank_account.bank_name }}
-          </p>
-          <p v-else class="text-gray-500">-</p>
-        </div>
-        
-        <div class="w-2/10 text-center text-black">
-          <money-field name="amount" v-model="transaction.amount" :readonly="true" />
-        </div>
-        
-        <div class="w-2/10 text-center">
-          <span 
-            class="status-badge"
-            :class="getStatusClass(transaction.status)"
-          >
-            {{ getStatusLabel(transaction.status) }}
-          </span>
-        </div>
+              <td class="text-center text-black text-sm font-medium px-4 py-3 w-1/12">
+                {{ formatDateBr(transaction.transaction_date) }}
+              </td>
+              
+              <td class="text-left text-black text-sm px-4 py-3 w-2/12 truncate font-semibold">
+                <p v-if="transaction.invoice?.proposal?.opportunity" class="truncate" :title="getClientName(transaction.invoice.proposal.opportunity)">
+                  {{ getClientName(transaction.invoice.proposal.opportunity) }}
+                </p>
+                <p v-else class="text-gray-500">-</p>
+              </td>
+              
+              <td class="text-left text-black text-sm px-4 py-3 w-2/12 truncate">
+                <router-link
+                  v-if="transaction.invoice?.proposal?.opportunity?.name"
+                  :to="{ name: 'opportunityShow', params: { id: transaction.invoice.proposal.opportunity.id } }"
+                  class="text-blue-600 hover:text-blue-800 font-medium truncate block"
+                  :title="transaction.invoice.proposal.opportunity.name"
+                >
+                  {{ transaction.invoice.proposal.opportunity.name }}
+                </router-link>
+                <p v-else class="text-gray-500">-</p>
+              </td>
+              
+              <td class="text-center text-black text-sm px-4 py-3 w-1/12">
+                <router-link
+                  v-if="transaction.invoice?.proposal"
+                  :to="{ name: 'proposalShow', params: { id: transaction.invoice.proposal.id } }"
+                  class="text-blue-600 hover:text-blue-800 font-medium inline-flex items-center justify-center"
+                  :title="'Proposta ' + transaction.invoice.proposal.id"
+                >
+                  <font-awesome-icon icon="fa-solid fa-magnifying-glass" class="text-xs" />
+                </router-link>
+                <p v-else class="text-gray-500">-</p>
+              </td>
+              
+              <td class="text-left text-black text-sm px-4 py-3 w-2/12 truncate">
+                <router-link
+                  v-if="transaction.invoice"
+                  :to="{ name: 'invoiceShow', params: { id: transaction.invoice.id } }"
+                  class="text-blue-600 hover:text-blue-800 font-semibold truncate block"
+                  :title="'Fatura #' + transaction.invoice.id"
+                >
+                  #{{ transaction.invoice.id }}
+                </router-link>
+                <div v-else class="text-gray-500 text-xs">
+                  Avulsa
+                </div>
+              </td>
+              
+              <td class="text-left text-black text-sm px-4 py-3 w-2/12 truncate">
+                <p v-if="transaction.bank_account" class="truncate" :title="transaction.bank_account.name || transaction.bank_account.bank_name">
+                  {{ transaction.bank_account.name || transaction.bank_account.bank_name }}
+                </p>
+                <p v-else class="text-gray-500">-</p>
+              </td>
+              
+              <td class="text-right text-black text-sm font-semibold px-4 py-3 w-1/12">
+                <money-field name="amount" v-model="transaction.amount" :readonly="true" />
+              </td>
+              
+              <td class="text-center px-4 py-3 w-1/12">
+                <span 
+                  class="status-badge inline-block text-center"
+                  :class="getStatusClass(transaction.status)"
+                >
+                  {{ getStatusLabel(transaction.status) }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <div v-if="filteredTransactions && filteredTransactions.length === 0" class="empty-state">
