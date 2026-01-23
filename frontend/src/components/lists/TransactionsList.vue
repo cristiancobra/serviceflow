@@ -3,7 +3,7 @@
     <div class="page-header">
       <div class="page-title">
         <font-awesome-icon icon="fa-solid fa-coins" class="page-icon" />
-        <h1>PAGAMENTOS</h1>
+        <h1>MOVIMENTAÇÕES</h1>
       </div>
       <div class="page-action">
         <!-- Espaço para futuro botão de criar transação -->
@@ -46,12 +46,13 @@
           <thead class="bg-gray-50 border-b-2 border-gray-200 sticky top-0">
             <tr class="divide-x divide-gray-200">
               <th class="col-span-1 text-center font-bold text-sm text-gray-700 px-4 py-3 w-1/12">Data</th>
-              <th class="text-left font-bold text-sm text-gray-700 px-4 py-3 w-2/12">Cliente</th>
-              <th class="text-left font-bold text-sm text-gray-700 px-4 py-3 w-2/12">Oportunidade</th>
+              <th class="text-center font-bold text-sm text-gray-700 px-4 py-3 w-2/12">Cliente</th>
+              <th class="text-center font-bold text-sm text-gray-700 px-4 py-3 w-2/12">Oportunidade</th>
               <th class="text-center font-bold text-sm text-gray-700 px-4 py-3 w-1/12">Proposta</th>
-              <th class="text-left font-bold text-sm text-gray-700 px-4 py-3 w-2/12">Fatura</th>
-              <th class="text-left font-bold text-sm text-gray-700 px-4 py-3 w-2/12">Conta</th>
-              <th class="text-right font-bold text-sm text-gray-700 px-4 py-3 w-1/12">Valor</th>
+              <th class="text-center font-bold text-sm text-gray-700 px-4 py-3 w-2/12">Fatura</th>
+              <th class="text-center font-bold text-sm text-gray-700 px-4 py-3 w-1/12">Data Fatura</th>
+              <th class="text-center font-bold text-sm text-gray-700 px-4 py-3 w-2/12">Conta</th>
+              <th class="text-center font-bold text-sm text-gray-700 px-4 py-3 w-1/12">Valor</th>
               <th class="text-center font-bold text-sm text-gray-700 px-4 py-3 w-1/12">Status</th>
             </tr>
           </thead>
@@ -108,6 +109,13 @@
                 <div v-else class="text-gray-500 text-xs">
                   Avulsa
                 </div>
+              </td>
+              
+              <td class="text-center text-black text-sm px-4 py-3 w-1/12">
+                <p v-if="transaction.invoice?.date_due" class="font-medium">
+                  {{ formatDateBr(transaction.invoice.date_due) }}
+                </p>
+                <p v-else class="text-gray-500">-</p>
               </td>
               
               <td class="text-left text-black text-sm px-4 py-3 w-2/12 truncate">
