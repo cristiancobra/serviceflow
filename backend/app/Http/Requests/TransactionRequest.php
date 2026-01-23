@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Services\DateConversionService;
 
 class TransactionRequest extends FormRequest
 {
@@ -32,6 +33,21 @@ class TransactionRequest extends FormRequest
             'method' => 'required|string|in:cash,bank_transfer,pix,credit_card,debit_card,check',
         ];
     }
+
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'user_id' => auth()->id(),
+        ]);
+
+        if ($this->has('transaction_date')) {
+            $this->merge([
+                'transaction_date' => DateConversionService::convertToUtc($this->input('transaction_date')),
+            ]);
+        }
+
+    }
+
 
     /**
      * Get custom error messages for validation rules.

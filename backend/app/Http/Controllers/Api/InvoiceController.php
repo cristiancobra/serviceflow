@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InvoiceRequest;
-use Illuminate\Http\Request;
 use App\Models\Invoice;
 use App\Http\Resources\InvoicesResource;
 use Illuminate\Validation\ValidationException;
