@@ -121,12 +121,13 @@ export function convertDateTimeForServer(dateTimeString) {
 export function convertDateTimeToLocal(datetime) {
     const dateObj = new Date(datetime);
     const userTimezoneOffset = dateObj.getTimezoneOffset() * 60000;
-    const localDate = new Date(dateObj.getTime() - userTimezoneOffset); // Subtraímos o offset para obter o horário local
+    // Adicionar o offset (não subtrair) para converter UTC para local
+    const localDate = new Date(dateObj.getTime() + userTimezoneOffset);
 
     const padZero = (num) => num.toString().padStart(2, '0');
 
     const day = padZero(localDate.getDate());
-    const month = padZero(localDate.getMonth() + 1); // Os meses em JavaScript começam em 0, então adicionamos 1
+    const month = padZero(localDate.getMonth() + 1);
     const year = localDate.getFullYear();
     const hours = padZero(localDate.getHours());
     const minutes = padZero(localDate.getMinutes());
@@ -189,7 +190,3 @@ export function formatDuration(seconds) {
     const minutes = Math.floor((seconds % 3600) / 60);
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 }
-
-// function padZero(number) {
-//     return number < 10 ? `0${number}` : number;
-// }
