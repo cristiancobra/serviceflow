@@ -58,7 +58,7 @@
             <div class="date-column">
               <font-awesome-icon
                 icon="fa-solid fa-exclamation-circle"
-                class="text-primary me-2"
+                class="text-error me-2"
               />
               <date-time-editable-input
                 v-model="localTask.date_due"
@@ -71,7 +71,7 @@
             <div class="date-column">
               <font-awesome-icon
                 icon="fa-solid fa-check-circle"
-                class="text-primary me-2"
+                class="text-success me-2"
               />
               <date-time-editable-input
                 name="date_conclusion"
