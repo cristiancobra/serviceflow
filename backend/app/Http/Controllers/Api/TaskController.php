@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Task;
 use App\Http\Resources\TasksResource;
 use App\Http\Requests\TaskRequest;
-use App\Services\DateConversionService;
+use App\Services\DateTimeConversionService;
 
 class TaskController extends Controller
 {
@@ -88,7 +88,7 @@ class TaskController extends Controller
                 $request->date_start
             ) {
                 // $task->date_conclusion = $request->date_conclusion;
-                $task->duration_days = DateConversionService::calculateDurationDays($request->date_conclusion, $request->date_start);
+                $task->duration_days = DateTimeConversionService::calculateDurationDays($request->date_conclusion, $request->date_start);
             }
 
             $task->save();
