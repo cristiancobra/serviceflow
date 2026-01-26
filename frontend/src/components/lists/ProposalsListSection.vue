@@ -9,12 +9,11 @@
         <h2 class="text-xl font-extrabold text-left mt-1">PROPOSTAS</h2>
       </div>
       <div class="flex-[2] flex justify-center">
-        <button type="button" class="btn btn-primary ml-auto" @click="isCreateProposalModalVisible = true">
-          <font-awesome-icon icon="fa-solid fa-plus" class="text-white" />
-        </button>
+        <button-new-form target="proposal" @open-modal="handleOpenModal" />
         <proposal-create-form
-          v-model="isCreateProposalModalVisible"
+          v-model="openProposalForm"
           @new-proposal-event="addProposalCreated"
+          @update:modelValue="openModal = null"
           :opportunityId="opportunityId"
         />
       </div>
@@ -92,6 +91,7 @@
 import { useProposals } from "@/composables/useProposals";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import { getDeadlineClass } from "@/utils/card/cardUtils";
+import ButtonNewForm from "../buttons/ButtonNewForm.vue";
 import MoneyField from "../fields/number/MoneyField.vue";
 import ProposalCreateForm from "../forms/ProposalCreateForm.vue";
 import SelectStatusButton from "../buttons/SelectStatusButton.vue";
@@ -111,6 +111,7 @@ export default {
   },
 
   components: {
+    ButtonNewForm,
     ProposalCreateForm,
     MoneyField,
     SelectStatusButton,
@@ -124,15 +125,14 @@ export default {
   },
   data() {
     return {
-      isActive: true,
-      isCreateProposalModalVisible: false,
+      openModal: false,
     };
   },
   methods: {
     formatDateBr,
     getDeadlineClass,
     addProposalCreated(newProposal) {
-      this.isCreateProposalModalVisible = false;
+      this.openProposalForm = false;
       this.addProposal(newProposal);
     },
 
@@ -152,8 +152,18 @@ export default {
       }
       return description;
     },
-    toggleForm() {
-      this.isActive = !this.isActive;
+    handleOpenModal(target) {
+      if (!target) {
+        console.warn("Target não informado no botão");
+        return;
+      }
+
+      this.openModal = target;
+    },
+  },
+  computed: {
+    openProposalForm() {
+      return this.openModal === "proposal";
     },
   },
   mounted() {

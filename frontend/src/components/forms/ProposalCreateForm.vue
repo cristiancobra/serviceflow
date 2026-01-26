@@ -1,11 +1,6 @@
 <template>
   <div>
-    <!-- <ButtonNew 
-      icon="fa-solid fa-plus"
-      @click="openModal"
-    /> -->
-
-    <div v-if="modelValue" class="myModal">
+    <div v-show="modelValue" class="myModal">
       <div class="modal-dialog modal-xl">
         <div class="modal-content">
           <div class="modal-header">

@@ -6,7 +6,12 @@
         <h2>TAREFAS</h2>
       </div>
       <div class="section-action">
-        <TaskCreateForm @new-task-event="addTaskCreated" />
+        <button-new-form target="task" @open-modal="handleOpenModal" />
+        <task-create-form
+        v-model="openTaskForm"
+        @new-task-event="addTaskCreated"
+        @update:modelValue="openModal = null"
+         />
       </div>
     </div>
 
@@ -183,6 +188,7 @@ import {
   TASK_URL_PARAMETER,
 } from "@/config/apiConfig";
 import AddLastJourneyDateButton from "@/components/tasks/buttons/AddLastJourneyDateButton.vue";
+import ButtonNewForm from "../buttons/ButtonNewForm.vue";
 import CancellationReasonSelectInput from "@/components/forms/selects/CancellationReasonSelectInput.vue";
 import DateTimeEditableInput from "@/components/fields/datetime/DateTimeEditableInput.vue";
 import JourneyCreateForm from "@/components/forms/JourneyCreateForm.vue";
@@ -206,6 +212,7 @@ export default {
       formatedDate: "",
       formatedTime: "",
       localTasks: this.tasks,
+      openModal: null,
       percentage: 0,
       searchTerm: "",
       showCancelLine: false,
@@ -216,6 +223,7 @@ export default {
   },
   components: {
     AddLastJourneyDateButton,
+    ButtonNewForm,
     CancellationReasonSelectInput,
     DateTimeEditableInput,
     JourneyCreateForm,
@@ -236,6 +244,7 @@ export default {
     trimName,
     addTaskCreated(newTask) {
       this.localTasks.unshift(newTask);
+      this.openModal = false;
     },
     addJourneyCreated({ journey, taskId }) {
       const task = this.localTasks.find((t) => t.id === taskId);
@@ -293,6 +302,14 @@ export default {
       const priorityClass = getPriorityClass(priority);
 
       return `${statusClass} ${priorityClass}`;
+    },
+    handleOpenModal(target) {
+      if (!target) {
+        console.warn("Target não informado no botão");
+        return;
+      }
+
+      this.openModal = target;
     },
     highlightNewJourney(journeyId) {
       this.newJourneyId = journeyId;
@@ -376,11 +393,11 @@ export default {
       if (!this.localTasks || !Array.isArray(this.localTasks)) {
         return [];
       }
-      
+
       if (!this.searchTerm) {
         return this.localTasks;
       }
-      
+
       return this.localTasks.filter((task) =>
         task.name.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
@@ -400,6 +417,12 @@ export default {
       } else {
         return {};
       }
+    },
+    openTaskForm() {
+      return this.openModal === "task";
+    },
+    openProposalForm() {
+      return this.openModal === "proposal";
     },
   },
   watch: {

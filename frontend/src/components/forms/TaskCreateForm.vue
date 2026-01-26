@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="modelValue" class="myModal">
+    <div v-show="modelValue" class="myModal">
       <div class="bg-white rounded-lg shadow-lg mt-25">
         <div class="flex items-center justify-between p-4 border-b">
           <div class="flex items-center">
@@ -175,7 +175,7 @@ import UsersSelectInput from "./selects/UsersSelectInput.vue";
 
 export default {
   name: "TaskCreateForm",
-  emits: ["new-task-event"],
+  emits: ["new-task-event", "update:modelValue"],
   components: {
     // AddMessage,
     DateInput,
