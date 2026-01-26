@@ -5,7 +5,7 @@ namespace App\Services;
 use DateTime;
 use DateTimeZone;
 
-class DateTimeConversionService;
+class DateTimeConversionService
 {
     public static function convertJavascriptDate($date)
     {
