@@ -144,6 +144,7 @@
 </template>
 
 <script>
+import { formatDateBr } from "@/utils/date/dateUtils";
 import InvoiceCreateForm from "@/components/forms/InvoiceCreateForm.vue";
 import MoneyField from "../fields/number/MoneyField.vue";
 import TransactionCreateForm from "@/components/forms/TransactionCreateForm.vue";
@@ -187,6 +188,7 @@ export default {
     TransactionCreateForm,
   },
   methods: {
+    formatDateBr,
     addInvoiceCreated(newInvoices) {
       // Adiciona as novas faturas aos dados locais
       if (Array.isArray(newInvoices)) {
@@ -221,19 +223,6 @@ export default {
     },
     calculateInvoiceBalance(invoice) {
       return invoice.price - (invoice.total_paid || 0);
-    },
-    formatDateBr(date) {
-      if (!date) return "";
-
-      const dateObj = new Date(date);
-      const day = dateObj.getDate();
-      const month = dateObj.getMonth() + 1; // Os meses em JavaScript começam em 0, então adicionamos 1
-      const year = dateObj.getFullYear();
-
-      // Formate a data no formato desejado (exemplo: dd/mm/aaaa)
-      const dateBr = `${day}/${month}/${year}`;
-
-      return dateBr;
     },
   },
 };
