@@ -34,6 +34,7 @@ export default {
     emitSave() {
       if (this.modelValue !== this.localValue) {
         // this.$emit("update:modelValue", this.convertDateTimeForServer(this.localValue));
+
         this.$emit("update:modelValue", this.localValue);
       }
     },
@@ -59,7 +60,8 @@ export default {
   },
   watch: {
     modelValue(newValue) {
-      this.localValue = this.convertDateTimeToLocal(newValue);
+      // this.localValue = this.convertDateTimeToLocal(newValue);
+      this.localValue = newValue;
     },
   },
 };

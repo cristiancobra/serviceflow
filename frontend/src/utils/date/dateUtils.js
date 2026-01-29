@@ -107,22 +107,16 @@ export function formatDateBr(date) {
 //     return dateTimeBr;
 // }
 
-export function convertDateTimeForServer(dateTimeString) {
-    const date = new Date(dateTimeString);
-
-    // Convertendo para UTC
-    const utcDateString = date.toISOString();
-
-    // Extraindo as partes da data e hora
-    const year = utcDateString.slice(0, 4);
-    const month = utcDateString.slice(5, 7);
-    const day = utcDateString.slice(8, 10);
-    const hours = utcDateString.slice(11, 13);
-    const minutes = utcDateString.slice(14, 16);
-    const seconds = utcDateString.slice(17, 19);
-
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-}
+// NÃO USAR MAIS - timezone salvo no banco
+// export function convertDateTimeForServer(dateTimeString) {
+//     console.log("Converting dateTimeString for server:", dateTimeString);
+//     const d = new Date(dateTimeString);
+  
+//     const pad = n => String(n).padStart(2, "0");
+  
+//     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ` +
+//            `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+//   }
 
 export function convertDateTimeToLocal(datetime) {
     const dateObj = new Date(datetime);

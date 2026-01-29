@@ -63,7 +63,7 @@
               class="hover:bg-gray-50 transition-colors divide-x divide-gray-100"
             >
               <td class="text-center text-black text-sm font-medium px-4 py-3 w-1/12">
-                {{ formatDateBr(transaction.transaction_date) }}
+                {{ transaction.transaction_date }}
               </td>
               
               <td class="text-left text-black text-sm px-4 py-3 w-2/12 truncate font-semibold">

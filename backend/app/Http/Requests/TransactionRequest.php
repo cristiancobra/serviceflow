@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Services\DateConversionService;
+use App\Services\DateTimeConversionService;
 
 class TransactionRequest extends FormRequest
 {
@@ -40,12 +40,11 @@ class TransactionRequest extends FormRequest
             'user_id' => auth()->id(),
         ]);
 
-        if ($this->has('transaction_date')) {
-            // Obter o timezone do usuário, ou usar São Paulo como padrão
-            $timezone = $this->input('user_timezone', 'America/Sao_Paulo');
-            
+        if ($this->filled('transaction_date')) {
+            $timezone = auth()->user()->timezone ?? 'America/Sao_Paulo';
+    
             $this->merge([
-                'transaction_date' => DateConversionService::convertToUtc(
+                'transaction_date' => DateTimeConversionService::convertToUtc(
                     $this->input('transaction_date'),
                     $timezone
                 ),

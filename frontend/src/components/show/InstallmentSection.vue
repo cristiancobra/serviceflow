@@ -98,7 +98,7 @@
             <div class="min-w-[160px]">
               <div class="inline-flex items-center gap-2 rounded-full bg-indigo-100 px-3 py-1">
                 <span class="h-2.5 w-2.5 rounded-full bg-sky-500"></span>
-                <span class="text-sm font-semibold text-indigo-700">{{ formatDateBr(transaction.transaction_date) }}</span>
+                <span class="text-sm font-semibold text-indigo-700">{{ transaction.transaction_date }}</span>
               </div>
             </div>
             <div class="flex-1"></div>
