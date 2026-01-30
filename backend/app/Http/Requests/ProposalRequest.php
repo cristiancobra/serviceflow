@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Services\DateTimeConversionService;
 
 class ProposalRequest extends FormRequest
 {
@@ -57,9 +58,19 @@ class ProposalRequest extends FormRequest
         $this->merge([
             'account_id' => $user->account_id,
         ]);
-
         $this->merge([
-            'user_id' => $user->id,
+            'user_id' => auth()->id(),
         ]);
+
+        if ($this->filled('transaction_date')) {
+            $timezone = auth()->user()->timezone ?? 'America/Sao_Paulo';
+    
+            $this->merge([
+                'transaction_date' => DateTimeConversionService::convertToUtc(
+                    $this->input('transaction_date'),
+                    $timezone
+                ),
+            ]);
+        }
     }
 }

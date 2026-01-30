@@ -107,16 +107,18 @@ export function formatDateBr(date) {
 //     return dateTimeBr;
 // }
 
-// NÃO USAR MAIS - timezone salvo no banco
-// export function convertDateTimeForServer(dateTimeString) {
-//     console.log("Converting dateTimeString for server:", dateTimeString);
-//     const d = new Date(dateTimeString);
+
+export function convertDateTimeForServer(date) {
+    if (!(date instanceof Date)) return null;
+
+    const pad = n => String(n).padStart(2, "0");
   
-//     const pad = n => String(n).padStart(2, "0");
+    return (
+      `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ` +
+      `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
+    );
+  }
   
-//     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ` +
-//            `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-//   }
 
 export function convertDateTimeToLocal(datetime) {
     const dateObj = new Date(datetime);

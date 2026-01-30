@@ -155,7 +155,7 @@
         <p class="text-sm font-medium">Nenhum pagamento recebido</p>
       </div>
 
-      <div
+      <!-- <div
         v-else
         class="mt-4 space-y-2 rounded-xl border border-gray-200 bg-white p-2 border-t-4 border-t-indigo-500 shadow-sm"
       >
@@ -190,7 +190,7 @@
             />
           </div>
         </div>
-      </div>
+      </div> -->
 
       <!-- Totais da fatura -->
       <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -267,7 +267,7 @@ import TransactionCreateForm from "../../components/forms/TransactionCreateForm.
 import SelectStatusButton from "../../components/buttons/SelectStatusButton.vue";
 import DescriptionSection from "@/components/show/DescriptionSection.vue";
 import MoneyEditableField from "../../components/fields/number/MoneyEditableField.vue";
-import DateEditableInput from "../../components/fields/date/DateEditableInput.vue";
+// import DateEditableInput from "../../components/fields/date/DateEditableInput.vue";
 
 export default {
   data() {
@@ -284,7 +284,7 @@ export default {
     SelectStatusButton,
     DescriptionSection,
     MoneyEditableField,
-    DateEditableInput,
+    // DateEditableInput,
   },
   computed: {
     invoiceTotal() {

@@ -49,7 +49,7 @@
       @update-proposal="updateProposal"
     />
 
-    <installment-section :proposal="proposal" @reload-proposal="getProposal" />
+    <invoices-list-section :proposal="proposal" @reload-proposal="getProposal" />
 
     <div
       class="flex flex-wrap items-center justify-between px-10 gap-6 py-6 mt-8 border-t border-gray-200"
@@ -108,8 +108,8 @@ import ProposalProfitMarginSection from "@/components/show/ProposalProfitMarginS
 import ProposalServicesSection from "@/components/show/ProposalServicesSection.vue";
 import ProposalCostsSection from "@/components/show/ProposalCostsSection.vue";
 import SelectStatusButton from "../../components/buttons/SelectStatusButton.vue";
-import InstallmentSection from "@/components/show/InstallmentSection.vue";
 import TimelineProposal from "@/components/TimelineProposal.vue";
+import InvoicesListSection from '../../components/lists/InvoicesListSection.vue';
 
 export default {
   data() {
@@ -123,13 +123,13 @@ export default {
   },
   components: {
     DescriptionSection,
-    InstallmentSection,
     OpportunitiesSelectEditableField,
     ProposalProfitMarginSection,
     ProposalCostsSection,
     ProposalServicesSection,
     SelectStatusButton,
     TimelineProposal,
+    InvoicesListSection,
   },
   methods: {
     destroy,
