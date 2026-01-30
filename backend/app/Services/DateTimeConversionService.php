@@ -27,11 +27,31 @@ class DateTimeConversionService
         }
     }
     
+    // Converte uma data/hora de um fuso horário específico para UTC para salvar no banco de dados
     public static function convertToUtc(string $dateTime, string $timezone = 'America/Sao_Paulo'): string
     {
         try {
             $dt = new \DateTime($dateTime, new \DateTimeZone($timezone));
             $dt->setTimezone(new \DateTimeZone('UTC'));
+    
+            return $dt->format('Y-m-d H:i:s');
+        } catch (\Exception $e) {
+            return $dateTime;
+        }
+    }
+
+    // Converte uma data/hora de UTC para um fuso horário do usuario para exibição
+    public static function convertFromUtc(
+        ?string $dateTime,
+        string $timezone = 'America/Sao_Paulo'
+    ): ?string {
+        if (!$dateTime) {
+            return null;
+        }
+    
+        try {
+            $dt = new \DateTime($dateTime, new \DateTimeZone('UTC'));
+            $dt->setTimezone(new \DateTimeZone($timezone));
     
             return $dt->format('Y-m-d H:i:s');
         } catch (\Exception $e) {

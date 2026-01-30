@@ -7,6 +7,7 @@ use App\Http\Resources\InvoicesResource;
 use App\Http\Resources\OpportunitiesResource;
 use App\Http\Resources\ProposalServiceResource;
 use App\Http\Resources\ProposalCostResource;
+use App\Services\DateTimeConversionService;
 
 class ProposalsResource extends JsonResource
 {
@@ -18,12 +19,17 @@ class ProposalsResource extends JsonResource
      */
     public function toArray($request)
     {
+        $timezone = auth()->user()->timezone ?? 'America/Sao_Paulo';
+        
         return [
             'id' => $this->id,
             'opportunity_id' => $this->opportunity_id,
             'name' => $this->name,
             'description' => $this->description,
-            'date' => $this->date,
+            'date' => DateTimeConversionService::convertFromUtc(
+                $this->date,
+                $timezone
+            ),
             'validity_days' => $this->validity_days,
             'total_hours' => $this->total_hours,
             'total_operational_cost' => $this->total_operational_cost,

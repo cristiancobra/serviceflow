@@ -62,12 +62,12 @@ class ProposalRequest extends FormRequest
             'user_id' => auth()->id(),
         ]);
 
-        if ($this->filled('transaction_date')) {
+        if ($this->filled('date')) {
             $timezone = auth()->user()->timezone ?? 'America/Sao_Paulo';
     
             $this->merge([
-                'transaction_date' => DateTimeConversionService::convertToUtc(
-                    $this->input('transaction_date'),
+                'date' => DateTimeConversionService::convertToUtc(
+                    $this->input('date'),
                     $timezone
                 ),
             ]);
