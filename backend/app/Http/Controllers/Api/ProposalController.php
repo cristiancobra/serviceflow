@@ -157,6 +157,10 @@ class ProposalController extends Controller
         try {
             $validatedData = $request->validated();
 
+            // Verifica se installment_quantity foi alterado
+            $installmentQuantityChanged = isset($validatedData['installment_quantity']) && 
+                                         $validatedData['installment_quantity'] != $proposal->installment_quantity;
+
             // Se o status foi alterado, atualize a coluna correspondente
             if (isset($validatedData['status']) && $validatedData['status'] != $proposal->status) {
                 $this->updateProposalStatus($proposal, $validatedData['status']);
@@ -197,6 +201,16 @@ class ProposalController extends Controller
 
             $proposal->fill($validatedData);
             $proposal->save();
+
+            // Se installment_quantity foi alterado, redistribua as faturas
+            if ($installmentQuantityChanged) {
+                $redistributionResult = $proposal->redistributeInvoices($validatedData['installment_quantity']);
+                
+                // Você pode logar o resultado se necessário
+                if ($redistributionResult['status'] === 'success') {
+                    Log::info("Faturas redistribuídas para a proposta {$proposal->id}", $redistributionResult['data']);
+                }
+            }
 
             // Atualiza ou cria os serviços relacionados à proposta
             if ($request->has('proposalServices')) {
