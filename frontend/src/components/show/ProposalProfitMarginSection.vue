@@ -126,6 +126,7 @@ export default {
     return {
       isHighlighted: false,
       localProposal: { ...this.proposal },
+      previousInstallmentQuantity: null, // Armazena o valor anterior
     };
   },
   components: {
@@ -142,6 +143,10 @@ export default {
       }, 2000);
     },
     updateProposal(field, value) {
+      // Se for installment_quantity, armazena o valor anterior antes de emitir
+      if (field === 'installment_quantity') {
+        this.previousInstallmentQuantity = this.localProposal.installment_quantity;
+      }
       this.$emit("update-proposal", field, value);
     },
   },

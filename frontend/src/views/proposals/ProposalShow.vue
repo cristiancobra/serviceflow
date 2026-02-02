@@ -119,6 +119,7 @@ export default {
       },
       proposalId: "",
       isVisibleQuantity: false,
+      previousInstallmentQuantity: null, // Armazena o valor anterior
     };
   },
   components: {
@@ -225,7 +226,27 @@ export default {
         );
         this.proposal = updatedProposal;
       } catch (error) {
-        console.error("Erro ao atualizar a proposta:", error);
+        // Exibir erro de forma visível ao usuário
+        if (error.response && error.response.status === 422) {
+          const errorData = error.response.data;
+          const errorMessage = errorData.message || "Erro ao atualizar a proposta";
+          const fieldErrors = errorData.errors ? errorData.errors[fieldName] : null;
+          
+          // Construir mensagem de erro detalhada
+          let fullMessage = errorMessage;
+          if (fieldErrors && fieldErrors.length > 0) {
+            fullMessage = fieldErrors[0];
+          }
+          
+          // Exibir alerta ao usuário
+          alert(fullMessage);
+          
+          // Recarregar a proposta para descartar mudanças
+          this.getProposal();
+        } else {
+          console.error("Erro ao atualizar a proposta:", error);
+          alert("Erro ao atualizar a proposta. Tente novamente.");
+        }
       }
     },
   },

@@ -161,6 +161,16 @@ class ProposalController extends Controller
             $installmentQuantityChanged = isset($validatedData['installment_quantity']) && 
                                          $validatedData['installment_quantity'] != $proposal->installment_quantity;
 
+            // VALIDAÇÃO: installment_quantity não pode ser menor ou igual ao atual
+            if ($installmentQuantityChanged && $validatedData['installment_quantity'] <= $proposal->installment_quantity) {
+                return response()->json([
+                    'message' => "Erro ao atualizar parcelamento",
+                    'errors' => [
+                        'installment_quantity' => ["O número de parcelas deve ser maior que {$proposal->installment_quantity}"]
+                    ]
+                ], 422);
+            }
+
             // Se o status foi alterado, atualize a coluna correspondente
             if (isset($validatedData['status']) && $validatedData['status'] != $proposal->status) {
                 $this->updateProposalStatus($proposal, $validatedData['status']);
@@ -205,6 +215,16 @@ class ProposalController extends Controller
             // Se installment_quantity foi alterado, redistribua as faturas
             if ($installmentQuantityChanged) {
                 $redistributionResult = $proposal->redistributeInvoices($validatedData['installment_quantity']);
+                
+                // Se houve erro na redistribuição, retorne o erro
+                if ($redistributionResult['status'] === 'error') {
+                    return response()->json([
+                        'message' => $redistributionResult['message'],
+                        'errors' => [
+                            'installment_quantity' => [$redistributionResult['message']]
+                        ]
+                    ], 422);
+                }
                 
                 // Você pode logar o resultado se necessário
                 if ($redistributionResult['status'] === 'success') {
