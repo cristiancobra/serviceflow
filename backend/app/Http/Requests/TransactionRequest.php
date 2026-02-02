@@ -25,12 +25,12 @@ class TransactionRequest extends FormRequest
     public function rules()
     {
         return [
-            'invoice_id' => 'required|exists:invoices,id',
+            'invoice_id' => 'sometimes|required|exists:invoices,id',
             'bank_account_id' => 'nullable|exists:bank_accounts,id',
-            'amount' => 'required|numeric|min:0',
-            'transaction_date' => 'required|date',
-            'type' => 'required|string|in:credit,debit',
-            'method' => 'required|string|in:cash,bank_transfer,pix,credit_card,debit_card,check',
+            'amount' => 'sometimes|required|numeric|min:0',
+            'transaction_date' => 'sometimes|required|date',
+            'type' => 'sometimes|required|string|in:credit,debit',
+            'method' => 'sometimes|required|string|in:cash,bank_transfer,pix,credit_card,debit_card,check',
         ];
     }
 

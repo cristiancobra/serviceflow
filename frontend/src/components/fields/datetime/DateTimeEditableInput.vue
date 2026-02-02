@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { convertDateTimeToLocal, convertDateTimeForServer, displayDate, displayTime } from "@/utils/date/dateUtils";
+import { displayDate, displayTime } from "@/utils/date/dateUtils";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 
@@ -26,11 +26,10 @@ export default {
   },
   data() {
     return {
-      // convertedDateTime: convertDateTimeToLocal(this.modelValue),
       editing: false,
       formatedDate: '',
       formatedTime: '',
-      localValue: this.convertDateTimeToLocal(this.modelValue),
+      localValue: this.modelValue,
     };
   },
   props: {
@@ -42,8 +41,6 @@ export default {
     placeholder: String,
   },
   methods: {
-    convertDateTimeToLocal,
-    convertDateTimeForServer,
     startEditing() {
       this.editing = true;
     },
@@ -52,9 +49,9 @@ export default {
         // Se a data local for vazia, emita um valor null ou uma string vazia
         this.$emit("save", null);
         console.log('Emitindo save com valor nulo');
-      } else if (this.convertDateTimeToLocal(this.modelValue) !== this.localValue) {
-        this.$emit("save", this.convertDateTimeForServer(this.localValue));
-        console.log('Emitindo save:', this.convertDateTimeForServer(this.localValue));
+      } else if (this.modelValue !== this.localValue) {
+        this.$emit("save", this.localValue);
+        console.log('Emitindo save:', this.localValue);
         console.log('LocalValue:', this.localValue);
       }
       this.editing = false;
@@ -86,7 +83,7 @@ export default {
   },
   watch: {
     modelValue(newValue) {
-      this.localValue = this.convertDateTimeToLocal(newValue);
+      this.localValue = newValue;
       this.displayLocal();
     },
   },

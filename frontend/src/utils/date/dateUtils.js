@@ -108,37 +108,37 @@ export function formatDateBr(date) {
 // }
 
 
-export function convertDateTimeForServer(date) {
-    if (!(date instanceof Date)) return null;
+// export function convertDateTimeForServer(date) {
+//     if (!(date instanceof Date)) return null;
 
-    const pad = n => String(n).padStart(2, "0");
+//     const pad = n => String(n).padStart(2, "0");
   
-    return (
-      `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ` +
-      `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
-    );
-  }
+//     return (
+//       `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ` +
+//       `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
+//     );
+//   }
   
 
-export function convertDateTimeToLocal(datetime) {
-    const dateObj = new Date(datetime);
-    const userTimezoneOffset = dateObj.getTimezoneOffset() * 60000;
-    // Adicionar o offset (não subtrair) para converter UTC para local
-    const localDate = new Date(dateObj.getTime() + userTimezoneOffset);
+// export function convertDateTimeToLocal(datetime) {
+//     const dateObj = new Date(datetime);
+//     const userTimezoneOffset = dateObj.getTimezoneOffset() * 60000;
+//     // Adicionar o offset (não subtrair) para converter UTC para local
+//     const localDate = new Date(dateObj.getTime() + userTimezoneOffset);
 
-    const padZero = (num) => num.toString().padStart(2, '0');
+//     const padZero = (num) => num.toString().padStart(2, '0');
 
-    const day = padZero(localDate.getDate());
-    const month = padZero(localDate.getMonth() + 1);
-    const year = localDate.getFullYear();
-    const hours = padZero(localDate.getHours());
-    const minutes = padZero(localDate.getMinutes());
-    const seconds = padZero(localDate.getSeconds());
+//     const day = padZero(localDate.getDate());
+//     const month = padZero(localDate.getMonth() + 1);
+//     const year = localDate.getFullYear();
+//     const hours = padZero(localDate.getHours());
+//     const minutes = padZero(localDate.getMinutes());
+//     const seconds = padZero(localDate.getSeconds());
 
-    const dateTimeLocal = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+//     const dateTimeLocal = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
-    return dateTimeLocal;
-}
+//     return dateTimeLocal;
+// }
 
 export function convertDateToLocal(dateString) {
     if (!dateString) return '';

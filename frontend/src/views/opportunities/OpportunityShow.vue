@@ -115,7 +115,7 @@
 <script>
 import axios from "axios";
 import { BACKEND_URL, OPPORTUNITY_URL_PARAMETER } from "@/config/apiConfig";
-import { formatDuration, convertDateTimeToLocal } from "@/utils/date/dateUtils";
+import { formatDuration } from "@/utils/date/dateUtils";
 import { destroy, show, updateField } from "@/utils/requests/httpUtils";
 import {
   formatDateBr,
@@ -174,11 +174,9 @@ export default {
     scrollToSection,
     translateStatus,
     translatePriority,
-    convertDateTimeToLocal,
     async getOpportunity() {
       this.opportunity = await show("opportunities", this.opportunityId);
       this.currentOpportunity = this.opportunity;
-      convertDateTimeToLocal(this.opportunity.date_start);
       this.opportunityLoaded = true;
     },
     setOpportunityId(opportunityId) {
@@ -226,9 +224,6 @@ export default {
   computed: {
     translatedStatus() {
       return translateStatus(this.opportunity.status);
-    },
-    localDate(date) {
-      return convertDateTimeToLocal(date);
     },
   },
   mounted() {

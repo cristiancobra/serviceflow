@@ -72,18 +72,15 @@ class TransactionController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  TransactionRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(TransactionRequest $request, $id)
     {
+        $validated = $request->validated();
+        
         $transaction = Transaction::findOrFail($id);
-
-        $validated = $request->validate([
-            'transaction_date' => 'nullable|date',
-            'amount' => 'nullable|numeric',
-        ]);
 
         $transaction->fill($validated);
         $transaction->save();

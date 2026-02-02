@@ -9,8 +9,6 @@
 <script>
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
-import { convertDateTimeForServer } from "@/utils/date/dateUtils";
-import { convertDateTimeToLocal } from "@/utils/date/dateUtils";
 
 export default {
   components: {
@@ -29,11 +27,9 @@ export default {
     autoFillNow: Boolean, 
   },
   methods: {
-    convertDateTimeToLocal,
-    convertDateTimeForServer,
     emitSave() {
       if (this.modelValue !== this.localValue) {
-        this.$emit("update:modelValue", this.convertDateTimeForServer(this.localValue));
+        this.$emit("update:modelValue", this.localValue);
 
         // this.$emit("update:modelValue", this.localValue);
       }
@@ -46,12 +42,7 @@ export default {
     }
     if (!this.localValue) {
       this.localValue = "não informado";
-    }
-
-    // if(this.modelValue) {
-    //   this.localValue = this.convertDateTimeToLocal(this.modelValue);
-    // }
-    
+    }   
 
     document.addEventListener('keydown', this.cancelEditing);
   },
@@ -60,7 +51,6 @@ export default {
   },
   watch: {
     modelValue(newValue) {
-      // this.localValue = this.convertDateTimeToLocal(newValue);
       this.localValue = newValue;
     },
   },
