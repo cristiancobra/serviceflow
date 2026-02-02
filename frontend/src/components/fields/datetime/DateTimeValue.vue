@@ -12,12 +12,12 @@
 
 
 <script>
-import { convertDateTimeToLocal, displayDate, displayTime } from "@/utils/date/dateUtils";
+import { displayDate, displayTime } from "@/utils/date/dateUtils";
 
 export default {
   data() {
     return {
-      convertedDateTime: convertDateTimeToLocal(this.modelValue),
+      convertedDateTime: this.modelValue,
       formatedDate: '',
       formatedTime: '',
       localClassIcon: '',
@@ -31,7 +31,7 @@ export default {
     placeholder: String,
   },
   methods: {
-    convertDateTimeToLocal,
+    // convertDateTimeToLocal,
   },
   mounted() {
     if (this.modelValue != '1969-12-31 18:00:00'
