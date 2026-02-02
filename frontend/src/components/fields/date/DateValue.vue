@@ -1,5 +1,5 @@
 <template>
-  <div v-if="convertedDate" class="container-date">
+  <div v-if="formatedDate" class="container-date">
     <span class="default-text">
       {{ formatedDate }}
     </span>
@@ -8,12 +8,11 @@
 
 
 <script>
-import { convertDateTimeToLocal, displayDate } from "@/utils/date/dateUtils";
+import { displayDate } from "@/utils/date/dateUtils";
 
 export default {
   data() {
     return {
-      convertedDate: convertDateTimeToLocal(this.modelValue),
       formatedDate: '',
     };
   },
@@ -23,11 +22,11 @@ export default {
     placeholder: String,
   },
   methods: {
-    convertDateTimeToLocal,
+    displayDate,
   },
   mounted() {
     if (this.modelValue != '1969-12-31 18:00:00' && this.modelValue != '1969-12-31 21:00:00' && this.modelValue != null) {
-      this.formatedDate = displayDate(this.convertedDate);
+      this.formatedDate = displayDate(this.modelValue);
     } else {
       this.formatedDate = '';
     }

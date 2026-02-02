@@ -9,7 +9,7 @@
 <script>
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
-import { convertDateTimeToLocal, convertDateTimeForServer } from "@/utils/date/dateUtils";
+import { convertDateTimeForServer } from "@/utils/date/dateUtils";
 
 export default {
   components: {
@@ -17,7 +17,7 @@ export default {
   },
   data() {
     return {
-      localValue: this.convertDateTimeToLocal(this.modelValue),
+      localValue: this.modelValue,
     };
   },
   props: {
@@ -34,7 +34,6 @@ export default {
     placeholder: String,
   },
   methods: {
-    convertDateTimeToLocal,
     convertDateTimeForServer,
     emitSave() {
       if (this.modelValue !== this.localValue) {

@@ -22,7 +22,6 @@ export default {
     placeholder: String,
   },
   methods: {
-    // convertDateTimeToLocal,
     displayDate,
     displayTime,
     useDisplayTime(datetime) {

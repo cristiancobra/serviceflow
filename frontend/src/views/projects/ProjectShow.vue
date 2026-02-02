@@ -102,7 +102,6 @@
 <script>
 import axios from "axios";
 import { BACKEND_URL, PROJECT_URL_PARAMETER } from "@/config/apiConfig";
-import { convertDateTimeToLocal } from "@/utils/date/dateUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import { formatDateTimeBr } from "@/utils/date/dateUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
@@ -147,7 +146,6 @@ export default {
   },
   emits: ["new-journey-event", "journey-updated", "journey-deleted"],
   methods: {
-    convertDateTimeToLocal,
     formatDateBr,
     formatDateTimeBr,
     formatDuration,
@@ -164,7 +162,6 @@ export default {
     async getProject() {
       this.project = await show("projects", this.projectId);
       this.currentProject = this.project;
-      convertDateTimeToLocal(this.project.date_start);
       this.projectLoaded = true;
     },
     setProjectId(projectId) {
@@ -221,9 +218,6 @@ export default {
   computed: {
     translatedStatus() {
       return translateStatus(this.project.status);
-    },
-    localDate(date) {
-      return convertDateTimeToLocal(date);
     },
   },
   mounted() {
