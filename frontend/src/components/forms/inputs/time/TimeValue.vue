@@ -7,12 +7,12 @@
 
 
 <script>
-import { convertDateTimeToLocal, displayDate, displayTime } from "@/utils/date/dateUtils";
+import { displayDate, displayTime } from "@/utils/date/dateUtils";
 
 export default {
   data() {
     return {
-      convertedDateTime: convertDateTimeToLocal(this.modelValue),
+      convertedDateTime: this.modelValue,
       formatedTime: '',
     };
   },
@@ -22,7 +22,7 @@ export default {
     placeholder: String,
   },
   methods: {
-    convertDateTimeToLocal,
+    // convertDateTimeToLocal,
     displayDate,
     displayTime,
     useDisplayTime(datetime) {
@@ -35,7 +35,7 @@ export default {
   },
   watch: {
     modelValue(newValue) {
-      this.convertedDateTime = convertDateTimeToLocal(newValue);
+      this.convertedDateTime = newValue;
       if (newValue != '1969-12-31 18:00:00' && newValue != '1969-12-31 21:00:00' && newValue != null) {
         this.formatedTime = displayTime(this.convertedDateTime);
       } else {

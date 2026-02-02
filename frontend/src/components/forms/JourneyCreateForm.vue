@@ -58,7 +58,7 @@
 <script>
 import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import { BACKEND_URL, JOURNEY_URL } from "@/config/apiConfig";
-import { convertDateTimeForServer } from "@/utils/date/dateUtils";
+// import { convertDateTimeForServer } from "@/utils/date/dateUtils";
 import { mapMutations } from "vuex";
 import axios from "axios";
 import VueDatePicker from "@vuepic/vue-datepicker";
@@ -97,7 +97,7 @@ export default {
     };
   },
   methods: {
-    convertDateTimeForServer,
+    // convertDateTimeForServer,
     clearForm() {
       this.form.details = null;
       this.form.start = null;
@@ -150,7 +150,10 @@ export default {
           .post(`${BACKEND_URL}${JOURNEY_URL}`, formWithTimezone)
           .then((response) => {
             this.newJourney = response.data.data;
-            this.$emit("new-journey-event", this.newJourney);
+            this.$emit("new-journey-event", {
+              journey: this.newJourney,
+              taskId: this.taskId,
+            });
             this.clearForm();
             this.toggle();
             this.setMessageStatus("success");

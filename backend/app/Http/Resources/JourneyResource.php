@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Services\DateTimeConversionService;
 
 class JourneyResource extends JsonResource
 {
@@ -14,6 +15,25 @@ class JourneyResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        $timezone = auth()->user()->timezone ?? 'America/Sao_Paulo';
+
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'user_id' => $this->user_id,
+            'task_id' => $this->task_id,
+            'details' => $this->details,
+            'start' => DateTimeConversionService::convertFromUtc(
+                $this->start,
+                $timezone
+            ),
+            'end' => $this->end ? DateTimeConversionService::convertFromUtc(
+                $this->end,
+                $timezone
+            ) : null,
+            'duration' => $this->duration,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
     }
 }

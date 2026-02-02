@@ -81,7 +81,7 @@ import { getColorClassForName, trimName } from "@/utils/card/cardUtils";
 import { displayLocalTime } from "@/utils/date/dateUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import { formatTimeToLocal } from "@/utils/date/dateUtils";
-import { convertDateTimeForServer } from "@/utils/date/dateUtils";
+// import { convertDateTimeForServer } from "@/utils/date/dateUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
 import { mapMutations } from "vuex";
 import DateEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
@@ -103,6 +103,10 @@ export default {
     template: {
       type: String,
     },
+    newJourneyId: {
+      type: [String, Number],
+      default: null,
+    },
   },
   data() {
     return {
@@ -122,12 +126,11 @@ export default {
         end: null,
       },
       editedJourneys: [],
-      newJourneyId: null,
     };
   },
   emits: ["new-journey-event", "journey-updated", "journey-deleted"],
   methods: {
-    convertDateTimeForServer,
+    // convertDateTimeForServer,
     displayLocalTime,
     formatDateBr,
     formatTimeToLocal,
@@ -136,17 +139,9 @@ export default {
     trimName,
     addJourneyCreated(newJourney) {
       this.localJourneys.unshift(newJourney);
-      this.highlightNewJourney(newJourney.id);
       this.$emit("update-task-duration");
       this.emitLastJourneyEnd();
     },
-    highlightNewJourney(journeyId) {
-      this.newJourneyId = journeyId;
-      setTimeout(() => {
-        this.newJourneyId = null;
-      }, 2000);
-    },
-
     cancelEditDateTime(event, journey) {
       // Verifica se a tecla pressionada é "Esc" (código 27)
       if (event.keyCode === 27) {
@@ -226,7 +221,7 @@ export default {
     async stopJourney(journeyId) {
       const fieldName = "end";
       const now = new Date();
-      const endValue = this.convertDateTimeForServer(now);
+      const endValue = now;
       this.updateJourney(fieldName, endValue, journeyId);
       this.$store.commit("setOpenJourney", null);
     },
@@ -370,6 +365,28 @@ export default {
   background-color: #ccc;
   color: #666;
   cursor: not-allowed;
+}
+
+.highlight {
+  background-color: #fff3cd;
+  animation: highlightPulse 2s ease-in-out;
+  border-left: 4px solid #ffc107;
+  /* padding-left: 12px; */
+}
+
+@keyframes highlightPulse {
+  0% {
+    background-color: #fffacd;
+    box-shadow: 0 0 15px rgba(255, 193, 7, 0.8);
+  }
+  50% {
+    background-color: #fff9c4;
+    box-shadow: 0 0 25px rgba(255, 193, 7, 0.6);
+  }
+  100% {
+    background-color: #fff3cd;
+    box-shadow: 0 0 0 rgba(255, 193, 7, 0);
+  }
 }
 
 </style>

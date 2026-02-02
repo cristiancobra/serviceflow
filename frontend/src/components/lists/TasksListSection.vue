@@ -161,6 +161,7 @@
           >
             <journeys-list-from-opportunity
               :journeys="localTask.journeys"
+              :newJourneyId="newJourneyId"
               @update-task-duration="updateTaskDuration()"
               @last-journey-end="updateEndTaskButtonVisibility"
             />
@@ -219,6 +220,7 @@ export default {
       showGroupColumn: false,
       showJourneys: {},
       totalTasks: 0,
+      newJourneyId: null,
     };
   },
   components: {
