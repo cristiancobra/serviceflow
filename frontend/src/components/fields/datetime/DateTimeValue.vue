@@ -31,7 +31,6 @@ export default {
     placeholder: String,
   },
   methods: {
-    // convertDateTimeToLocal,
   },
   mounted() {
     if (this.modelValue != '1969-12-31 18:00:00'

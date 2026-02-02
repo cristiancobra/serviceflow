@@ -130,7 +130,6 @@ export default {
   },
   emits: ["new-journey-event", "journey-updated", "journey-deleted"],
   methods: {
-    // convertDateTimeForServer,
     displayLocalTime,
     formatDateBr,
     formatTimeToLocal,

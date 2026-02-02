@@ -236,7 +236,6 @@ export default {
   },
   methods: {
     convertUtcToLocal,
-    TextEditableField,
     formatDuration,
     getColorClassForName,
     getStatusColor,
