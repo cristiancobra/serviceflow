@@ -49,7 +49,7 @@
           >
             <div class="flex items-center gap-4">
               <div
-                :class="calculateInvoiceBalance(invoice) === 0 ? 'bg-green-600' : 'bg-blue-500'"
+                :class="calculateInvoiceBalance(invoice) === 0 ? 'bg-success' : 'bg-blue-500'"
                 class="flex items-center justify-center w-10 h-10 rounded-full"
               >
                 <font-awesome-icon
@@ -85,7 +85,7 @@
                   class="text-gray-400 mr-2 w-4"
                 />
                 <span class="font-medium mr-1 text-sm">Pago:</span>
-                <span class="text-green-600 font-bold">
+                <span class="text-success font-bold">
                   {{ formatCurrency(invoice.total_paid || 0) }}
                 </span>
               </div>
@@ -134,13 +134,19 @@
             <div
               v-for="transaction in invoice.transactions"
               :key="transaction.id"
-              class="group flex items-center justify-between px-1 py-1 rounded-md bg-white even:bg-sky-50/40 hover:bg-sky-100/60 border-l-4 border-transparent hover:border-sky-400 transition-colors"
+              class="group flex items-center justify-between ms-36 px-1 py-1 rounded-md bg-white even:bg-sky-50/40 hover:bg-sky-100/60 border-l-4 border-transparent hover:border-sky-400 transition-colors"
             >
+              <div class="flex items-center justify-center w-6 h-6 me-2 bg-primary rounded-full">
+                <font-awesome-icon
+                  icon="fas fa-coins"
+                  class="text-white text-xs"
+                />
+              </div>
               <div class="min-w-[160px]">
                 <div
                   class="inline-flex items-center gap-2 rounded-full bg-indigo-100 px-3 py-1"
                 >
-                  <span class="h-2.5 w-2.5 rounded-full bg-sky-500"></span>
+                  <span class="h-2.5 w-2.5 rounded-full bg-gray-400"></span>
                   <date-time-editable-input
                     name="transaction_date"
                     :modelValue="transaction.transaction_date"
