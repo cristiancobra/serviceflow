@@ -22,6 +22,7 @@ class InvoiceController extends Controller
             'proposal.opportunity',
             'proposal.opportunity.company',
             'proposal.opportunity.lead',
+            'lead',
             'transactions',
         ])
             ->orderBy('date_due', 'desc')
@@ -40,16 +41,37 @@ class InvoiceController extends Controller
     {
         try {
             $validated = $request->validated();
+            
+            // Verifica se é uma fatura de débito individual (com amount) ou múltiplas faturas (com prices)
+            if (isset($validated['amount']) && !isset($validated['prices'])) {
+                // Fatura de débito individual
+                $invoiceData = [
+                    'proposal_id' => $validated['proposal_id'],
+                    'user_id' => $validated['user_id'],
+                    'lead_id' => $validated['lead_id'],
+                    'price' => $validated['amount'],
+                    'balance' => $validated['amount'],
+                    'date_due' => $validated['date_due'],
+                    'type' => $validated['type'] ?? 'debit',
+                    'observations' => $validated['observations'] ?? null,
+                ];
+                
+                $invoice = Invoice::create($invoiceData);
+                return InvoicesResource::collection([$invoice]);
+            }
+            
+            // Faturas parceladas (lógica existente)
             $prices = $validated['prices'];
             $dateDue = $validated['date_due'];
             unset($validated['prices'], $validated['date_due']);
-    
+        
             $invoices = [];
             foreach ($prices as $index => $price) {
                 $invoiceData = array_merge($validated, [
                     'price' => $price,
                     'balance' => $price,
-                    'date_due' => date('Y-m-d', strtotime("+$index month", strtotime($dateDue)))
+                    'date_due' => date('Y-m-d', strtotime("+$index month", strtotime($dateDue))),
+                    'type' => 'credit',
                 ]);
                 $invoice = new Invoice;
                 $invoice->fill($invoiceData);
@@ -80,6 +102,7 @@ class InvoiceController extends Controller
                 'proposal.opportunity.company',
                 'proposal.opportunity.lead',
                 'user',
+                'lead',
                 'transactions'
             ]));
         }

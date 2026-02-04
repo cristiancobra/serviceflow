@@ -106,6 +106,10 @@
                     <font-awesome-icon icon="fa-solid fa-flag" class="mr-1" />
                     Status
                   </th>
+                  <th class="w-1/12 px-3 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-900">
+                    <font-awesome-icon icon="fa-solid fa-exchange-alt" class="mr-1" />
+                    Tipo
+                  </th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-100">
@@ -208,6 +212,26 @@
                     >
                       <font-awesome-icon :icon="getStatusIcon(transaction.status)" class="text-xs" />
                       {{ getStatusLabel(transaction.status) }}
+                    </span>
+                  </td>
+                  
+                  <!-- Tipo -->
+                  <td class="w-1/12 px-3 py-3 text-center">
+                    <span
+                      :class="{
+                        'bg-blue-100': transaction.type === 'credit',
+                        'bg-red-100': transaction.type === 'debit',
+                      }"
+                      class="w-7 h-7 flex items-center justify-center rounded-full"
+                    >
+                      <font-awesome-icon
+                        :icon="transaction.type === 'credit' ? 'fa-solid fa-arrow-up' : 'fa-solid fa-arrow-down'"
+                        :class="{
+                          'text-blue-600': transaction.type === 'credit',
+                          'text-red-600': transaction.type === 'debit',
+                        }"
+                        class="text-xs"
+                      />
                     </span>
                   </td>
                 </tr>

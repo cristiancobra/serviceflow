@@ -184,7 +184,7 @@ export default {
         bank_account_id: null,
         amount: this.invoice?.balance || 0,
         transaction_date: null,
-        type: "credit",
+        type: this.invoice?.type === 'debit' ? 'debit' : 'credit',
         method: "pix",
         observations: null,
       },
@@ -204,6 +204,8 @@ export default {
           console.log("Invoice mudou, atualizando formulário:", newInvoice);
           this.form.invoice_id = newInvoice.id;
           this.form.amount = newInvoice.balance || 0;
+          // Atualiza o tipo de transação baseado no tipo da fatura
+          this.form.type = newInvoice.type === 'debit' ? 'debit' : 'credit';
         }
       },
       deep: true,

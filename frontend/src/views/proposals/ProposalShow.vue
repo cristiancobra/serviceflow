@@ -42,6 +42,7 @@
       :proposal="proposal"
       @update-proposal-cost="updateProposalFromCosts"
       @update-total-third-party-cost="updateTotalThirdPartyCost"
+      @invoice-created="getProposal"
     />
 
     <proposal-profit-margin-section
@@ -50,6 +51,10 @@
     />
 
     <invoices-list-section :proposal="proposal" @reload-proposal="getProposal" />
+
+    <debit-invoices-section
+      :proposal="proposal"
+    />
 
     <div
       class="flex flex-wrap items-center justify-between px-10 gap-6 py-6 mt-8 border-t border-gray-200"
@@ -107,6 +112,7 @@ import OpportunitiesSelectEditableField from "../../components/fields/selects/Op
 import ProposalProfitMarginSection from "@/components/show/ProposalProfitMarginSection.vue";
 import ProposalServicesSection from "@/components/show/ProposalServicesSection.vue";
 import ProposalCostsSection from "@/components/show/ProposalCostsSection.vue";
+import DebitInvoicesSection from "@/components/show/DebitInvoicesSection.vue";
 import SelectStatusButton from "../../components/buttons/SelectStatusButton.vue";
 import TimelineProposal from "@/components/TimelineProposal.vue";
 import InvoicesListSection from '../../components/lists/InvoicesListSection.vue';
@@ -131,6 +137,7 @@ export default {
     SelectStatusButton,
     TimelineProposal,
     InvoicesListSection,
+    DebitInvoicesSection,
   },
   methods: {
     destroy,

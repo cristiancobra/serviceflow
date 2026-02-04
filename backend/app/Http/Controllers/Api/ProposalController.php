@@ -130,6 +130,7 @@ class ProposalController extends Controller
     public function show(Proposal $proposal)
     {
         $proposal = Proposal::with([
+            'invoices.lead',
             'invoices.transactions',
             'proposalServices',
             'proposalCosts',
@@ -717,6 +718,7 @@ class ProposalController extends Controller
                     // Se a margem for inválida (>= 100%), mantém valores atuais
                     $proposalService->price = $serviceData['price'] ?? $proposalService->price;
                     $proposalService->profit = $serviceData['profit'] ?? $proposalService->profit;
+                    $proposalService->profit_percentage = $serviceData['profit_percentage'] ?? $proposalService->profit_percentage;
                 }
             }
             // Se profit foi alterado, recalcula profit_percentage e price

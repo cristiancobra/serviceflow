@@ -20,17 +20,25 @@ class Invoice extends Model
     protected $fillable = [
         'proposal_id',
         'user_id',
+        'lead_id',
         'date_due',
         'price',
         'total_paid',
         'balance',
         'status',
         'fiscal_invoice_number',
+        'type',
+        'observations',
     ];
 
     public function proposal()
     {
         return $this->belongsTo(Proposal::class);
+    }
+
+    public function lead()
+    {
+        return $this->belongsTo(Lead::class);
     }
 
     public function transactions()

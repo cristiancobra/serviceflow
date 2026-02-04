@@ -11,6 +11,10 @@
                 <cost-create-form @new-cost-event="addCostCreated" />
                 <proposal-cost-create-form @new-proposal-cost-event="addProposalCostCreated"
                     :proposalId="proposal.id" />
+                <debug-invoice-create-form 
+                    :proposal="proposal"
+                    @invoice-created="onDebugInvoiceCreated"
+                />
             </div>
         </div>
         
@@ -56,6 +60,7 @@ import MoneyField from "@/components/fields/number/MoneyField.vue";
 import MoneyEditableField from "@/components/fields/number/MoneyEditableField.vue";
 import IntegerEditableField from "@/components/fields/number/IntegerEditableField.vue";
 import ProposalCostCreateForm from "../forms/ProposalCostCreateForm.vue";
+import DebugInvoiceCreateForm from "../forms/DebugInvoiceCreateForm.vue";
 
 export default {
   props: {
@@ -76,6 +81,7 @@ export default {
     MoneyEditableField,
     IntegerEditableField,
     ProposalCostCreateForm,
+    DebugInvoiceCreateForm,
   },
   methods: {
     addProposalCostCreated({ proposalCosts, newTotalThirdPartyCost }) {
@@ -104,6 +110,10 @@ export default {
     },
     async emitUpdateProposalCost(fieldName, costId, editedValue) {
       this.$emit("update-proposal-cost", fieldName, costId, editedValue);
+    },
+    onDebugInvoiceCreated(invoice) {
+      // Emitir evento para o componente pai recarregar a proposta
+      this.$emit("invoice-created", invoice);
     },
   },
   watch: {

@@ -28,9 +28,12 @@ class InvoiceRequest extends FormRequest
             return [
                 'proposal_id' => 'required|exists:proposals,id',
                 'user_id' => 'required|exists:users,id',
+                'lead_id' => 'required|exists:leads,id',
                 'date_due' => 'required|date',
-                'prices' => 'required|array',
-                'prices.*' => 'required|numeric|min:0',
+                'prices' => 'sometimes|array',
+                'prices.*' => 'sometimes|numeric|min:0',
+                'amount' => 'sometimes|numeric|min:0',
+                'type' => 'sometimes|string|in:credit,debit',
                 'observations' => 'sometimes|string|nullable',
             ];
         }
@@ -40,8 +43,10 @@ class InvoiceRequest extends FormRequest
             return [
                 'proposal_id' => 'sometimes|exists:proposals,id',
                 'user_id' => 'sometimes|exists:users,id',
+                'lead_id' => 'sometimes|exists:leads,id',
                 'date_due' => 'sometimes|date',
                 'price' => 'sometimes|numeric|min:0',
+                'type' => 'sometimes|string|in:credit,debit',
                 'observations' => 'sometimes|string|nullable',
                 'status' => 'sometimes|string|in:pending,partial,paid,overdue,cancelled',
             ];
@@ -56,10 +61,17 @@ class InvoiceRequest extends FormRequest
         
         // Apenas adiciona account_id e user_id para criação
         if ($this->isMethod('post')) {
-            $this->merge([
+            $mergeData = [
                 'account_id' => $user->account_id,
                 'user_id' => $user->id,
-            ]);
+            ];
+            
+            // Define tipo padrão como 'credit' se não for fornecido
+            if (!$this->has('type')) {
+                $mergeData['type'] = 'credit';
+            }
+            
+            $this->merge($mergeData);
         }
     }
 }
