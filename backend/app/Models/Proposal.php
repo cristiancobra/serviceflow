@@ -92,9 +92,11 @@ class Proposal extends Model
      */
     public function redistributeInvoices($newInstallmentQuantity)
     {
-        $this->load('invoices.transactions');
+        // Carrega apenas faturas NÃO DELETADAS
+        $currentInvoices = $this->invoices()
+            ->whereNull('deleted_at')
+            ->get();
         
-        $currentInvoices = $this->invoices()->get();
         $currentInvoiceCount = $currentInvoices->count();
 
         // If there are no invoices, nothing to redistribute
@@ -113,90 +115,45 @@ class Proposal extends Model
             ];
         }
 
-        // Get user_id from the first existing invoice to maintain consistency
+        // Get user_id and first due date from the first existing invoice
         $existingUserId = $currentInvoices->first()->user_id;
+        $firstDueDate = $currentInvoices->first()->date_due;
 
-        // Identify invoices with transactions (paid)
+        // Identify invoices with paid amount (paid/partially paid)
         $paidInvoices = $currentInvoices->filter(function ($invoice) {
-            return $invoice->transactions && $invoice->transactions->count() > 0;
+            return (float)$invoice->total_paid > 0;
         });
 
-        // Identify invoices without transactions (unpaid)
+        // Identify invoices without paid amount (unpaid)
         $unPaidInvoices = $currentInvoices->filter(function ($invoice) {
-            return (!$invoice->transactions || $invoice->transactions->count() === 0) 
-                && $invoice->balance > 0;
+            return (float)$invoice->total_paid <= 0;
         });
 
         $paidInvoicesCount = $paidInvoices->count();
+        $unPaidInvoicesCount = $unPaidInvoices->count();
 
         // VALIDATION: If new quantity is less than paid invoices, return error
         if ($newInstallmentQuantity < $paidInvoicesCount) {
             return [
                 'status' => 'error',
-                'message' => "Não é possível reduzir para {$newInstallmentQuantity} parcelas. Existem {$paidInvoicesCount} faturas já pagas.",
+                'message' => "Não é possível reduzir para {$newInstallmentQuantity} parcelas. Existem {$paidInvoicesCount} faturas com valores já pagos.",
             ];
         }
 
-        // CASE 1: NO PAID INVOICES - Delete all and recreate
-        if ($paidInvoicesCount === 0) {
-            // Delete all unpaid invoices
-            foreach ($unPaidInvoices as $invoice) {
-                $invoice->delete();
-            }
-
-            // Get the first due date from deleted invoices for reference
-            $firstDueDate = $currentInvoices->first()->date_due;
-
-            // Create new invoices with equal distribution
-            $pricePerInstallment = floor(($this->total_price * 100) / $newInstallmentQuantity) / 100;
-            $remainder = $this->total_price - ($pricePerInstallment * $newInstallmentQuantity);
-
-            for ($i = 0; $i < $newInstallmentQuantity; $i++) {
-                $dueDate = date('Y-m-d', strtotime("+$i month", strtotime($firstDueDate)));
-                
-                // Last invoice gets the remainder
-                $invoicePrice = ($i === $newInstallmentQuantity - 1) 
-                    ? $pricePerInstallment + $remainder 
-                    : $pricePerInstallment;
-                
-                Invoice::create([
-                    'proposal_id' => $this->id,
-                    'user_id' => $existingUserId,
-                    'price' => $invoicePrice,
-                    'balance' => $invoicePrice,
-                    'total_paid' => 0,
-                    'date_due' => $dueDate,
-                    'status' => Invoice::STATUS_PENDING,
-                ]);
-            }
-
-            return [
-                'status' => 'success',
-                'message' => "Faturas recriadas com sucesso. {$newInstallmentQuantity} parcelas criadas.",
-                'data' => [
-                    'unpaid_invoices_deleted' => $unPaidInvoices->count(),
-                    'paid_invoices_kept' => 0,
-                    'new_invoices_created' => $newInstallmentQuantity,
-                ]
-            ];
-        }
-
-        // CASE 2: HAS PAID INVOICES - Keep paid, delete unpaid, create new for remaining
+        // Calculate balance from paid invoices
         $paidBalance = $paidInvoices->sum('price');
         $remainingBalance = $this->total_price - $paidBalance;
-        
-        // Number of new invoices needed
         $newInvoicesNeeded = $newInstallmentQuantity - $paidInvoicesCount;
 
-        // Delete unpaid invoices
-        foreach ($unPaidInvoices as $invoice) {
-            $invoice->delete();
+        // DELETE all unpaid invoices
+        if ($unPaidInvoicesCount > 0) {
+            $unPaidInvoiceIds = $unPaidInvoices->pluck('id')->toArray();
+            Invoice::whereIn('id', $unPaidInvoiceIds)->delete();
         }
 
-        // Create new invoices for remaining balance
+        // CREATE new invoices for remaining balance
         if ($remainingBalance > 0 && $newInvoicesNeeded > 0) {
-            // Get the last due date from paid invoices to calculate next dates
-            $lastDueDate = $paidInvoices->max('date_due');
+            $lastDueDate = $paidInvoices->count() > 0 ? $paidInvoices->max('date_due') : $firstDueDate;
 
             $pricePerNewInstallment = floor(($remainingBalance * 100) / $newInvoicesNeeded) / 100;
             $remainder = $remainingBalance - ($pricePerNewInstallment * $newInvoicesNeeded);
@@ -204,7 +161,6 @@ class Proposal extends Model
             for ($i = 1; $i <= $newInvoicesNeeded; $i++) {
                 $dueDate = date('Y-m-d', strtotime("+$i month", strtotime($lastDueDate)));
                 
-                // Last new invoice gets the remainder
                 $invoicePrice = ($i === $newInvoicesNeeded) 
                     ? $pricePerNewInstallment + $remainder 
                     : $pricePerNewInstallment;
@@ -225,7 +181,7 @@ class Proposal extends Model
             'status' => 'success',
             'message' => "Faturas redistribuídas com sucesso para {$newInstallmentQuantity} parcelas.",
             'data' => [
-                'unpaid_invoices_deleted' => $unPaidInvoices->count(),
+                'unpaid_invoices_deleted' => $unPaidInvoicesCount,
                 'paid_invoices_kept' => $paidInvoicesCount,
                 'new_invoices_created' => $newInvoicesNeeded,
                 'remaining_balance' => $remainingBalance,
