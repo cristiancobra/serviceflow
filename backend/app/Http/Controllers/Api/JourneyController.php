@@ -54,6 +54,9 @@ class JourneyController extends Controller
             $journey->save();
             $journey->updateAssociatedTaskDuration();
 
+            // Carregar as relações antes de retornar
+            $journey->load(['task', 'task.project', 'task.opportunity']);
+
             return new JourneyResource($journey);
         } catch (ValidationException $validationException) {
             return response()->json([
@@ -98,6 +101,10 @@ class JourneyController extends Controller
             $journey->fill($request->validated());
             $journey->save();
             $journey->updateAssociatedTaskDuration();
+
+            // Carregar as relações antes de retornar
+            $journey->load(['task', 'task.project', 'task.opportunity']);
+
             return JourneyResource::make($journey);
         } catch (ValidationException $validationException) {
             return response()->json([
@@ -141,6 +148,7 @@ class JourneyController extends Controller
         $perPage = request()->get('per_page', 20); // Ajuste a quantidade de itens por página conforme necessário
 
         $journeys = Journey::where('task_id', $request->task_id)
+            ->with(['task', 'task.project', 'task.opportunity'])
             ->orderBy('start', 'desc')
             ->paginate($perPage);
 

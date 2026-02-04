@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Services\DateTimeConversionService;
+use App\Http\Resources\TasksResource;
 
 class JourneyResource extends JsonResource
 {
@@ -32,6 +33,9 @@ class JourneyResource extends JsonResource
                 $timezone
             ) : null,
             'duration' => $this->duration,
+            'task' => $this->when($this->task, function () {
+                return new TasksResource($this->task);
+            }),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

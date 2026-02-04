@@ -38,7 +38,7 @@
           </router-link>
           <span v-else>{{ journey.task.name }}</span>
         </div>
-        <div class="group-column">
+        <div v-if="journey.task" class="group-column">
           <router-link :class="getColorClassForName(journey.task.opportunity.name)" style="display: flex;"
             v-if="journey.task.opportunity"
             :to="{ name: 'opportunityShow', params: { id: journey.task.opportunity.id } }">
