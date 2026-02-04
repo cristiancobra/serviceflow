@@ -37,7 +37,7 @@
       </div>
 
       <!-- Lista de faturas existentes -->
-      <div v-else class="space-y-3">
+      <div v-else class="space-y-2">
         <div
           v-for="invoice in localInvoices"
           :key="invoice.id"
@@ -45,15 +45,16 @@
         >
           <router-link
             :to="{ name: 'invoiceShow', params: { id: invoice.id } }"
-            class="flex items-center justify-between p-4 text-gray-800 hover:text-blue-600 transition-colors duration-200 no-underline"
+            class="flex items-center justify-between p-2 text-gray-800 hover:text-blue-600 transition-colors duration-200 no-underline"
           >
             <div class="flex items-center gap-4">
               <div
-                class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full"
+                :class="calculateInvoiceBalance(invoice) === 0 ? 'bg-green-600' : 'bg-blue-500'"
+                class="flex items-center justify-center w-10 h-10 rounded-full"
               >
                 <font-awesome-icon
-                  icon="fa fa-calendar"
-                  class="text-blue-600"
+                  icon="fa fa-receipt"
+                  class="text-white"
                 />
               </div>
               <div class="flex flex-col">
@@ -128,12 +129,12 @@
           <!-- Pagamentos Recebidos -->
           <div
             v-if="invoice.transactions && invoice.transactions.length > 0"
-            class="mt-4 space-y-2 rounded-xl border border-gray-200 bg-white p-2 border-t-4 shadow-sm"
+            class="mt-0 space-y-1 rounded-xl border border-gray-200 bg-white p-2 border-t-4 shadow-sm"
           >
             <div
               v-for="transaction in invoice.transactions"
               :key="transaction.id"
-              class="group flex items-center justify-between px-4 py-3 rounded-md bg-white even:bg-sky-50/40 hover:bg-sky-100/60 border-l-4 border-transparent hover:border-sky-400 transition-colors"
+              class="group flex items-center justify-between px-1 py-1 rounded-md bg-white even:bg-sky-50/40 hover:bg-sky-100/60 border-l-4 border-transparent hover:border-sky-400 transition-colors"
             >
               <div class="min-w-[160px]">
                 <div
