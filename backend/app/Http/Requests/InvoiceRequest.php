@@ -3,6 +3,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Services\DateTimeConversionService;
 
 class InvoiceRequest extends FormRequest
 {
@@ -72,6 +73,12 @@ class InvoiceRequest extends FormRequest
             }
             
             $this->merge($mergeData);
+        }
+
+        if ($this->filled('date_due')) {
+            $this->merge([
+                'date_due' => DateTimeConversionService::convertJavascriptDate($this->input('date_due')),
+            ]);
         }
     }
 }

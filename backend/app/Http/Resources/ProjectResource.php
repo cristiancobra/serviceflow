@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\TasksResource;
+use App\Services\DateTimeConversionService;
 
 class ProjectResource extends JsonResource
 {
@@ -15,6 +16,8 @@ class ProjectResource extends JsonResource
      */
     public function toArray($request)
     {
+        $timezone = auth()->user()->timezone ?? 'America/Sao_Paulo';
+
 		return [
 			"id" => $this->id,
 			"account_id" => $this->account_id,
@@ -27,9 +30,9 @@ class ProjectResource extends JsonResource
 			"category" => $this->category,
 			"budget" => $this->budget,
 			"actual_cost" => $this->actual_cost,
-			"date_start" => $this->date_start,
-			"date_due" => $this->date_due,
-			"date_conclusion" => $this->date_conclusion,
+			"date_start" => DateTimeConversionService::convertFromUtc($this->date_start, $timezone),
+			"date_due" => DateTimeConversionService::convertFromUtc($this->date_due, $timezone),
+			"date_conclusion" => DateTimeConversionService::convertFromUtc($this->date_conclusion, $timezone),
 			"description" => $this->description,
 			"priority" => $this->priority,
 			"status" => $this->status,

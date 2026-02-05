@@ -7,6 +7,7 @@ use App\Http\Resources\ProposalsResource;
 use App\Http\Resources\TransactionsResource;
 use App\Http\Resources\UsersResource;
 use App\Http\Resources\LeadsResource;
+use App\Services\DateTimeConversionService;
 
 class InvoicesResource extends JsonResource
 {
@@ -18,12 +19,14 @@ class InvoicesResource extends JsonResource
      */
     public function toArray($request)
     {
+        $timezone = auth()->user()->timezone ?? 'America/Sao_Paulo';
+
         return [
             'id' => $this->id,
             'proposal_id' => $this->proposal_id,
             'user_id' => $this->user_id,
             'lead_id' => $this->lead_id,
-            'date_due' => $this->date_due,
+            'date_due' => DateTimeConversionService::convertFromUtc($this->date_due, $timezone),
             'price' => $this->price,
             'total_paid' => $this->total_paid,
             'balance' => $this->balance,

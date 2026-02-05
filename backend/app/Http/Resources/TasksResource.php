@@ -6,6 +6,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\LinksResource;
 use App\Http\Resources\JourneyResource;
 use App\Http\Resources\ProjectResource;
+use App\Services\DateTimeConversionService;
 
 class TasksResource extends JsonResource
 {
@@ -17,6 +18,8 @@ class TasksResource extends JsonResource
      */
     public function toArray($request)
     {
+        $timezone = auth()->user()->timezone ?? 'America/Sao_Paulo';
+
        	return [
 			"id" => $this->id,
 			"account_id" => $this->account_id,
@@ -28,10 +31,10 @@ class TasksResource extends JsonResource
 			"opportunity_id" => $this->opportunity_id,
 			"name" => $this->name,
 			"category" => $this->category,
-			"date_start" => $this->date_start,
-			"date_due" => $this->date_due,
-			"date_conclusion" => $this->date_conclusion,
-			"date_canceled" => $this->date_canceled,
+			"date_start" => DateTimeConversionService::convertFromUtc($this->date_start, $timezone),
+			"date_due" => DateTimeConversionService::convertFromUtc($this->date_due, $timezone),
+			"date_conclusion" => DateTimeConversionService::convertFromUtc($this->date_conclusion, $timezone),
+			"date_canceled" => DateTimeConversionService::convertFromUtc($this->date_canceled, $timezone),
 			"cancellation_reason" => $this->cancellation_reason,
 			"duration_days" => $this->duration_days,
 			'duration_time' => $this->duration_time,
