@@ -50,7 +50,7 @@
       @update-proposal="updateProposal"
     />
 
-    <invoices-list-section :proposal="proposal" @reload-proposal="getProposal" />
+    <credit-invoices-section :proposal="proposal" @reload-proposal="getProposal" />
 
     <debit-invoices-section
       :proposal="proposal"
@@ -112,10 +112,10 @@ import OpportunitiesSelectEditableField from "../../components/fields/selects/Op
 import ProposalProfitMarginSection from "@/components/show/ProposalProfitMarginSection.vue";
 import ProposalServicesSection from "@/components/show/ProposalServicesSection.vue";
 import ProposalCostsSection from "@/components/show/ProposalCostsSection.vue";
-import DebitInvoicesSection from "@/components/show/DebitInvoicesSection.vue";
+import DebitInvoicesSection from "@/components/lists/DebitInvoicesSection.vue";
 import SelectStatusButton from "../../components/buttons/SelectStatusButton.vue";
 import TimelineProposal from "@/components/TimelineProposal.vue";
-import InvoicesListSection from '../../components/lists/InvoicesListSection.vue';
+import CreditInvoicesSection from '../../components/lists/CreditInvoicesSection.vue';
 
 export default {
   data() {
@@ -136,7 +136,7 @@ export default {
     ProposalServicesSection,
     SelectStatusButton,
     TimelineProposal,
-    InvoicesListSection,
+    CreditInvoicesSection,
     DebitInvoicesSection,
   },
   methods: {
