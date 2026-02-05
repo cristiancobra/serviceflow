@@ -76,6 +76,12 @@ Route::middleware('auth:sanctum')->group(function () {
 		->names('costs');
 
 	// INVOICES
+	Route::post('invoices/debit', [InvoiceController::class, 'storeDebit'])
+		->name('invoices.storeDebit');
+	
+	Route::post('invoices/credit', [InvoiceController::class, 'storeCredit'])
+		->name('invoices.storeCredit');
+	
 	Route::apiResource('invoices', InvoiceController::class)
 		->names('invoices');
 

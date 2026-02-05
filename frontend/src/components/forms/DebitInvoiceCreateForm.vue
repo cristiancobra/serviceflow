@@ -11,7 +11,7 @@
     </button>
 
     <!-- Modal -->
-    <div v-if="isModalVisible" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div v-if="isModalVisible" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.25)">
       <div class="bg-white rounded-lg shadow-lg max-w-md w-full mx-4">
         <!-- Header -->
         <div class="flex items-center justify-between p-6 border-b border-gray-200">
@@ -51,7 +51,7 @@
               <span class="text-gray-500 mr-2">R$</span>
               <input
                 id="amount"
-                v-model.number="form.amount"
+                v-model.number="form.price"
                 type="number"
                 step="0.01"
                 min="0"
@@ -69,7 +69,7 @@
             </label>
             <input
               id="due_date"
-              v-model="form.due_date"
+              v-model="form.date_due"
               type="date"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
               required
@@ -123,7 +123,7 @@ import { submitFormCreate } from "@/utils/requests/httpUtils";
 import LeadsSelectInput from "./selects/LeadsSelectInput.vue";
 
 export default {
-  name: "DebugInvoiceCreateForm",
+  name: "DebitInvoiceCreateForm",
   emits: ["invoice-created"],
   components: {
     LeadsSelectInput,
@@ -141,10 +141,11 @@ export default {
       errorMessage: "",
       form: {
         lead_id: null,
-        amount: 0,
-        due_date: this.getTodayDate(),
+        price: 0,
+        date_due: this.getTodayDate(),
         observations: "",
         proposal_id: this.proposal.id,
+        type: "debit",
       },
     };
   },
@@ -154,7 +155,7 @@ export default {
         this.form.proposal_id = newProposal.id;
         // Atualizar valor padrão quando a proposta mudar
         if (newProposal.total_operational_cost) {
-          this.form.amount = newProposal.total_operational_cost;
+          this.form.price = newProposal.total_operational_cost;
         }
       },
       immediate: true,
@@ -173,9 +174,9 @@ export default {
       this.errorMessage = "";
       // Resetar valor padrão quando abre o modal
       if (this.proposal.total_operational_cost) {
-        this.form.amount = this.proposal.total_operational_cost;
+        this.form.price = this.proposal.total_operational_cost;
       }
-      this.form.due_date = this.getTodayDate();
+      this.form.date_due = this.getTodayDate();
       this.isModalVisible = true;
     },
     closeModal() {
@@ -189,12 +190,12 @@ export default {
         return;
       }
 
-      if (this.form.amount <= 0) {
+      if (this.form.price <= 0) {
         this.errorMessage = "O valor deve ser maior que zero.";
         return;
       }
 
-      if (!this.form.due_date) {
+      if (!this.form.date_due) {
         this.errorMessage = "A data de vencimento é obrigatória.";
         return;
       }
@@ -204,15 +205,16 @@ export default {
 
       const payload = {
         lead_id: this.form.lead_id,
-        amount: this.form.amount,
-        date_due: this.form.due_date,
+        price: this.form.price,
+        date_due: this.form.date_due,
         observations: this.form.observations || null,
         proposal_id: this.proposal.id,
-        type: "debit", // tipo de fatura de débito
+        type: "debit",
+        // user_id é atribuído automaticamente pelo backend via Auth::user()->id
       };
 
       try {
-        const { data, error } = await this.submitFormCreate("invoices", payload);
+        const { data, error } = await this.submitFormCreate("invoices/debit", payload);
 
         if (data) {
           this.$emit("invoice-created", data);

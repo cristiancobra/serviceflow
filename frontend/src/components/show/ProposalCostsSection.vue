@@ -11,7 +11,7 @@
                 <cost-create-form @new-cost-event="addCostCreated" />
                 <proposal-cost-create-form @new-proposal-cost-event="addProposalCostCreated"
                     :proposalId="proposal.id" />
-                <debug-invoice-create-form 
+                <debit-invoice-create-form 
                     :proposal="proposal"
                     @invoice-created="onDebugInvoiceCreated"
                 />
@@ -60,7 +60,7 @@ import MoneyField from "@/components/fields/number/MoneyField.vue";
 import MoneyEditableField from "@/components/fields/number/MoneyEditableField.vue";
 import IntegerEditableField from "@/components/fields/number/IntegerEditableField.vue";
 import ProposalCostCreateForm from "../forms/ProposalCostCreateForm.vue";
-import DebugInvoiceCreateForm from "../forms/DebugInvoiceCreateForm.vue";
+import DebitInvoiceCreateForm from "../forms/DebitInvoiceCreateForm.vue";
 
 export default {
   props: {
@@ -81,7 +81,7 @@ export default {
     MoneyEditableField,
     IntegerEditableField,
     ProposalCostCreateForm,
-    DebugInvoiceCreateForm,
+    DebitInvoiceCreateForm,
   },
   methods: {
     addProposalCostCreated({ proposalCosts, newTotalThirdPartyCost }) {

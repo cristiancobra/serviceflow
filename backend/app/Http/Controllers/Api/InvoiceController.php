@@ -42,15 +42,15 @@ class InvoiceController extends Controller
         try {
             $validated = $request->validated();
             
-            // Verifica se é uma fatura de débito individual (com amount) ou múltiplas faturas (com prices)
-            if (isset($validated['amount']) && !isset($validated['prices'])) {
+            // Verifica se é uma fatura de débito individual (com price) ou múltiplas faturas (com prices)
+            if (isset($validated['price']) && !isset($validated['prices'])) {
                 // Fatura de débito individual
                 $invoiceData = [
                     'proposal_id' => $validated['proposal_id'],
                     'user_id' => $validated['user_id'],
                     'lead_id' => $validated['lead_id'],
-                    'price' => $validated['amount'],
-                    'balance' => $validated['amount'],
+                    'price' => $validated['price'],
+                    'balance' => $validated['price'],
                     'date_due' => $validated['date_due'],
                     'type' => $validated['type'] ?? 'debit',
                     'observations' => $validated['observations'] ?? null,
@@ -58,6 +58,14 @@ class InvoiceController extends Controller
                 
                 $invoice = Invoice::create($invoiceData);
                 return InvoicesResource::collection([$invoice]);
+            }
+            
+            // Verifica se existem múltiplas faturas (parceladas)
+            if (!isset($validated['prices'])) {
+                return response()->json([
+                    'message' => "Dados inválidos. Envie 'price' para fatura única ou 'prices' para parceladas",
+                    'errors' => ['prices' => ['Campo prices ou price é obrigatório']],
+                ], 422);
             }
             
             // Faturas parceladas (lógica existente)
@@ -85,6 +93,96 @@ class InvoiceController extends Controller
                 'message' => "Erro de validação",
                 'errors' => $validationException->errors(),
             ], 422);
+        }
+    }
+
+    /**
+     * Store a debit invoice (individual).
+     *
+     * @param  InvoiceRequest  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeDebit(InvoiceRequest $request)
+    {
+        try {
+            $validated = $request->validated();
+            
+            // Fatura de débito individual
+            $invoiceData = [
+                'proposal_id' => $validated['proposal_id'],
+                'user_id' => $validated['user_id'],
+                'lead_id' => $validated['lead_id'],
+                'price' => $validated['price'],
+                'balance' => $validated['price'],
+                'date_due' => $validated['date_due'],
+                'type' => 'debit',
+                'observations' => $validated['observations'] ?? null,
+            ];
+            
+            $invoice = Invoice::create($invoiceData);
+            return InvoicesResource::collection([$invoice]);
+        } catch (ValidationException $validationException) {
+            return response()->json([
+                'message' => "Erro de validação",
+                'errors' => $validationException->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao criar fatura de débito',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Store credit invoices (installments).
+     *
+     * @param  InvoiceRequest  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeCredit(InvoiceRequest $request)
+    {
+        try {
+            $validated = $request->validated();
+            
+            // Verifica se existem múltiplas faturas (parceladas)
+            if (!isset($validated['prices'])) {
+                return response()->json([
+                    'message' => "Dados inválidos. Envie 'prices' (array) para faturas parceladas",
+                    'errors' => ['prices' => ['Campo prices é obrigatório para faturas de crédito']],
+                ], 422);
+            }
+            
+            // Faturas parceladas (lógica existente)
+            $prices = $validated['prices'];
+            $dateDue = $validated['date_due'];
+            unset($validated['prices'], $validated['date_due']);
+        
+            $invoices = [];
+            foreach ($prices as $index => $price) {
+                $invoiceData = array_merge($validated, [
+                    'price' => $price,
+                    'balance' => $price,
+                    'date_due' => date('Y-m-d', strtotime("+$index month", strtotime($dateDue))),
+                    'type' => 'credit',
+                ]);
+                $invoice = new Invoice;
+                $invoice->fill($invoiceData);
+                $invoice->save();
+                $invoices[] = $invoice;
+            }
+
+            return InvoicesResource::collection($invoices);
+        } catch (ValidationException $validationException) {
+            return response()->json([
+                'message' => "Erro de validação",
+                'errors' => $validationException->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao criar faturas de crédito',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 

@@ -30,9 +30,9 @@ class InvoiceRequest extends FormRequest
                 'user_id' => 'required|exists:users,id',
                 'lead_id' => 'required|exists:leads,id',
                 'date_due' => 'required|date',
+                'price' => 'sometimes|numeric|min:0',
                 'prices' => 'sometimes|array',
                 'prices.*' => 'sometimes|numeric|min:0',
-                'amount' => 'sometimes|numeric|min:0',
                 'type' => 'sometimes|string|in:credit,debit',
                 'observations' => 'sometimes|string|nullable',
             ];
@@ -59,7 +59,7 @@ class InvoiceRequest extends FormRequest
     {
         $user = Auth::user();
         
-        // Apenas adiciona account_id e user_id para criação
+        // Adiciona account_id e user_id para criação
         if ($this->isMethod('post')) {
             $mergeData = [
                 'account_id' => $user->account_id,

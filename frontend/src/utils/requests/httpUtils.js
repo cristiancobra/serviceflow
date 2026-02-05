@@ -187,6 +187,8 @@ export const validateModel = (model) => {
     "leads",
     "links",
     "invoices",
+    "invoices/debit",
+    "invoices/credit",
     "projects",
     "proposals",
     "opportunities",
