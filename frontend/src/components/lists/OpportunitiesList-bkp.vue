@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <div class="page-container">
         <div class="page-header">
             <div class="page-title">
@@ -105,4 +105,4 @@ export default {
         this.getOpportunities();
     },
 };
-</script>
+</script> -->

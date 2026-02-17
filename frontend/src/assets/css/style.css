@@ -17,6 +17,18 @@ label {
   color: var(--purple);
 }
 
+/* button primary with white border */
+.btn.btn-primary {
+  border: 2px solid white;
+  transition: all 0.3s ease;
+}
+
+.btn.btn-primary:hover {
+  border-color: white;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  transform: scale(1.1);
+}
+
 /* button */
 .button {
   display: flex;
@@ -40,11 +52,11 @@ label {
   }
 
   /* Estilos responsivos para telas médias */
-@media (min-width: 577px) and (max-width: 768px) {
-  .button {
-    /* border-radius: 6px 6px 6px 6px; */
+  @media (min-width: 577px) and (max-width: 768px) {
+    .button {
+      /* border-radius: 6px 6px 6px 6px; */
+    }
   }
-}
 }
 
 .button:hover {
@@ -115,7 +127,7 @@ label {
 }
 
 .col-half {
-  flex:  0 0 50%;
+  flex: 0 0 50%;
   max-width: 50%;
   box-sizing: border-box;
 }

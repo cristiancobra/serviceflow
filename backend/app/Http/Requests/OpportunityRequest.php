@@ -47,5 +47,29 @@ class OpportunityRequest extends FormRequest
         $this->merge([
             'account_id' => $user->account_id,
         ]);
+
+        if ($this->filled('date_start')) {
+            $this->merge([
+                'date_start' => \App\Services\DateTimeConversionService::convertJavascriptDate($this->input('date_start')),
+            ]);
+        }
+
+        if ($this->filled('date_due')) {
+            $this->merge([
+                'date_due' => \App\Services\DateTimeConversionService::convertJavascriptDate($this->input('date_due')),
+            ]);
+        }
+
+        if ($this->filled('date_conclusion')) {
+            $this->merge([
+                'date_conclusion' => \App\Services\DateTimeConversionService::convertJavascriptDate($this->input('date_conclusion')),
+            ]);
+        }
+
+        if ($this->filled('date_canceled')) {
+            $this->merge([
+                'date_canceled' => \App\Services\DateTimeConversionService::convertJavascriptDate($this->input('date_canceled')),
+            ]);
+        }
     }
 }

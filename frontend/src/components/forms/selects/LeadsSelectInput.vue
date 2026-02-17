@@ -10,7 +10,7 @@
   />
 </template>
     
-  <script>
+<script>
 import { BACKEND_URL, LEAD_URL } from "@/config/apiConfig";
 import axios from "axios";
 import SelectInput from "./SelectInput.vue";
@@ -38,13 +38,17 @@ export default {
     updateInput(value) {
       this.modelValue = value;
     },
-    getLeads() {
-      axios
-        .get(`${BACKEND_URL}${LEAD_URL}`)
-        .then((response) => {
-          this.leads = response.data.data;
-        })
-        .catch((error) => console.log(error));
+    async getLeads() {
+      try {
+        const response = await axios.get(`${BACKEND_URL}${LEAD_URL}`);
+        this.leads = response.data.data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    // Método público para recarregar a lista
+    async reload() {
+      await this.getLeads();
     },
   },
   mounted() {
@@ -53,7 +57,7 @@ export default {
 };
 </script>
     
-  <style scoped>
+<style scoped>
 label {
   text-align: right;
 }
@@ -61,4 +65,3 @@ label {
   margin-bottom: 1rem;
 }
 </style>
-  
