@@ -321,25 +321,37 @@
         return invoice.price - (invoice.total_paid || 0);
       },
       async updateTransaction(fieldName, editedValue, transactionId) {
-    const updatedTransaction = await updateField(
-      "transactions",
-      transactionId,
-      fieldName,
-      editedValue
-    );
-  
-    if (!this.invoice || !Array.isArray(this.invoice.transactions)) {
-      return;
-    }
-  
-    const index = this.invoice.transactions.findIndex(
-      (t) => t.id === transactionId
-    );
-  
-    if (index !== -1) {
-      this.invoice.transactions[index] = updatedTransaction;
-    }
-  },
+        const updatedTransaction = await updateField(
+          "transactions",
+          transactionId,
+          fieldName,
+          editedValue
+        );
+
+        // Encontrar a invoice que contém esta transação
+        for (const invoice of this.localInvoices) {
+          if (!invoice.transactions) continue;
+          
+          const transactionIndex = invoice.transactions.findIndex(
+            (t) => t.id === transactionId
+          );
+
+          if (transactionIndex !== -1) {
+            // Atualizar a transação
+            invoice.transactions[transactionIndex] = updatedTransaction;
+            
+            // Recalcular o total_paid da invoice
+            invoice.total_paid = invoice.transactions.reduce(
+              (sum, t) => sum + Number(t.amount || 0),
+              0
+            );
+            break;
+          }
+        }
+
+        // Emitir evento para atualizar o componente pai
+        this.$emit("invoices-updated", this.localInvoices);
+      },
       async updateInvoice(fieldName, editedValue, invoiceId) {
         const updatedInvoice = await updateField(
           "invoices",
