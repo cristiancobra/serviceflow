@@ -43,9 +43,8 @@
             :key="invoice.id"
             class="bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200"
           >
-            <router-link
-              :to="{ name: 'invoiceShow', params: { id: invoice.id } }"
-              class="flex items-center justify-between p-2 text-gray-800 hover:text-blue-600 transition-colors duration-200 no-underline"
+            <div
+              class="flex items-center justify-between p-2 text-gray-800"
             >
               <div class="flex items-center gap-4">
                 <div
@@ -61,9 +60,12 @@
                   <span class="text-sm font-medium text-gray-600"
                     >Vencimento</span
                   >
-                  <span class="text-base font-semibold">{{
-                    invoice.date_due
-                  }}</span>
+                  <date-time-editable-input
+                    name="date_due"
+                    :modelValue="invoice.date_due"
+                    @save="updateInvoice('date_due', $event, invoice.id)"
+                    class-text="text-base font-semibold"
+                  />
                 </div>
               </div>
   
@@ -117,14 +119,18 @@
                   <font-awesome-icon icon="fas fa-plus" class="text-sm" />
                 </button>
   
-                <div class="w-6 h-6 flex items-center justify-center">
+                <router-link
+                  :to="{ name: 'invoiceShow', params: { id: invoice.id } }"
+                  class="w-6 h-6 flex items-center justify-center hover:bg-gray-100 rounded transition-colors"
+                  title="Ver detalhes da fatura"
+                >
                   <font-awesome-icon
                     icon="fa-solid fa-chevron-right"
-                    class="text-gray-400 text-sm"
+                    class="text-gray-400 hover:text-blue-600 text-sm"
                   />
-                </div>
+                </router-link>
               </div>
-            </router-link>
+            </div>
   
             <!-- Pagamentos Recebidos -->
             <div
@@ -333,7 +339,25 @@
     if (index !== -1) {
       this.invoice.transactions[index] = updatedTransaction;
     }
-  }
+  },
+      async updateInvoice(fieldName, editedValue, invoiceId) {
+        const updatedInvoice = await updateField(
+          "invoices",
+          invoiceId,
+          fieldName,
+          editedValue
+        );
+    
+        const index = this.localInvoices.findIndex(
+          (inv) => inv.id === invoiceId
+        );
+    
+        if (index !== -1) {
+          this.localInvoices[index] = updatedInvoice;
+        }
+    
+        this.$emit("invoices-updated", this.localInvoices);
+      }
     },
   };
   </script>
