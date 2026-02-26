@@ -89,8 +89,18 @@
       </div>
     </section>
 
-    <section id="proposals">
-      <proposals-list-section :opportunityId="opportunityId" />
+    <section id="proposals" class="flex flex-col lg:flex-row gap-6">
+      <div class="flex-1">
+        <proposals-list-section 
+          :proposals="opportunity.proposals || []" 
+          :opportunityId="opportunityId"
+          @proposal-added="handleProposalAdded"
+          @proposal-updated="handleProposalUpdated"
+        />
+      </div>
+      <div class="flex-1" v-if="acceptedProposal">
+        <credit-invoices-section :proposal="acceptedProposal" @reload-proposal="getOpportunity" />
+      </div>
     </section>
 
     <section id="attachments">
@@ -127,6 +137,7 @@ import { scrollToSection } from "@/utils/layout/navigationUtils";
 import { provide, ref } from "vue";
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
+import CreditInvoicesSection from "@/components/lists/CreditInvoicesSection.vue";
 import LinksList from "@/components/lists/LinksList.vue";
 import OpportunityInfoSection from "@/components/show/OpportunityInfoSection.vue";
 import OpportunityDatesSection from "@/components/show/OpportunityDatesSection.vue";
@@ -138,6 +149,7 @@ import TasksListSection from "../../components/lists/TasksListSection.vue";
 export default {
   name: "ProjectShow",
   components: {
+    CreditInvoicesSection,
     LinksList,
     OpportunityInfoSection,
     OpportunityDatesSection,
@@ -220,10 +232,24 @@ export default {
         })
         .catch((error) => console.log(error));
     },
+    handleProposalAdded(newProposal) {
+      this.opportunity.proposals.push(newProposal);
+    },
+    handleProposalUpdated(updatedProposal) {
+      const index = this.opportunity.proposals.findIndex(
+        (proposal) => proposal.id === updatedProposal.id
+      );
+      if (index !== -1) {
+        this.opportunity.proposals.splice(index, 1, updatedProposal);
+      }
+    },
   },
   computed: {
     translatedStatus() {
       return translateStatus(this.opportunity.status);
+    },
+    acceptedProposal() {
+      return this.opportunity.proposals?.find((proposal) => proposal.status === "accepted");
     },
   },
   mounted() {

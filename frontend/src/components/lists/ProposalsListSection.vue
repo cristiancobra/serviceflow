@@ -27,14 +27,14 @@
     </div>
 
     <div
-      v-for="proposal in proposals"
+      v-for="proposal in localProposals"
       v-bind:key="proposal.id"
       class="flex items-start justify-start text-left border-b border-gray-300"
     >
       <div class="flex flex-1 items-center justify-start mr-4" id="col-user">
         <select-status-button
           :status="proposal.status"
-          @update:modelValue="updateProposal('status', proposal.id, $event)"
+          @update:modelValue="updateProposalStatus(proposal.id, $event)"
         />
       </div>
       <router-link
@@ -88,7 +88,7 @@
 </template>
 
 <script>
-import { useProposals } from "@/composables/useProposals";
+import { updateField } from "@/utils/requests/httpUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import { getDeadlineClass } from "@/utils/card/cardUtils";
 import ButtonNewForm from "../buttons/ButtonNewForm.vue";
@@ -98,18 +98,6 @@ import SelectStatusButton from "../buttons/SelectStatusButton.vue";
 import SearchInput from "../filters/SearchInput.vue";
 
 export default {
-  setup(props) {
-    const { proposals, fetchProposals, updateProposal, addProposal } =
-      useProposals(props.opportunityId);
-
-    return {
-      proposals,
-      fetchProposals,
-      updateProposal,
-      addProposal,
-    };
-  },
-
   components: {
     ButtonNewForm,
     ProposalCreateForm,
@@ -118,6 +106,11 @@ export default {
     SearchInput,
   },
   props: {
+    proposals: {
+      type: Array,
+      required: true,
+      default: () => [],
+    },
     opportunityId: {
       type: Number,
       required: true,
@@ -126,16 +119,36 @@ export default {
   data() {
     return {
       openModal: false,
+      localProposals: [...this.proposals],
+      searchTerm: '',
     };
+  },
+  watch: {
+    proposals: {
+      handler(newProposals) {
+        this.localProposals = [...newProposals];
+      },
+      deep: true,
+    },
   },
   methods: {
     formatDateBr,
     getDeadlineClass,
     addProposalCreated(newProposal) {
       this.openProposalForm = false;
-      this.addProposal(newProposal);
+      this.localProposals.push(newProposal);
+      this.$emit('proposal-added', newProposal);
     },
-
+    async updateProposalStatus(proposalId, newStatus) {
+      const updatedProposal = await updateField('proposals', proposalId, 'status', newStatus);
+      
+      const index = this.localProposals.findIndex(p => p.id === proposalId);
+      if (index !== -1) {
+        this.localProposals[index] = updatedProposal;
+      }
+      
+      this.$emit('proposal-updated', updatedProposal);
+    },
     getShortDescription(proposal, maxLength = 50) {
       let description = "";
       if (proposal.description) {
@@ -165,9 +178,6 @@ export default {
     openProposalForm() {
       return this.openModal === "proposal";
     },
-  },
-  mounted() {
-    this.fetchProposals();
   },
 };
 </script>
