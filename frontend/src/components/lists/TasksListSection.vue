@@ -22,23 +22,32 @@
         <div v-for="localTask in filteredTasks" v-bind:key="localTask.id">
           <div class="list-line flex items-center space-x-10 pt-1 pb-1">
             <div class="icons-column">
+              <!-- Ícone de cancelamento (X vermelho) ou conclusão (check verde) -->
+              <font-awesome-icon
+                v-if="localTask.date_canceled"
+                icon="fas fa-times-circle"
+                class="text-2xl text-red-500"
+                title="Tarefa cancelada"
+              />
+              <font-awesome-icon
+                v-else
+                icon="fas fa-check-circle"
+                class="text-2xl"
+                :class="
+                  isValidDate(localTask.date_conclusion) ? 'text-success' : 'text-gray-400'
+                "
+              />
+              
               <img
                 v-if="userData.photo"
                 :src="urlImagePhoto"
                 :alt="userData.name"
-                class="user-image"
+                class="w-8 h-8 rounded-full border-2 border-white mr-0"
               />
               <font-awesome-icon
                 v-else
                 icon="fa-solid fa-user"
                 class="primary pe-2"
-              />
-              <font-awesome-icon
-                icon="fas fa-check-circle"
-                class="checked-icon"
-                :class="
-                  isValidDate(localTask.date_conclusion) ? 'done' : 'canceled'
-                "
               />
             </div>
 
@@ -51,14 +60,15 @@
               />
             </div>
 
-            <div class="flex items-center justify-center text-center mr-4">
+            <div class="flex items-center justify-center text-center text-primary mr-4 font-bold">
               {{ formatDuration(localTask.duration_time) }}
             </div>
 
             <div class="date-column">
               <font-awesome-icon
                 icon="fa-solid fa-exclamation-circle"
-                class="text-error me-2"
+                :class="(isValidDate(localTask.date_conclusion) || localTask.date_canceled) ? 'text-gray-600' : 'text-error'"
+                class="me-2"
               />
               <date-time-editable-input
                 v-model="localTask.date_due"
@@ -80,6 +90,23 @@
               />
             </div>
 
+            <!-- Botão para mostrar/ocultar controles extras (sempre visível na mesma posição) -->
+            <button
+              class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-500 text-white hover:bg-gray-700 transition"
+              @click="toggleControls(localTask.id)"
+              :title="showControls[localTask.id] ? 'Ocultar controles' : 'Mostrar controles'"
+            >
+              <font-awesome-icon
+                :icon="showControls[localTask.id] ? 'fa-solid fa-chevron-up' : 'fa-solid fa-ellipsis-h'"
+              />
+            </button>
+          </div>
+
+          <!-- Controles extras (exibidos em uma nova linha abaixo) -->
+          <div
+            v-if="showControls[localTask.id]"
+            class="flex items-center justify-end space-x-3 pt-2 pb-2 px-4 bg-gray-50 border-l-4 border-gray-400 rounded-r-lg"
+          >
             <!-- Botão de Toggle Cancelamento -->
             <button
               class="w-7 h-7 flex items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-700 transition"
@@ -254,6 +281,7 @@ export default {
       percentage: 0,
       searchTerm: "",
       showCancelLine: {},
+      showControls: {},
       showGroupColumn: false,
       showJourneys: {},
       showJourneyForm: {},
@@ -387,6 +415,9 @@ export default {
     },
     toggleCancelLine(taskId) {
       this.showCancelLine[taskId] = !this.showCancelLine[taskId];
+    },
+    toggleControls(taskId) {
+      this.showControls[taskId] = !this.showControls[taskId];
     },
     toggleJourneys(taskId) {
       this.showJourneys[taskId] = !this.showJourneys[taskId];
