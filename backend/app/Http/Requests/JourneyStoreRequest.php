@@ -43,18 +43,16 @@ class JourneyStoreRequest extends FormRequest
             'user_id' => auth()->id(),
         ]);
 
-        // Obter o timezone do usuário, ou usar São Paulo como padrão
-        $timezone = $this->input('user_timezone', 'America/Sao_Paulo');
-
+        // Converter datetime do formato JavaScript para MySQL UTC
         if ($this->has('start')) {
             $this->merge([
-                'start' => DateTimeConversionService::convertToUtc($this->input('start'), $timezone),
+                'start' => DateTimeConversionService::convertJavascriptDate($this->input('start')),
             ]);
         }
 
         if ($this->has('end')) {
             $this->merge([
-                'end' => DateTimeConversionService::convertToUtc($this->input('end'), $timezone),
+                'end' => DateTimeConversionService::convertJavascriptDate($this->input('end')),
             ]);
         }
 

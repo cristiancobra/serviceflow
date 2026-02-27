@@ -140,9 +140,9 @@
               <div
                 v-for="transaction in invoice.transactions"
                 :key="transaction.id"
-                class="group flex items-center justify-between ms-36 px-1 py-1 rounded-md bg-white even:bg-sky-50/40 hover:bg-sky-100/60 border-l-4 border-transparent hover:border-sky-400 transition-colors"
+                class="group flex items-center justify-between ms-0 px-1 py-1 rounded-md bg-white even:bg-sky-50/40 hover:bg-sky-100/60 border-l-4 border-transparent hover:border-sky-400 transition-colors"
               >
-                <div class="flex items-center justify-center w-6 h-6 me-2 bg-blue-500 rounded-full">
+                <div class="flex items-center justify-center w-6 h-6 me-2 bg-success rounded-full">
                   <font-awesome-icon
                     icon="fas fa-coins"
                     class="text-white text-xs"

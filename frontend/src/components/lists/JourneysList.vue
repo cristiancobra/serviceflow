@@ -86,12 +86,9 @@
 <script>
 import axios from "axios";
 import { BACKEND_URL, JOURNEY_URL, JOURNEY_URL_PARAMETER } from "@/config/apiConfig";
-// import CopyContentClipboard from "@/components/CopyContentClipboard.vue";
 import { getColorClassForName, trimName } from "@/utils/card/cardUtils";
 import { displayLocalTime } from "@/utils/date/dateUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
-import { formatTimeToLocal } from "@/utils/date/dateUtils";
-import { convertDateTimeForServer } from "@/utils/date/dateUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
 import { mapMutations } from 'vuex';
 import DateEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
@@ -132,10 +129,8 @@ export default {
   },
   emits: ["new-journey-event", "journey-updated", "journey-deleted"],
   methods: {
-    convertDateTimeForServer,
     displayLocalTime,
     formatDateBr,
-    formatTimeToLocal,
     formatDuration,
     getColorClassForName,
     trimName,
@@ -230,7 +225,8 @@ export default {
     async stopJourney(journeyId) {
       const fieldName = 'end';
       const now = new Date();
-      const endValue = this.convertDateTimeForServer(now);
+      // Enviar no formato ISO (JavaScript) - o backend converterá com convertJavascriptDate
+      const endValue = now.toISOString();
       this.updateJourney(fieldName, endValue, journeyId);
       this.$store.commit('setOpenJourney', null);
     },

@@ -9,7 +9,6 @@
 <script>
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
-import { convertDateTimeForServer } from "@/utils/date/dateUtils";
 
 export default {
   components: {
@@ -34,10 +33,13 @@ export default {
     placeholder: String,
   },
   methods: {
-    convertDateTimeForServer,
     emitSave() {
       if (this.modelValue !== this.localValue) {
-        this.$emit("update:modelValue", this.convertDateTimeForServer(this.localValue));
+        // Converte para ISO (JavaScript padrão) - o backend converterá com convertJavascriptDate
+        const isoValue = this.localValue instanceof Date 
+          ? this.localValue.toISOString() 
+          : new Date(this.localValue).toISOString();
+        this.$emit("update:modelValue", isoValue);
       }
     },
   },

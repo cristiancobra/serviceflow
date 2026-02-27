@@ -50,8 +50,12 @@ export default {
         this.$emit("save", null);
         console.log('Emitindo save com valor nulo');
       } else if (this.modelValue !== this.localValue) {
-        this.$emit("save", this.localValue);
-        console.log('Emitindo save:', this.localValue);
+        // Converte para ISO (JavaScript padrão) - o backend converterá com convertJavascriptDate
+        const isoValue = this.localValue instanceof Date 
+          ? this.localValue.toISOString() 
+          : new Date(this.localValue).toISOString();
+        this.$emit("save", isoValue);
+        console.log('Emitindo save:', isoValue);
         console.log('LocalValue:', this.localValue);
       }
       this.editing = false;
