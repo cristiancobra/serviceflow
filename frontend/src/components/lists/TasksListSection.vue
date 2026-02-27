@@ -299,6 +299,19 @@ export default {
         console.warn("Tarefa não encontrada para o ID:", taskId);
       }
     },
+    checkAndExpandOpenJourneys() {
+      if (!this.localTasks || !Array.isArray(this.localTasks)) return;
+
+      this.localTasks.forEach((task) => {
+        if (task.journeys && task.journeys.length > 0) {
+          // Verifica se há alguma jornada aberta (sem end)
+          const hasOpenJourney = task.journeys.some((journey) => !journey.end);
+          if (hasOpenJourney) {
+            this.setJourneysVisible(task.id);
+          }
+        }
+      });
+    },
     formatDateGroup(date) {
       const dateParts = date.split("-");
       const day = parseInt(dateParts[2], 10);
@@ -486,10 +499,14 @@ export default {
       return this.openModal === "proposal";
     },
   },
+  mounted() {
+    this.checkAndExpandOpenJourneys();
+  },
   watch: {
     tasks: {
       handler(newVal) {
         this.localTasks = newVal;
+        this.checkAndExpandOpenJourneys();
       },
       deep: true,
     },

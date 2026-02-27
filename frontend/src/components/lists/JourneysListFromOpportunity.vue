@@ -26,12 +26,20 @@
       >
 
         <div class="flex items-center mr-5">
-          <font-awesome-icon icon="fa-solid fa-user" class="text-blue-600 mr-2" />
-          <span class="font-semibold text-blue-700">{{ journey.user?.name || 'Usuário' }}</span>
+          <img
+            v-if="journey.user?.photo"
+            :src="`${imagesPath}${journey.user.photo}`"
+            :alt="journey.user.name"
+            class="user-image mr-2"
+          />
+          <template v-else>
+            <font-awesome-icon icon="fa-solid fa-user" class="text-blue-600 mr-2" />
+            <span class="font-semibold text-blue-700">{{ journey.user?.name || 'Usuário' }}</span>
+          </template>
         </div>
         
         <div class="flex items-center mr-5">
-          <font-awesome-icon icon="fa-solid fa-calendar" class="text-blue-600 mr-2" />
+          <font-awesome-icon icon="fa-solid fa-play" class="text-blue-600 mr-2" />
           <DateEditableInput
             name="start"
             v-model="journey.start"
@@ -39,7 +47,7 @@
           />
         </div>
         <div class="flex items-center mr-5">
-          <font-awesome-icon icon="fa-solid fa-clock" class="text-blue-600 mr-2" />
+          <font-awesome-icon icon="fa-solid fa-stop" class="text-blue-600 mr-2" />
           <TimeEditableInput
             class="ps-5"
             name="end"
@@ -85,7 +93,7 @@
 
 <script>
 import axios from "axios";
-import { BACKEND_URL, JOURNEY_URL_PARAMETER } from "@/config/apiConfig";
+import { BACKEND_URL, JOURNEY_URL_PARAMETER, IMAGES_PATH } from "@/config/apiConfig";
 // import CopyContentClipboard from "@/components/CopyContentClipboard.vue";
 import { getColorClassForName, trimName } from "@/utils/card/cardUtils";
 import { displayLocalTime } from "@/utils/date/dateUtils";
@@ -265,12 +273,21 @@ export default {
       this.localJourneys = newData;
     },
   },
+  mounted() {
+    // Logs removidos - dados agora chegam corretamente
+  },
   watch: {
     journeys: {
       handler(newVal) {
         this.localJourneys = newVal;
       },
       deep: true,
+      immediate: true,
+    },
+  },
+  computed: {
+    imagesPath() {
+      return IMAGES_PATH;
     },
   },
 };
@@ -381,6 +398,13 @@ export default {
   animation: highlightPulse 2s ease-in-out;
   border-left: 4px solid #ffc107;
   /* padding-left: 12px; */
+}
+
+.user-image {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 @keyframes highlightPulse {

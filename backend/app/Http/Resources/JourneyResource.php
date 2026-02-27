@@ -36,6 +36,7 @@ class JourneyResource extends JsonResource
             'user' => $this->when($this->relationLoaded('user') && $this->user, [
                 'id' => $this->user->id,
                 'name' => $this->user->name,
+                'photo' => $this->user->photo,
             ]),
             'task' => $this->when($this->task, function () {
                 return new TasksResource($this->task);

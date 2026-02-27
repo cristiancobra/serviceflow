@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\OpportunityRequest;
 use App\Models\Opportunity;
 use App\Http\Resources\OpportunitiesResource;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log;
 
 class OpportunityController extends Controller
 {
@@ -67,7 +69,9 @@ class OpportunityController extends Controller
             'tasks' => function ($query) {
                 $query->orderByRaw('date_conclusion IS NOT NULL ASC')
                 ->orderBy('date_start', 'desc')
-                ->with('journeys.user');
+                ->with(['journeys' => function ($journeyQuery) {
+                    $journeyQuery->orderBy('start', 'desc')->with('user');
+                }]);
             },
             'company',
             'lead',
@@ -93,7 +97,9 @@ class OpportunityController extends Controller
                 'tasks' => function ($query) {
                     $query->orderByRaw('date_conclusion IS NOT NULL ASC')
                         ->orderBy('date_start', 'desc')
-                        ->with('journeys.user');
+                        ->with(['journeys' => function ($journeyQuery) {
+                            $journeyQuery->orderBy('start', 'desc')->with('user');
+                        }]);
                 },
                 'company',
                 'lead',
@@ -120,7 +126,7 @@ class OpportunityController extends Controller
 
             return response()->json(['message' => 'Opportunity deleted']);
         } catch (\Exception $e) {
-            \Log::error('Error deleting opportunity: ' . $e->getMessage());
+            Log::error('Error deleting opportunity: ' . $e->getMessage());
 
             return response()->json(['error' => 'Unable to delete opportunity'], 500);
         }
@@ -139,7 +145,7 @@ class OpportunityController extends Controller
 
             return response()->json(['totalOpportunities' => $totalOpportunities]);
         } catch (\Exception $e) {
-            \Log::error('Error counting open opportunities: ' . $e->getMessage());
+            Log::error('Error counting open opportunities: ' . $e->getMessage());
 
             return response()->json(['error' => 'Unable to count open opportunities'], 500);
         }
