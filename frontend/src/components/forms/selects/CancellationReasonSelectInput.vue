@@ -6,6 +6,7 @@
     :items="cancellationReasons"
     :fieldsToDisplay="fieldsToDisplay"
     :placeholder="placeholder"
+    :disabled="disabled"
     @update:modelValue="updateInput"
   />
 </template>
@@ -24,6 +25,10 @@ export default {
     name: String,
     autoSelect: Boolean,
     type: String,
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {

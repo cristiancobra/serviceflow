@@ -14,12 +14,18 @@ class Journey extends Model
 
     protected $fillable = [
         'id',
+        'user_id',
         'task_id',
         'details',
         'start',
         'end',
         'duration',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function task()
     {

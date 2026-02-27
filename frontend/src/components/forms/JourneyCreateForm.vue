@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="journey-form-container pt-4 pb-4 mt-3 mb-3 px-4 bg-orange-50 border-l-4 border-orange-500 rounded-r-lg shadow-sm">
     <AddMessage
       :messageStatus="messageStatus"
       :messageText="messageText"
@@ -7,58 +7,51 @@
     />
 
     <div class="errorBox" v-bind:class="{ isActive: datesError }"></div>
-    <div class="form" v-bind:class="{ isActive: isActive }">
-      <form @submit.prevent="submitForm">
-        <div class="row mt-0">
-          <div class="col">
-            <label for="start">Início</label>
-            <VueDatePicker v-model="form.start" />
-          </div>
-          <div class="col">
-            <label for="end">Fim</label>
-            <VueDatePicker v-model="form.end" />
-          </div>
+    
+    <form @submit.prevent="submitForm">
+      <div class="flex items-center gap-4">
+        <div class="flex-1">
+          <label for="start" class="block text-sm font-semibold text-orange-700 mb-1">Início</label>
+          <VueDatePicker v-model="form.start" class="w-full" />
         </div>
-        <div class="row">
-          <div class="col">
-            <label for="details">Detalhes</label>
-            <textarea
-              name="description"
-              rows="2"
-              cols="50"
-              v-model="form.details"
-              class="form-control"
-              id="details"
-            ></textarea>
-          </div>
+        <div class="flex-1">
+          <label for="end" class="block text-sm font-semibold text-orange-700 mb-1">Fim</label>
+          <VueDatePicker v-model="form.end" class="w-full" />
         </div>
-        <div class="row d-flex justify-content-center">
-          <button type="submit mt-5" class="button-new orange">Enviar</button>
+        <div class="flex-[2]">
+          <label for="details" class="block text-sm font-semibold text-orange-700 mb-1">Detalhes</label>
+          <textarea
+            name="description"
+            rows="1"
+            v-model="form.details"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+            id="details"
+            placeholder="Adicione detalhes da jornada..."
+          ></textarea>
         </div>
-      </form>
-    </div>
-    <div class="flex flex-row items-center space-x-2 me-3">
-      <button
-        class="w-7 h-7 flex items-center justify-center rounded-full bg-primary text-white hover:bg-secondary transition duration-200 ease-in-out"
-        @click="toggle()"
-      >
-        <font-awesome-icon icon="fa-solid fa-plus" />
-      </button>
-      <form @submit.prevent="submitQuickForm">
-        <button
-          class="w-7 h-7 flex items-center justify-center rounded-full bg-primary text-white hover:bg-secondary transition duration-200 ease-in-out"
-        >
-          <font-awesome-icon icon="fa-solid fa-bolt" />
-        </button>
-      </form>
-    </div>
+        <div class="flex items-end gap-2">
+          <button 
+            type="submit" 
+            class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition font-semibold"
+          >
+            Salvar
+          </button>
+          <button 
+            type="button"
+            @click="$emit('close')"
+            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition font-semibold"
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </form>
   </div>
 </template>
 
 <script>
 import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import { BACKEND_URL, JOURNEY_URL } from "@/config/apiConfig";
-// import { convertDateTimeForServer } from "@/utils/date/dateUtils";
 import { mapMutations } from "vuex";
 import axios from "axios";
 import VueDatePicker from "@vuepic/vue-datepicker";
@@ -76,6 +69,7 @@ export default {
       required: true,
     },
   },
+  emits: ["new-journey-event", "close"],
   data() {
     return {
       form: {
@@ -86,9 +80,6 @@ export default {
       },
       messageStatus: "",
       messageText: "",
-      quickForm: {
-        task_id: this.taskId,
-      },
       isActive: false,
       datesError: false,
       enableTime: true,
@@ -97,7 +88,6 @@ export default {
     };
   },
   methods: {
-    // convertDateTimeForServer,
     clearForm() {
       this.form.details = null;
       this.form.start = null;
@@ -140,7 +130,6 @@ export default {
       this.checkDates();
 
       try {
-        // Adicionar timezone do navegador
         const formWithTimezone = {
           ...this.form,
           user_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
@@ -155,45 +144,15 @@ export default {
               taskId: this.taskId,
             });
             this.clearForm();
-            this.toggle();
+            this.$emit("close");
             this.setMessageStatus("success");
             if (this.newJourney.end == null) {
-              console.log("form-end", this.form.end);
               this.setOpenJourney(this.newJourney.task);
             }
           });
       } catch (error) {
         this.setMessageStatus("error");
       }
-    },
-    async submitQuickForm() {
-      try {
-        this.quickForm.start = new Date();
-        this.quickForm.task_id = this.taskId;
-        
-        // Adicionar timezone do navegador
-        const quickFormWithTimezone = {
-          ...this.quickForm,
-          user_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-        };
-
-        axios
-          .post(`${BACKEND_URL}${JOURNEY_URL}`, quickFormWithTimezone)
-          .then((response) => {
-            this.newJourney = response.data.data;
-            this.$emit("new-journey-event", {
-              journey: this.newJourney,
-              taskId: this.taskId,
-            });
-            this.setMessageStatus("success");
-            this.setOpenJourney(this.newJourney.task);
-          });
-      } catch (error) {
-        this.setMessageStatus("error");
-      }
-    },
-    toggle() {
-      this.isActive = !this.isActive;
     },
   },
   watch: {
@@ -205,126 +164,21 @@ export default {
 </script>
 
 <style scoped>
-.details {
-  text-align: left;
-  font-size: 16px;
-  font-weight: 600;
+.journey-form-container {
+  width: 100%;
 }
 
-.start {
-  text-align: center;
-  font-size: 16px;
-  font-weight: 400;
-}
-
-.form.isActive {
-  display: flex;
-}
-
-.icon {
-  font-size: 1.8rem;
-  text-align: center;
-  font-weight: 400;
-}
-
-.icon-col {
-  font-size: 16px;
-  display: inline-block;
-  align-items: center;
-  /* Centraliza verticalmente */
-  justify-content: center;
-  /* Centraliza horizontalmente */
-  width: 35px;
-  height: 35px;
-  margin-right: 12px;
-  margin-top: -8px;
-  padding: 10px;
-  background-color: #f1f1f1;
-  border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  /* Reduz a intensidade do sombreamento */
-  transition: font-size 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-}
-
-.icon-col:hover {
-  font-size: 20px;
-  background-color: #f6f6f6;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
-  transform: perspective(500px) rotateX(10deg);
-  transform-origin: center center;
-  /* Inicia a transformação a partir do centro */
-}
-
-.comments {
-  text-align: left;
-  font-size: 14px;
-  margin-top: 20px;
-}
-
-.form {
+.errorBox {
   display: none;
-  padding: 1rem;
-  background-color: var(--orange-light);
-  border-color: var(--orange);
-  border-style: solid;
-  border-radius: 6px;
 }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: rgb(61, 61, 61);
-}
-
-a:link {
-  text-decoration: none;
-}
-
-a:visited {
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: none;
-}
-
-a:active {
-  text-decoration: none;
-}
-
-.new {
-  display: flex;
-  justify-content: end;
-  padding-top: 1rem;
-}
-
-.orange {
-  background-color: var(--orange);
-  color: white;
-}
-
-.row {
-  margin-top: 2rem;
-  justify-content: end;
-}
-
-.table-header {
-  display: flex;
-  text-align: center;
-  background-color: var(--purple);
-  color: white;
-  border-style: none;
-  border-radius: 20px;
-  padding-top: 10px;
-  padding-left: 20px;
-  padding-bottom: 10px;
+.errorBox.isActive {
+  display: block;
+  color: red;
+  padding: 10px;
+  background-color: #ffe6e6;
+  border: 1px solid red;
+  border-radius: 5px;
+  margin-bottom: 10px;
 }
 </style>

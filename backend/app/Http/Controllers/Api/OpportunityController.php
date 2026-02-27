@@ -67,7 +67,7 @@ class OpportunityController extends Controller
             'tasks' => function ($query) {
                 $query->orderByRaw('date_conclusion IS NOT NULL ASC')
                 ->orderBy('date_start', 'desc')
-                ->with('journeys');
+                ->with('journeys.user');
             },
             'company',
             'lead',
@@ -93,7 +93,7 @@ class OpportunityController extends Controller
                 'tasks' => function ($query) {
                     $query->orderByRaw('date_conclusion IS NOT NULL ASC')
                         ->orderBy('date_start', 'desc')
-                        ->with('journeys');
+                        ->with('journeys.user');
                 },
                 'company',
                 'lead',

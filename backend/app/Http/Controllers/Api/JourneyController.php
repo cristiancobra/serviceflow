@@ -18,6 +18,7 @@ class JourneyController extends Controller
     public function index()
     {
         $journeys = Journey::with([
+            'user',
             'task',
             'task.project',
             'task.opportunity',
@@ -55,7 +56,7 @@ class JourneyController extends Controller
             $journey->updateAssociatedTaskDuration();
 
             // Carregar as relações antes de retornar
-            $journey->load(['task', 'task.project', 'task.opportunity']);
+            $journey->load(['user', 'task', 'task.project', 'task.opportunity']);
 
             return new JourneyResource($journey);
         } catch (ValidationException $validationException) {
@@ -103,7 +104,7 @@ class JourneyController extends Controller
             $journey->updateAssociatedTaskDuration();
 
             // Carregar as relações antes de retornar
-            $journey->load(['task', 'task.project', 'task.opportunity']);
+            $journey->load(['user', 'task', 'task.project', 'task.opportunity']);
 
             return JourneyResource::make($journey);
         } catch (ValidationException $validationException) {
@@ -148,7 +149,7 @@ class JourneyController extends Controller
         $perPage = request()->get('per_page', 20); // Ajuste a quantidade de itens por página conforme necessário
 
         $journeys = Journey::where('task_id', $request->task_id)
-            ->with(['task', 'task.project', 'task.opportunity'])
+            ->with(['user', 'task', 'task.project', 'task.opportunity'])
             ->orderBy('start', 'desc')
             ->paginate($perPage);
 

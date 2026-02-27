@@ -80,24 +80,44 @@
               />
             </div>
 
-            <!-- Botão de Toggle -->
+            <!-- Botão de Toggle Cancelamento -->
             <button
               class="w-7 h-7 flex items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-700 transition"
-              @click="toggleCancelLine"
+              @click="toggleCancelLine(localTask.id)"
+              title="Cancelar tarefa"
             >
               <font-awesome-icon
                 :icon="
-                  showCancelLine
+                  showCancelLine[localTask.id]
                     ? 'fa-solid fa-minus'
                     : 'fa-solid fa-times-circle'
                 "
               />
             </button>
 
-            <journey-create-form
-              :taskId="localTask.id"
-              @new-journey-event="addJourneyCreated"
-            />
+            <!-- Botão para toggle do formulário de jornada -->
+            <button
+              class="w-7 h-7 flex items-center justify-center rounded-full bg-orange-500 text-white hover:bg-orange-700 transition"
+              @click="toggleJourneyForm(localTask.id)"
+              title="Adicionar jornada"
+            >
+              <font-awesome-icon
+                :icon="
+                  showJourneyForm[localTask.id]
+                    ? 'fa-solid fa-minus'
+                    : 'fa-solid fa-plus'
+                "
+              />
+            </button>
+
+            <!-- Botão quickform - iniciar jornada rapidamente -->
+            <button
+              class="w-7 h-7 flex items-center justify-center rounded-full bg-purple-500 text-white hover:bg-purple-700 transition"
+              @click="quickStartJourney(localTask.id)"
+              title="Iniciar jornada agora"
+            >
+              <font-awesome-icon icon="fa-solid fa-bolt" />
+            </button>
 
             <add-last-journey-date-button
               :task="localTask"
@@ -105,10 +125,13 @@
               @add-last-journey-date="updateDateConclusion(localTask)"
               @update-task="updateTask"
             />
+            
+            <!-- Botão para visualizar jornadas -->
             <button
               v-if="localTask.journeys && localTask.journeys.length > 0"
               class="w-7 h-7 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-700 transition relative"
               @click="toggleJourneys(localTask.id)"
+              title="Ver jornadas"
             >
               <font-awesome-icon icon="fa-solid fa-eye" />
               <span
@@ -121,20 +144,34 @@
               v-else
               class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-300 text-gray-500 cursor-not-allowed"
               disabled
+              title="Sem jornadas"
             >
               <font-awesome-icon icon="fa-solid fa-eye-slash" />
             </button>
           </div>
 
+          <!-- Formulário de nova jornada -->
+          <div
+            v-if="showJourneyForm[localTask.id]"
+            class="mt-3 mb-3"
+          >
+            <journey-create-form
+              :taskId="localTask.id"
+              @new-journey-event="addJourneyCreated"
+              @close="toggleJourneyForm(localTask.id)"
+            />
+          </div>
+
+          <!-- Linha de cancelamento -->
           <div
             id="cancel-line"
-            class="flex items-center space-x-20 pt-4 pb-4"
-            v-if="showCancelLine"
+            class="flex items-center space-x-20 pt-4 pb-4 mt-3 mb-3 px-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg shadow-sm"
+            v-if="showCancelLine[localTask.id]"
           >
-            cancelada:
+            <span class="font-semibold text-red-700">Cancelada:</span>
             <font-awesome-icon
               icon="fa-solid fa-times-circle"
-              class="text-primary ms-3 me-2"
+              class="text-red-500 ms-3 me-2"
             />
             <date-time-editable-input
               name="date_canceled"
@@ -145,6 +182,7 @@
             <cancellation-reason-select-input
               name="cancellation_reason"
               v-model="localTask.cancellation_reason"
+              :disabled="!localTask.date_canceled"
               @update:modelValue="
                 updateTask('cancellation_reason', $event, localTask.id)
               "
@@ -215,9 +253,10 @@ export default {
       openModal: null,
       percentage: 0,
       searchTerm: "",
-      showCancelLine: false,
+      showCancelLine: {},
       showGroupColumn: false,
       showJourneys: {},
+      showJourneyForm: {},
       totalTasks: 0,
     };
   },
@@ -333,11 +372,14 @@ export default {
       }
       this.showJourneys[taskId] = true;
     },
-    toggleCancelLine() {
-      this.showCancelLine = !this.showCancelLine;
+    toggleCancelLine(taskId) {
+      this.showCancelLine[taskId] = !this.showCancelLine[taskId];
     },
     toggleJourneys(taskId) {
       this.showJourneys[taskId] = !this.showJourneys[taskId];
+    },
+    toggleJourneyForm(taskId) {
+      this.showJourneyForm[taskId] = !this.showJourneyForm[taskId];
     },
     updateDateConclusion(task) {
       if (task.journeys && task.journeys.length > 0) {
@@ -356,6 +398,25 @@ export default {
         console.log(
           "Nenhuma jornada encontrada para calcular a data de conclusão."
         );
+      }
+    },
+    async quickStartJourney(taskId) {
+      try {
+        const quickForm = {
+          task_id: taskId,
+          start: new Date(),
+          user_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        };
+
+        const response = await axios.post(
+          `${BACKEND_URL}/journeys`,
+          quickForm
+        );
+        
+        const newJourney = response.data.data;
+        this.addJourneyCreated({ journey: newJourney, taskId });
+      } catch (error) {
+        console.error("Erro ao iniciar jornada rapidamente:", error);
       }
     },
     async updateTask(fieldName, editedValue, localTaskId) {

@@ -19,6 +19,7 @@ class TaskController extends Controller
     public function index()
     {
         $tasks = Task::with([
+            'journeys.user',
             'project',
             'opportunity'
         ])
@@ -61,9 +62,7 @@ class TaskController extends Controller
     {
 
         return TasksResource::make(Task::with([
-            'journeys' => function ($query) {
-                $query->orderBy('start', 'desc');
-            },
+            'journeys.user',
             'links',
             'project',
             'opportunity'
@@ -94,9 +93,7 @@ class TaskController extends Controller
             $task->save();
 
             $updatedTask = Task::with([
-                'journeys' => function ($query) {
-                    $query->orderBy('start', 'desc');
-                },
+                'journeys.user',
                 'project',
                 'opportunity'
             ])->find($task->id);
@@ -208,7 +205,8 @@ class TaskController extends Controller
 
         $perPage = request()->get('per_page', 20);
 
-        $tasksQuery = Task::where('project_id', $request->project_id);
+        $tasksQuery = Task::where('project_id', $request->project_id)
+            ->with(['journeys.user', 'project', 'opportunity']);
 
         $totalTasksQuery = clone $tasksQuery;
         $totalTasks = $totalTasksQuery->count();
@@ -239,7 +237,7 @@ class TaskController extends Controller
         $perPage = request()->get('per_page', 20);
 
         $tasks = Task::where('opportunity_id', $request->opportunity_id)
-            // ->with('tasks')
+            ->with(['journeys.user', 'project', 'opportunity'])
             ->orderBy('date_start', 'desc')
             ->paginate($perPage);
 

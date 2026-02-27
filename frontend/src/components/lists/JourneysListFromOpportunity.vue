@@ -19,13 +19,19 @@
       </div>
       <div
         v-else
-        class="flex mt-0 mb-0 ml-15"
+        class="flex items-center mt-2 mb-2 ml-15 px-4 py-3 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg shadow-sm hover:bg-blue-100 transition-colors duration-200"
         v-for="journey in localJourneys"
         v-bind:key="journey.id"
         :class="{ highlight: journey.id === newJourneyId }"
       >
 
         <div class="flex items-center mr-5">
+          <font-awesome-icon icon="fa-solid fa-user" class="text-blue-600 mr-2" />
+          <span class="font-semibold text-blue-700">{{ journey.user?.name || 'Usuário' }}</span>
+        </div>
+        
+        <div class="flex items-center mr-5">
+          <font-awesome-icon icon="fa-solid fa-calendar" class="text-blue-600 mr-2" />
           <DateEditableInput
             name="start"
             v-model="journey.start"
@@ -33,6 +39,7 @@
           />
         </div>
         <div class="flex items-center mr-5">
+          <font-awesome-icon icon="fa-solid fa-clock" class="text-blue-600 mr-2" />
           <TimeEditableInput
             class="ps-5"
             name="end"
@@ -41,23 +48,26 @@
           />
         </div>
         <div class="flex items-center mr-5">
+          <font-awesome-icon icon="fa-solid fa-hourglass-half" class="text-blue-600 mr-2" />
           <p class="time-bold ps-5">
             {{ formatDuration(journey.duration) }}
           </p>
         </div>
-        <div class="flex items-center mr-5">
+        <div class="flex items-center mr-5 ml-auto gap-2">
           <button
             v-if="!journey.end"
-            class="w-7 h-7 pt-1 flex items-center justify-center rounded-full text-white bg-blue-500 hover:bg-blue-800 transition duration-200 ease-in-out"
+            class="w-8 h-8 pt-1 flex items-center justify-center rounded-full text-white bg-blue-500 hover:bg-blue-700 transition duration-200 ease-in-out shadow-md hover:shadow-lg"
             @click="stopJourney(journey.id)"
+            title="Parar jornada"
           >
             <span class="">
               <font-awesome-icon icon="fa-solid fa-hand" />
             </span>
           </button>
           <button
-             class="w-7 h-7 pt-1 flex items-center justify-center rounded-full bg-red-500 hover:bg-red-800 transition duration-200 ease-in-out"
+             class="w-8 h-8 pt-1 flex items-center justify-center rounded-full bg-red-500 hover:bg-red-700 transition duration-200 ease-in-out shadow-md hover:shadow-lg"
             @click="deleteItem(journey)"
+            title="Excluir jornada"
           >
             <span class="text-white">
               <font-awesome-icon icon="fa-solid fa-trash-alt" />

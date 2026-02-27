@@ -81,5 +81,11 @@ class TaskRequest extends FormRequest
                 'date_conclusion' => \App\Services\DateTimeConversionService::convertJavascriptDate($this->input('date_conclusion')),
             ]);
         }
+
+        if ($this->filled('date_canceled')) {
+            $this->merge([
+                'date_canceled' => \App\Services\DateTimeConversionService::convertJavascriptDate($this->input('date_canceled')),
+            ]);
+        }
     }
 }
