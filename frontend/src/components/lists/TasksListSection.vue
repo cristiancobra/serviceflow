@@ -453,7 +453,7 @@ export default {
         };
 
         const response = await axios.post(
-          `${BACKEND_URL}/journeys`,
+          `${BACKEND_URL}journeys`,
           quickForm
         );
         
