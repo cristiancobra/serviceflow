@@ -45,7 +45,7 @@
       <div class="w-[11%] flex items-center justify-end text-black pr-2 text-sm">
         <money-editable-field
           v-model="service.labor_hourly_rate"
-          @save="emitUpdateProposal('labor_hourly_rate', service.service_id, $event)"
+          @update:modelValue="emitUpdateProposal('labor_hourly_rate', service.service_id, $event)"
         />
       </div>
       <div class="w-[11%] flex items-center justify-end text-black pr-2 text-sm">
@@ -61,13 +61,13 @@
       <div class="w-[11%] flex items-center justify-end text-black pr-2 text-sm">
         <money-editable-field
           v-model="service.profit"
-          @save="emitUpdateProposal('profit', service.service_id, $event)"
+          @update:modelValue="emitUpdateProposal('profit', service.service_id, $event)"
         />
       </div>
       <div class="w-[11%] flex items-center justify-end text-black pr-2 text-sm">
         <money-editable-field
           v-model="service.total_profit"
-          @save="emitUpdateProposal('total_profit', service.service_id, $event)"
+          @update:modelValue="emitUpdateProposal('total_profit', service.service_id, $event)"
         />
       </div>
       <div class="w-[11%] flex items-center justify-end text-black pr-2 text-sm">

@@ -22,7 +22,7 @@
         </p>
       </div>
       <div class="column-20">
-        <money-editable-field name="price" v-model="cost.price" @save="updateCost('price', $event)" />
+        <money-editable-field name="price" v-model="cost.price" @update:modelValue="updateCost('price', $event)" />
       </div>
     </div>
  

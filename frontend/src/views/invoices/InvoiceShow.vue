@@ -43,7 +43,7 @@
                 <money-editable-field
                   name="price"
                   v-model="invoice.price"
-                  @save="updateInvoice('price', $event)"
+                  @update:modelValue="updateInvoice('price', $event)"
                 />
               </div>
             </div>

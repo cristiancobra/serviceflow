@@ -37,6 +37,7 @@ export default {
     placeholder: String,
     status: String,
   },
+  emits: ['update:modelValue'],
   methods: {
     convertBrToCurrency,
     convertCurrencyToBr,
@@ -45,7 +46,8 @@ export default {
       this.editing = true;
     },
     emitSave() {
-      this.$emit("save", this.convertBrToCurrency(this.localValue));
+      const convertedValue = this.convertBrToCurrency(this.localValue);
+      this.$emit("update:modelValue", convertedValue);
       this.editing = false;
     },
     cancelEditing() {

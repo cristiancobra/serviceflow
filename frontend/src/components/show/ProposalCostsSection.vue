@@ -44,7 +44,7 @@
             <div class="w-[20%] flex items-center justify-end text-black pr-2 text-sm">
                 <money-editable-field
                     v-model="localCost.price"
-                    @save="emitUpdateProposalCost('price', localCost.cost_id, $event)"
+                    @update:modelValue="emitUpdateProposalCost('price', localCost.cost_id, $event)"
                 />
             </div>
             <div class="w-[25%] flex items-center color-primary-500 justify-end font-bold pr-2 text-sm">

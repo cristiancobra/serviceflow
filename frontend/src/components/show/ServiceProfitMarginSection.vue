@@ -28,7 +28,7 @@
           name="labor_hourly_rate"
           v-model="localService.labor_hourly_rate"
           placeholder="valor da hora de trabalho"
-          @save="updateService('labor_hourly_rate', $event)"
+          @update:modelValue="updateService('labor_hourly_rate', $event)"
         />
       </div>
       <div class="column-20 column-total-price">
@@ -76,7 +76,7 @@
         <money-editable-field
           name="profit"
           v-model="localService.profit"
-          @save="updateService('profit', $event)"
+          @update:modelValue="updateService('profit', $event)"
         />
       </div>
     </div>
