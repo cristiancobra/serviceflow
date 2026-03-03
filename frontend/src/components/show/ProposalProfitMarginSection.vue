@@ -74,7 +74,6 @@
     </div>
 
     <div
-      v-if="localProposal.total_discount > 0"
       class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-gray-200 py-1 ml-[40%]"
     >
       <div class="flex items-center justify-center">
