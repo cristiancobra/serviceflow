@@ -1,14 +1,14 @@
 <template>
-  <div class="">
+  <div class="timeline">
     <!-- Linha 1: Datas -->
     <div class="timeline-dates">
       <div
         class="timeline-date"
         v-for="(date, index) in timelineEvents"
-        :key="index"
+        :key="'date-' + index"
       >
         <p v-if="date.value">{{ formatDateBr(date.value) }}</p>
-        <p v-else>---</p>
+        <p v-else class="text-gray-400">---</p>
       </div>
     </div>
 
@@ -17,7 +17,8 @@
       <div
         class="timeline-circle"
         v-for="(date, index) in timelineEvents"
-        :key="index"
+        :key="'circle-' + index"
+        :class="{ 'active': date.value }"
       ></div>
     </div>
 
@@ -26,7 +27,7 @@
       <div
         class="timeline-label"
         v-for="(date, index) in timelineEvents"
-        :key="index"
+        :key="'label-' + index"
       >
         <p>{{ date.label }}</p>
       </div>
@@ -61,76 +62,102 @@ export default {
     formatDateBr,
   },
   watch: {
-  proposal: {
-    immediate: true,
-    handler(newProposal) {
-      this.timelineEvents = [
-        { label: "Criada", value: newProposal?.created_at || "" },
-        { label: "Rascunhada", value: newProposal?.draft_at || "" },
-        { label: "Enviada", value: newProposal?.submitted_at || "" },
-        { label: "Aceita", value: newProposal?.accepted_at || "" },
-        { label: "Rejeitada", value: newProposal?.rejected_at || "" },
-        { label: "Cancelada", value: newProposal?.canceled_at || "" },
-      ];
+    proposal: {
+      immediate: true,
+      handler(newProposal) {
+        this.timelineEvents = [
+          { label: "Criada", value: newProposal?.created_at || "" },
+          { label: "Rascunhada", value: newProposal?.draft_at || "" },
+          { label: "Enviada", value: newProposal?.submitted_at || "" },
+          { label: "Aceita", value: newProposal?.accepted_at || "" },
+          { label: "Rejeitada", value: newProposal?.rejected_at || "" },
+          { label: "Cancelada", value: newProposal?.canceled_at || "" },
+        ];
+      },
     },
   },
-},
 };
 </script>
 
-<style>
+<style scoped>
 .timeline {
   display: flex;
-  flex-direction: column; /* Organiza as linhas verticalmente */
-  align-items: center; /* Centraliza os itens horizontalmente */
-  width: 100%; /* Garante que a timeline ocupe toda a largura */
-  margin: 20px 0;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  padding: 20px 0;
 }
 
 .timeline-dates,
 .timeline-line,
 .timeline-labels {
   display: flex;
-  justify-content: space-between; /* Distribui os itens uniformemente */
-  align-items: center; /* Centraliza os itens verticalmente */
-  width: 100%; /* Cada linha ocupa toda a largura */
-  margin-bottom: 20px; /* Espaçamento entre as linhas */
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.timeline-dates {
+  margin-bottom: 10px;
+}
+
+.timeline-labels {
+  margin-top: 10px;
 }
 
 .timeline-date,
 .timeline-label {
+  flex: 1;
   text-align: center;
-  flex: 1; /* Faz com que os itens tenham o mesmo tamanho */
+  font-size: 0.875rem;
+}
+
+.timeline-date p,
+.timeline-label p {
+  margin: 0;
+  padding: 0 5px;
 }
 
 .timeline-line {
   position: relative;
-  display: flex;
-  justify-content: space-between; /* Distribui os círculos uniformemente */
-  align-items: center;
-  width: 100%;
-  margin-bottom: 20px;
-  text-align: center;
+  height: 20px;
+  margin: 10px 0;
 }
 
 .timeline-line::before {
   content: "";
   position: absolute;
   top: 50%;
-  left: 0;
-  right: 0;
+  left: 5%;
+  right: 5%;
   height: 2px;
-  background: #ccc; /* Linha horizontal */
-  z-index: -1; /* Coloca a linha atrás dos círculos */
+  background: #e5e7eb;
+  transform: translateY(-50%);
 }
 
 .timeline-circle {
-  width: 12px;
-  height: 12px;
-  background: #007bff;
-  border-radius: 50%; /* Faz o círculo */
-  border: 2px solid #fff;
-  box-shadow: 0 0 0 2px #ccc;
-  z-index: 1; /* Garante que os círculos fiquem acima da linha */
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.timeline-circle::after {
+  content: "";
+  width: 14px;
+  height: 14px;
+  background: #e5e7eb;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 1px #d1d5db;
+  transition: all 0.3s ease;
+}
+
+.timeline-circle.active::after {
+  background: #3b82f6;
+  box-shadow: 0 0 0 2px #3b82f6;
+  width: 16px;
+  height: 16px;
 }
 </style>
