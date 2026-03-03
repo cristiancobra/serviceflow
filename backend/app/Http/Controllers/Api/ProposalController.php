@@ -62,7 +62,7 @@ class ProposalController extends Controller
             $proposal->fill($request->all());
 
             $proposalTotalHours = 0;
-            $proposalTotalDiscount = 0;
+            $proposalTotalDiscount = $request->input('total_discount', 0);
             $proposalTotalPrice = 0;
             $proposalTotalProfit = 0;
             $proposalTotalOperationalCost = 0;
@@ -86,7 +86,7 @@ class ProposalController extends Controller
             $proposal->total_operational_cost = $proposalTotalOperationalCost;
             $proposal->total_profit = $proposalTotalProfit;
             $proposal->total_discount = $proposalTotalDiscount;
-            $proposal->total_price = $proposalTotalPrice + $proposalTotalCosts;
+            $proposal->total_price = $proposalTotalPrice + $proposalTotalCosts - $proposalTotalDiscount;
             $proposal->total_profit_percentage = ($proposal->total_profit / $proposal->total_price) * 100;
 
             $proposal->save();
@@ -200,6 +200,29 @@ class ProposalController extends Controller
                 return ProposalsResource::make($proposal);
             }
 
+            // Se está atualizando apenas total_discount manualmente
+            if (isset($validatedData['total_discount']) && 
+                !$request->has('proposalServices') && 
+                !$request->has('proposalCosts')) {
+                
+              
+                $proposal->total_discount = $validatedData['total_discount'];
+                
+                // Recalcula o total_price subtraindo o novo desconto
+                $subtotal = $proposal->total_operational_cost + $proposal->total_third_party_cost + $proposal->total_profit;
+                $proposal->total_price = $subtotal - $proposal->total_discount;
+                
+                $proposal->save();
+
+                $proposal->load([
+                    'invoices.transactions',
+                    'proposalServices',
+                    'proposalCosts',
+                ]);
+
+                return ProposalsResource::make($proposal);
+            }
+
             $proposal->fill($validatedData);
             $proposal->save();
 
@@ -288,7 +311,8 @@ class ProposalController extends Controller
         $proposalTotalPrice = 0;
         $proposalTotalProfit = 0;
         $proposalTotalOperationalCost = 0;
-        $proposalTotalDiscount = 0;
+        // Preserva o desconto existente em vez de resetar para 0
+        $proposalTotalDiscount = $proposal->total_discount ?? 0;
 
         foreach ($proposal->proposalServices as $proposalService) {
             $proposalTotalHours += $proposalService->labor_hours_total;
@@ -308,7 +332,7 @@ class ProposalController extends Controller
         $proposal->total_operational_cost = $proposalTotalOperationalCost;
         $proposal->total_profit = $proposalTotalProfit;
         $proposal->total_discount = $proposalTotalDiscount;
-        $proposal->total_price = $proposalTotalPrice + $proposalTotalCosts;
+        $proposal->total_price = $proposalTotalPrice + $proposalTotalCosts - $proposalTotalDiscount;
         $proposal->total_profit_percentage = ($proposal->total_profit / $proposal->total_price) * 100;
 
         $proposal->save();
@@ -603,10 +627,12 @@ class ProposalController extends Controller
         
         $operationalCost = $proposal->total_operational_cost;
         $thirdPartyCost = $proposal->total_third_party_cost;
+        $discount = $proposal->total_discount ?? 0;
         
-        // Fórmula: Preço = (Custo Operacional + Custo Terceiros) / (1 - Margem/100)
+        // Fórmula: Preço = (Custo Operacional + Custo Terceiros) / (1 - Margem/100) - Desconto
         $totalCost = $operationalCost + $thirdPartyCost;
-        $newTotalPrice = $totalCost / (1 - ($newProfitPercentage / 100));
+        $priceBeforeDiscount = $totalCost / (1 - ($newProfitPercentage / 100));
+        $newTotalPrice = $priceBeforeDiscount - $discount;
         $newTotalProfit = $newTotalPrice - $totalCost;
         
         $proposal->total_profit_percentage = $newProfitPercentage;
@@ -628,11 +654,12 @@ class ProposalController extends Controller
         
         $operationalCost = $proposal->total_operational_cost;
         $thirdPartyCost = $proposal->total_third_party_cost;
+        $discount = $proposal->total_discount ?? 0;
         
-        // Fórmula: Preço = Custo Total + Novo Lucro
+        // Fórmula: Preço = Custo Total + Novo Lucro - Desconto
         $totalCost = $operationalCost + $thirdPartyCost;
-        $newTotalPrice = $totalCost + $newProfit;
-        $newProfitPercentage = ($newProfit / $newTotalPrice) * 100;
+        $newTotalPrice = $totalCost + $newProfit - $discount;
+        $newProfitPercentage = ($newProfit / ($newTotalPrice + $discount)) * 100;
         
         $proposal->total_profit_percentage = $newProfitPercentage;
         $proposal->total_profit = $newProfit;

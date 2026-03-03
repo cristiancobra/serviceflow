@@ -19,7 +19,7 @@
       </div>
       <div
         v-else
-        class="flex items-center mt-2 mb-2 ml-15 px-4 py-3 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg shadow-sm hover:bg-blue-100 transition-colors duration-200"
+        class="flex items-center mt-2 mb-2 ml-6 px-4 py-1 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg shadow-sm hover:bg-blue-100 transition-colors duration-200"
         v-for="journey in localJourneys"
         v-bind:key="journey.id"
         :class="{ highlight: journey.id === newJourneyId }"

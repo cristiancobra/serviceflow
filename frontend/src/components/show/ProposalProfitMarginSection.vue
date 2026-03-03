@@ -74,6 +74,27 @@
     </div>
 
     <div
+      v-if="localProposal.total_discount > 0"
+      class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-gray-200 py-1 ml-[40%]"
+    >
+      <div class="flex items-center justify-center">
+        <font-awesome-icon icon="fas fa-tag" class="text-red-700" />
+      </div>
+      <div class="flex items-center justify-start text-red-700">
+        Desconto:
+      </div>
+      <div class="col-span-1"></div>
+      <div class="flex items-center justify-end text-red-700">
+        - <money-editable-field
+          name="total_discount"
+          :modelValue="localProposal.total_discount"
+          @save="updateProposal('total_discount', $event)"
+          placeholder="0,00"
+        />
+      </div>
+    </div>
+
+    <div
       class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-gray-200 py-1 ml-[40%]"
     >
       <div class="flex items-center justify-center">
@@ -114,6 +135,7 @@ import { formatDateBr } from "@/utils/date/dateUtils";
 import IntegerEditableField from "@/components/fields/number/IntegerEditableField.vue";
 import HoursDecimalField from "../fields/number/HoursDecimalField.vue";
 import MoneyField from "@/components/fields/number/MoneyField.vue";
+import MoneyEditableField from "@/components/fields/number/MoneyEditableField.vue";
 
 export default {
   props: {
@@ -133,6 +155,7 @@ export default {
     IntegerEditableField,
     HoursDecimalField,
     MoneyField,
+    MoneyEditableField,
   },
   methods: {
     formatDateBr,
@@ -143,11 +166,17 @@ export default {
       }, 2000);
     },
     updateProposal(field, value) {
+      console.log('updateProposal chamado:', { field, value, localProposal: this.localProposal });
+      
       // Se for installment_quantity, armazena o valor anterior antes de emitir
       if (field === 'installment_quantity') {
         this.previousInstallmentQuantity = this.localProposal.installment_quantity;
       }
       this.$emit("update-proposal", field, value);
+    },
+    handleDiscountUpdate(value) {
+      this.localProposal.total_discount = value;
+      this.updateProposal('total_discount', value);
     },
   },
   watch: {

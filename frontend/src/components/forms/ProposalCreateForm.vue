@@ -98,6 +98,38 @@
                   />
                 </div>
               </div>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                  <label for="discount_type" class="block text-sm font-medium text-gray-700 mb-2">
+                    Tipo de Desconto
+                  </label>
+                  <select
+                    id="discount_type"
+                    v-model="discountType"
+                    class="w-full px-3 py-2 text-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="percentage">Percentual (%)</option>
+                    <option value="value">Valor (R$)</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="discount" class="block text-sm font-medium text-gray-700 mb-2">
+                    {{ discountType === 'percentage' ? 'Desconto (%)' : 'Desconto (R$)' }}
+                  </label>
+                  <input
+                    type="number"
+                    id="discount"
+                    v-model.number="discountInput"
+                    :min="0"
+                    :max="discountType === 'percentage' ? 100 : undefined"
+                    step="0.01"
+                    class="w-full px-3 py-2 text-black border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="0"
+                  />
+                </div>
+              </div>
+              
               <div v-if="services.length === 0" class="mb-6">
                 <p class="text-gray-600">Você ainda não possui serviços cadastrados.</p>
               </div>
@@ -180,6 +212,26 @@
                   </div>
                 </div>
               </div>
+              
+              <!-- Resumo de Valores -->
+              <div class="bg-blue-50 rounded-lg border border-blue-200 p-4 mb-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-3">Resumo</h3>
+                <div class="space-y-2">
+                  <div class="flex justify-between text-gray-700">
+                    <span>Subtotal:</span>
+                    <span class="font-medium">{{ formatCurrency(subtotal) }}</span>
+                  </div>
+                  <div v-if="totalDiscount > 0" class="flex justify-between text-orange-600">
+                    <span>Desconto:</span>
+                    <span class="font-medium">- {{ formatCurrency(totalDiscount) }}</span>
+                  </div>
+                  <div class="flex justify-between text-lg font-bold text-gray-900 pt-2 border-t border-blue-200">
+                    <span>Total:</span>
+                    <span>{{ formatCurrency(total) }}</span>
+                  </div>
+                </div>
+              </div>
+              
               <div class="modal-footer">
                 <button
                   type="button"
@@ -246,7 +298,31 @@ export default {
       modal: false,
       services: [],
       selectedServices: [],
+      discountType: 'percentage',
+      discountInput: 0,
     };
+  },
+  computed: {
+    subtotal() {
+      const servicesTotal = this.services.reduce((sum, service) => {
+        return sum + ((service.quantity || 0) * (service.price || 0));
+      }, 0);
+      
+      const costsTotal = this.costs.reduce((sum, cost) => {
+        return sum + ((cost.quantity || 0) * (cost.price || 0));
+      }, 0);
+      
+      return servicesTotal + costsTotal;
+    },
+    totalDiscount() {
+      if (this.discountType === 'percentage') {
+        return (this.subtotal * (this.discountInput || 0)) / 100;
+      }
+      return this.discountInput || 0;
+    },
+    total() {
+      return Math.max(0, this.subtotal - this.totalDiscount);
+    }
   },
   methods: {
     index,
@@ -277,6 +353,17 @@ export default {
           price: cost.price,
         }));
 
+      this.form.total_discount = this.totalDiscount;
+      
+      console.log('Dados enviados:', {
+        subtotal: this.subtotal,
+        discountType: this.discountType,
+        discountInput: this.discountInput,
+        totalDiscount: this.totalDiscount,
+        total_discount: this.form.total_discount,
+        form: this.form
+      });
+
       const { data, error } = await this.submitFormCreate(
         "proposals",
         this.form
@@ -291,9 +378,12 @@ export default {
       }
     },
     formatCurrency(value) {
-      return value.toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL",
+      if (typeof value === 'string') {
+        value = parseFloat(value) || 0;
+      }
+      return (value || 0).toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
       });
     },
   },
