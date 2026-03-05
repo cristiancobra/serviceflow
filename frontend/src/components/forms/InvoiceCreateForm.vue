@@ -194,6 +194,7 @@ export default {
       immediate: true,
       handler(newProposal) {
         this.form.proposal_id = newProposal.id;
+        this.form.lead_id = newProposal.lead_id;
         if (newProposal) {
           this.form.prices = this.initializePrices();
         }
