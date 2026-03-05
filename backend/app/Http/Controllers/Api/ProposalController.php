@@ -134,7 +134,8 @@ class ProposalController extends Controller
             'invoices.transactions',
             'proposalServices',
             'proposalCosts',
-            'opportunity'
+            'opportunity',
+            'opportunity.lead',
         ])
             ->find($proposal->id);
 

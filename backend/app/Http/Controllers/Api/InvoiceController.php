@@ -22,7 +22,6 @@ class InvoiceController extends Controller
             'proposal.opportunity',
             'proposal.opportunity.company',
             'proposal.opportunity.lead',
-            'lead',
             'transactions',
         ])
             ->orderBy('date_due', 'desc')
@@ -48,7 +47,6 @@ class InvoiceController extends Controller
                 $invoiceData = [
                     'proposal_id' => $validated['proposal_id'],
                     'user_id' => $validated['user_id'],
-                    'lead_id' => $validated['lead_id'],
                     'price' => $validated['price'],
                     'balance' => $validated['price'],
                     'date_due' => $validated['date_due'],
@@ -111,7 +109,6 @@ class InvoiceController extends Controller
             $invoiceData = [
                 'proposal_id' => $validated['proposal_id'],
                 'user_id' => $validated['user_id'],
-                'lead_id' => $validated['lead_id'],
                 'price' => $validated['price'],
                 'balance' => $validated['price'],
                 'date_due' => $validated['date_due'],
@@ -200,7 +197,6 @@ class InvoiceController extends Controller
                 'proposal.opportunity.company',
                 'proposal.opportunity.lead',
                 'user',
-                'lead',
                 'transactions'
             ]));
         }

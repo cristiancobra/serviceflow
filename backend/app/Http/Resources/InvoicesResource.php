@@ -25,7 +25,6 @@ class InvoicesResource extends JsonResource
             'id' => $this->id,
             'proposal_id' => $this->proposal_id,
             'user_id' => $this->user_id,
-            'lead_id' => $this->lead_id,
             'date_due' => DateTimeConversionService::convertFromUtc($this->date_due, $timezone),
             'price' => $this->price,
             'total_paid' => $this->total_paid,
@@ -41,7 +40,6 @@ class InvoicesResource extends JsonResource
             'proposal' => new ProposalsResource($this->whenLoaded('proposal')),
             'transactions' => TransactionsResource::collection($this->whenLoaded('transactions')),
             'user' => new UsersResource($this->whenLoaded('user')),
-            'lead' => new LeadsResource($this->whenLoaded('lead')),
         ];
     }
 }

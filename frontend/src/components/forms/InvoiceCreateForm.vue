@@ -169,7 +169,6 @@ export default {
         date_due: null,
         date_start: null,
         proposal_id: this.proposal.id,
-        lead_id: this.proposal.lead_id,
         prices: [],
       },
       isActiveCompany: false,
@@ -194,7 +193,6 @@ export default {
       immediate: true,
       handler(newProposal) {
         this.form.proposal_id = newProposal.id;
-        this.form.lead_id = newProposal.lead_id;
         if (newProposal) {
           this.form.prices = this.initializePrices();
         }
