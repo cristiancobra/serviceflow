@@ -169,6 +169,7 @@ export default {
         date_due: null,
         date_start: null,
         proposal_id: this.proposal.id,
+        lead_id: this.proposal.lead_id,
         prices: [],
       },
       isActiveCompany: false,
