@@ -1,8 +1,8 @@
 <template>
   <div class="text-black text-right">
-    <div v-if="localValue" class="price">
+    <div class="price">
       <p>
-        {{ formatCurrencySymbol(localValue) }}
+        {{ formatCurrencySymbol(localValue || 0) }}
       </p>
     </div>
   </div>

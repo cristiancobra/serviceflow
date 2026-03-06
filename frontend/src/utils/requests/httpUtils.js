@@ -49,11 +49,11 @@ export const getTotalProposals = async () => {
 };
 
 // fetches all models to index page
-export const index = async (model) => {
+export const index = async (model, params = {}) => {
   validateModel(model);
   const url = `${BACKEND_URL}${model}`;
   try {
-    const response = await axios.get(url);
+    const response = await axios.get(url, { params });
     const data = response.data.data;
     return data;
   } catch (error) {

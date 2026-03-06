@@ -19,13 +19,6 @@
       </div>
     </div>
 
-    <div class="w-full">
-      <search-input
-        v-model="searchTerm"
-        placeholder="Digite para buscar propostas"
-      />
-    </div>
-
     <div
       v-for="proposal in localProposals"
       v-bind:key="proposal.id"
@@ -95,7 +88,6 @@ import ButtonNewForm from "../buttons/ButtonNewForm.vue";
 import MoneyField from "../fields/number/MoneyField.vue";
 import ProposalCreateForm from "../forms/ProposalCreateForm.vue";
 import SelectStatusButton from "../buttons/SelectStatusButton.vue";
-import SearchInput from "../filters/SearchInput.vue";
 
 export default {
   components: {
@@ -103,7 +95,6 @@ export default {
     ProposalCreateForm,
     MoneyField,
     SelectStatusButton,
-    SearchInput,
   },
   props: {
     proposals: {

@@ -79,9 +79,9 @@
     </div>
 
     <section class="section-container">
-      <div class="table-row">
+      <div class="flex-1 mr-10 mb-6 p-10 border border-primary rounded-lg">
+        <h2 class="text-xl text-primary font-semibold">Descrição</h2>
         <TextEditor
-          label="Descrição"
           name="description"
           v-model="opportunity.description"
           @save="updateOpportunity('description', $event)"
@@ -91,15 +91,18 @@
 
     <section id="proposals" class="flex flex-col lg:flex-row gap-6">
       <div class="flex-1">
-        <proposals-list-section 
-          :proposals="opportunity.proposals || []" 
+        <proposals-list-section
+          :proposals="opportunity.proposals || []"
           :opportunityId="opportunityId"
           @proposal-added="handleProposalAdded"
           @proposal-updated="handleProposalUpdated"
         />
       </div>
-      <div class="flex-1" v-if="acceptedProposal">
-        <credit-invoices-section :proposal="acceptedProposal" @reload-proposal="getOpportunity" />
+      <div class="flex-1">
+        <credit-invoices-section
+          :proposal="safeAcceptedProposal"
+          @reload-proposal="getOpportunity"
+        />
       </div>
     </section>
 
@@ -249,7 +252,14 @@ export default {
       return translateStatus(this.opportunity.status);
     },
     acceptedProposal() {
-      return this.opportunity.proposals?.find((proposal) => proposal.status === "accepted");
+      return (
+        this.opportunity.proposals?.find(
+          (proposal) => proposal.status === "accepted"
+        ) || null
+      );
+    },
+    safeAcceptedProposal() {
+      return this.acceptedProposal || { invoices: [] };
     },
   },
   mounted() {

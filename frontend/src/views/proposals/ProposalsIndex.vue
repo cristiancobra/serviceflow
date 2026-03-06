@@ -1,42 +1,37 @@
 <template>
   <div>
-    <TasksFilter
-      @filter-canceled="getTasksCanceled"
-      @filter-doing="getTasksDoing"
-      @filter-done="getTasksDone"
-      @filter-late="getTasksLate"
-      @filter-to-do="getTasksToDo"
-    />
+    <ProposalsFilter @filter-change="handleFilterChange" />
 
     <ErrorMessage v-if="isError" :formResponse="formResponse" />
     <SuccessMessage v-if="isSuccess" :formResponse="formResponse" />
 
-    <ProposalsList template="index" />
+    <ProposalsList template="index" :filterStatus="selectedStatus" />
   </div>
 </template>
 
 <script>
 import ProposalsList from "@/components/lists/ProposalsList.vue";
-import TasksFilter from "@/components/filters/TasksFilter.vue";
+import ProposalsFilter from "@/components/filters/ProposalsFilter.vue";
 import SuccessMessage from "../../components/forms/messages/SuccessMessage.vue";
 
 export default {
-  name: "TasksIndexView",
+  name: "ProposalsIndexView",
   components: {
     ProposalsList,
-    TasksFilter,
+    ProposalsFilter,
     SuccessMessage,
   },
   data() {
     return {
       isError: false,
       isSuccess: false,
-      hasError: false,
-      data: null,
-      tasks: [],
-      filteredTasks: [],
-      newTask: null,
+      selectedStatus: null,
     };
+  },
+  methods: {
+    handleFilterChange(status) {
+      this.selectedStatus = status;
+    },
   },
 };
 </script>

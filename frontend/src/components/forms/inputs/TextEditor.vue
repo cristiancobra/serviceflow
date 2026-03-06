@@ -1,11 +1,11 @@
 <template>
   <div>
-    <label class="show-label mb-3" :for="name">{{ label }}:</label>
+    <label class="show-label mb-3" :for="name">{{ label }}</label>
     <div class="tiptap">
       <div v-if="!editing && modelValue === null" @click="startEditing" class="w-100">
         Clique para adicionar uma descrição...
       </div>
-      <div v-else-if="!editing" @click="startEditing" class="w-100" v-html="modelValue"></div>
+      <div v-else-if="!editing" @click="startEditing"  v-html="modelValue"></div>
       <div v-else @blur="cancelEditing" @keydown.esc="cancelEditing">
         <TiptapButtons v-if="editor" :editor="editor" />
         <EditorContent :editor="editor" @input="updateContent" />

@@ -10,7 +10,7 @@
     </div>
     <div v-else-if="installmentStatus === 'pending'" class="button delete p-2 flex items-center">
       <font-awesome-icon icon="fa-solid fa-circle-check" class="mr-2" />
-      APROVAÇÃO PENDENTE
+      PENDENTE
     </div>
 
     <div v-if="isModalVisible" class="myModal">

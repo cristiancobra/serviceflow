@@ -26,16 +26,25 @@ class ProposalController extends Controller
     public function index()
     {
         $perPage = request()->get('per_page', 20);
+        $status = request()->get('status'); // Pega o filtro de status da query string
 
-        $proposals = Proposal::with([
+        $query = Proposal::with([
             'proposalServices',
             'proposalCosts',
             'opportunity',
             'opportunity.company',
             'opportunity.lead',
-        ])
-            ->orderBy('date', 'desc')
-            ->paginate($perPage);
+        ]);
+
+        // Filtrar por status se fornecido
+        if ($status) {
+            $query->where('status', $status);
+        } else {
+            // Se não houver filtro, excluir drafts por padrão
+            $query->where('status', '!=', 'draft');
+        }
+
+        $proposals = $query->orderBy('date', 'desc')->paginate($perPage);
 
         return ProposalsResource::collection($proposals);
     }

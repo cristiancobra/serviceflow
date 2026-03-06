@@ -46,7 +46,7 @@
       </div>
 
       <div
-        v-for="proposal in proposals"
+        v-for="proposal in filteredProposals"
         v-bind:key="proposal.id"
         class="list-line flex w-full"
       >
@@ -120,16 +120,41 @@ export default {
   props: {
     opportunityId: {
       type: Number,
-      required: true,
+      required: false,
+    },
+    filterStatus: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   data() {
     return {
       isActive: true,
       searchTerm: "",
-      proposals: [],
-      filteredProposals: [],
+      allProposals: [],
     };
+  },
+  computed: {
+    filteredProposals() {
+      let filtered = this.allProposals;
+
+      // Filtrar apenas por termo de busca (status já vem filtrado do backend)
+      if (this.searchTerm) {
+        const term = this.searchTerm.toLowerCase();
+        filtered = filtered.filter(proposal => {
+          return (
+            proposal.opportunity?.name?.toLowerCase().includes(term) ||
+            proposal.opportunity?.company?.business_name?.toLowerCase().includes(term) ||
+            proposal.opportunity?.company?.legal_name?.toLowerCase().includes(term) ||
+            proposal.opportunity?.lead?.name?.toLowerCase().includes(term) ||
+            proposal.description?.toLowerCase().includes(term)
+          );
+        });
+      }
+
+      return filtered;
+    }
   },
   methods: {
     formatDateBr,
@@ -159,7 +184,7 @@ export default {
       try {
         const response = await axios.get(this.proposalsUrl);
 
-        this.proposals = response.data.data;
+        this.allProposals = response.data.data;
 
         this.paginationData = {
           links: response.data.links,
@@ -170,8 +195,14 @@ export default {
       }
     },
     async getProposals() {
-      this.proposals = await index("proposals");
-      console.log("proposals", this.proposals);
+      const params = {};
+      
+      // Adiciona o filtro de status se houver
+      if (this.filterStatus) {
+        params.status = this.filterStatus;
+      }
+      
+      this.allProposals = await index("proposals", params);
     },
     async updateProposal(fieldName, proposalId, editedValue) {
       const updatedProposal = await updateField(
@@ -180,16 +211,24 @@ export default {
         fieldName,
         editedValue
       );
-      const proposalIndex = this.proposals.findIndex(
+      const proposalIndex = this.allProposals.findIndex(
         (proposal) => proposal.id === proposalId
       );
       if (proposalIndex !== -1) {
-        this.proposals[proposalIndex] = updatedProposal;
+        this.allProposals[proposalIndex] = updatedProposal;
       }
     },
     toggleForm() {
       this.isActive = !this.isActive;
     },
+  },
+  watch: {
+    filterStatus(newStatus, oldStatus) {
+      // Recarrega as propostas quando o filtro mudar
+      if (newStatus !== oldStatus) {
+        this.getProposals();
+      }
+    }
   },
   mounted() {
     if (this.opportunityId) {
