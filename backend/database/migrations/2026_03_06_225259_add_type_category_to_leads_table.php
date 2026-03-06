@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::table('leads', function (Blueprint $table) {
+            $table->string('type_category')->default('client')->after('account_id');
+            $table->index('type_category');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('leads', function (Blueprint $table) {
+            $table->dropIndex(['type_category']);
+            $table->dropColumn('type_category');
+        });
+    }
+};

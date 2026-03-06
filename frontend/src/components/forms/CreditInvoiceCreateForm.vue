@@ -143,7 +143,7 @@ import TextValue from "../fields/text/TextValue.vue";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
 
 export default {
-  name: "TaskCreateForm",
+  name: "CreditInvoiceCreateForm",
   emits: ["new-task-event"],
   components: {
     // AddMessage,

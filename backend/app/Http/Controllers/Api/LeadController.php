@@ -103,10 +103,7 @@ class LeadController extends Controller
             $lead->fill($request->all());
             $lead->save();
 
-            return response()->json([
-                'message' => "Contato $lead->name atualizado",
-                'lead' => $lead,
-            ]);
+            return new LeadResource($lead);
         } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",

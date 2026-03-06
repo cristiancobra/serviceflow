@@ -23,9 +23,15 @@ class LeadUpdateRequest extends FormRequest
      */
     public function rules()
     {
+        // Pega o ID da rota, seja como string ou objeto
+        $leadId = $this->route('lead');
+        if (is_object($leadId)) {
+            $leadId = $leadId->id;
+        }
+
         return [
-            'name' => 'required|string|max:255',
-            'email' => 'nullable|email|unique:leads,email,'.$this->lead->id.'|max:255',
+            'name' => 'sometimes|string|max:255',
+            'email' => 'nullable|email|unique:leads,email,'.$leadId.'|max:255',
             'cel_phone' => 'nullable|regex:/^\(?[0-9]{2}\)?[\s9]?[0-9]{4}-?[0-9]{4}$/',
             'linkedin' => 'nullable|url',
             'facebook' => 'nullable|url',
@@ -37,6 +43,7 @@ class LeadUpdateRequest extends FormRequest
             'reason_for_initial_contact' => 'nullable|string',
             'comments' => 'nullable|string',
             'trash' => 'nullable|boolean',
+            'type_category' => 'nullable|string|max:255',
         ];
     }
 

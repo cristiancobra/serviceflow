@@ -7,7 +7,7 @@
           <h2>Faturamento</h2>
         </div>
         <div class="action-container">
-          <invoice-create-form
+          <credit-invoice-create-form
             @new-invoice-event="addInvoiceCreated"
             :proposal="proposal"
           />
@@ -222,7 +222,7 @@
 import { updateField } from "@/utils/requests/httpUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
-import InvoiceCreateForm from "@/components/forms/InvoiceCreateForm.vue";
+import CreditInvoiceCreateForm from "@/components/forms/CreditInvoiceCreateForm.vue";
 import MoneyField from "../fields/number/MoneyField.vue";
 import TransactionCreateForm from "@/components/forms/TransactionCreateForm.vue";
 
@@ -242,7 +242,7 @@ export default {
   },
   components: {
     DateTimeEditableInput,
-    InvoiceCreateForm,
+    CreditInvoiceCreateForm,
     MoneyField,
     TransactionCreateForm,
   },

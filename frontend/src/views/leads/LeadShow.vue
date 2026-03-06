@@ -1,16 +1,29 @@
 <template>
   <div class="container mx-auto px-4 py-8 max-w-6xl">
+    <!-- Error Message -->
+    <error-message v-if="validationErrors" :formResponse="validationErrors" />
+
     <!-- Header Card -->
-    <div class="bg-white border-2 border-cyan-400 rounded-xl p-6 mb-8 shadow-lg">
+    <div class="bg-white border-2 border-primary rounded-xl p-6 mb-8 shadow-lg">
       <div class="flex items-center mb-4">
-        <font-awesome-icon icon="fas fa-user-plus" class="text-cyan-500 text-3xl mr-4" />
+        <font-awesome-icon icon="fas fa-user-plus" class="text-primary text-3xl mr-4" />
         <h1 class="text-2xl font-black text-gray-800">LEAD</h1>
       </div>
       <div class="text-3xl font-black text-gray-900 mb-2">
-        {{ lead.name }}
+        <text-editable-field
+          name="name"
+          :modelValue="lead.name"
+          @save="(value) => updateLeadField('name', value)"
+          placeholder="Nome do lead..."
+        />
       </div>
       <p class="text-gray-600 text-lg">
-        {{ lead.comments }}
+        <text-editable-field
+          name="comments"
+          :modelValue="lead.comments"
+          @save="(value) => updateLeadField('comments', value)"
+          placeholder="Comentários..."
+        />
       </p>
     </div>
 
@@ -21,14 +34,35 @@
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="flex items-center text-gray-700">
-          <font-awesome-icon icon="fas fa-envelope" class="text-cyan-500 mr-3 w-5" />
-          <span class="font-bold mr-2">Email:</span>
-          <span>{{ lead.email }}</span>
+          <font-awesome-icon icon="fas fa-tag" class="text-primary mr-3 w-5" />
+          <span class="font-bold mr-2">Tipo:</span>
+          <select-editable-input
+            name="type_category"
+            :modelValue="lead.type_category"
+            :options="leadTypeOptions"
+            @save="updateLeadType"
+            class-text="font-semibold"
+          />
         </div>
         <div class="flex items-center text-gray-700">
-          <font-awesome-icon icon="fas fa-mobile-alt" class="text-cyan-500 mr-3 w-5" />
+          <font-awesome-icon icon="fas fa-envelope" class="text-primary mr-3 w-5" />
+          <span class="font-bold mr-2">Email:</span>
+          <text-editable-field
+            name="email"
+            :modelValue="lead.email"
+            @save="(value) => updateLeadField('email', value)"
+            placeholder="email@exemplo.com"
+          />
+        </div>
+        <div class="flex items-center text-gray-700">
+          <font-awesome-icon icon="fas fa-mobile-alt" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">Celular:</span>
-          <span>{{ lead.cel_phone }}</span>
+          <text-editable-field
+            name="cel_phone"
+            :modelValue="lead.cel_phone"
+            @save="(value) => updateLeadField('cel_phone', value)"
+            placeholder="(00) 00000-0000"
+          />
         </div>
       </div>
     </div>
@@ -40,24 +74,44 @@
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="flex items-center text-gray-700">
-          <font-awesome-icon icon="fab fa-linkedin" class="text-cyan-500 mr-3 w-5" />
+          <font-awesome-icon icon="fab fa-linkedin" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">LinkedIn:</span>
-          <span>{{ lead.linkedin }}</span>
+          <text-editable-field
+            name="linkedin"
+            :modelValue="lead.linkedin"
+            @save="(value) => updateLeadField('linkedin', value)"
+            placeholder="https://linkedin.com/in/..."
+          />
         </div>
         <div class="flex items-center text-gray-700">
-          <font-awesome-icon icon="fab fa-facebook" class="text-cyan-500 mr-3 w-5" />
+          <font-awesome-icon icon="fab fa-facebook" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">Facebook:</span>
-          <span>{{ lead.facebook }}</span>
+          <text-editable-field
+            name="facebook"
+            :modelValue="lead.facebook"
+            @save="(value) => updateLeadField('facebook', value)"
+            placeholder="https://facebook.com/..."
+          />
         </div>
         <div class="flex items-center text-gray-700">
-          <font-awesome-icon icon="fab fa-instagram" class="text-cyan-500 mr-3 w-5" />
+          <font-awesome-icon icon="fab fa-instagram" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">Instagram:</span>
-          <span>{{ lead.instagram }}</span>
+          <text-editable-field
+            name="instagram"
+            :modelValue="lead.instagram"
+            @save="(value) => updateLeadField('instagram', value)"
+            placeholder="@usuario"
+          />
         </div>
         <div class="flex items-center text-gray-700">
-          <font-awesome-icon icon="fas fa-external-link-alt" class="text-cyan-500 mr-3 w-5" />
+          <font-awesome-icon icon="fas fa-external-link-alt" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">Outras redes sociais:</span>
-          <span>{{ lead.other_social_media }}</span>
+          <text-editable-field
+            name="other_social_media"
+            :modelValue="lead.other_social_media"
+            @save="(value) => updateLeadField('other_social_media', value)"
+            placeholder="Outras redes..."
+          />
         </div>
       </div>
     </div>
@@ -69,24 +123,43 @@
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="flex items-center text-gray-700">
-          <font-awesome-icon icon="fas fa-calendar-alt" class="text-cyan-500 mr-3 w-5" />
+          <font-awesome-icon icon="fas fa-calendar-alt" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">Data do primeiro contato:</span>
-          <span>{{ formatDateBr(lead.contact_date) }}</span>
+          <date-editable-input
+            name="contact_date"
+            :modelValue="lead.contact_date"
+            @save="(value) => updateLeadField('contact_date', value)"
+          />
         </div>
         <div class="flex items-center text-gray-700">
-          <font-awesome-icon icon="fas fa-link" class="text-cyan-500 mr-3 w-5" />
+          <font-awesome-icon icon="fas fa-link" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">Origem:</span>
-          <span>{{ lead.source }}</span>
+          <text-editable-field
+            name="source"
+            :modelValue="lead.source"
+            @save="(value) => updateLeadField('source', value)"
+            placeholder="Ex: Google, Indicação..."
+          />
         </div>
         <div class="flex items-center text-gray-700">
-          <font-awesome-icon icon="fas fa-comments" class="text-cyan-500 mr-3 w-5" />
+          <font-awesome-icon icon="fas fa-comments" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">Canal do primeiro contato:</span>
-          <span>{{ lead.source_contact_channel }}</span>
+          <text-editable-field
+            name="source_contact_channel"
+            :modelValue="lead.source_contact_channel"
+            @save="(value) => updateLeadField('source_contact_channel', value)"
+            placeholder="Ex: Email, Telefone..."
+          />
         </div>
         <div class="flex items-center text-gray-700">
-          <font-awesome-icon icon="fas fa-info-circle" class="text-cyan-500 mr-3 w-5" />
+          <font-awesome-icon icon="fas fa-info-circle" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">Razão do primeiro contato:</span>
-          <span>{{ lead.reason_for_initial_contact }}</span>
+          <text-editable-field
+            name="reason_for_initial_contact"
+            :modelValue="lead.reason_for_initial_contact"
+            @save="(value) => updateLeadField('reason_for_initial_contact', value)"
+            placeholder="Motivo do contato..."
+          />
         </div>
       </div>
     </div>
@@ -98,39 +171,74 @@
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div class="flex items-center text-gray-700">
-          <font-awesome-icon icon="fas fa-map-marker-alt" class="text-cyan-500 mr-3 w-5" />
+          <font-awesome-icon icon="fas fa-map-marker-alt" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">Endereço:</span>
-          <span>{{ lead.address }}</span>
+          <text-editable-field
+            name="address"
+            :modelValue="lead.address"
+            @save="(value) => updateLeadField('address', value)"
+            placeholder="Rua, número..."
+          />
         </div>
         <div class="flex items-center text-gray-700">
-          <font-awesome-icon icon="fas fa-building" class="text-cyan-500 mr-3 w-5" />
+          <font-awesome-icon icon="fas fa-building" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">Complemento:</span>
-          <span>{{ lead.address_complement }}</span>
+          <text-editable-field
+            name="address_complement"
+            :modelValue="lead.address_complement"
+            @save="(value) => updateLeadField('address_complement', value)"
+            placeholder="Apto, sala..."
+          />
         </div>
         <div class="flex items-center text-gray-700">
-          <font-awesome-icon icon="fas fa-home" class="text-cyan-500 mr-3 w-5" />
+          <font-awesome-icon icon="fas fa-home" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">Bairro:</span>
-          <span>{{ lead.neighborhood }}</span>
+          <text-editable-field
+            name="neighborhood"
+            :modelValue="lead.neighborhood"
+            @save="(value) => updateLeadField('neighborhood', value)"
+            placeholder="Bairro..."
+          />
         </div>
         <div class="flex items-center text-gray-700">
-          <font-awesome-icon icon="fas fa-city" class="text-cyan-500 mr-3 w-5" />
+          <font-awesome-icon icon="fas fa-city" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">Cidade:</span>
-          <span>{{ lead.city }}</span>
+          <text-editable-field
+            name="city"
+            :modelValue="lead.city"
+            @save="(value) => updateLeadField('city', value)"
+            placeholder="Cidade..."
+          />
         </div>
         <div class="flex items-center text-gray-700">
-          <font-awesome-icon icon="fas fa-flag" class="text-cyan-500 mr-3 w-5" />
+          <font-awesome-icon icon="fas fa-flag" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">Estado:</span>
-          <span>{{ lead.state }}</span>
+          <text-editable-field
+            name="state"
+            :modelValue="lead.state"
+            @save="(value) => updateLeadField('state', value)"
+            placeholder="UF..."
+          />
         </div>
         <div class="flex items-center text-gray-700">
-          <font-awesome-icon icon="fas fa-globe" class="text-cyan-500 mr-3 w-5" />
+          <font-awesome-icon icon="fas fa-globe" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">País:</span>
-          <span>{{ lead.country }}</span>
+          <text-editable-field
+            name="country"
+            :modelValue="lead.country"
+            @save="(value) => updateLeadField('country', value)"
+            placeholder="País..."
+          />
         </div>
         <div class="flex items-center text-gray-700">
-          <font-awesome-icon icon="fas fa-mail-bulk" class="text-cyan-500 mr-3 w-5" />
+          <font-awesome-icon icon="fas fa-mail-bulk" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">CEP:</span>
-          <span>{{ lead.zip_code }}</span>
+          <text-editable-field
+            name="zip_code"
+            :modelValue="lead.zip_code"
+            @save="(value) => updateLeadField('zip_code', value)"
+            placeholder="00000-000"
+          />
         </div>
       </div>
     </div>
@@ -310,19 +418,36 @@
 </template>
 
 <script>
-import { show, destroy } from '@/utils/requests/httpUtils';
+import { show, destroy, updateField } from '@/utils/requests/httpUtils';
 import { formatDateBr } from '@/utils/date/dateUtils'; 
+import SelectEditableInput from '@/components/fields/select/SelectEditableInput.vue';
+import TextEditableField from '@/components/fields/text/TextEditableField.vue';
+import DateEditableInput from '@/components/fields/date/DateEditableInput.vue';
+import ErrorMessage from '@/components/forms/messages/ErrorMessage.vue';
 
 export default {
   name: "LeadShow",
+  components: {
+    SelectEditableInput,
+    TextEditableField,
+    DateEditableInput,
+    ErrorMessage,
+  },
   data() {
     return {
       lead: [],
       leadId: "",
       proposals: [],
+      validationErrors: null,
+      leadTypeOptions: [
+        { value: 'client', label: 'Cliente' },
+        { value: 'supplier', label: 'Fornecedor' },
+        { value: 'partner', label: 'Parceiro' },
+        { value: 'employee', label: 'Funcionário' },
+        { value: 'freelancer', label: 'Freelancer' },
+      ],
     };
   },
-
   computed: {
     totalProposalsValue() {
       let total = 0;
@@ -403,11 +528,34 @@ export default {
       return total;
     },
   },
-
   methods: {
     formatDateBr,
     async getLead() {
       this.lead = await show('leads', this.leadId);
+    },
+    async updateLeadField(fieldName, newValue) {
+      try {
+        this.validationErrors = null; // Limpa erros anteriores
+        const updatedLead = await updateField('leads', this.leadId, fieldName, newValue);
+        this.lead[fieldName] = updatedLead[fieldName];
+      } catch (error) {
+        console.error(`Erro ao atualizar ${fieldName}:`, error);
+        
+        // Se for erro de validação (422), exibe as mensagens
+        if (error.response && error.response.status === 422) {
+          this.validationErrors = {
+            errors: error.response.data.errors || {}
+          };
+          
+          // Scroll para o topo para ver o erro
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          alert(`Erro ao atualizar ${fieldName}`);
+        }
+      }
+    },
+    async updateLeadType(newValue) {
+      await this.updateLeadField('type_category', newValue);
     },
     formatCurrency(value) {
       if (!value) return 'R$ 0,00';
