@@ -92,9 +92,11 @@ class Proposal extends Model
      */
     public function redistributeInvoices($newInstallmentQuantity)
     {
-        // Carrega apenas faturas NÃO DELETADAS
+        // Carrega apenas faturas de CRÉDITO (recebimento) NÃO DELETADAS
+        // Ignora faturas de débito (custos operacionais e terceiros)
         $currentInvoices = $this->invoices()
             ->whereNull('deleted_at')
+            ->where('type', 'credit')
             ->get();
         
         $currentInvoiceCount = $currentInvoices->count();
@@ -173,6 +175,7 @@ class Proposal extends Model
                     'total_paid' => 0,
                     'date_due' => $dueDate,
                     'status' => Invoice::STATUS_PENDING,
+                    'type' => 'credit', // Faturas de recebimento (crédito)
                 ]);
             }
         }
