@@ -59,7 +59,7 @@
                 <span class="text-sm font-medium text-gray-600"
                   >Vencimento</span
                 >
-                <date-time-editable-input
+                <date-editable-input
                   name="date_due"
                   :modelValue="invoice.date_due"
                   @save="updateInvoice('date_due', $event, invoice.id)"
@@ -248,6 +248,7 @@
   <script>
 import { updateField } from "@/utils/requests/httpUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
+import DateEditableInput from "../fields/date/DateEditableInput.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import CreditInvoiceCreateForm from "@/components/forms/CreditInvoiceCreateForm.vue";
 import MoneyField from "../fields/number/MoneyField.vue";
@@ -262,12 +263,13 @@ export default {
   },
   data() {
     return {
-      localInvoices: [...(this.proposal?.invoices || [])],
+      localInvoices: [],
       showTransactionModal: false,
       selectedInvoice: null,
     };
   },
   components: {
+    DateEditableInput,
     DateTimeEditableInput,
     CreditInvoiceCreateForm,
     MoneyField,
@@ -276,9 +278,11 @@ export default {
   watch: {
     "proposal.invoices": {
       handler(newInvoices) {
-        this.localInvoices = [...(newInvoices || [])];
+        // Filtra apenas faturas de CRÉDITO (recebimento)
+        this.localInvoices = (newInvoices || []).filter(inv => inv.type === 'credit');
       },
       deep: true,
+      immediate: true,
     },
   },
   computed: {

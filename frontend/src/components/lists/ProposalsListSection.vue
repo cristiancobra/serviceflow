@@ -9,11 +9,10 @@
         <h2 class="text-xl font-extrabold text-left mt-1">PROPOSTAS</h2>
       </div>
       <div class="flex-[2] flex justify-center">
-        <button-new-form target="proposal" @open-modal="handleOpenModal" />
+        <button-new-form target="proposal" @open-modal="openProposalForm = true" />
         <proposal-create-form
           v-model="openProposalForm"
           @new-proposal-event="addProposalCreated"
-          @update:modelValue="openModal = null"
           :opportunityId="opportunityId"
         />
       </div>
@@ -109,7 +108,7 @@ export default {
   },
   data() {
     return {
-      openModal: false,
+      openProposalForm: false,
       localProposals: [...this.proposals],
       searchTerm: '',
     };
@@ -155,19 +154,6 @@ export default {
         return description.substring(0, maxLength) + "...";
       }
       return description;
-    },
-    handleOpenModal(target) {
-      if (!target) {
-        console.warn("Target não informado no botão");
-        return;
-      }
-
-      this.openModal = target;
-    },
-  },
-  computed: {
-    openProposalForm() {
-      return this.openModal === "proposal";
     },
   },
 };

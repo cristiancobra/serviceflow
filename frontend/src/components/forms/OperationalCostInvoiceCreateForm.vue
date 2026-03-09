@@ -1,22 +1,12 @@
 <template>
   <div>
-    <!-- Botão para abrir o modal -->
-    <button 
-      @click="openModal"
-      class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm flex items-center gap-2"
-      title="Gerar fatura de custo operacional"
-    >
-      <font-awesome-icon icon="fa-solid fa-briefcase" />
-      Custo Operacional
-    </button>
-
     <!-- Modal -->
-    <div v-if="isModalVisible" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.25)">
+    <div v-if="modelValue" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.25)">
       <div class="bg-white rounded-lg shadow-lg max-w-md w-full mx-4">
         <!-- Header -->
         <div class="flex items-center justify-between p-6 border-b border-gray-200">
           <div class="flex items-center gap-3">
-            <font-awesome-icon icon="fa-solid fa-briefcase" class="text-purple-600 text-xl" />
+            <font-awesome-icon icon="fa-solid fa-briefcase" class="text-primary text-xl" />
             <h2 class="text-xl font-semibold text-gray-900">Custo Operacional</h2>
           </div>
           <button 
@@ -40,7 +30,7 @@
             <select
               id="employee"
               v-model="form.lead_id"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
               required
             >
               <option value="">Selecione um funcionário</option>
@@ -67,7 +57,7 @@
                 type="number"
                 step="0.01"
                 min="0"
-                class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
+                class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                 placeholder="0,00"
                 required
               />
@@ -83,7 +73,7 @@
               id="due_date"
               v-model="form.date_due"
               type="date"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
               required
             />
           </div>
@@ -97,7 +87,7 @@
               id="observations"
               v-model="form.observations"
               rows="3"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors resize-none"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors resize-none"
               placeholder="Custo operacional referente à proposta..."
             ></textarea>
           </div>
@@ -119,7 +109,7 @@
             <button
               type="submit"
               :disabled="isSubmitting"
-              class="flex-1 px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white font-medium rounded-lg transition-colors"
+              class="flex-1 px-4 py-2 bg-primary hover:bg-primary-dark disabled:bg-gray-400 text-white font-medium rounded-lg transition-colors"
             >
               {{ isSubmitting ? 'Criando...' : 'Criar Fatura' }}
             </button>
@@ -135,20 +125,24 @@ import { submitFormCreate, index, get } from "@/utils/requests/httpUtils";
 
 export default {
   name: "OperationalCostInvoiceCreateForm",
-  emits: ["new-invoice-event"],
+  emits: ["new-invoice-event", "update:modelValue"],
+  components: {},
   props: {
     proposal: {
       type: Object,
       required: true,
     },
+    modelValue: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
-      isModalVisible: false,
       isSubmitting: false,
       errorMessage: "",
       employees: [],
-      operationalBalance: null, // Armazena os dados do backend
+      operationalBalance: null,
       form: {
         lead_id: null,
         price: 0,
@@ -159,6 +153,13 @@ export default {
       },
     };
   },
+  watch: {
+    modelValue(newVal) {
+      if (newVal) {
+        this.openModal();
+      }
+    },
+  },
   async mounted() {
     await this.loadEmployees();
   },
@@ -166,15 +167,10 @@ export default {
     submitFormCreate,
     async loadEmployees() {
       try {
-        // Busca todos os leads
         const allLeads = await index("leads");
-        
-        // Filtra apenas funcionários e freelancers
         this.employees = allLeads.filter(
           lead => lead.category === 'employee' || lead.category === 'freelancer'
         );
-        
-        // Seleciona automaticamente o primeiro funcionário se houver
         if (this.employees.length > 0) {
           this.form.lead_id = this.employees[0].id;
         }
@@ -185,7 +181,7 @@ export default {
     },
     getDefaultDueDate() {
       const date = new Date();
-      date.setDate(date.getDate() + 30); // 30 dias a partir de hoje
+      date.setDate(date.getDate() + 30);
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, "0");
       const day = String(date.getDate()).padStart(2, "0");
@@ -195,29 +191,22 @@ export default {
       this.errorMessage = "";
       
       try {
-        // Busca o saldo disponível do backend usando a função get do httpUtils
         const response = await get(`proposals/${this.proposal.id}/operational-cost-balance`);
-        
         this.operationalBalance = response;
         this.form.price = this.operationalBalance.balance;
-        
       } catch (error) {
         console.error("Erro ao buscar saldo operacional:", error);
-        // Fallback: se der erro, usa o valor total como padrão
         this.form.price = this.proposal?.total_operational_cost || 0;
       }
       
       this.form.date_due = this.getDefaultDueDate();
       
-      // Re-seleciona o primeiro funcionário se houver
       if (this.employees.length > 0 && !this.form.lead_id) {
         this.form.lead_id = this.employees[0].id;
       }
-      
-      this.isModalVisible = true;
     },
     closeModal() {
-      this.isModalVisible = false;
+      this.$emit("update:modelValue", false);
       this.errorMessage = "";
     },
     async submitForm() {

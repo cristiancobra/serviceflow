@@ -8,15 +8,18 @@
         />
         <h2>Faturas de Débito</h2>
       </div>
-      <div class="action-container">
-        <debit-invoice-create-form
-          @new-invoice-event="addInvoiceCreated"
-          :proposal="proposal"
+      <div class="action-container flex gap-2">
+        <button-new-form 
+          target="debit-invoice"
+          title="Nova fatura de débito"
+          @open-modal="showDebitModal = true"
         />
-        <operational-cost-invoice-create-form
+        <button-new-form 
           v-if="canCreateOperationalCostInvoice"
-          @new-invoice-event="addInvoiceCreated"
-          :proposal="proposal"
+          target="operational-cost-invoice"
+          extra-icon="fa-solid fa-briefcase"
+          title="Gerar fatura de custo operacional"
+          @open-modal="showOperationalModal = true"
         />
         <div 
           v-else-if="proposal?.total_operational_cost > 0"
@@ -239,6 +242,17 @@
       </div>
     </div>
 
+    <debit-invoice-create-form
+      v-model="showDebitModal"
+      @invoice-created="addInvoiceCreated"
+      :proposal="proposal"
+    />
+    <operational-cost-invoice-create-form
+      v-model="showOperationalModal"
+      @new-invoice-event="addInvoiceCreated"
+      :proposal="proposal"
+    />
+
     <transaction-create-form
       v-if="showTransactionModal"
       :modelValue="showTransactionModal"
@@ -254,6 +268,7 @@ import { updateField } from "@/utils/requests/httpUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import DebitInvoiceCreateForm from "@/components/forms/DebitInvoiceCreateForm.vue";
 import OperationalCostInvoiceCreateForm from "@/components/forms/OperationalCostInvoiceCreateForm.vue";
+import ButtonNewForm from "../buttons/ButtonNewForm.vue";
 import MoneyField from "../fields/number/MoneyField.vue";
 import TransactionCreateForm from "@/components/forms/TransactionCreateForm.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
@@ -269,12 +284,14 @@ export default {
     return {
       showTransactionModal: false,
       selectedInvoice: null,
-      
+      showDebitModal: false,
+      showOperationalModal: false,
     };
   },
   components: {
     DebitInvoiceCreateForm,
     OperationalCostInvoiceCreateForm,
+    ButtonNewForm,
     MoneyField,
     TransactionCreateForm,
     DateTimeEditableInput,

@@ -6,12 +6,11 @@
         <h2>TAREFAS</h2>
       </div>
       <div class="section-action">
-        <button-new-form target="task" @open-modal="handleOpenModal" />
+        <button-new-form target="task" @open-modal="openTaskForm = true" />
         <task-create-form
-        v-model="openTaskForm"
-        @new-task-event="addTaskCreated"
-        @update:modelValue="openModal = null"
-         />
+          v-model="openTaskForm"
+          @new-task-event="addTaskCreated"
+        />
       </div>
     </div>
 
@@ -277,7 +276,7 @@ export default {
       formatedDate: "",
       formatedTime: "",
       localTasks: this.tasks,
-      openModal: null,
+      openTaskForm: false,
       percentage: 0,
       searchTerm: "",
       showCancelLine: {},
@@ -311,7 +310,7 @@ export default {
     trimName,
     addTaskCreated(newTask) {
       this.localTasks.unshift(newTask);
-      this.openModal = false;
+      this.openTaskForm = false;
     },
     addJourneyCreated({ journey, taskId }) {
       const task = this.localTasks.find((t) => t.id === taskId);
@@ -382,14 +381,6 @@ export default {
       const priorityClass = getPriorityClass(priority);
 
       return `${statusClass} ${priorityClass}`;
-    },
-    handleOpenModal(target) {
-      if (!target) {
-        console.warn("Target não informado no botão");
-        return;
-      }
-
-      this.openModal = target;
     },
     highlightNewJourney(journeyId) {
       this.newJourneyId = journeyId;
@@ -522,12 +513,6 @@ export default {
       } else {
         return {};
       }
-    },
-    openTaskForm() {
-      return this.openModal === "task";
-    },
-    openProposalForm() {
-      return this.openModal === "proposal";
     },
   },
   mounted() {
