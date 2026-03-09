@@ -13,9 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('leads', function (Blueprint $table) {
-            $table->string('type_category')->default('client')->after('account_id');
-            $table->index('type_category');
+        Schema::table('invoices', function (Blueprint $table) {
+            $table->string('category')->nullable()->after('type');
         });
     }
 
@@ -26,9 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('leads', function (Blueprint $table) {
-            $table->dropIndex(['type_category']);
-            $table->dropColumn('type_category');
+        Schema::table('invoices', function (Blueprint $table) {
+            $table->dropColumn('category');
         });
     }
 };

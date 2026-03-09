@@ -29,11 +29,13 @@ class InvoiceRequest extends FormRequest
             return [
                 'proposal_id' => 'required|exists:proposals,id',
                 'user_id' => 'required|exists:users,id',
+                'lead_id' => 'nullable|exists:leads,id',
                 'date_due' => 'required|date',
                 'price' => 'sometimes|numeric|min:0',
                 'prices' => 'sometimes|array',
                 'prices.*' => 'sometimes|numeric|min:0',
                 'type' => 'sometimes|string|in:credit,debit',
+                'category' => 'nullable|string|max:255',
                 'observations' => 'sometimes|string|nullable',
             ];
         }
@@ -43,9 +45,11 @@ class InvoiceRequest extends FormRequest
             return [
                 'proposal_id' => 'sometimes|exists:proposals,id',
                 'user_id' => 'sometimes|exists:users,id',
+                'lead_id' => 'nullable|exists:leads,id',
                 'date_due' => 'sometimes|date',
                 'price' => 'sometimes|numeric|min:0',
                 'type' => 'sometimes|string|in:credit,debit',
+                'category' => 'nullable|string|max:255',
                 'observations' => 'sometimes|string|nullable',
                 'status' => 'sometimes|string|in:pending,partial,paid,overdue,cancelled',
             ];

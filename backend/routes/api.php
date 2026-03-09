@@ -135,6 +135,9 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::get('proposals/proposals-by-opportunity-id', [ProposalController::class, 'getProposalsByOpportunityId'])
 		->name('proposals.opportunity-id');
 
+	Route::get('proposals/{proposal}/operational-cost-balance', [ProposalController::class, 'getOperationalCostBalance'])
+		->name('proposals.operationalCostBalance');
+
 	Route::get('/proposals/{proposal}/pdf', [ProposalController::class, 'exportPdf'])
 		->name('proposals.exportPdf');
 

@@ -47,10 +47,12 @@ class InvoiceController extends Controller
                 $invoiceData = [
                     'proposal_id' => $validated['proposal_id'],
                     'user_id' => $validated['user_id'],
+                    'lead_id' => $validated['lead_id'] ?? null,
                     'price' => $validated['price'],
                     'balance' => $validated['price'],
                     'date_due' => $validated['date_due'],
                     'type' => $validated['type'] ?? 'debit',
+                    'category' => $validated['category'] ?? null,
                     'observations' => $validated['observations'] ?? null,
                 ];
                 

@@ -14,9 +14,26 @@
           :proposal="proposal"
         />
         <operational-cost-invoice-create-form
+          v-if="canCreateOperationalCostInvoice"
           @new-invoice-event="addInvoiceCreated"
           :proposal="proposal"
         />
+        <div 
+          v-else-if="proposal?.total_operational_cost > 0"
+          class="px-4 py-2 bg-gray-300 text-gray-600 font-medium rounded-lg flex items-center gap-2" 
+          :title="`Já faturado: ${formatCurrency(totalOperationalCostInvoices)} de ${formatCurrency(proposal.total_operational_cost)}`"
+        >
+          <font-awesome-icon icon="fa-solid fa-lock" />
+          Custo Operacional
+        </div>
+        <div 
+          v-else
+          class="px-4 py-2 bg-gray-200 text-gray-500 font-medium rounded-lg flex items-center gap-2 cursor-not-allowed" 
+          title="Adicione serviços com custo operacional à proposta primeiro"
+        >
+          <font-awesome-icon icon="fa-solid fa-info-circle" />
+          Custo Operacional (Sem custo definido)
+        </div>
       </div>
     </div>
 
@@ -270,6 +287,31 @@ export default {
           ...invoice,
           lead: invoice.lead || { name: "Sem fornecedor" },
         }));
+    },
+    // Calcula o total das faturas de custo operacional já criadas
+    totalOperationalCostInvoices() {
+      return this.debitInvoices.reduce((acc, inv) => {
+        // Verifica se é uma fatura de custo operacional pela categoria
+        const isOperationalCost = inv.category === 'operational';
+        
+        if (isOperationalCost) {
+          return acc + (Number(inv.price) || 0);
+        }
+        return acc;
+      }, 0);
+    },
+    // Verifica se pode criar nova fatura de custo operacional
+    canCreateOperationalCostInvoice() {
+      const totalOperationalCost = Number(this.proposal?.total_operational_cost) || 0;
+      const totalInvoiced = this.totalOperationalCostInvoices;
+      
+      // Se não houver custo operacional definido, não permite criar
+      if (totalOperationalCost === 0) {
+        return false;
+      }
+      
+      // Permite criar se o total já faturado for menor que o custo operacional total
+      return totalInvoiced < totalOperationalCost;
     },
     totalDebits() {
       return this.debitInvoices.reduce((acc, inv) => {

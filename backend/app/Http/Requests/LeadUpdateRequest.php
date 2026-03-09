@@ -43,7 +43,7 @@ class LeadUpdateRequest extends FormRequest
             'reason_for_initial_contact' => 'nullable|string',
             'comments' => 'nullable|string',
             'trash' => 'nullable|boolean',
-            'type_category' => 'nullable|string|max:255',
+            'category' => 'nullable|string|max:255',
         ];
     }
 

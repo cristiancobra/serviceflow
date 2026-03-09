@@ -34,11 +34,11 @@
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="flex items-center text-gray-700">
-          <font-awesome-icon icon="fas fa-tag" class="text-primary mr-3 w-5" />
+          <font-awesome-icon icon="fas fa-tag" class="text-cyan-500 mr-3 w-5" />
           <span class="font-bold mr-2">Tipo:</span>
           <select-editable-input
-            name="type_category"
-            :modelValue="lead.type_category"
+            name="category"
+            :modelValue="lead.category"
             :options="leadTypeOptions"
             @save="updateLeadType"
             class-text="font-semibold"
@@ -555,7 +555,7 @@ export default {
       }
     },
     async updateLeadType(newValue) {
-      await this.updateLeadField('type_category', newValue);
+      await this.updateLeadField('category', newValue);
     },
     formatCurrency(value) {
       if (!value) return 'R$ 0,00';

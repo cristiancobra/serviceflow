@@ -31,6 +31,7 @@ class InvoicesResource extends JsonResource
             'balance' => $this->balance,
             'status' => $this->status,
             'type' => $this->type,
+            'category' => $this->category,
             'observations' => $this->observations,
             'description' => $this->description,
             'invoice_number' => $this->invoice_number,
@@ -40,6 +41,7 @@ class InvoicesResource extends JsonResource
             'proposal' => new ProposalsResource($this->whenLoaded('proposal')),
             'transactions' => TransactionsResource::collection($this->whenLoaded('transactions')),
             'user' => new UsersResource($this->whenLoaded('user')),
+            'lead' => new LeadResource($this->whenLoaded('lead')),
         ];
     }
 }

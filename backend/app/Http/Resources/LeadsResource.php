@@ -17,7 +17,7 @@ class LeadsResource extends JsonResource
         return [
             "id" => $this->id,
             "name" => $this->name,
-            "type_category" => $this->type_category,
+            "category" => $this->category,
             "email" => $this->email,
             "cel_phone" => $this->cel_phone,
             "comments" => $this->comments,

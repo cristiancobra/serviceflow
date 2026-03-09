@@ -851,4 +851,30 @@ class ProposalController extends Controller
             $proposalCost->save();
         }
     }
+
+    /**
+     * Get operational cost balance for a proposal
+     *
+     * @param  \App\Models\Proposal  $proposal
+     * @return \Illuminate\Http\Response
+     */
+    public function getOperationalCostBalance(Proposal $proposal)
+    {
+        // Calcula o total já faturado em custos operacionais
+        $totalInvoiced = \App\Models\Invoice::where('proposal_id', $proposal->id)
+            ->where('type', 'debit')
+            ->where('category', 'operational')
+            ->sum('price');
+
+        // Calcula o saldo disponível
+        $totalCost = $proposal->total_operational_cost ?? 0;
+        $balance = max(0, $totalCost - $totalInvoiced);
+
+        return response()->json([
+            'total_operational_cost' => $totalCost,
+            'total_invoiced' => $totalInvoiced,
+            'balance' => $balance,
+            'can_create' => $balance > 0,
+        ]);
+    }
 }

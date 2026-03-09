@@ -54,6 +54,7 @@
 
     <debit-invoices-section
       :proposal="proposal"
+      @reload-proposal="getProposal"
     />
 
     <div

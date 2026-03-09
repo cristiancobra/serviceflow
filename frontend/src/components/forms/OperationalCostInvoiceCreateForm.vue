@@ -35,7 +35,7 @@
           <!-- Funcionário/Freelancer -->
           <div>
             <label for="employee" class="block text-sm font-semibold text-gray-700 mb-2">
-              Funcionário/Freelancer
+              Funcionário / Prestador
             </label>
             <select
               id="employee"
@@ -49,7 +49,7 @@
                 :key="employee.id"
                 :value="employee.id"
               >
-                {{ employee.name }} {{ employee.type_category ? `(${employee.type_category})` : '' }}
+                {{ employee.name }} {{ employee.category ? `(${employee.category})` : '' }}
               </option>
             </select>
           </div>
@@ -131,7 +131,7 @@
 </template>
 
 <script>
-import { submitFormCreate, fetchRecords } from "@/utils/requests/httpUtils";
+import { submitFormCreate, index, get } from "@/utils/requests/httpUtils";
 
 export default {
   name: "OperationalCostInvoiceCreateForm",
@@ -148,9 +148,10 @@ export default {
       isSubmitting: false,
       errorMessage: "",
       employees: [],
+      operationalBalance: null, // Armazena os dados do backend
       form: {
         lead_id: null,
-        price: this.proposal?.operational_cost || 0,
+        price: 0,
         date_due: this.getDefaultDueDate(),
         observations: `Custo operacional da proposta ${this.proposal?.name || this.proposal?.id || ''}`,
         proposal_id: this.proposal?.id,
@@ -165,14 +166,18 @@ export default {
     submitFormCreate,
     async loadEmployees() {
       try {
-        // Busca leads do tipo employee ou freelancer
-        const response = await fetchRecords("leads");
-        const allLeads = response.data || response;
+        // Busca todos os leads
+        const allLeads = await index("leads");
         
         // Filtra apenas funcionários e freelancers
         this.employees = allLeads.filter(
-          lead => lead.type_category === 'employee' || lead.type_category === 'freelancer'
+          lead => lead.category === 'employee' || lead.category === 'freelancer'
         );
+        
+        // Seleciona automaticamente o primeiro funcionário se houver
+        if (this.employees.length > 0) {
+          this.form.lead_id = this.employees[0].id;
+        }
       } catch (error) {
         console.error("Erro ao carregar funcionários:", error);
         this.errorMessage = "Erro ao carregar lista de funcionários";
@@ -186,11 +191,29 @@ export default {
       const day = String(date.getDate()).padStart(2, "0");
       return `${year}-${month}-${day}`;
     },
-    openModal() {
+    async openModal() {
       this.errorMessage = "";
-      // Atualiza o valor quando abrir o modal
-      this.form.price = this.proposal?.operational_cost || 0;
+      
+      try {
+        // Busca o saldo disponível do backend usando a função get do httpUtils
+        const response = await get(`proposals/${this.proposal.id}/operational-cost-balance`);
+        
+        this.operationalBalance = response;
+        this.form.price = this.operationalBalance.balance;
+        
+      } catch (error) {
+        console.error("Erro ao buscar saldo operacional:", error);
+        // Fallback: se der erro, usa o valor total como padrão
+        this.form.price = this.proposal?.total_operational_cost || 0;
+      }
+      
       this.form.date_due = this.getDefaultDueDate();
+      
+      // Re-seleciona o primeiro funcionário se houver
+      if (this.employees.length > 0 && !this.form.lead_id) {
+        this.form.lead_id = this.employees[0].id;
+      }
+      
       this.isModalVisible = true;
     },
     closeModal() {
@@ -224,6 +247,7 @@ export default {
         observations: this.form.observations || null,
         proposal_id: this.proposal.id,
         type: "debit",
+        category: "operational",
       };
 
       try {

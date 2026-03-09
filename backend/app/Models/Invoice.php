@@ -28,6 +28,7 @@ class Invoice extends Model
         'status',
         'fiscal_invoice_number',
         'type',
+        'category',
         'observations',
     ];
 
