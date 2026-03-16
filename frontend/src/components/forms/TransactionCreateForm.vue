@@ -201,7 +201,13 @@ export default {
     invoice: {
       handler(newInvoice) {
         if (newInvoice && newInvoice.id) {
-          console.log("Invoice mudou, atualizando formulário:", newInvoice);
+          console.log("Invoice no watcher:", {
+            id: newInvoice.id,
+            price: newInvoice.price,
+            total_paid: newInvoice.total_paid,
+            balance: newInvoice.balance,
+            calculado: newInvoice.price - (newInvoice.total_paid || 0)
+          });
           this.form.invoice_id = newInvoice.id;
           this.form.amount = newInvoice.balance || 0;
           // Atualiza o tipo de transação baseado no tipo da fatura
@@ -210,6 +216,18 @@ export default {
       },
       deep: true,
       immediate: true,
+    },
+    modelValue(newVal) {
+      // Quando o modal abre, recalcula o amount baseado no balance atual
+      if (newVal && this.invoice) {
+        console.log("Modal abrindo, invoice atual:", {
+          id: this.invoice.id,
+          price: this.invoice.price,
+          total_paid: this.invoice.total_paid,
+          balance: this.invoice.balance
+        });
+        this.form.amount = this.invoice.balance || 0;
+      }
     },
   },
   methods: {

@@ -57,8 +57,18 @@ class Invoice extends Model
      */
     public function updateTotalPaid()
     {
-        $totalPaid = $this->transactions()->where('type', 'credit')->sum('amount') -
-                     $this->transactions()->where('type', 'debit')->sum('amount');
+        // Para faturas de CRÉDITO (recebíveis): soma créditos - débitos
+        // Para faturas de DÉBITO (pagáveis): soma débitos - créditos
+        if ($this->type === 'debit') {
+            // Fatura de despesa: pagamentos são débitos
+            $totalPaid = $this->transactions()->where('type', 'debit')->sum('amount') -
+                         $this->transactions()->where('type', 'credit')->sum('amount');
+        } else {
+            // Fatura de receita: recebimentos são créditos
+            $totalPaid = $this->transactions()->where('type', 'credit')->sum('amount') -
+                         $this->transactions()->where('type', 'debit')->sum('amount');
+        }
+        
         $balance = $this->price - $totalPaid;
         $this->update(['total_paid' => $totalPaid, 'balance' => $balance]);
         

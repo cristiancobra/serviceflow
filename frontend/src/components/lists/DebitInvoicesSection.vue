@@ -387,9 +387,9 @@ export default {
           invoice.transactions = [];
         }
         invoice.transactions.push(newTransaction);
-        // Atualizar total_paid
-        invoice.total_paid =
-          (invoice.total_paid || 0) + Number(newTransaction.amount);
+        // Atualizar total_paid E balance
+        invoice.total_paid = (invoice.total_paid || 0) + Number(newTransaction.amount);
+        invoice.balance = invoice.price - invoice.total_paid;
       }
       // Emite evento para o pai recarregar a proposta
       this.$emit("reload-proposal");

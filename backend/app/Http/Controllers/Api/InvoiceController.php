@@ -116,6 +116,7 @@ class InvoiceController extends Controller
                 'balance' => $validated['price'],
                 'date_due' => $validated['date_due'],
                 'type' => 'debit',
+                'category' => $validated['category'] ?? 'operational',
                 'observations' => $validated['observations'] ?? null,
             ];
             

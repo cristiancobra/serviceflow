@@ -146,9 +146,6 @@ export default {
     proposal: {
       handler(newProposal) {
         this.form.proposal_id = newProposal.id;
-        if (newProposal.total_operational_cost) {
-          this.form.price = newProposal.total_operational_cost;
-        }
       },
       immediate: true,
     },
@@ -169,10 +166,8 @@ export default {
     },
     openModal() {
       this.errorMessage = "";
-      if (this.proposal.total_operational_cost) {
-        this.form.price = this.proposal.total_operational_cost;
-      }
       this.form.date_due = this.getTodayDate();
+      this.form.price = 0; // Sempre começa com 0
     },
     closeModal() {
       this.$emit("update:modelValue", false);
