@@ -7,6 +7,7 @@ use App\Http\Requests\InvoiceRequest;
 use App\Models\Invoice;
 use App\Http\Resources\InvoicesResource;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log;
 
 class InvoiceController extends Controller
 {
@@ -231,9 +232,27 @@ class InvoiceController extends Controller
         try {
             $validatedData = $request->validated();
 
-            // Se o preço está sendo atualizado, ajustar as faturas subsequentes
+            // Se o preço está sendo atualizado
             if (isset($validatedData['price'])) {
-                $this->adjustInvoicePrices($invoice, $validatedData['price']);
+                // Apenas valida e ajusta faturas de CRÉDITO
+                // Faturas de DÉBITO podem ter qualquer valor (custos reais, até prejuízo)
+                if ($invoice->type === 'credit') {
+                    $validationError = $this->validatePriceUpdate($invoice, $validatedData['price']);
+                    if ($validationError) {
+                        return response()->json([
+                            'message' => 'Erro ao atualizar o valor da fatura',
+                            'errors' => ['price' => [$validationError]]
+                        ], 422);
+                    }
+                    $this->adjustInvoicePrices($invoice, $validatedData['price']);
+                } else {
+                    // Para faturas de débito, atualiza diretamente sem validação de limite
+                    $invoice->update($validatedData);
+                    // Recalcula o balance considerando as transações
+                    $totalTransactions = $invoice->transactions()->sum('amount');
+                    $invoice->balance = $validatedData['price'] - $totalTransactions;
+                    $invoice->save();
+                }
             } else {
                 // Atualiza apenas os campos enviados na requisição (exceto preço)
                 $invoice->update($validatedData);
@@ -264,7 +283,68 @@ class InvoiceController extends Controller
     }
 
     /**
-     * Ajusta os preços das faturas subsequentes quando uma fatura é atualizada
+     * Valida se o novo preço resultaria em valores negativos
+     * APENAS PARA FATURAS DE CRÉDITO
+     *
+     * @param Invoice $changedInvoice
+     * @param float $newPrice
+     * @return string|null Retorna mensagem de erro ou null se válido
+     */
+    private function validatePriceUpdate(Invoice $changedInvoice, float $newPrice)
+    {
+        $proposal = $changedInvoice->proposal;
+        $totalPrice = $proposal->total_price;
+
+        // Busca todas as faturas de CRÉDITO da proposta ordenadas por data de vencimento
+        $allInvoices = Invoice::where('proposal_id', $proposal->id)
+            ->where('type', 'credit')
+            ->orderBy('date_due')
+            ->get();
+
+        // Se há apenas uma fatura de crédito, não precisa validar redistribuição
+        if ($allInvoices->count() === 1) {
+            return null;
+        }
+
+        // Encontra o índice da fatura que está sendo alterada
+        $changedIndex = $allInvoices->search(function ($invoice) use ($changedInvoice) {
+            return $invoice->id === $changedInvoice->id;
+        });
+
+        if ($changedIndex === false) {
+            return 'Fatura não encontrada na proposta';
+        }
+
+        // Calcula a soma das faturas anteriores à fatura alterada
+        $sumBefore = $allInvoices->slice(0, $changedIndex)->sum('price');
+        $remaining = $totalPrice - $sumBefore;
+
+        // Verifica se o novo valor resultaria em valor negativo
+        if ($newPrice > $remaining) {
+            $sumBeforeFormatted = number_format($sumBefore, 2, ',', '.');
+            $totalPriceFormatted = number_format($totalPrice, 2, ',', '.');
+            $remainingFormatted = number_format($remaining, 2, ',', '.');
+            
+            return "O valor informado (R$ " . number_format($newPrice, 2, ',', '.') . ") excede o valor disponível (R$ {$remainingFormatted}). " .
+                   "Total da proposta: R$ {$totalPriceFormatted}. " .
+                   "Já alocado em parcelas anteriores: R$ {$sumBeforeFormatted}.";
+        }
+
+        // Calcula o valor restante após a alteração para as próximas faturas
+        $remainingAfterChange = $totalPrice - $sumBefore - $newPrice;
+        $remainingInvoices = $allInvoices->slice($changedIndex + 1);
+        $remainingInvoicesCount = $remainingInvoices->count();
+
+        // Se há faturas posteriores, verifica se o valor restante resultaria em negativo
+        if ($remainingInvoicesCount > 0 && $remainingAfterChange < 0) {
+            return "Não é possível atribuir este valor pois resultaria em valores negativos nas parcelas subsequentes.";
+        }
+
+        return null;
+    }
+
+    /**
+     * Ajusta os preços das faturas subsequentes quando uma fatura DE CRÉDITO é atualizada
      *
      * @param Invoice $changedInvoice
      * @param float $newPrice
@@ -272,14 +352,39 @@ class InvoiceController extends Controller
      */
     private function adjustInvoicePrices(Invoice $changedInvoice, float $newPrice)
     {
+        Log::info('adjustInvoicePrices called', [
+            'invoice_id' => $changedInvoice->id,
+            'new_price' => $newPrice,
+            'old_price' => $changedInvoice->price,
+            'type' => $changedInvoice->type
+        ]);
+
         // Busca a proposta para obter o valor total
         $proposal = $changedInvoice->proposal;
         $totalPrice = $proposal->total_price;
 
-        // Busca todas as faturas da proposta ordenadas por data de vencimento
+        Log::info('Proposal info', [
+            'proposal_id' => $proposal->id,
+            'total_price' => $totalPrice
+        ]);
+
+        // Busca todas as faturas DE CRÉDITO da proposta ordenadas por data de vencimento
         $allInvoices = Invoice::where('proposal_id', $proposal->id)
+            ->where('type', 'credit')
             ->orderBy('date_due')
             ->get();
+
+        Log::info('All credit invoices', [
+            'count' => $allInvoices->count(),
+            'invoices' => $allInvoices->map(fn($i) => ['id' => $i->id, 'price' => $i->price, 'type' => $i->type])
+        ]);
+
+        // Se há apenas uma fatura de crédito, atualiza diretamente sem redistribuir
+        if ($allInvoices->count() === 1) {
+            Log::info('Only one credit invoice, updating directly');
+            $changedInvoice->update(['price' => $newPrice, 'balance' => $newPrice]);
+            return;
+        }
 
         // Encontra o índice da fatura que está sendo alterada
         $changedIndex = $allInvoices->search(function ($invoice) use ($changedInvoice) {
@@ -294,8 +399,18 @@ class InvoiceController extends Controller
         $sumBefore = $allInvoices->slice(0, $changedIndex)->sum('price');
         $remaining = $totalPrice - $sumBefore;
 
+        Log::info('Calculations', [
+            'changed_index' => $changedIndex,
+            'sum_before' => $sumBefore,
+            'remaining' => $remaining
+        ]);
+
         // Verifica se o novo valor não excede o valor restante
         if ($newPrice > $remaining) {
+            Log::warning('New price exceeds remaining, adjusting', [
+                'new_price' => $newPrice,
+                'remaining' => $remaining
+            ]);
             $newPrice = $remaining;
         }
 
@@ -306,6 +421,11 @@ class InvoiceController extends Controller
         $remainingAfterChange = $totalPrice - $sumBefore - $newPrice;
         $remainingInvoices = $allInvoices->slice($changedIndex + 1);
         $remainingInvoicesCount = $remainingInvoices->count();
+
+        Log::info('Adjusting remaining invoices', [
+            'remaining_after_change' => $remainingAfterChange,
+            'remaining_invoices_count' => $remainingInvoicesCount
+        ]);
 
         if ($remainingInvoicesCount > 0) {
             // Calcula o novo valor por fatura restante

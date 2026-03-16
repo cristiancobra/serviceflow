@@ -2,7 +2,7 @@
   <div>
     <label v-if="label" class="form-label" :for="name">{{ label }}</label>
     <div v-if="!editing"  @click="startEditing">
-      <div v-if="localValue">
+      <div v-if="localValue !== null && localValue !== undefined && localValue !== ''">
         <p class="price-editable text-right">
           <font-awesome-icon icon="edit" class="edit-icon" />
           {{ formatCurrencySymbol(localValue) }}
@@ -14,7 +14,7 @@
     </div>
     <div v-else class="">
         <input class="input-money text-black" type="text" :name="name" 
-        v-model="localValue" :placeholder="placeholder" @keydown.esc="cancelEditing" @blur="emitSave" @keydown.enter.prevent="emitSave" />
+        v-model="editingValue" :placeholder="placeholder" @keydown.esc="cancelEditing" @blur="emitSave" @keydown.enter.prevent="emitSave" />
     </div>
 
   </div>
@@ -28,6 +28,7 @@ export default {
     return {
       editing: false,
       localValue: this.modelValue,
+      editingValue: '',
     };
   },
   props: {
@@ -43,22 +44,25 @@ export default {
     convertCurrencyToBr,
     formatCurrencySymbol,
     startEditing() {
+      // Converte o valor para formato brasileiro antes de começar a editar
+      this.editingValue = this.convertCurrencyToBr(this.localValue);
       this.editing = true;
     },
     emitSave() {
-      const convertedValue = this.convertBrToCurrency(this.localValue);
+      const convertedValue = this.convertBrToCurrency(this.editingValue);
+      this.localValue = convertedValue;
       this.$emit("update:modelValue", convertedValue);
       this.$emit("save", convertedValue);
       this.editing = false;
     },
     cancelEditing() {
       this.editing = false;
-      this.localValue = this.modelValue
+      this.localValue = this.modelValue;
     },
   },
   watch: {
     modelValue(newValue) {
-      this.localValue = this.convertCurrencyToBr(newValue);
+      this.localValue = newValue;
     },
   },
 };

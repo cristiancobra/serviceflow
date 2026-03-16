@@ -1,8 +1,21 @@
 export function convertBrToCurrency(value) {
-  // Verifica se o valor é uma string e remove caracteres não numéricos, substituindo a vírgula por ponto
+  // Se já é número, retorna direto
+  if (typeof value === 'number') {
+    return value;
+  }
+
+  // Verifica se o valor é uma string
   if (typeof value === 'string') {
-    // Remove caracteres não numéricos e substitui a vírgula por ponto
-    value = value.replace(/\s+/g, '').replace(',', '.');
+    // Remove espaços
+    value = value.trim().replace(/\s+/g, '');
+    
+    // Se contém vírgula, é formato brasileiro (ex: 1.500,00 ou 500,00)
+    if (value.includes(',')) {
+      // Remove pontos (separadores de milhar) e substitui vírgula por ponto
+      value = value.replace(/\./g, '').replace(',', '.');
+    }
+    // Se não tem vírgula mas tem ponto, já está em formato americano (ex: 1500.00 ou 50.00)
+    // Neste caso, não faz nada, já está correto
   }
 
   // Converte a string para número

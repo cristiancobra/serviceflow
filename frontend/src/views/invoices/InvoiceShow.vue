@@ -16,6 +16,24 @@
       </div>
     </div>
 
+    <!-- Mensagem de erro -->
+    <div v-if="errorMessage" class="section-container">
+      <div class="bg-red-50 border-2 border-red-500 rounded-lg p-4 mb-6">
+        <div class="flex gap-4">
+          <div class="flex-shrink-0 pt-0.5">
+            <font-awesome-icon icon="fa-solid fa-circle-exclamation" class="text-2xl text-red-600" />
+          </div>
+          <div class="flex-1">
+            <h3 class="text-red-800 font-bold text-lg mb-2">Erro ao atualizar fatura</h3>
+            <p class="text-red-700 text-sm">{{ errorMessage }}</p>
+          </div>
+          <button @click="errorMessage = null" class="text-red-500 hover:text-red-700">
+            <font-awesome-icon icon="fa-solid fa-times" />
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div class="section-container">
       <div class="flex align-items-center justify-end mb-6">
         <div
@@ -276,6 +294,7 @@ export default {
       invoiceId: "",
       isVisibleQuantity: false,
       isCreateTransactionModalVisible: false,
+      errorMessage: null,
     };
   },
   components: {
@@ -346,12 +365,31 @@ export default {
       this.invoiceId = invoiceId;
     },
     async updateInvoice(fieldName, editedValue) {
-      this.invoice = await updateField(
-        "invoices",
-        this.invoiceId,
-        fieldName,
-        editedValue
-      );
+      try {
+        this.errorMessage = null; // Limpa erro anterior
+        this.invoice = await updateField(
+          "invoices",
+          this.invoiceId,
+          fieldName,
+          editedValue
+        );
+      } catch (error) {
+        // Captura erro de validação do backend
+        if (error.response && error.response.status === 422) {
+          const errors = error.response.data.errors;
+          if (errors && errors.price) {
+            this.errorMessage = errors.price[0];
+          } else {
+            this.errorMessage = error.response.data.message || 'Erro ao atualizar fatura';
+          }
+        } else {
+          this.errorMessage = 'Erro ao atualizar fatura. Tente novamente.';
+        }
+        console.error("Erro ao atualizar fatura:", error);
+        
+        // Recarrega a fatura para restaurar o valor anterior
+        await this.getInvoice();
+      }
     },
     async updateTransaction(fieldName, editedValue, transactionId) {
       const updatedTransaction = await updateField(
