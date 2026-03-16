@@ -44,7 +44,9 @@ class Invoice extends Model
 
     public function transactions()
     {
-        return $this->hasMany(Transaction::class)->whereNull('deleted_at');
+        return $this->hasMany(Transaction::class)
+            ->whereNull('deleted_at')
+            ->orderBy('transaction_date', 'asc');
     }
 
     public function user()
