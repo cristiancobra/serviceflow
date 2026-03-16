@@ -37,19 +37,7 @@ class ProposalRequest extends FormRequest
             'total_discount' => 'nullable|numeric|min:0',
             'status' => 'nullable|string',
             'installment_quantity' => 'sometimes|integer|min:1|max:99',
-            // 'services' => 'nullable|array',
-            // 'services.*.id' => 'required|exists:services,id',
-            // 'services.*.quantity' => 'required|integer|min:0',
-            // 'services.*.category' => 'nullable|string',
-            // 'services.*.name' => 'nullable|string',
-            // 'services.*.labor_hours' => 'nullable|numeric',
-            // 'services.*.labor_hourly_rate' => 'nullable|numeric',
-            // 'services.*.labor_hourly_total' => 'nullable|numeric',
-            // 'services.*.profit_percentage' => 'nullable|numeric',
-            // 'services.*.profit' => 'nullable|numeric',
-            // 'services.*.price' => 'nullable|numeric',
-            // 'services.*.observations' => 'nullable|string',
-            // 'services.*.account_id' => 'nullable|exists:accounts,id',
+            'paid_at' => 'nullable|date',
         ];
     }
 
@@ -69,6 +57,17 @@ class ProposalRequest extends FormRequest
             $this->merge([
                 'date' => DateTimeConversionService::convertToUtc(
                     $this->input('date'),
+                    $timezone
+                ),
+            ]);
+        }
+
+        if ($this->filled('paid_at')) {
+            $timezone = auth()->user()->timezone ?? 'America/Sao_Paulo';
+    
+            $this->merge([
+                'paid_at' => DateTimeConversionService::convertToUtc(
+                    $this->input('paid_at'),
                     $timezone
                 ),
             ]);

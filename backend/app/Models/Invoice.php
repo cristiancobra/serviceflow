@@ -61,6 +61,12 @@ class Invoice extends Model
                      $this->transactions()->where('type', 'debit')->sum('amount');
         $balance = $this->price - $totalPaid;
         $this->update(['total_paid' => $totalPaid, 'balance' => $balance]);
+        
+        // Atualiza o status de pagamento da proposta
+        if ($this->proposal) {
+            $this->proposal->updatePaymentStatus();
+        }
+        
         return $totalPaid;
     }
 

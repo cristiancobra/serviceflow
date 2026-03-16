@@ -14,88 +14,119 @@
     </div>
 
     <section class="section-container">
-      <div class="search-container">
-        <input
-          type="text"
-          class="search-input"
-          v-model="searchTerm"
-          placeholder="Digite para buscar"
-        />
-      </div>
-
-      <!-- Cabeçalho da tabela -->
-      <div class="list-line flex w-full bg-gray-100 mb-3 font-semibold border-b-2 border-gray-300">
-        <div class="w-1/10 flex justify-center">
-          <span class="text-sm text-gray-700">Status</span>
-        </div>
-        <div class="w-1/9 text-center text-sm text-gray-700">
-          Data
-        </div>
-        <div class="w-2/9 text-sm text-gray-700 ps-2">
-          Empresa/Lead
-        </div>
-        <div class="w-2/9 text-sm text-gray-700 ps-2">
-          Oportunidade
-        </div>
-        <div class="w-3/9 text-sm text-gray-700 ps-2">
-          Descrição
-        </div>
-        <div class="w-1/9 text-sm text-gray-700 text-center">
-          Valor
-        </div>
-      </div>
-
-      <div
-        v-for="proposal in filteredProposals"
-        v-bind:key="proposal.id"
-        class="list-line flex w-full"
-      >
-        <div class="w-1/10 flex justify-center" id="col-user">
-          <select-status-button
-            :status="proposal.status"
-            @update:modelValue="updateProposal('status', proposal.id, $event)"
+      <!-- Search Bar -->
+      <div class="mb-4">
+        <div class="relative">
+          <input
+            type="text"
+            v-model="searchTerm"
+            placeholder="Buscar por empresa, oportunidade ou descrição..."
+            class="w-full px-4 py-3 pl-12 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+          />
+          <font-awesome-icon 
+            icon="fa-solid fa-search" 
+            class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
           />
         </div>
-        <router-link
-          class="list-line-link flex flex-1 text-sm"
-          :to="{ name: 'proposalShow', params: { id: proposal.id } }"
+      </div>
+
+      <!-- Table Container -->
+      <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+        <!-- Table Header -->
+        <div class="grid grid-cols-12 gap-4 px-4 py-3 bg-gradient-to-r from-gray-100 to-gray-50 border-b-2 border-gray-300 font-semibold text-sm text-gray-700">
+          <div class="col-span-1 text-center">Status</div>
+          <div class="col-span-1 text-center">Data</div>
+          <div class="col-span-2 text-left">Empresa/Lead</div>
+          <div class="col-span-2 text-left">Oportunidade</div>
+          <div class="col-span-3 text-left">Descrição</div>
+          <div class="col-span-1 text-center">Valor</div>
+          <div class="col-span-2 text-center">Valor Pago</div>
+        </div>
+
+        <!-- Table Body -->
+        <div v-if="filteredProposals.length === 0" class="py-12 text-center">
+          <font-awesome-icon icon="fa-solid fa-inbox" class="text-gray-300 text-5xl mb-4" />
+          <p class="text-gray-500 text-lg">Nenhuma proposta encontrada</p>
+        </div>
+
+        <div
+          v-for="(proposal, index) in filteredProposals"
+          :key="proposal.id"
+          class="grid grid-cols-12 gap-4 px-4 py-3 border-b border-gray-100 hover:bg-blue-50 transition-colors duration-150 cursor-pointer items-center"
+          :class="{ 'bg-gray-50': index % 2 === 0 }"
+          @click="$router.push({ name: 'proposalShow', params: { id: proposal.id } })"
         >
-          <div class="w-1/9 text-center text-black">
+          <!-- Status -->
+          <div class="col-span-1 flex justify-center">
+            <proposal-status-badge :proposal="proposal" />
+          </div>
+
+          <!-- Data -->
+          <div class="col-span-1 text-center text-gray-700 text-sm font-medium">
             {{ formatDateBr(proposal.date) }}
           </div>
-          <div class="w-2/9 column-name text-black">
-            <p class="" v-if="!proposal.opportunity">
+
+          <!-- Empresa/Lead -->
+          <div class="col-span-2 text-left">
+            <p v-if="!proposal.opportunity" class="text-gray-400 text-sm italic">
               sem oportunidade associada
             </p>
             <p
-              class="group-name text-black"
               v-else-if="proposal.opportunity?.company?.business_name"
+              class="text-gray-800 font-semibold text-sm truncate"
             >
               {{ proposal.opportunity.company.business_name }}
             </p>
             <p
-              class="text-black text-sm font-bold"
               v-else-if="proposal.opportunity?.company?.legal_name"
+              class="text-gray-800 font-semibold text-sm truncate"
             >
               {{ proposal.opportunity.company.legal_name }}
             </p>
-            <p class="text-black text-sm font-bold" v-else-if="proposal.opportunity?.lead?.name">
+            <p 
+              v-else-if="proposal.opportunity?.lead?.name"
+              class="text-gray-800 font-semibold text-sm truncate"
+            >
               {{ proposal.opportunity.lead.name }}
             </p>
-            <p class="text-black" v-else>sem associação</p>
+            <p v-else class="text-gray-400 text-sm italic">sem associação</p>
           </div>
-          <div class="w-2/9 text-black">
-            <p class="ps-2">
+
+          <!-- Oportunidade -->
+          <div class="col-span-2 text-left">
+            <p class="text-gray-700 text-sm truncate">
               {{ proposal.opportunity?.name || '---' }}
             </p>
           </div>
-          <div class="w-3/9 text-black">
-            <p v-html="getShortDescription(proposal)" class="ps-2"></p>
+
+          <!-- Descrição -->
+          <div class="col-span-3 text-left">
+            <p v-html="getShortDescription(proposal)" class="text-gray-600 text-sm truncate"></p>
           </div>
-          <div class="w-1/9 column-price text-black">
-            <money-field name="total_price text-sm" v-model="proposal.total_price" />
+
+          <!-- Valor -->
+          <div class="col-span-1 text-center">
+            <money-field 
+              name="total_price" 
+              v-model="proposal.total_price"
+              class="text-gray-800 font-semibold text-sm"
+            />
           </div>
-        </router-link>
+
+          <!-- Valor Pago -->
+          <div class="col-span-2 text-right">
+            <money-field 
+              name="total_paid" 
+              :modelValue="getTotalPaid(proposal)" 
+              :class="{
+                'text-blue-600 font-bold': getTotalPaid(proposal) < proposal.total_price && !proposal.paid_at,
+                'text-gray-800 font-bold': proposal.paid_at,
+              }"
+              class="text-sm"
+              readonly 
+            />
+          </div>
+        </div>
       </div>
     </section>
   </div>
@@ -108,14 +139,12 @@ import { formatDateBr } from "@/utils/date/dateUtils";
 import { getDeadlineClass } from "@/utils/card/cardUtils";
 import { index, updateField } from "@/utils/requests/httpUtils";
 import MoneyField from "../fields/number/MoneyField.vue";
-// import ProposalCreateForm from "../forms/ProposalCreateForm.vue";
-import SelectStatusButton from "../buttons/SelectStatusButton.vue";
+import ProposalStatusBadge from "../badges/ProposalStatusBadge.vue";
 
 export default {
   components: {
-    // ProposalCreateForm,
     MoneyField,
-    SelectStatusButton,
+    ProposalStatusBadge,
   },
   props: {
     opportunityId: {
@@ -220,6 +249,15 @@ export default {
     },
     toggleForm() {
       this.isActive = !this.isActive;
+    },
+    getTotalPaid(proposal) {
+      if (!proposal.invoices || proposal.invoices.length === 0) {
+        return 0;
+      }
+      // Soma apenas o total_paid das invoices de crédito (recebimento)
+      return proposal.invoices
+        .filter(invoice => invoice.type === 'credit')
+        .reduce((total, invoice) => total + (Number(invoice.total_paid) || 0), 0);
     },
   },
   watch: {

@@ -7,6 +7,14 @@
     >
       Pendentes
     </button>
+
+    <button
+      class="px-6 py-2 border-2 rounded-lg font-semibold cursor-pointer transition-all duration-300 border-purple-500"
+      :class="activeFilter === 'submitted' ? 'bg-purple-500 text-white' : 'bg-white text-purple-500 hover:bg-purple-500 hover:text-white'"
+      @click="handleFilterClick('submitted')"
+    >
+      Enviadas
+    </button>
     
     <button
       class="px-6 py-2 border-2 rounded-lg font-semibold cursor-pointer transition-all duration-300 border-success"
@@ -14,6 +22,14 @@
       @click="handleFilterClick('accepted')"
     >
       Aceitas
+    </button>
+
+    <button
+      class="px-6 py-2 border-2 rounded-lg font-semibold cursor-pointer transition-all duration-300 border-emerald-500"
+      :class="activeFilter === 'paid' ? 'bg-emerald-500 text-white' : 'bg-white text-emerald-500 hover:bg-emerald-500 hover:text-white'"
+      @click="handleFilterClick('paid')"
+    >
+      Pagas
     </button>
     
     <button

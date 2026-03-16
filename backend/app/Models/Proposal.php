@@ -32,6 +32,7 @@ class Proposal extends Model
         'installment_quantity',
         'validity_days',
         'status',
+        'paid_at',
     ];
 
     // relationships
@@ -72,6 +73,42 @@ class Proposal extends Model
     public static function getAcceptedCount()
     {
         return self::where('status', 'accepted')->count();
+    }
+
+    /**
+     * Check if all credit invoices are fully paid and update paid_at accordingly.
+     *
+     * @return void
+     */
+    public function updatePaymentStatus()
+    {
+        // Carrega todas as faturas de crédito (recebimento) não deletadas
+        $creditInvoices = $this->invoices()
+            ->whereNull('deleted_at')
+            ->where('type', 'credit')
+            ->get();
+
+        // Se não houver faturas de crédito, não marca como paga
+        if ($creditInvoices->isEmpty()) {
+            $this->paid_at = null;
+            $this->save();
+            return;
+        }
+
+        // Verifica se todas as faturas de crédito estão totalmente pagas
+        $allPaid = $creditInvoices->every(function ($invoice) {
+            return (float)$invoice->balance <= 0;
+        });
+
+        if ($allPaid && is_null($this->paid_at)) {
+            // Marca como paga
+            $this->paid_at = now();
+            $this->save();
+        } elseif (!$allPaid && !is_null($this->paid_at)) {
+            // Desmarca como paga (caso de estorno, por exemplo)
+            $this->paid_at = null;
+            $this->save();
+        }
     }
 
     /**

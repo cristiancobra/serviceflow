@@ -29,6 +29,7 @@ export default {
         { value: "accepted", label: "aprovada" },
         { value: "rejected", label: "rejeitada" },
         { value: "canceled", label: "cancelada" },
+        { value: "paid", label: "paga" },
       ],
     };
   },
@@ -118,6 +119,12 @@ export default {
     color: white;
 }
 
+.button-status.paid {
+    border-color: #10b981;
+    background-color: #059669;
+    color: white;
+}
+
 .menu-item {
   border-width: 2px;
   border-style: solid;
@@ -165,6 +172,12 @@ export default {
 .menu-item.submitted {
   border-color: var(--purple-light);
   background-color: var(--purple);
+  color: white;
+}
+
+.menu-item.paid {
+  border-color: #10b981;
+  background-color: #059669;
   color: white;
 }
 </style>

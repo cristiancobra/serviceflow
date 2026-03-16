@@ -29,6 +29,7 @@ class ProposalController extends Controller
         $status = request()->get('status'); // Pega o filtro de status da query string
 
         $query = Proposal::with([
+            'invoices',
             'proposalServices',
             'proposalCosts',
             'opportunity',
@@ -38,7 +39,13 @@ class ProposalController extends Controller
 
         // Filtrar por status se fornecido
         if ($status) {
-            $query->where('status', $status);
+            if ($status === 'paid') {
+                // Filtro especial para propostas pagas
+                $query->whereNotNull('paid_at');
+            } else {
+                // Filtro normal por status comercial
+                $query->where('status', $status);
+            }
         } else {
             // Se não houver filtro, excluir drafts por padrão
             $query->where('status', '!=', 'draft');
