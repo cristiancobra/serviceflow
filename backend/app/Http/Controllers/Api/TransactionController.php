@@ -102,6 +102,23 @@ class TransactionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $transaction = Transaction::findOrFail($id);
+            
+            // O soft delete vai disparar o evento 'deleted' no modelo
+            // que automaticamente atualizará o total_paid e status da invoice
+            $transaction->delete();
+            
+            return response()->json([
+                'message' => 'Transação excluída com sucesso',
+                'data' => null
+            ], 200);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao excluir transação',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

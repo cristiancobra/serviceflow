@@ -71,16 +71,16 @@
       >
         <router-link
           :to="{ name: 'invoiceShow', params: { id: invoice.id } }"
-          class="flex items-center justify-between p-4 text-gray-800 hover:text-red-600 transition-colors duration-200 no-underline"
+          class="flex items-center justify-between p-2 text-gray-800 hover:text-red-600 transition-colors duration-200 no-underline"
         >
           <!-- Tipo e Fornecedor -->
           <div class="flex items-center gap-4">
             <div
-              class="flex items-center justify-center w-10 h-10 rounded-full bg-red-100"
+              class="flex items-center justify-center w-10 h-10 rounded-full bg-red-600"
             >
               <font-awesome-icon
                 icon="fa-solid fa-receipt"
-                class="text-red-600"
+                class="text-white"
               />
             </div>
             <div class="flex flex-col gap-1">
@@ -169,10 +169,10 @@
           <div
             v-for="transaction in invoice.transactions"
             :key="transaction.id"
-            class="group flex items-center justify-between ms-36 px-1 py-1 rounded-md bg-white even:bg-sky-50/40 hover:bg-sky-100/60 border-l-4 border-transparent hover:border-sky-400 transition-colors"
+            class="group flex items-center justify-between ms-0 px-1 py-1 rounded-md bg-white even:bg-sky-50/40 hover:bg-sky-100/60 border-l-4 border-transparent hover:border-sky-400 transition-colors"
           >
             <div
-              class="flex items-center justify-center w-6 h-6 me-2 bg-red-500 rounded-full"
+              class="flex items-center justify-center w-6 h-6 me-2 bg-red-600 rounded-full"
             >
               <font-awesome-icon
                 icon="fas fa-coins"
@@ -208,6 +208,16 @@
                 readonly
               />
             </div>
+            <button
+              @click.stop="deleteTransaction(transaction.id, invoice.id)"
+              class="ml-2 p-2 text-red-600 hover:text-white hover:bg-red-600 rounded-md transition-colors duration-200"
+              title="Excluir transação"
+            >
+              <font-awesome-icon
+                icon="fas fa-trash"
+                class="text-sm"
+              />
+            </button>
           </div>
         </div>
       </div>
@@ -264,7 +274,7 @@
 </template>
   
   <script>
-import { updateField } from "@/utils/requests/httpUtils";
+import { updateField, destroy } from "@/utils/requests/httpUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import DebitInvoiceCreateForm from "@/components/forms/DebitInvoiceCreateForm.vue";
 import OperationalCostInvoiceCreateForm from "@/components/forms/OperationalCostInvoiceCreateForm.vue";
@@ -414,6 +424,30 @@ export default {
           }
         }
       }
+    },
+    async deleteTransaction(transactionId, invoiceId) {
+      await destroy("transactions", transactionId);
+
+      // Remover transação localmente
+      const invoice = this.debitInvoices.find((inv) => inv.id === invoiceId);
+      if (invoice && invoice.transactions) {
+        const index = invoice.transactions.findIndex(
+          (t) => t.id === transactionId
+        );
+        if (index !== -1) {
+          // Guardar o valor ANTES de remover
+          const transactionAmount = Number(invoice.transactions[index].amount);
+          
+          // Remover a transação
+          invoice.transactions.splice(index, 1);
+          
+          // Atualizar total_paid e balance
+          invoice.total_paid = (invoice.total_paid || 0) - transactionAmount;
+          invoice.balance = invoice.price - invoice.total_paid;
+        }
+      }
+      // Emite evento para o pai recarregar a proposta
+      this.$emit("reload-proposal");
     },
   },
 };

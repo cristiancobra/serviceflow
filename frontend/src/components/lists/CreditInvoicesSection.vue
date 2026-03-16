@@ -142,7 +142,7 @@
               class="group flex items-center justify-between ms-0 px-1 py-1 rounded-md bg-white even:bg-sky-50/40 hover:bg-sky-100/60 border-l-4 border-transparent hover:border-sky-400 transition-colors"
             >
               <div
-                class="flex items-center justify-center w-6 h-6 me-2 bg-success rounded-full"
+                class="flex items-center justify-center w-6 h-6 me-2 bg-blue-500 rounded-full"
               >
                 <font-awesome-icon
                   icon="fas fa-coins"
@@ -178,6 +178,16 @@
                   readonly
                 />
               </div>
+              <button
+                @click.stop="deleteTransaction(transaction.id, invoice.id)"
+                class="ml-2 p-2 text-red-600 hover:text-white hover:bg-red-600 rounded-md transition-colors duration-200"
+                title="Excluir transação"
+              >
+                <font-awesome-icon
+                  icon="fas fa-trash"
+                  class="text-sm"
+                />
+              </button>
             </div>
           </div>
         </div>
@@ -246,7 +256,7 @@
 </template>
   
   <script>
-import { updateField } from "@/utils/requests/httpUtils";
+import { updateField, destroy } from "@/utils/requests/httpUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import DateEditableInput from "../fields/date/DateEditableInput.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
@@ -391,6 +401,28 @@ export default {
         this.localInvoices[index] = updatedInvoice;
       }
 
+      this.$emit("invoices-updated", this.localInvoices);
+    },
+    async deleteTransaction(transactionId, invoiceId) {
+      await destroy("transactions", transactionId);
+
+      const invoice = this.localInvoices.find((inv) => inv.id === invoiceId);
+      if (invoice) {
+        invoice.transactions = invoice.transactions.filter(
+          (t) => t.id !== transactionId
+        );
+
+        // Recalcular o total_paid da invoice
+        invoice.total_paid = invoice.transactions.reduce(
+          (sum, t) => sum + Number(t.amount || 0),
+          0
+        );
+
+        // Atualizar o saldo da invoice
+        invoice.balance = invoice.price - invoice.total_paid;
+      }
+
+      // Emitir evento para atualizar o componente pai
       this.$emit("invoices-updated", this.localInvoices);
     },
   },
