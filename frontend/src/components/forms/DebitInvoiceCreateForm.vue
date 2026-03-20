@@ -65,7 +65,7 @@
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
               required
             >
-              <option v-for="n in 12" :key="n" :value="n">{{ n }}x</option>
+              <option v-for="n in 24" :key="n" :value="n">{{ n }}x</option>
             </select>
           </div>
 
