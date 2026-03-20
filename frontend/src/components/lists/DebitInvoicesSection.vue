@@ -76,7 +76,7 @@
           <!-- Tipo e Fornecedor -->
           <div class="flex items-center gap-4">
             <div
-              :class="invoice.category === 'operational' ? 'bg-orange-600' : 'bg-rose-600'"
+              :class="getInvoiceBalance(invoice) === 0 ? 'bg-gray-500' : (invoice.category === 'operational' ? 'bg-orange-600' : 'bg-rose-600')"
               class="flex items-center justify-center w-10 h-10 rounded-full"
             >
               <font-awesome-icon

@@ -26,22 +26,39 @@
         <font-awesome-icon icon="fas fa-play" class="play" />
         {{ taskDisplayName }}
       </router-link>
+      
       <router-link :to="`/users/${userData.id}`" class="dropdown-item">
         CONTA
       </router-link>
       <router-link to="/journeys" class="dropdown-item">JORNADAS</router-link>
+      
+      <!-- Últimas 5 tarefas -->
+      <div v-if="recentJourneys.length > 0" class="recent-tasks-section">
+        <div class="section-divider">TAREFAS RECENTES</div>
+        <router-link
+          v-for="journey in recentJourneys"
+          :key="journey.id"
+          :to="getJourneyLink(journey)"
+          class="dropdown-item recent-task-item"
+        >
+          <font-awesome-icon icon="fas fa-history" class="text-gray-400 text-sm mr-2" />
+          <span class="truncate">{{ truncateTaskName(journey.task_name) }}</span>
+        </router-link>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from "vuex";
-import { IMAGES_PATH } from "@/config/apiConfig";
+import { IMAGES_PATH, JOURNEY_RECENT } from "@/config/apiConfig";
+import axios from "axios";
 
 export default {
   data() {
     return {
       dropdownVisible: false,
+      recentJourneys: [],
     };
   },
   computed: {
@@ -68,7 +85,6 @@ export default {
         };
       }
       
-      // Se não há opportunity_id nem project_id, retorna uma rota padrão ou null
       return null;
     },
     taskDisplayName() {
@@ -91,6 +107,10 @@ export default {
     ...mapActions(['checkOpenJourneys']),
     toggleDropdown() {
       this.dropdownVisible = !this.dropdownVisible;
+      if (this.dropdownVisible) {
+        console.log('Dropdown aberto, carregando jornadas recentes...');
+        this.loadRecentJourneys();
+      }
     },
     closeDropdown() {
       this.dropdownVisible = false;
@@ -100,10 +120,45 @@ export default {
         this.closeDropdown();
       }
     },
+    async loadRecentJourneys() {
+      try {
+        const url = `api/${JOURNEY_RECENT}`;
+        console.log('Fazendo requisição para:', url);
+        const response = await axios.get(url);
+        console.log('Resposta recebida:', response.data);
+        this.recentJourneys = response.data;
+        console.log('recentJourneys atualizado:', this.recentJourneys);
+      } catch (error) {
+        console.error('Erro ao carregar jornadas recentes:', error);
+        console.error('Detalhes do erro:', error.response?.data);
+        console.error('URL chamada:', error.config?.url);
+      }
+    },
+    getJourneyLink(journey) {
+      if (journey.opportunity_id) {
+        return { 
+          name: 'opportunityShow', 
+          params: { id: journey.opportunity_id }, 
+          query: { scrollTo: 'tasks' } 
+        };
+      } else if (journey.project_id) {
+        return { 
+          name: 'projectShow', 
+          params: { id: journey.project_id }, 
+          query: { scrollTo: 'tasks' } 
+        };
+      }
+      return '/journeys';
+    },
+    truncateTaskName(name) {
+      if (name.length > 35) {
+        return name.substring(0, 35) + '...';
+      }
+      return name;
+    },
   },
   mounted() {
     document.addEventListener("click", this.handleClickOutside);
-    // Verificar se precisa carregar openJourney
     if (this.openJourney === false) {
       this.checkOpenJourneys();
     }
@@ -117,13 +172,9 @@ export default {
 <style scoped>
 .user-menu {
   position: absolute;
-  /* display: inline-block; */
-  /* margin-right: 20px; */
   top: 1%;
   right: 1%;
   z-index: 10;
-  /* padding-top: 0.5rem;
-    padding-bottom: 0.5rem; */
 }
 
 .user-info {
@@ -163,6 +214,7 @@ export default {
   z-index: 1000;
   display: block;
   min-width: 230px;
+  max-width: 300px;
 }
 
 .dropdown-item {
@@ -177,6 +229,33 @@ export default {
   color: var(--primary);
 }
 
+.recent-tasks-section {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  margin: 5px 0;
+}
+
+.section-divider {
+  padding: 8px 10px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.recent-task-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  font-size: 0.9rem;
+}
+
+.recent-task-item .truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .play-container {
   position: absolute;
   font-size: 1.2rem;
@@ -187,17 +266,17 @@ export default {
 }
 
 .play {
-  color: var(--green); /* Cor inicial */
-  animation: blink 4s infinite; /* Define a animação */
+  color: var(--green);
+  animation: blink 4s infinite;
 }
 
 @keyframes blink {
   0%,
   100% {
-    color: var(--green); /* Cor inicial e final */
+    color: var(--green);
   }
   50% {
-    color: var(--green-light); /* Cor intermediária */
+    color: var(--green-light);
   }
 }
 </style>

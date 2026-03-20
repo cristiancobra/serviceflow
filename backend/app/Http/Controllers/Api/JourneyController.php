@@ -188,4 +188,34 @@ class JourneyController extends Controller
             ]);
         }
     }
+
+    /**
+     * Get the last 5 journeys of the authenticated user
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getRecentJourneys(Request $request)
+    {
+        $userId = $request->user()->id;
+        
+        $recentJourneys = Journey::where('user_id', $userId)
+            ->whereNotNull('end') // Apenas jornadas finalizadas
+            ->with(['task', 'task.opportunity', 'task.project'])
+            ->orderBy('end', 'desc')
+            ->limit(5)
+            ->get()
+            ->map(function ($journey) {
+                $task = $journey->task;
+                return [
+                    'id' => $journey->id,
+                    'task_id' => $journey->task_id,
+                    'task_name' => $task ? $task->name : 'Tarefa sem nome',
+                    'opportunity_id' => $task ? $task->opportunity_id : null,
+                    'project_id' => $task ? $task->project_id : null,
+                    'end' => $journey->end,
+                ];
+            });
+
+        return response()->json($recentJourneys);
+    }
 }

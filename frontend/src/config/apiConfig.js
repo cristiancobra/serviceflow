@@ -15,6 +15,7 @@ export const JOURNEY_URL = "journeys";
 export const JOURNEY_URL_PARAMETER = "journeys/";
 export const JOURNEY_URL_QUERY = "journeys?";
 export const JOURNEY_CHECK_OPEN = "journeys/check-open-journey";
+export const JOURNEY_RECENT = "journeys/recent";
 export const JOURNEY_BY_TASK_URL_QUERY = "journeys-by-task-id?";
 export const LEAD_URL = "leads";
 export const LOGIN_URL = "login";

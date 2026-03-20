@@ -86,11 +86,13 @@ Route::middleware('auth:sanctum')->group(function () {
 		->names('invoices');
 
 	// JOURNEYS
-	Route::get('/journeys-by-task-id', [JourneyController::class, 'getJourneysByTaskId'])
-		->name('journeysTaskId');
+	Route::get('/journeys/recent', [JourneyController::class, 'getRecentJourneys'])
+		->name('journeys.recent');
 
 	Route::get('/journeys/check-open-journey', [JourneyController::class, 'checkOpenJourney']);
 
+	Route::get('/journeys-by-task-id', [JourneyController::class, 'getJourneysByTaskId'])
+		->name('journeysTaskId');
 
 	Route::apiResource('journeys', JourneyController::class)
 		->names('journeys');
