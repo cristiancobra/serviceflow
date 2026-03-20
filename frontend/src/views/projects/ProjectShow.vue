@@ -212,7 +212,9 @@ export default {
         .then((response) => {
           this.project.duration_time = response.data.data.duration_time;
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.error('Erro ao atualizar duração do projeto:', error);
+        });
     },
   },
   computed: {

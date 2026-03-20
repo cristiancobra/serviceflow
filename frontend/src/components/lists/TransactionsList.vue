@@ -140,11 +140,11 @@
                     <router-link
                       v-if="transaction.invoice?.proposal?.opportunity?.name"
                       :to="{ name: 'opportunityShow', params: { id: transaction.invoice.proposal.opportunity.id } }"
-                      class="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium truncate text-sm transition-colors"
+                      class="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors max-w-full"
                       :title="transaction.invoice.proposal.opportunity.name"
                     >
                       <font-awesome-icon icon="fa-solid fa-bullseye" class="text-xs flex-shrink-0" />
-                      {{ transaction.invoice.proposal.opportunity.name }}
+                      <span class="truncate">{{ transaction.invoice.proposal.opportunity.name }}</span>
                     </router-link>
                     <span v-else class="text-gray-400 text-sm italic">-</span>
                   </td>
@@ -425,8 +425,6 @@ export default {
         
         this.extractBankAccounts();
         this.applyFilters();
-        
-        console.log("transactions", this.transactions);
       } catch (error) {
         console.error("Erro ao carregar transações:", error);
       }

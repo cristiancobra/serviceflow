@@ -62,9 +62,11 @@ export default {
         .get(`${BACKEND_URL}${COMPANY_URL_PARAMENTER}${this.companyId}`)
         .then((response) => {
           this.company = response.data.data;
-          this.companyLoaded = true; // Marque a tarefa como carregada
+          this.companyLoaded = true;
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.error('Erro ao carregar empresa:', error);
+        });
     },
     setcompanyId(companyId) {
       this.companyId = companyId;
@@ -88,7 +90,6 @@ export default {
     },
     async updateCompany(fieldName, editedValue) {
       try {
-console.log("editedValue", editedValue);
         const updatedField = { [fieldName]: editedValue };
 
         const response = await axios.put(
@@ -97,8 +98,6 @@ console.log("editedValue", editedValue);
         );
 
         this.company = response.data.data;
-        console.log("Company", this.company);
-        console.log("response", response);
       } catch (error) {
         console.error("Erro ao atualizar a tarefa:", error);
       }

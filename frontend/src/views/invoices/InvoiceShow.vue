@@ -331,7 +331,6 @@ export default {
       // Adiciona a nova transação ao início da lista
       this.invoice.transactions.unshift(newTransaction);
       this.isCreateTransactionModalVisible = false;
-      console.log("Nova transação adicionada:", newTransaction);
     },
     async deleteInvoice() {
       // Confirmação antes de excluir
@@ -378,7 +377,6 @@ export default {
     },
     async getInvoice() {
       this.invoice = await show("invoices", this.invoiceId);
-      console.log("getinoice", this.invoice);
     },
     setInvoiceId(invoiceId) {
       this.invoiceId = invoiceId;

@@ -59,15 +59,13 @@ export default {
         .then((response) => {
           this.companies = response.data.data;
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.error('Erro ao carregar empresas:', error);
+        });
     },
     addCompanyCreated(newCompany) {
-      console.log("Empresa criada:", newCompany);
       this.companies.push(newCompany);
-      console.log("Nova EMPRESA adicionada:", newCompany.legal_name);
       this.isModalVisible = false;
-      // this.hasError = false;
-      // !this.toggle();
     },
   },
   mounted() {

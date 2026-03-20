@@ -82,7 +82,6 @@ export default {
         async getUser() {
             let userId = this.$route.params.id;
             this.user = await show('users', userId);
-            console.log(this.user);
         },
         async submitForm() {
             const { data, error } = await this.submitFormCreate("users", this.user);

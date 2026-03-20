@@ -43,43 +43,53 @@ export default {
   methods: {
     getTasksCanceled() {
       axios
-        .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=canceled`) // Faz a requisição filtrando por status "done"
+        .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=canceled`)
         .then((response) => {
           this.filteredTasks = response.data.data;
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.error('Erro ao filtrar tarefas canceladas:', error);
+        });
     },
     getTasksDoing() {
       axios
-        .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=doing`) // Faz a requisição filtrando por status "doing"
+        .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=doing`)
         .then((response) => {
           this.filteredTasks = response.data.data;
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.error('Erro ao filtrar tarefas em andamento:', error);
+        });
     },
     getTasksDone() {
       axios
-        .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=done`) // Faz a requisição filtrando por status "done"
+        .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=done`)
         .then((response) => {
           this.filteredTasks = response.data.data;
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.error('Erro ao filtrar tarefas concluídas:', error);
+        });
     },
     getTasksLate() {
       axios
-        .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-date`) // Faz a requisição filtrando por status "late"
+        .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-date`)
         .then((response) => {
           this.filteredTasks = response.data.data;
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.error('Erro ao filtrar tarefas atrasadas:', error);
+        });
     },
     getTasksToDo() {
       axios
-        .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=to-do`) // Faz a requisição filtrando por status "to-do"
+        .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=to-do`)
         .then((response) => {
           this.filteredTasks = response.data.data;
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.error('Erro ao filtrar tarefas a fazer:', error);
+        });
     },
   },
   mounted() {
