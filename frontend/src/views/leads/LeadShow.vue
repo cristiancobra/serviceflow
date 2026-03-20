@@ -468,7 +468,7 @@ export default {
         this.lead.opportunities.forEach(opportunity => {
           if (opportunity.proposals) {
             count += opportunity.proposals.filter(proposal => 
-              proposal.status === 'aceita' || proposal.status === 'aprovada'
+              proposal.status === 'accepted'
             ).length;
           }
         });
@@ -509,7 +509,7 @@ export default {
       return {
         'draft': 'rascunho',
         'submitted': 'enviada',
-        'accepted': 'aprovada',
+        'accepted': 'aceita',
         'rejected': 'rejeitada',
         'canceled': 'cancelada',        
       };

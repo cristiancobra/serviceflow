@@ -18,7 +18,10 @@
         class="timeline-circle"
         v-for="(date, index) in timelineEvents"
         :key="'circle-' + index"
-        :class="{ 'active': date.value }"
+        :class="[
+          { 'active': date.value },
+          date.circleClass
+        ]"
       ></div>
     </div>
 
@@ -29,7 +32,7 @@
         v-for="(date, index) in timelineEvents"
         :key="'label-' + index"
       >
-        <p>{{ date.label }}</p>
+        <p :class="date.labelClass">{{ date.label }}</p>
       </div>
     </div>
   </div>
@@ -49,12 +52,42 @@ export default {
   data() {
     return {
       timelineEvents: [
-        { label: "Criada", value: this.proposal.created_at },
-        { label: "Rascunhada", value: this.proposal.draft_at },
-        { label: "Enviada", value: this.proposal.submitted_at },
-        { label: "Aceita", value: this.proposal.accepted_at },
-        { label: "Rejeitada", value: this.proposal.rejected_at },
-        { label: "Cancelada", value: this.proposal.canceled_at },
+        { 
+          label: "Criada", 
+          value: this.proposal.created_at,
+          labelClass: "text-blue-700 font-semibold",
+          circleClass: "circle-blue"
+        },
+        { 
+          label: "Rascunhada", 
+          value: this.proposal.draft_at,
+          labelClass: "text-gray-600 font-semibold",
+          circleClass: "circle-gray"
+        },
+        { 
+          label: "Enviada", 
+          value: this.proposal.submitted_at,
+          labelClass: "text-purple-700 font-semibold",
+          circleClass: "circle-purple"
+        },
+        { 
+          label: "Aceita", 
+          value: this.proposal.accepted_at,
+          labelClass: "text-green-700 font-semibold",
+          circleClass: "circle-green"
+        },
+        { 
+          label: "Rejeitada", 
+          value: this.proposal.rejected_at,
+          labelClass: "text-red-700 font-semibold",
+          circleClass: "circle-red"
+        },
+        { 
+          label: "Cancelada", 
+          value: this.proposal.canceled_at,
+          labelClass: "text-gray-500 font-semibold",
+          circleClass: "circle-gray"
+        },
       ],
     };
   },
@@ -66,12 +99,42 @@ export default {
       immediate: true,
       handler(newProposal) {
         this.timelineEvents = [
-          { label: "Criada", value: newProposal?.created_at || "" },
-          { label: "Rascunhada", value: newProposal?.draft_at || "" },
-          { label: "Enviada", value: newProposal?.submitted_at || "" },
-          { label: "Aceita", value: newProposal?.accepted_at || "" },
-          { label: "Rejeitada", value: newProposal?.rejected_at || "" },
-          { label: "Cancelada", value: newProposal?.canceled_at || "" },
+          { 
+            label: "Criada", 
+            value: newProposal?.created_at || "",
+            labelClass: "text-blue-700 font-semibold",
+            circleClass: "circle-blue"
+          },
+          { 
+            label: "Rascunhada", 
+            value: newProposal?.draft_at || "",
+            labelClass: "text-gray-600 font-semibold",
+            circleClass: "circle-gray"
+          },
+          { 
+            label: "Enviada", 
+            value: newProposal?.submitted_at || "",
+            labelClass: "text-purple-700 font-semibold",
+            circleClass: "circle-purple"
+          },
+          { 
+            label: "Aceita", 
+            value: newProposal?.accepted_at || "",
+            labelClass: "text-green-700 font-semibold",
+            circleClass: "circle-green"
+          },
+          { 
+            label: "Rejeitada", 
+            value: newProposal?.rejected_at || "",
+            labelClass: "text-red-700 font-semibold",
+            circleClass: "circle-red"
+          },
+          { 
+            label: "Cancelada", 
+            value: newProposal?.canceled_at || "",
+            labelClass: "text-gray-500 font-semibold",
+            circleClass: "circle-gray"
+          },
         ];
       },
     },
@@ -154,9 +217,38 @@ export default {
   transition: all 0.3s ease;
 }
 
-.timeline-circle.active::after {
+/* Círculos coloridos quando ativos */
+.timeline-circle.active.circle-blue::after {
   background: #3b82f6;
   box-shadow: 0 0 0 2px #3b82f6;
+  width: 16px;
+  height: 16px;
+}
+
+.timeline-circle.active.circle-gray::after {
+  background: #6b7280;
+  box-shadow: 0 0 0 2px #6b7280;
+  width: 16px;
+  height: 16px;
+}
+
+.timeline-circle.active.circle-purple::after {
+  background: #7c3aed;
+  box-shadow: 0 0 0 2px #7c3aed;
+  width: 16px;
+  height: 16px;
+}
+
+.timeline-circle.active.circle-green::after {
+  background: #15803d;
+  box-shadow: 0 0 0 2px #15803d;
+  width: 16px;
+  height: 16px;
+}
+
+.timeline-circle.active.circle-red::after {
+  background: #b91c1c;
+  box-shadow: 0 0 0 2px #b91c1c;
   width: 16px;
   height: 16px;
 }

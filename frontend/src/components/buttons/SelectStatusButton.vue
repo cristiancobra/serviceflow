@@ -1,19 +1,51 @@
 <template>
-  <div class="dropdown">
+  <div class="relative inline-block">
+    <!-- Button -->
     <button
-      class="button-status"
-      :class="modelValue?.value"
       @click="isOpen = !isOpen"
+      :class="buttonClasses"
+      class="inline-flex items-center justify-center px-4 py-2 rounded-full text-xs font-bold border-2 transition-all duration-200 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 min-w-[120px]"
     >
       {{ modelValue?.label || "definir situação" }}
+      <svg 
+        class="ml-2 h-4 w-4 transition-transform duration-200" 
+        :class="{ 'rotate-180': isOpen }"
+        fill="none" 
+        stroke="currentColor" 
+        viewBox="0 0 24 24"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
     </button>
-    <ul v-if="isOpen" class="dropdown-menu">
-      <li v-for="item in items" :key="item.value" @click="selectStatus(item)">
-        <p class="menu-item" :class="item.value">
-          {{ item.label }}
-        </p>
-      </li>
-    </ul>
+
+    <!-- Dropdown Menu -->
+    <transition
+      enter-active-class="transition ease-out duration-100"
+      enter-from-class="transform opacity-0 scale-95"
+      enter-to-class="transform opacity-100 scale-100"
+      leave-active-class="transition ease-in duration-75"
+      leave-from-class="transform opacity-100 scale-100"
+      leave-to-class="transform opacity-0 scale-95"
+    >
+      <ul 
+        v-if="isOpen" 
+        class="absolute z-10 mt-2 w-full min-w-[160px] bg-white rounded-lg shadow-lg border border-gray-200 py-2"
+      >
+        <li 
+          v-for="item in items" 
+          :key="item.value" 
+          @click="selectStatus(item)"
+          class="cursor-pointer"
+        >
+          <div 
+            :class="getItemClasses(item.value)"
+            class="mx-2 my-1 px-3 py-2 rounded-full text-xs font-bold border-2 text-center transition-all duration-150 hover:scale-105"
+          >
+            {{ item.label }}
+          </div>
+        </li>
+      </ul>
+    </transition>
   </div>
 </template>
 
@@ -26,7 +58,7 @@ export default {
       items: [
         { value: "draft", label: "rascunho" },
         { value: "submitted", label: "enviada" },
-        { value: "accepted", label: "aprovada" },
+        { value: "accepted", label: "aceita" },
         { value: "rejected", label: "rejeitada" },
         { value: "canceled", label: "cancelada" },
         { value: "paid", label: "paga" },
@@ -39,11 +71,35 @@ export default {
       required: true,
     },
   },
+  computed: {
+    buttonClasses() {
+      const classes = {
+        'draft': 'bg-gray-100 text-gray-800 border-gray-400 hover:bg-gray-200 focus:ring-gray-400',
+        'submitted': 'bg-purple-100 text-purple-800 border-purple-400 hover:bg-purple-200 focus:ring-purple-400',
+        'accepted': 'bg-emerald-100 text-emerald-800 border-emerald-500 hover:bg-emerald-200 focus:ring-emerald-500',
+        'rejected': 'bg-red-100 text-red-800 border-red-400 hover:bg-red-200 focus:ring-red-400',
+        'canceled': 'bg-orange-100 text-orange-800 border-orange-400 hover:bg-orange-200 focus:ring-orange-400',
+        'paid': 'bg-blue-100 text-blue-800 border-blue-500 hover:bg-blue-200 focus:ring-blue-500',
+      };
+      return classes[this.modelValue?.value] || 'bg-gray-100 text-gray-600 border-gray-300';
+    },
+  },
   methods: {
     selectStatus(status) {
       this.modelValue = status;
       this.isOpen = false;
       this.$emit("update:modelValue", status.value);
+    },
+    getItemClasses(value) {
+      const classes = {
+        'draft': 'bg-gray-100 text-gray-800 border-gray-400 hover:bg-gray-200',
+        'submitted': 'bg-purple-100 text-purple-800 border-purple-400 hover:bg-purple-200',
+        'accepted': 'bg-emerald-100 text-emerald-800 border-emerald-500 hover:bg-emerald-200',
+        'rejected': 'bg-red-100 text-red-800 border-red-400 hover:bg-red-200',
+        'canceled': 'bg-orange-100 text-orange-800 border-orange-400 hover:bg-orange-200',
+        'paid': 'bg-blue-100 text-blue-800 border-blue-500 hover:bg-blue-200',
+      };
+      return classes[value] || 'bg-gray-100 text-gray-800 border-gray-400';
     },
   },
   watch: {
@@ -58,126 +114,5 @@ export default {
 </script>
 
 <style scoped>
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-menu {
-  display: block;
-  position: absolute;
-  font-size: 0.8rem;
-  background-color: #f9f9f9;
-  border-style: solid;
-  border-color: var(--purple-light);
-  border-width: 1px;
-  border-radius: 4%;
-  min-width: 140px;
-  margin-left: 0rem;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  padding: 1rem;
-  z-index: 1;
-}
-
-.button-status {
-    border-width: 2px;
-    border-style: solid;
-    border-radius: 20px 20px 20px 20px;
-    padding: 0.2rem;
-    padding-left: 0.4rem;
-    padding-right: 0.4rem;
-    width: 6rem;
-    font-weight: 800;
-    font-size: 0.8rem;
-    text-align: center;
-    border-color: var(--purple-light);
-    background-color: var(--purple);
-    color: white;
-}
-
-.button-status.accepted {
-    border-color: var(--green-light);
-    background-color: var(--green);
-    color: white;
-}
-
-.button-status.canceled {
-    border-color: var(--canceled-color);
-    background-color: var(--canceled-color);
-    color: white;
-}
-
-.button-status.draft {
-    border-color: black;
-    background-color: white;
-    color: black;
-}
-
-.button-status.rejected {
-    border-color: var(--red-light);
-    background-color: var(--red);
-    color: white;
-}
-
-.button-status.paid {
-    border-color: #10b981;
-    background-color: #059669;
-    color: white;
-}
-
-.menu-item {
-  border-width: 2px;
-  border-style: solid;
-  border-radius: 15px;
-  padding: 0.3rem 0.8rem;
-  margin: 0.2rem 0;
-  font-weight: 600;
-  font-size: 0.8rem;
-  text-align: center;
-  cursor: pointer;
-  transition: opacity 0.2s;
-  border-color: var(--purple-light);
-  background-color: var(--purple);
-  color: white;
-}
-
-.menu-item:hover {
-  opacity: 0.8;
-}
-
-.menu-item.accepted {
-  border-color: var(--green-light);
-  background-color: var(--green);
-  color: white;
-}
-
-.menu-item.canceled {
-  border-color: var(--canceled-color);
-  background-color: var(--canceled-color);
-  color: white;
-}
-
-.menu-item.draft {
-  border-color: black;
-  background-color: white;
-  color: black;
-}
-
-.menu-item.rejected {
-  border-color: var(--red-light);
-  background-color: var(--red);
-  color: white;
-}
-
-.menu-item.submitted {
-  border-color: var(--purple-light);
-  background-color: var(--purple);
-  color: white;
-}
-
-.menu-item.paid {
-  border-color: #10b981;
-  background-color: #059669;
-  color: white;
-}
+/* Sem estilos personalizados - tudo em Tailwind! */
 </style>

@@ -41,7 +41,7 @@ class ProposalsResource extends JsonResource
             'installment_quantity' => $this->installment_quantity,
             'draft_at' => $this->draft_at,
             'submitted_at' => $this->submitted_at,
-            'approved_at' => $this->approved_at,
+            'accepted_at' => $this->accepted_at,
             'rejected_at' => $this->rejected_at,
             'canceled_at' => $this->canceled_at,
             'paid_at' => $this->paid_at,

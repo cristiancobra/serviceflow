@@ -32,6 +32,10 @@ class Proposal extends Model
         'installment_quantity',
         'validity_days',
         'status',
+        'submitted_at',
+        'accepted_at',
+        'rejected_at',
+        'canceled_at',
         'paid_at',
     ];
 

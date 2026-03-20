@@ -28,7 +28,7 @@ export default {
       const labels = {
         'draft': 'Rascunho',
         'submitted': 'Enviada',
-        'accepted': 'Aprovada',
+        'accepted': 'Aceita',
         'rejected': 'Rejeitada',
         'canceled': 'Cancelada',
         'paid': 'Paga'
@@ -41,10 +41,10 @@ export default {
       const statusClasses = {
         'draft': 'bg-gray-100 text-gray-800 border-2 border-gray-400',
         'submitted': 'bg-purple-100 text-purple-800 border-2 border-purple-400',
-        'accepted': 'bg-green-100 text-green-800 border-2 border-green-400',
+        'accepted': 'bg-emerald-100 text-emerald-800 border-2 border-emerald-500',
         'rejected': 'bg-red-100 text-red-800 border-2 border-red-400',
         'canceled': 'bg-orange-100 text-orange-800 border-2 border-orange-400',
-        'paid': 'bg-emerald-100 text-emerald-800 border-2 border-emerald-500'
+        'paid': 'bg-blue-100 text-blue-800 border-2 border-blue-500'
       };
       
       return `${baseClasses} ${statusClasses[this.currentStatus] || 'bg-gray-100 text-gray-800'}`;

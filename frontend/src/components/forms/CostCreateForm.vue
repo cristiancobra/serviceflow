@@ -3,20 +3,22 @@
     <button
       type="button"
       @click="openModal"
-      class="flex items-center justify-center w-10 h-10 rounded-full bg-primary-500 hover:bg-gray-300 text-white hover:text-gray-900 transition cursor-pointer"
+      class="flex items-center justify-center w-10 h-10 rounded-full bg-primary hover:bg-primary-dark text-white transition-all duration-200 hover:shadow-lg"
     >
       <font-awesome-icon icon="fa-solid fa-cogs" class="text-lg" />
     </button>
 
     <div v-if="isModalVisible" class="myModal">
-      <div class="modal-dialog modal-xl">
+      <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <font-awesome-icon
-              icon="fa-solid fa-tasks"
-              class="icon pe-3 primary"
-            />
-            <h2 class="modal-title" id="taskModalLabel">Novo custo</h2>
+            <div class="flex items-center">
+              <font-awesome-icon
+                icon="fa-solid fa-cogs"
+                class="text-primary text-2xl mr-3"
+              />
+              <h2 class="text-2xl font-bold text-gray-900">Novo Custo</h2>
+            </div>
             <button
               type="button"
               class="btn-close"
@@ -24,52 +26,73 @@
               aria-label="Close"
             ></button>
           </div>
+
           <div class="modal-body">
             <form @submit.prevent="submitForm">
-              <div class="">
-                <div class="col-12">
-                  <TextInput
-                    label="Nome"
-                    name="name"
-                    v-model="form.name"
-                    placeholder="nome do custo"
-                  />
-                  <div class="error-row" v-if="errors.name">
-                    <span class="error-text">* {{ errors.name[0] }}</span>
-                  </div>
+              <!-- Nome do Custo -->
+              <div class="mb-6">
+                <TextInput
+                  label="Nome"
+                  name="name"
+                  v-model="form.name"
+                  placeholder="Nome do custo"
+                />
+                <div v-if="errors.name" class="mt-2">
+                  <span class="text-sm text-red-600 font-medium">
+                    * {{ errors.name[0] }}
+                  </span>
                 </div>
               </div>
-              <div class="row">
-                <div class="col-2">
-                  <label class="labels" for="observations"> Descrição </label>
-                </div>
-                <div class="col-10">
-                  <input
-                    class="form-control"
-                    type="text"
-                    id="observations"
-                    v-model="form.observations"
-                    placeholder="Descreva o custo"
-                  />
-                </div>
+
+              <!-- Descrição -->
+              <div class="mb-6">
+                <label
+                  for="observations"
+                  class="block text-sm font-semibold text-gray-900 mb-2"
+                >
+                  Descrição
+                </label>
+                <textarea
+                  id="observations"
+                  v-model="form.observations"
+                  placeholder="Descreva o custo..."
+                  rows="3"
+                  class="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out hover:border-gray-400 resize-none"
+                ></textarea>
               </div>
-              <div class="row">
-                <div class="col-4">
-                  <label class="labels" for="price"> Preço</label>
-                </div>
-                <div class="col">
+
+              <!-- Preço -->
+              <div class="mb-6">
+                <label
+                  for="price"
+                  class="block text-sm font-semibold text-gray-900 mb-2"
+                >
+                  Preço
+                </label>
+                <div class="relative">
+                  <span
+                    class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium"
+                  >
+                    R$
+                  </span>
                   <input
-                    class="form-control"
+                    id="price"
                     type="text"
                     name="price"
                     v-model="form.price"
                     v-mask-decimal.br="2"
+                    placeholder="0,00"
+                    class="w-full pl-10 pr-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out hover:border-gray-400 text-right"
                   />
-                  <div class="error-row" v-if="errors.price">
-                    <span class="error-text">* {{ errors.price[0] }}</span>
-                  </div>
+                </div>
+                <div v-if="errors.price" class="mt-2">
+                  <span class="text-sm text-red-600 font-medium">
+                    * {{ errors.price[0] }}
+                  </span>
                 </div>
               </div>
+
+              <!-- Footer com botões -->
               <div class="modal-footer">
                 <button
                   type="button"
@@ -78,7 +101,7 @@
                 >
                   Fechar
                 </button>
-                <button type="submit" class="button-new">criar</button>
+                <button type="submit" class="button-new">Criar</button>
               </div>
             </form>
           </div>
@@ -151,40 +174,5 @@ export default {
 </script>
 
 <style scoped>
-.button-icon {
-  margin-right: 0.5rem;
-}
-
-.button-text {
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.container {
-  border-style: solid;
-  border-color: #ff3eb5;
-  border-width: 2px;
-  margin-left: 180px;
-  margin-right: 180px;
-  margin-bottom: 60px;
-  margin-top: 60px;
-  padding: 20px;
-  border-radius: 16px;
-  transition: all 0.5s;
-  text-align: left;
-  font-weight: 800;
-}
-
-.labels {
-  text-align: left;
-  margin-left: 0;
-  padding-top: 12px;
-}
-
-.new {
-  background-color: #ff3eb5;
-  color: white;
-  font-weight: 800;
-  padding: 10px 20px 10px 20px;
-}
+/* Removido - tudo em Tailwind agora! */
 </style>
