@@ -334,11 +334,30 @@ export default {
       console.log("Nova transação adicionada:", newTransaction);
     },
     async deleteInvoice() {
-      this.response = await destroy("invoices", this.invoiceId);
-      this.$router.push({
-        name: "proposalShow",
-        params: { id: this.invoice.proposal_id },
-      });
+      // Confirmação antes de excluir
+      if (!confirm('Tem certeza que deseja excluir esta fatura? Esta ação não pode ser desfeita.')) {
+        return;
+      }
+
+      try {
+        this.errorMessage = null;
+        await this.destroy("invoices", this.invoiceId);
+        
+        // Redireciona para a proposta após excluir com sucesso
+        this.$router.push({
+          name: "proposalShow",
+          params: { id: this.invoice.proposal_id },
+        });
+      } catch (error) {
+        // Trata erros de validação do backend
+        if (error.response && error.response.status === 422) {
+          const errorData = error.response.data;
+          this.errorMessage = errorData.message || 'Não foi possível excluir a fatura.';
+        } else {
+          this.errorMessage = 'Erro ao excluir fatura. Tente novamente.';
+        }
+        console.error("Erro ao excluir fatura:", error);
+      }
     },
     formatDateBr(date) {
       if (!date) return "";

@@ -72,6 +72,7 @@ class InvoiceController extends Controller
             // Faturas parceladas (lógica existente)
             $prices = $validated['prices'];
             $dateDue = $validated['date_due'];
+            $type = $validated['type'] ?? 'credit'; // Usa o tipo enviado ou default 'credit'
             unset($validated['prices'], $validated['date_due']);
         
             $invoices = [];
@@ -80,7 +81,7 @@ class InvoiceController extends Controller
                     'price' => $price,
                     'balance' => $price,
                     'date_due' => date('Y-m-d', strtotime("+$index month", strtotime($dateDue))),
-                    'type' => 'credit',
+                    'type' => $type,
                 ]);
                 $invoice = new Invoice;
                 $invoice->fill($invoiceData);
@@ -456,6 +457,34 @@ class InvoiceController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $invoice = Invoice::findOrFail($id);
+            
+            // Verifica se a fatura tem transações associadas
+            if ($invoice->transactions()->count() > 0) {
+                return response()->json([
+                    'message' => 'Não é possível excluir uma fatura que possui pagamentos/transações associadas.',
+                    'errors' => ['invoice' => ['Exclua primeiro as transações antes de excluir a fatura']]
+                ], 422);
+            }
+            
+            $invoice->delete();
+            
+            return response()->json([
+                'message' => 'Fatura excluída com sucesso',
+                'data' => null
+            ], 200);
+            
+        } catch (\Exception $e) {
+            Log::error('Erro ao excluir fatura', [
+                'invoice_id' => $id,
+                'error' => $e->getMessage()
+            ]);
+            
+            return response()->json([
+                'message' => 'Erro ao excluir fatura',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

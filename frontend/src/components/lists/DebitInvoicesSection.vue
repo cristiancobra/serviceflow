@@ -76,10 +76,11 @@
           <!-- Tipo e Fornecedor -->
           <div class="flex items-center gap-4">
             <div
-              class="flex items-center justify-center w-10 h-10 rounded-full bg-red-600"
+              :class="invoice.category === 'operational' ? 'bg-orange-600' : 'bg-rose-600'"
+              class="flex items-center justify-center w-10 h-10 rounded-full"
             >
               <font-awesome-icon
-                icon="fa-solid fa-receipt"
+                :icon="invoice.category === 'operational' ? 'fa-solid fa-briefcase' : 'fa-solid fa-receipt'"
                 class="text-white"
               />
             </div>
@@ -110,7 +111,7 @@
                 class="text-gray-400 mr-2 w-4"
               />
               <span class="font-medium mr-1 text-sm">Valor:</span>
-              <span class="text-red-600 font-bold">
+              <span class="text-rose-600 font-bold">
                 {{ formatCurrency(invoice.price) }}
               </span>
             </div>
@@ -135,7 +136,7 @@
               <span
                 :class="{
                   'text-gray-600': getInvoiceBalance(invoice) === 0,
-                  'text-red-600': getInvoiceBalance(invoice) > 0,
+                  'text-rose-600': getInvoiceBalance(invoice) > 0,
                 }"
                 class="font-bold"
               >
@@ -150,6 +151,14 @@
               title="Adicionar Pagamento"
             >
               <font-awesome-icon icon="fas fa-plus" class="text-sm" />
+            </button>
+
+            <button
+              @click.prevent.stop="deleteInvoice(invoice.id)"
+              class="p-2 text-rose-600 hover:text-white hover:bg-rose-600 rounded-md transition-colors duration-200"
+              title="Excluir fatura"
+            >
+              <font-awesome-icon icon="fas fa-trash" class="text-sm" />
             </button>
 
             <div class="w-6 h-6 flex items-center justify-center">
@@ -172,7 +181,8 @@
             class="group flex items-center justify-between ms-0 px-1 py-1 rounded-md bg-white even:bg-sky-50/40 hover:bg-sky-100/60 border-l-4 border-transparent hover:border-sky-400 transition-colors"
           >
             <div
-              class="flex items-center justify-center w-6 h-6 me-2 bg-red-600 rounded-full"
+              :class="invoice.category === 'operational' ? 'bg-orange-600' : 'bg-rose-600'"
+              class="flex items-center justify-center w-6 h-6 me-2 rounded-full"
             >
               <font-awesome-icon
                 icon="fas fa-coins"
@@ -210,7 +220,7 @@
             </div>
             <button
               @click.stop="deleteTransaction(transaction.id, invoice.id)"
-              class="ml-2 p-2 text-red-600 hover:text-white hover:bg-red-600 rounded-md transition-colors duration-200"
+              class="ml-2 p-2 text-rose-600 hover:text-white hover:bg-rose-600 rounded-md transition-colors duration-200"
               title="Excluir transação"
             >
               <font-awesome-icon
@@ -362,6 +372,7 @@ export default {
   methods: {
     formatDateBr,
     updateField,
+    destroy,
     addInvoiceCreated() {
       // Emite evento para o pai recarregar a proposta
       this.$emit("reload-proposal");
@@ -425,7 +436,33 @@ export default {
         }
       }
     },
+    async deleteInvoice(invoiceId) {
+      // Confirmação antes de excluir
+      if (!confirm('Tem certeza que deseja excluir esta fatura? Esta ação não pode ser desfeita.')) {
+        return;
+      }
+
+      try {
+        await this.destroy("invoices", invoiceId);
+        
+        // Emite evento para o pai recarregar a proposta
+        this.$emit("reload-proposal");
+      } catch (error) {
+        // Trata erros de validação do backend
+        if (error.response && error.response.status === 422) {
+          const errorData = error.response.data;
+          alert(errorData.message || 'Não foi possível excluir a fatura.');
+        } else {
+          alert('Erro ao excluir fatura. Tente novamente.');
+        }
+        console.error("Erro ao excluir fatura:", error);
+      }
+    },
     async deleteTransaction(transactionId, invoiceId) {
+      if (!confirm('Tem certeza que deseja excluir esta transação?')) {
+        return;
+      }
+
       await destroy("transactions", transactionId);
 
       // Remover transação localmente
