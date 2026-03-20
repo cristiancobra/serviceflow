@@ -263,13 +263,15 @@ export default {
       return `${year}-${month}-${day}`;
     },
     initializePrices() {
-      const pricePerInstallment = (this.totalAmount / this.installmentQuantity).toFixed(2);
-      const prices = Array(this.installmentQuantity).fill(parseFloat(pricePerInstallment));
+      const pricePerInstallment = parseFloat((this.totalAmount / this.installmentQuantity).toFixed(2));
+      const prices = Array(this.installmentQuantity).fill(pricePerInstallment);
 
+      // Calcular a diferença com precisão de 2 casas decimais
+      const totalCalculated = parseFloat((pricePerInstallment * this.installmentQuantity).toFixed(2));
+      const difference = parseFloat((this.totalAmount - totalCalculated).toFixed(2));
+      
       // Ajustar a última parcela para compensar a diferença
-      const totalCalculated = prices.reduce((acc, price) => acc + price, 0);
-      const difference = this.totalAmount - totalCalculated;
-      prices[this.installmentQuantity - 1] += difference;
+      prices[this.installmentQuantity - 1] = parseFloat((pricePerInstallment + difference).toFixed(2));
 
       return prices;
     },
@@ -278,29 +280,36 @@ export default {
     },
     adjustPrices(changedIndex) {
       const prices = [...this.form.prices];
-      const newPrice = parseFloat(prices[changedIndex]) || 0;
+      const newPrice = parseFloat(parseFloat(prices[changedIndex]).toFixed(2)) || 0;
       
-      const sumBefore = prices.slice(0, changedIndex).reduce((acc, price) => acc + price, 0);
-      const remaining = this.totalAmount - sumBefore;
+      // Arredondar para 2 casas decimais
+      prices[changedIndex] = newPrice;
+      
+      const sumBefore = parseFloat(prices.slice(0, changedIndex).reduce((acc, price) => acc + price, 0).toFixed(2));
+      const remaining = parseFloat((this.totalAmount - sumBefore).toFixed(2));
 
       if (newPrice > remaining) {
         prices[changedIndex] = remaining;
       }
 
-      const remainingAfterChange = this.totalAmount - prices.slice(0, changedIndex + 1).reduce((acc, price) => acc + price, 0);
+      const sumUpToCurrent = parseFloat(prices.slice(0, changedIndex + 1).reduce((acc, price) => acc + price, 0).toFixed(2));
+      const remainingAfterChange = parseFloat((this.totalAmount - sumUpToCurrent).toFixed(2));
       const remainingInstallments = prices.length - (changedIndex + 1);
       
       if (remainingInstallments > 0) {
-        const newPricePerInstallment = (remainingAfterChange / remainingInstallments).toFixed(2);
+        const newPricePerInstallment = parseFloat((remainingAfterChange / remainingInstallments).toFixed(2));
 
         for (let i = changedIndex + 1; i < prices.length; i++) {
-          prices[i] = parseFloat(newPricePerInstallment);
+          prices[i] = newPricePerInstallment;
         }
 
-        // Ajustar a última parcela para compensar a diferença
-        const totalCalculated = prices.reduce((acc, price) => acc + price, 0);
-        const difference = this.totalAmount - totalCalculated;
-        prices[prices.length - 1] += difference;
+        // Recalcular a diferença e ajustar a última parcela
+        const totalRecalculated = parseFloat(prices.reduce((acc, price) => acc + price, 0).toFixed(2));
+        const finalDifference = parseFloat((this.totalAmount - totalRecalculated).toFixed(2));
+        
+        if (finalDifference !== 0) {
+          prices[prices.length - 1] = parseFloat((prices[prices.length - 1] + finalDifference).toFixed(2));
+        }
       }
 
       this.form.prices = prices;
