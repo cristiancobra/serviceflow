@@ -5,17 +5,9 @@
         v-if="userData && userData.photo"
         :src="urlImagePhoto"
         alt="User Image"
-        class="user-image"
+        :class="['user-image', { 'user-image-working': openJourney }]"
       />
-      <font-awesome-icon v-else icon="fas fa-user" class="user-faicon" />
-    </div>
-    <div class="play-container">
-      <template v-if="openJourney">
-        <font-awesome-icon icon="fas fa-play" class="play" />
-      </template>
-      <template v-else>
-        <font-awesome-icon icon="fas fa-pause" class="text-white" />
-      </template>
+      <font-awesome-icon v-else icon="fas fa-user" :class="['user-faicon', { 'user-faicon-working': openJourney }]" />
     </div>
     <div v-if="dropdownVisible" class="dropdown-menu">
       <router-link
@@ -59,6 +51,7 @@ export default {
     return {
       dropdownVisible: false,
       recentJourneys: [],
+      checkInterval: null, // Intervalo para verificar jornadas abertas
     };
   },
   computed: {
@@ -159,12 +152,22 @@ export default {
   },
   mounted() {
     document.addEventListener("click", this.handleClickOutside);
-    if (this.openJourney === false) {
+    
+    // Verificar jornadas abertas ao montar o componente
+    this.checkOpenJourneys();
+    
+    // Verificar a cada 30 segundos se há mudanças nas jornadas
+    this.checkInterval = setInterval(() => {
       this.checkOpenJourneys();
-    }
+    }, 30000); // 30 segundos
   },
   beforeUnmount() {
     document.removeEventListener("click", this.handleClickOutside);
+    
+    // Limpar o intervalo ao desmontar
+    if (this.checkInterval) {
+      clearInterval(this.checkInterval);
+    }
   },
 };
 </script>
@@ -193,6 +196,13 @@ export default {
   border-width: 5px;
   border-radius: 50%;
   margin-right: 0px;
+  transition: border-color 0.3s ease;
+}
+
+.user-image-working {
+  border-color: #059669;
+  box-shadow: 0 0 10px rgba(5, 150, 105, 0.6);
+  animation: border-pulse 2s ease-in-out infinite;
 }
 
 .user-faicon {
@@ -202,6 +212,13 @@ export default {
   border-radius: 50%;
   font-size: 1.8rem;
   padding: 0.6rem;
+  transition: border-color 0.3s ease;
+}
+
+.user-faicon-working {
+  border-color: #059669;
+  box-shadow: 0 0 10px rgba(5, 150, 105, 0.6);
+  animation: border-pulse 2s ease-in-out infinite;
 }
 
 .dropdown-menu {
@@ -258,25 +275,43 @@ export default {
 
 .play-container {
   position: absolute;
-  font-size: 1.2rem;
+  font-size: 0.8rem;
   bottom: -3px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1;
 }
 
-.play {
-  color: var(--green);
-  animation: blink 4s infinite;
+.working {
+  color: #10b981;
+  filter: drop-shadow(0 0 3px rgba(16, 185, 129, 0.8));
+  animation: pulse-working 2s ease-in-out infinite;
 }
 
-@keyframes blink {
-  0%,
-  100% {
-    color: var(--green);
+.stopped {
+  color: #6b7280;
+  opacity: 0.6;
+}
+
+@keyframes pulse-working {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
   }
   50% {
-    color: var(--green-light);
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes border-pulse {
+  0%, 100% {
+    border-color: #059669;
+    box-shadow: 0 0 10px rgba(5, 150, 105, 0.6);
+  }
+  50% {
+    border-color: #10b981;
+    box-shadow: 0 0 20px rgba(5, 150, 105, 0.9);
   }
 }
 </style>

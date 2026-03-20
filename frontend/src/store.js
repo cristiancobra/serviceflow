@@ -49,6 +49,9 @@ export default createStore({
     async checkOpenJourneys({ commit }) {
       try {
         const response = await axios.get(`${BACKEND_URL}${JOURNEY_CHECK_OPEN}`);
+        console.log('🔍 Resposta completa do backend:', response.data);
+        console.log('📊 openJourney recebido:', response.data.openJourney);
+        console.log('✅ hasOpenJourneys:', response.data.hasOpenJourneys);
         commit('setOpenJourney', response.data.openJourney);
       } catch (error) {
         console.error('Erro ao verificar jornadas abertas:', error);
