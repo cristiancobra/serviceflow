@@ -48,6 +48,18 @@ export const getTotalProposals = async () => {
   }
 };
 
+// get total of transactions by year
+export const getTransactionsTotals = async (year) => {
+  const url = `${BACKEND_URL}transactions/report`;
+  try {
+    const response = await axios.get(url, { params: { year } });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching transactions totals:", error);
+    throw error;
+  }
+};
+
 // fetches all models to index page
 export const index = async (model, params = {}) => {
   validateModel(model);

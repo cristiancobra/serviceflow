@@ -121,4 +121,34 @@ class TransactionController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Get report of transactions by year
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function report(Request $request)
+    {
+        $year = $request->query('year', date('Y'));
+
+        // Busca transações do ano filtrado
+        $transactions = Transaction::whereYear('transaction_date', $year)->get();
+
+        // Calcula total de entradas (crédito)
+        $totalEntries = $transactions->where('type', 'credit')->sum('amount');
+
+        // Calcula total de saídas (débito)
+        $totalExits = $transactions->where('type', 'debit')->sum('amount');
+
+        // Calcula o saldo
+        $balance = $totalEntries - $totalExits;
+
+        return response()->json([
+            'totalEntries' => $totalEntries,
+            'totalExits' => $totalExits,
+            'balance' => $balance,
+            'year' => $year,
+        ]);
+    }
 }

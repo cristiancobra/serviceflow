@@ -199,7 +199,7 @@
                   
                   <!-- Valor -->
                   <td class="w-1/12 px-3 py-3 text-right">
-                    <span class="text-sm font-bold text-emerald-600">
+                    <span class="text-sm font-bold" :class="transaction.type === 'credit' ? 'text-green-600' : 'text-red-600'">
                       <money-field name="amount" v-model="transaction.amount" :readonly="true" />
                     </span>
                   </td>
@@ -219,15 +219,15 @@
                   <td class="w-1/12 px-3 py-3 text-center">
                     <span
                       :class="{
-                        'bg-blue-100': transaction.type === 'credit',
+                        'bg-green-100': transaction.type === 'credit',
                         'bg-red-100': transaction.type === 'debit',
                       }"
-                      class="w-7 h-7 flex items-center justify-center rounded-full"
+                      class="w-7 h-7 flex items-center justify-center rounded-full mx-auto"
                     >
                       <font-awesome-icon
                         :icon="transaction.type === 'credit' ? 'fa-solid fa-arrow-up' : 'fa-solid fa-arrow-down'"
                         :class="{
-                          'text-blue-600': transaction.type === 'credit',
+                          'text-green-600': transaction.type === 'credit',
                           'text-red-600': transaction.type === 'debit',
                         }"
                         class="text-xs"
@@ -260,6 +260,13 @@ export default {
   components: {
     MoneyField,
   },
+  props: {
+    filterType: {
+      type: String,
+      required: false,
+      default: null,
+    },
+  },
   data() {
     return {
       searchTerm: "",
@@ -271,12 +278,20 @@ export default {
   },
   computed: {
     searchFilteredTransactions() {
+      let filtered = this.transactions;
+
+      // Filtro por tipo (débito/crédito)
+      if (this.filterType) {
+        filtered = filtered.filter(transaction => transaction.type === this.filterType);
+      }
+
+      // Filtro por busca
       if (!this.searchTerm) {
-        return this.transactions;
+        return filtered;
       }
       
       const term = this.searchTerm.toLowerCase();
-      return this.transactions.filter(transaction => {
+      return filtered.filter(transaction => {
         if (transaction.amount && transaction.amount.toString().includes(term)) {
           return true;
         }
@@ -330,6 +345,12 @@ export default {
     },
     searchFilteredTransactions() {
       this.applyFilters();
+    },
+    filterType(newType, oldType) {
+      // Recarrega as transações quando o filtro de tipo mudar
+      if (newType !== oldType) {
+        this.applyFilters();
+      }
     }
   },
   methods: {

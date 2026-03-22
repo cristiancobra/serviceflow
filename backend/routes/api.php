@@ -186,6 +186,9 @@ Route::middleware('auth:sanctum')->group(function () {
 	->name('users.updatePhoto');
 
 // TRANSACTIONS
+	Route::get('transactions/report', [TransactionController::class, 'report'])
+		->name('transactions.report');
+
 	Route::apiResource('transactions', TransactionController::class)
 		->names('transactions');
 });
