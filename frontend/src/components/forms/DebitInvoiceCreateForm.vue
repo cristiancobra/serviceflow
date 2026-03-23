@@ -22,13 +22,60 @@
 
         <!-- Form -->
         <form @submit.prevent="submitForm" class="p-6 space-y-5">
-          <!-- Fornecedor -->
+          <!-- Tipo de Fornecedor -->
           <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+              Tipo de Fornecedor
+            </label>
+            <div class="flex gap-4">
+              <label class="flex items-center">
+                <input
+                  type="radio"
+                  v-model="supplierType"
+                  value="lead"
+                  class="mr-2"
+                />
+                <span class="text-gray-700">Pessoa</span>
+              </label>
+              <label class="flex items-center">
+                <input
+                  type="radio"
+                  v-model="supplierType"
+                  value="company"
+                  class="mr-2"
+                />
+                <span class="text-gray-700">Empresa</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Fornecedor Lead (Pessoa) -->
+          <div v-if="supplierType === 'lead'">
             <leads-select-input 
-              label="Fornecedor" 
+              label="Fornecedor (Pessoa)" 
               v-model="form.lead_id" 
               fieldsToDisplay="name" 
               fieldNull="Selecione um fornecedor"
+            />
+          </div>
+
+          <!-- Fornecedor Company (Empresa) -->
+          <div v-if="supplierType === 'company'">
+            <companies-select-input 
+              label="Empresa Fornecedora" 
+              v-model="form.company_id" 
+              :fieldsToDisplay="['business_name', 'legal_name']" 
+              fieldNull="Selecione uma empresa"
+            />
+          </div>
+
+          <!-- Responsável na Empresa -->
+          <div v-if="supplierType === 'company'">
+            <leads-select-input 
+              label="Responsável na Empresa" 
+              v-model="form.lead_id" 
+              fieldsToDisplay="name" 
+              fieldNull="Selecione um responsável"
             />
           </div>
 
@@ -179,12 +226,14 @@
 <script>
 import { submitFormCreate } from "@/utils/requests/httpUtils";
 import LeadsSelectInput from "./selects/LeadsSelectInput.vue";
+import CompaniesSelectInput from "./selects/CompaniesSelectInput.vue";
 
 export default {
   name: "DebitInvoiceCreateForm",
   emits: ["invoice-created", "update:modelValue"],
   components: {
     LeadsSelectInput,
+    CompaniesSelectInput,
   },
   props: {
     proposal: {
@@ -202,8 +251,10 @@ export default {
       errorMessage: "",
       totalAmount: 0,
       installmentQuantity: 1,
+      supplierType: "lead", // 'lead' ou 'company'
       form: {
         lead_id: null,
+        company_id: null,
         prices: [],
         date_due: this.getTodayDate(),
         observations: "",
@@ -227,6 +278,14 @@ export default {
     modelValue(newVal) {
       if (newVal) {
         this.openModal();
+      }
+    },
+    supplierType(newType) {
+      // Limpar o fornecedor quando mudar o tipo
+      if (newType === 'lead') {
+        this.form.company_id = null;
+      } else {
+        this.form.lead_id = null;
       }
     },
   },
@@ -299,10 +358,12 @@ export default {
       this.errorMessage = "";
       this.totalAmount = 0;
       this.installmentQuantity = 1;
+      this.supplierType = "lead";
       this.form.prices = [];
       this.form.date_due = this.getTodayDate();
       this.form.observations = "";
       this.form.lead_id = null;
+      this.form.company_id = null;
     },
     closeModal() {
       this.$emit("update:modelValue", false);
@@ -310,9 +371,22 @@ export default {
     },
     async submitForm() {
       // Validações
-      if (!this.form.lead_id) {
-        this.errorMessage = "Selecione um fornecedor.";
-        return;
+      if (this.supplierType === 'lead') {
+        // Se for pessoa, precisa apenas de lead_id
+        if (!this.form.lead_id) {
+          this.errorMessage = "Selecione um fornecedor (pessoa).";
+          return;
+        }
+      } else if (this.supplierType === 'company') {
+        // Se for empresa, precisa de company_id E lead_id (responsável)
+        if (!this.form.company_id) {
+          this.errorMessage = "Selecione uma empresa fornecedora.";
+          return;
+        }
+        if (!this.form.lead_id) {
+          this.errorMessage = "Selecione um responsável na empresa.";
+          return;
+        }
       }
 
       if (this.totalAmount <= 0) {
@@ -340,14 +414,16 @@ export default {
 
       // Se for parcelado, envia prices; se não, envia price único
       const payload = this.installmentQuantity > 1 ? {
-        lead_id: this.form.lead_id,
+        lead_id: this.form.lead_id || null,
+        company_id: this.form.company_id || null,
         prices: this.form.prices,
         date_due: this.form.date_due,
         observations: this.form.observations || null,
         proposal_id: this.proposal.id,
         type: "debit",
       } : {
-        lead_id: this.form.lead_id,
+        lead_id: this.form.lead_id || null,
+        company_id: this.form.company_id || null,
         price: this.totalAmount,
         date_due: this.form.date_due,
         observations: this.form.observations || null,

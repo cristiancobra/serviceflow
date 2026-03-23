@@ -21,6 +21,7 @@ class Invoice extends Model
         'proposal_id',
         'user_id',
         'lead_id',
+        'company_id',
         'date_due',
         'price',
         'total_paid',
@@ -40,6 +41,11 @@ class Invoice extends Model
     public function lead()
     {
         return $this->belongsTo(Lead::class);
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 
     public function transactions()
