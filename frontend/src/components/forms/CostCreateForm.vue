@@ -93,10 +93,10 @@
               </div>
 
               <!-- Footer com botões -->
-              <div class="modal-footer">
+              <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
                 <button
                   type="button"
-                  class="btn btn-secondary"
+                  class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
                   @click="closeModal"
                 >
                   Fechar
@@ -143,10 +143,15 @@ export default {
       this.isModalVisible = false;
     },
     async submitForm() {
-      if (this.form.price) {
-        this.form.price = parseFloat(this.form.price.replace(",", "."));
-      }
-      const { data, error } = await this.submitFormCreate("costs", this.form);
+      // Criar uma cópia do formulário para envio
+      const formToSubmit = {
+        ...this.form,
+        price: this.form.price 
+          ? parseFloat(this.form.price.toString().replace(",", "."))
+          : null
+      };
+
+      const { data, error } = await this.submitFormCreate("costs", formToSubmit);
 
       if (data) {
         this.isModalVisible = false;

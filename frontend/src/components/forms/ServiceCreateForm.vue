@@ -2,7 +2,7 @@
   <div>
     <button
       type="button"
-      class="button button-new d-flex justify-content-center"
+      class="button button-new flex justify-center"
       @click="openModal"
     >
       <font-awesome-icon icon="fa-solid fa-plus" class="" />
@@ -43,7 +43,7 @@
                 </div>
                 <div class="column-80">
                   <input
-                    class="form-control"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     type="textarea"
                     id="observations"
                     v-model="form.observations"
@@ -64,7 +64,7 @@
                 </div>
                 <div class="col">
                   <input
-                    class="form-control"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     type="number"
                     name="hours"
                     v-model="form.hours"
@@ -78,7 +78,7 @@
                 </div>
                 <div class="col">
                   <input
-                    class="form-control"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     type="number"
                     name="minutes"
                     v-model="form.minutes"
@@ -94,7 +94,7 @@
                 </div>
                 <div class="col">
                   <input
-                    class="form-control text-end"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-blue-500"
                     type="text"
                     name="labor_hourly_rate"
                     v-model="form.labor_hourly_rate"
@@ -114,7 +114,7 @@
                 </div>
                 <div class="price-column">
                   <input
-                    class="form-control text-end"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-blue-500"
                     type="text"
                     name="profit_percentage"
                     v-model="form.profit_percentage"
@@ -126,7 +126,7 @@
                 </div>
                 <div class="price-column">
                   <input
-                    class="form-control text-end"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-blue-500"
                     type="text"
                     name="profit"
                     v-model="form.profit"
@@ -140,7 +140,7 @@
                 </div>
                 <div class="price-column">
                   <input
-                    class="form-control text-end"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md text-right bg-gray-100 cursor-not-allowed"
                     type="text"
                     name="price"
                     v-model="form.price"
@@ -169,7 +169,7 @@
                     :id="cost.id"
                     v-model.number="cost.quantity"
                     placeholder="0"
-                    class=""
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     @input="updateTotalPrice(cost)"
                   />
                 </div>
@@ -190,7 +190,7 @@
             <div class="table-row">
               <button
                 type="button"
-                class="btn btn-secondary"
+                class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
                 @click="closeModal"
               >
                 Fechar
@@ -257,9 +257,7 @@ export default {
       let totalCost = operationalCost + thirdPartyCost;
       let profitPercentage = this.form.profit_percentage / 100;
       let priceWithoutProfit = totalCost / (1 - profitPercentage);
-      this.form.profit = (priceWithoutProfit - totalCost)
-        .toFixed(2)
-        .replace(".", ",");
+      this.form.profit = parseFloat((priceWithoutProfit - totalCost).toFixed(2));
 
       // this.calculatePrice();
     },
@@ -312,25 +310,32 @@ export default {
       }
     },
     async submitForm() {
-      this.form.labor_hours = this.form.hours * 3600 + this.form.minutes * 60;
-      this.form.labor_hourly_rate = parseFloat(
-        this.form.labor_hourly_rate.replace(",", ".")
-      );
-      this.form.profit = parseFloat(this.form.profit.replace(",", "."));
-      this.form.price = parseFloat(this.form.price.replace(",", "."));
-
-      this.form.costs = this.costs
-        .filter((cost) => cost.quantity > 0)
-        .map((cost) => ({
-          id: cost.id,
-          quantity: cost.quantity,
-          price: cost.price,
-          total_price: cost.total_price,
-        }));
+      // Criar uma cópia do formulário para envio
+      const formToSubmit = {
+        ...this.form,
+        labor_hours: this.form.hours * 3600 + this.form.minutes * 60,
+        labor_hourly_rate: parseFloat(
+          this.form.labor_hourly_rate.toString().replace(",", ".")
+        ),
+        profit: parseFloat(
+          this.form.profit.toString().replace(",", ".")
+        ),
+        price: parseFloat(
+          this.form.price.toString().replace(",", ".")
+        ),
+        costs: this.costs
+          .filter((cost) => cost.quantity > 0)
+          .map((cost) => ({
+            id: cost.id,
+            quantity: cost.quantity,
+            price: cost.price,
+            total_price: cost.total_price,
+          }))
+      };
 
       const { data, error } = await this.submitFormCreate(
         "services",
-        this.form
+        formToSubmit
       );
 
       if (data) {
@@ -359,22 +364,19 @@ export default {
       this.updateFinalPrice();
     },
     updateFinalPrice() {
-      // let totalCost = this.costs.reduce(
-      //   (sum, cost) => sum + parseFloat(cost.total_price.replace(",", ".")),
-      //   0
-      // );
-
       let profit = this.form.profit;
       if (typeof profit === "string") {
         profit = profit.replace(",", ".");
       }
-      profit = parseFloat(profit);
+      profit = parseFloat(profit) || 0;
 
-      this.form.price = (
-        // totalCost +
+      const calculatedPrice = (
         parseFloat(this.form.labor_hourly_total || 0) +
         profit
       ).toFixed(2);
+      
+      // Converter para formato brasileiro (string com vírgula)
+      this.form.price = calculatedPrice.replace(".", ",");
 
       this.updateProfitPercentage();
     },
@@ -393,13 +395,11 @@ export default {
       price = price.replace(",", ".");
       price = parseFloat(price);
 
-      console.log(`Profit: ${profit}, Price: ${price}`);
       if (price > 0) {
         this.form.profit_percentage = ((profit / price) * 100).toFixed(2);
       } else {
         this.form.profit_percentage = "0";
       }
-      console.log(`Profit Percentage: ${this.form.profit_percentage}`);
     },
     validateTimeInput() {
       const input = this.form.labor_hours;

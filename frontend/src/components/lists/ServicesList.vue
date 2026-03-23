@@ -18,6 +18,21 @@
           placeholder="Digite para buscar"
         />
       </div>
+      
+      <!-- Header da tabela -->
+      <div class="flex items-center w-full px-4 py-2 bg-gray-100 font-semibold text-sm text-gray-700 border-b border-gray-300">
+        <div class="flex items-center justify-center w-12"></div>
+        <div class="flex items-center justify-start w-48 px-2">Nome</div>
+        <div class="flex items-center justify-start flex-1 px-2">Observações</div>
+        <div class="flex items-center justify-center w-24 px-2">Horas</div>
+        <div class="flex items-center justify-end w-32 px-2">Valor/Hora</div>
+        <div class="flex items-center justify-end w-32 px-2">Total Horas</div>
+        <div class="flex items-center justify-center w-24 px-2">Lucro %</div>
+        <div class="flex items-center justify-end w-32 px-2">Lucro R$</div>
+        <div class="flex items-center justify-end w-32 px-2">Preço</div>
+        <div class="flex items-center justify-end w-32 px-2">Preço Final</div>
+      </div>
+
       <div
         class="table-row"
         v-for="service in services"
@@ -25,17 +40,37 @@
       >
         <router-link
           :to="{ name: 'serviceShow', params: { id: service.id } }"
-          class="link-row"
+          class="flex items-center w-full no-underline text-black hover:bg-gray-50 transition-colors py-2"
         >
-          <div class="icon-column">
+          <div class="flex items-center justify-center text-xl w-12 text-primary">
             <font-awesome-icon icon="fa fa-tools" />
           </div>
-          <div class="title-column">
+          <div class="flex items-start justify-start w-48 px-2">
             {{ service.name }}
           </div>
-          <div class="price-column">{{ formatCurrencySymbol(service.price) }}</div>
-          <div class="price-column">
-            <p class="price-active">{{ formatCurrencySymbol(service.final_price) }}</p>
+          <div class="flex items-start justify-start flex-1 px-2 text-gray-600 text-sm">
+            {{ service.observations || '-' }}
+          </div>
+          <div class="flex items-center justify-center w-24 px-2 text-sm">
+            {{ formatLaborHours(service.labor_hours) }}
+          </div>
+          <div class="flex items-center justify-end w-32 px-2 text-sm">
+            {{ formatCurrencySymbol(service.labor_hourly_rate) }}
+          </div>
+          <div class="flex items-center justify-end w-32 px-2 text-sm">
+            {{ formatCurrencySymbol(service.labor_hourly_total) }}
+          </div>
+          <div class="flex items-center justify-center w-24 px-2 text-sm">
+            {{ service.profit_percentage }}%
+          </div>
+          <div class="flex items-center justify-end w-32 px-2 text-sm">
+            {{ formatCurrencySymbol(service.profit) }}
+          </div>
+          <div class="flex items-center justify-end w-32 px-2 text-sm">
+            {{ formatCurrencySymbol(service.price) }}
+          </div>
+          <div class="flex items-center justify-end w-32 px-2">
+            <p class="font-bold text-primary m-0 text-sm">{{ formatCurrencySymbol(service.final_price) }}</p>
           </div>
         </router-link>
         <router-view />
@@ -117,42 +152,5 @@ export default {
 </script>
 
 <style scoped>
-.icon-column {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-  margin: 1rem;
-  flex-basis: 0%;
-  color: var(--primary);
-}
-
-.link-row {
-  display: flex;
-  align-items: center;
-  justify-content: left;
-  flex-basis: 100%;
-  text-decoration: none;
-  color: black;
-}
-
-.price-active {
-  font-weight: bold;
-  color: var(--primary);
-}
-
-.price-column {
-  display: flex;
-  align-items: center;
-  justify-content: right;
-  flex-basis: 15%;
-}
-
-.title-column {
-  display: flex;
-  align-items: left;
-  justify-content: left;
-  margin: 1rem;
-  flex-basis: 85%;
-}
+/* Removido - usando Tailwind CSS */
 </style>
