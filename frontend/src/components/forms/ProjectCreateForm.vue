@@ -3,82 +3,136 @@
         <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
         </AddMessage>
 
-        <button type="button" class="button button-new" @click="openModal">
-            <font-awesome-icon icon="fa-solid fa-plus" class="" />
+        <button 
+            type="button" 
+            class="inline-flex items-center justify-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+            @click="openModal"
+        >
+            <font-awesome-icon icon="fa-solid fa-plus" class="mr-2" />
+            Novo Projeto
         </button>
 
-        <div v-if="isModalVisible" class="myModal">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <font-awesome-icon icon="fa-solid fa-tasks" class="icon pe-3 primary" />
-                        <h5 class="modal-title" id="taskModalLabel">Novo projeto</h5>
-                        <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
+        <!-- Modal -->
+        <div v-if="isModalVisible" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.25)">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                <!-- Header -->
+                <div class="sticky top-0 bg-gradient-to-r from-purple-50 to-purple-25 border-b border-gray-200 px-8 py-6 flex justify-between items-center">
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-800">Novo Projeto</h3>
+                        <p class="text-gray-600 text-sm mt-1">Adicione um novo projeto ao sistema</p>
                     </div>
-                    <div class="modal-body">
-                        <form @submit.prevent="submitForm">
-                            <div class='row'>
-                                <div class='col-2'>
-                                    <label class='labels' for='name'>
-                                        Nome
-                                    </label>
-                                </div>
-                                <div class='col-10'>
-                                    <input class="form-control" type='text' id='name' v-model='form.name'
-                                        placeholder='Digite um nome para seu projeto'>
-                                </div>
-                            </div>
-                            <div class='row'>
-                                <div class='col-2'>
-                                    <label class='labels' for='description'>
-                                        Descrição
-                                    </label>
-                                </div>
-                                <div class='col-10'>
-                                    <input class="form-control" type='text' id='description' v-model='form.description'
-                                        placeholder='Digite o nome do responsável por garantir a execução do projeto'>
-                                </div>
-                            </div>
-                            <div class='row mt-5 mb-5'>
-                                <div class="col">
-                                    <CompaniesSelectInput label="Empresa cliente" v-model="form.company_id"
-                                        name="company_id" :fieldsToDisplay="['business_name', 'legal_name']"
-                                        fieldNull="Não possui / minha empresa" />
-                                </div>
-                                <div class="col">
-                                    <div class="col">
-                                        <UsersSelectInput label="Responsável" v-model="form.user_id"
-                                            fieldsToDisplay="name" autoSelect=true />
-                                    </div>
-                                </div>
-                            </div>
+                    <button
+                        type="button"
+                        class="text-gray-400 hover:text-gray-600 transition-colors"
+                        @click="closeModal"
+                    >
+                        <font-awesome-icon icon="fa-solid fa-xmark" class="text-2xl" />
+                    </button>
+                </div>
 
-                            <div class='row'>
-                                <div class='col'>
-                                    <LeadsSelectInput label="Contato" name="contact_id" v-model="form.contact_id"
-                                        fieldsToDisplay="name" fieldNull="Não possui" />
-                                </div>
+                <!-- Body -->
+                <div class="px-8 py-6">
+                    <form @submit.prevent="submitForm" class="space-y-6">
+                        <!-- Nome -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2" for="name">
+                                Nome do Projeto
+                            </label>
+                            <input 
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 outline-none"
+                                type="text" 
+                                id="name" 
+                                v-model="form.name"
+                                placeholder="Digite um nome para seu projeto"
+                            >
+                        </div>
+
+                        <!-- Descrição -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2" for="description">
+                                Descrição
+                            </label>
+                            <input 
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 outline-none"
+                                type="text" 
+                                id="description" 
+                                v-model="form.description"
+                                placeholder="Descreva o objetivo do projeto"
+                            >
+                        </div>
+
+                        <!-- Empresa e Responsável -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <CompaniesSelectInput 
+                                    label="Empresa cliente" 
+                                    v-model="form.company_id"
+                                    name="company_id" 
+                                    :fieldsToDisplay="['business_name', 'legal_name']"
+                                    fieldNull="Não possui / minha empresa" 
+                                />
                             </div>
-
-                            <div class="row mb-5 mt-5">
-                                <div class="col-md-4">
-                                    <TimeInput v-model="form.date_start" label="Início" name="date_start"
-                                        placeholder="início do prazo" :autoFillNow="true" />
-                                </div>
-
-                                <div class="col-md-4">
-                                    <TimeInput v-model="form.date_due" label="Prazo final" name="date_due"
-                                        placeholder="prazo final" />
-                                </div>
-
+                            <div>
+                                <UsersSelectInput 
+                                    label="Responsável" 
+                                    v-model="form.user_id"
+                                    fieldsToDisplay="name" 
+                                    autoSelect="true" 
+                                />
                             </div>
+                        </div>
 
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" @click=closeModal>Fechar</button>
-                                <button type="submit" class="button-new">criar</button>
+                        <!-- Contato -->
+                        <div>
+                            <LeadsSelectInput 
+                                label="Contato" 
+                                name="contact_id" 
+                                v-model="form.contact_id"
+                                fieldsToDisplay="name" 
+                                fieldNull="Não possui" 
+                            />
+                        </div>
+
+                        <!-- Datas -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <TimeInput 
+                                    v-model="form.date_start" 
+                                    label="Data de Início" 
+                                    name="date_start"
+                                    placeholder="Início do prazo" 
+                                    :autoFillNow="true" 
+                                />
                             </div>
-                        </form>
-                    </div>
+                            <div>
+                                <TimeInput 
+                                    v-model="form.date_due" 
+                                    label="Prazo Final" 
+                                    name="date_due"
+                                    placeholder="Prazo final" 
+                                />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Footer -->
+                <div class="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-8 py-4 flex justify-end gap-3">
+                    <button 
+                        type="button" 
+                        class="px-6 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+                        @click="closeModal"
+                    >
+                        Cancelar
+                    </button>
+                    <button 
+                        type="submit" 
+                        class="px-6 py-2 bg-gradient-to-r from-purple-600 to-purple-800 text-white rounded-lg font-semibold hover:shadow-lg transition-all hover:-translate-y-0.5"
+                        @click="submitForm"
+                    >
+                        <font-awesome-icon icon="fa-solid fa-plus" class="me-2" />
+                        Criar Projeto
+                    </button>
                 </div>
             </div>
         </div>
@@ -146,6 +200,7 @@ export default {
                         this.newProjectEvent(this.data);
                         this.messageStatus = "success";
                         this.messageText = "Projeto criado com sucesso!";
+                        this.closeModal();
                     })
             } catch (error) {
                 console.error(error);
@@ -176,34 +231,5 @@ export default {
 </script>
 
 <style scoped>
-.container {
-    border-style: solid;
-    border-color: #FF3EB5;
-    border-width: 2px;
-    margin-left: 180px;
-    margin-right: 180px;
-    margin-bottom: 60px;
-    margin-top: 60px;
-    padding: 20px;
-    border-radius: 16px;
-    transition: all .5s;
-    text-align: left;
-    font-weight: 800;
-}
-
-.labels {
-    text-align: left;
-    margin-left: 0;
-}
-
-.new {
-    background-color: #FF3EB5;
-    color: white;
-    font-weight: 800;
-    padding: 10px 20px 10px 20px;
-}
-
-.new:hover {
-    background-color: #ffbf00;
-}
+/* Estilos adicionais se necessário */
 </style>
