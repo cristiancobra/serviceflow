@@ -32,89 +32,111 @@
           class="big-icon canceled"
         />
       </div>
-      <div class="page-action">
-        <p class="show-duration">
-          {{ formatDuration(opportunity.duration_time) }}
-        </p>
-      </div>
+
     </div>
 
     <nav class="section-menu">
       <button
-        class="w-8 h-8 ms-1 me-1 flex items-center justify-center rounded-full bg-primary text-white hover:bg-secondary transition duration-200 ease-in-out"
-        @click="scrollToSection('info')"
+        :class="[
+          'w-10 h-10 ms-1 me-1 flex items-center justify-center rounded-full text-white transition duration-200 ease-in-out',
+          activeTab === 'info' ? 'bg-secondary ring-2 ring-white shadow-lg' : 'bg-primary hover:bg-secondary'
+        ]"
+        @click="activeTab = 'info'"
+        title="Informações"
       >
-        <font-awesome-icon icon="fas fa-file-invoice" class="icon" />
+        <font-awesome-icon icon="fas fa-info" class="icon" />
       </button>
       <button
-        class="w-8 h-8 ms-1 me-1 flex items-center justify-center rounded-full bg-primary text-white hover:bg-secondary transition duration-200 ease-in-out"
-        @click="scrollToSection('proposals')"
+        :class="[
+          'w-10 h-10 ms-1 me-1 flex items-center justify-center rounded-full text-white transition duration-200 ease-in-out',
+          activeTab === 'proposals' ? 'bg-secondary ring-2 ring-white shadow-lg' : 'bg-primary hover:bg-secondary'
+        ]"
+        @click="activeTab = 'proposals'"
+        title="Propostas e Faturas"
       >
         <font-awesome-icon icon="fas fa-money-bill" class="icon" />
       </button>
       <button
-        class="w-8 h-8 ms-1 me-1 flex items-center justify-center rounded-full bg-primary text-white hover:bg-secondary transition duration-200 ease-in-out"
-        @click="scrollToSection('attachments')"
+        :class="[
+          'w-10 h-10 ms-1 me-1 flex items-center justify-center rounded-full text-white transition duration-200 ease-in-out',
+          activeTab === 'attachments' ? 'bg-secondary ring-2 ring-white shadow-lg' : 'bg-primary hover:bg-secondary'
+        ]"
+        @click="activeTab = 'attachments'"
+        title="Anexos"
       >
         <font-awesome-icon icon="fas fa-link" class="icon" />
       </button>
       <button
-        class="w-8 h-8 ms-1 me-1 flex items-center justify-center rounded-full bg-primary text-white hover:bg-secondary transition duration-200 ease-in-out"
-        @click="scrollToSection('tasks')"
+        :class="[
+          'w-10 h-10 ms-1 me-1 flex items-center justify-center rounded-full text-white transition duration-200 ease-in-out',
+          activeTab === 'tasks' ? 'bg-secondary ring-2 ring-white shadow-lg' : 'bg-primary hover:bg-secondary'
+        ]"
+        @click="activeTab = 'tasks'"
+        title="Tarefas"
       >
-        <font-awesome-icon icon="fas fa-clock" class="icon" />
+        <font-awesome-icon icon="fas fa-tasks" class="icon" />
       </button>
     </nav>
 
-    <div class="flex mt-6 mb-6 gap-10">
-      <opportunity-info-section
-        :opportunity="opportunity"
-        @update-field="handleUpdateField"
-      />
+    <!-- Tab Info -->
+    <div v-if="activeTab === 'info'" class="mt-6">
+      <div class="flex mb-6 gap-10">
+        <opportunity-info-section
+          :opportunity="opportunity"
+          @update-field="handleUpdateField"
+        />
 
-      <opportunity-dates-section
-        :opportunity="opportunity"
-        @update-field="handleUpdateField"
-      />
+        <opportunity-dates-section
+          :opportunity="opportunity"
+          @update-field="handleUpdateField"
+        />
+        
+      </div>
+
+      <section class="section-container">
+        <div class="flex-1 mr-10 mb-6 p-10 border border-primary rounded-lg">
+          <h2 class="text-xl text-primary font-semibold">Descrição</h2>
+          <TextEditor
+            name="description"
+            v-model="opportunity.description"
+            @save="updateOpportunity('description', $event)"
+          />
+        </div>
+      </section>
     </div>
 
-    <section class="section-container">
-      <div class="flex-1 mr-10 mb-6 p-10 border border-primary rounded-lg">
-        <h2 class="text-xl text-primary font-semibold">Descrição</h2>
-        <TextEditor
-          name="description"
-          v-model="opportunity.description"
-          @save="updateOpportunity('description', $event)"
-        />
+    <!-- Tab Propostas -->
+    <section v-if="activeTab === 'proposals'" class="mt-6">
+      <div class="flex flex-col lg:flex-row gap-6">
+        <div class="flex-1">
+          <proposals-list-section
+            :proposals="opportunity.proposals || []"
+            :opportunityId="opportunityId"
+            @proposal-added="handleProposalAdded"
+            @proposal-updated="handleProposalUpdated"
+          />
+        </div>
+        <div class="flex-1">
+          <credit-invoices-section
+            :proposal="safeAcceptedProposal"
+            @reload-proposal="getOpportunity"
+          />
+        </div>
       </div>
     </section>
 
-    <section id="proposals" class="flex flex-col lg:flex-row gap-6">
-      <div class="flex-1">
-        <proposals-list-section
-          :proposals="opportunity.proposals || []"
-          :opportunityId="opportunityId"
-          @proposal-added="handleProposalAdded"
-          @proposal-updated="handleProposalUpdated"
-        />
-      </div>
-      <div class="flex-1">
-        <credit-invoices-section
-          :proposal="safeAcceptedProposal"
-          @reload-proposal="getOpportunity"
-        />
-      </div>
+    <!-- Tab Anexos -->
+    <section v-if="activeTab === 'attachments'" class="mt-6">
+      <links-list :links="opportunity.links || []" :opportunityId="opportunityId" />
     </section>
 
-    <section id="attachments">
-      <links-list :links="opportunity.links" :opportunityId="opportunityId" />
-    </section>
-
-    <section id="tasks">
+    <!-- Tab Tarefas -->
+    <section v-if="activeTab === 'tasks'" class="mt-6">
       <tasks-list-section
-        :tasks="opportunity.tasks"
+        :tasks="opportunity.tasks || []"
         @update-opportunity-duration="updateOpportunityDuration()"
       />
+         Total da oportunidade:    {{ formatDuration(opportunity.duration_time) }}
     </section>
 
     <div class="final-row">
@@ -136,7 +158,6 @@ import {
   getStatusClass,
   getStatusIcon,
 } from "@/utils/card/cardUtils";
-import { scrollToSection } from "@/utils/layout/navigationUtils";
 import { provide, ref } from "vue";
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
@@ -163,12 +184,13 @@ export default {
   },
   data() {
     return {
+      activeTab: "info",
       currentSection: "info",
       journeysData: [],
       journeysUrl: "",
       messageStatus: "",
       messageText: "",
-      opportunity: [],
+      opportunity: {},
       editedProject: [],
       opportunityId: this.$route.params.id,
     };
@@ -186,7 +208,6 @@ export default {
     formatDuration,
     getStatusClass,
     getStatusIcon,
-    scrollToSection,
     translateStatus,
     translatePriority,
     async getOpportunity() {
@@ -264,13 +285,19 @@ export default {
   },
   mounted() {
     this.setOpportunityId(this.$route.params.id);
-    this.getOpportunity().then(() => {
-      this.$nextTick(() => {
-        if (this.$route.query.scrollTo) {
-          this.scrollToSection(this.$route.query.scrollTo);
-        }
-      });
-    });
+    
+    // Define a tab inicial pela query string ou usa 'info' como padrão
+    if (this.$route.query.tab) {
+      this.activeTab = this.$route.query.tab;
+    }
+    
+    this.getOpportunity();
+  },
+  watch: {
+    activeTab(newTab) {
+      // Atualiza a URL quando mudar de tab (sem reload da página)
+      this.$router.replace({ query: { ...this.$route.query, tab: newTab } });
+    }
   },
 };
 </script>

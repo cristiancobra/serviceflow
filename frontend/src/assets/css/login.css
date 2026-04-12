@@ -112,19 +112,19 @@
     transform: translateX(-130%);
 }
 
-.logo-container .logo {
+/* .logo-container .logo {
     padding-left: 5rem;
     padding-top: 2rem;
     height: 40px;
-}
+} */
 
 /* tela celular */
-@media screen and (max-width: 768px) {
+/* @media screen and (max-width: 768px) {
     .logo-container .logo {
         height: 80px;
     }
 
-}
+} */
 
 /* slides  */
 

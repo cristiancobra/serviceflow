@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
-use App\Services\DateConversionService;
+use App\Services\DateTimeConversionService;
 use HTMLPurifier;
 use HTMLPurifier_Config;
 
@@ -67,21 +67,21 @@ class ProjectRequest extends FormRequest
             ]);
         }
 
-        if ($this->has('date_start')) {
+        if ($this->filled('date_start')) {
             $this->merge([
-                'date_start' => DateConversionService::convertToUtc($this->input('date_start')),
+                'date_start' => DateTimeConversionService::convertJavascriptDate($this->input('date_start')),
             ]);
         }
 
-        if ($this->has('date_due')) {
+        if ($this->filled('date_due')) {
             $this->merge([
-                'date_due' => DateConversionService::convertToUtc($this->input('date_due')),
+                'date_due' => DateTimeConversionService::convertJavascriptDate($this->input('date_due')),
             ]);
         }
 
-        if ($this->has('date_conclusion')) {
+        if ($this->filled('date_conclusion')) {
             $this->merge([
-                'date_conclusion' => DateConversionService::convertToUtc($this->input('date_conclusion')),
+                'date_conclusion' => DateTimeConversionService::convertJavascriptDate($this->input('date_conclusion')),
             ]);
         }
     }

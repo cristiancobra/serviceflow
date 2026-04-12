@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="login-container" :class="{ 'slide-enter': transitionIn, 'slide-leave': transitionOut }">
-      <div class="logo-container">
-        <img :src="require('@/assets/logo-serviceflow-BRANCO.png')" class="logo" alt="logo-serviceflow" />
+      <div class="flex items-center px-8 py-4">
+        <img :src="require('@/assets/logo-serviceflow-BRANCO.png')" class="h-16 md:h-8 w-auto" alt="logo-serviceflow" />
       </div>
       <div class="login-box">
         <form @submit.prevent="submit">
@@ -21,13 +21,13 @@
       </div>
     </div>
     <div class="background-login">
-      <div class="row">
-        <div class="col-2">
+      <div class="flex flex-row gap-4">
+        <div class="w-1/6">
           <div class="small-container-fake">
             <font-awesome-icon icon="fa-solid fa-bullseye" class="icon-fake"/>
           </div>
         </div>
-        <div class="col-2">
+        <div class="w-1/6">
           <div class="small-container-fake">
             <font-awesome-icon icon="fa-solid fa-file-invoice" class="icon-fake"/>
           </div>
