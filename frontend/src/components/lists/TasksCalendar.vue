@@ -9,125 +9,10 @@
         <button type="button" class="btn btn-primary" @click="isCreateTaskModalVisible = true">
           <font-awesome-icon icon="fa-solid fa-plus" class="text-white" />
         </button>
-        <task-create-form
-          v-model="isCreateTaskModalVisible"
-          @new-task-event="addTaskCreated"
-        />
+        <task-create-form v-model="isCreateTaskModalVisible" @new-task-event="addTaskCreated" />
       </div>
     </div>
-
-    <section class="section-container">
-
-      <search-input v-model="searchTerm" placeholder="Buscar por tarefa, oportunidade ou projeto" />
-
-      <section class="list-container">
-        <div v-for="(tasks, date) in groupedTasks" :key="date">
-          <p class="date-group" :class="getDeadlineClass(date)">
-            {{ formatDateGroup(date) }}
-          </p>
-          <div
-            v-for="task in tasks"
-            class="list-line"
-            :class="{ highlight: task.id === newTaskId }"
-            v-bind:key="task.id"
-          >
-            <div class="icons-column">
-              <img
-                v-if="userData.photo"
-                :src="urlImagePhoto"
-                :alt="userData.name"
-                class="user-image"
-              />
-              <font-awesome-icon
-                v-else
-                icon="fa-solid fa-user"
-                class="primary pe-2"
-              />
-              <font-awesome-icon
-                icon="fas fa-check-circle"
-                class="checked-icon"
-                :class="isValidDate(task.date_conclusion) ? 'done' : 'canceled'"
-              />
-            </div>
-
-            <div class="task-column">
-              <p class="text-black text-sm">
-                {{ task.name }}
-              </p>
-            </div>
-
-            <div class="group-column">
-              <router-link
-                style="display: flex"
-                v-if="task.opportunity"
-                :to="{
-                  name: 'opportunityShow',
-                  params: { id: task.opportunity.id },
-                }"
-              >
-                <p class="group-name"
-                  :class="getColorClassForName(task.opportunity.name)"
-                >
-                  <font-awesome-icon
-                    icon="fa-solid fa-bullseye"
-                    :class="getColorClassForName(task.opportunity.name)"
-                  />
-                  {{ trimName(task.opportunity.name) }}
-                </p>
-              </router-link>
-              <router-link
-                style="display: flex"
-                v-else-if="task.project"
-                :to="{ name: 'projectShow', params: { id: task.project.id } }"
-              >
-                <font-awesome-icon
-                  icon="fa-solid fa-folder-open"
-                  :class="getColorClassForName(task.project.name)"
-                />
-                <p
-                  class="group-name"
-                  :class="getColorClassForName(task.project.name)"
-                >
-                  {{ trimName(task.project.name) }}
-                </p>
-              </router-link>
-              <div v-else class="">
-                <p>----</p>
-              </div>
-            </div>
-
-            <div class="date-column">
-              <DateTimeValue
-                v-if="isValidDate(task.date_conclusion)"
-                v-model="task.date_conclusion"
-                classText="done"
-                classIcon="done"
-                @save="updateTask('date_conclusion', $event, task.id)"
-              />
-              <DateTimeEditableInput
-                v-else
-                v-model="task.date_due"
-                :classText="getDeadlineClass(task.date_due)"
-                :classIcon="getDeadlineClass(task.date_due)"
-                @save="updateTask('date_due', $event, task.id)"
-              />
-              <add-last-journey-date-button
-                v-if="task.journeys && task.journeys.length > 0"
-                :task="task"
-                :showEndTaskButton="task.date_conclusion === null"
-                @add-last-journey-date="updateDateConclusion(task)"
-                @update-task="updateTask"
-              />
-              <div class="" v-if="showTaskDuration">
-                <p class="">
-                  {{ formatDuration(task.duration_time) }}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </section>
+    <tasks-list-section :tasks="localTasks" :showOpportunityColumn="true" />
   </div>
 </template>
 
@@ -148,11 +33,8 @@ import {
   TASK_URL_PARAMETER,
   TASK_PRIORIZED_URL,
 } from "@/config/apiConfig";
-import AddLastJourneyDateButton from "@/components/tasks/buttons/AddLastJourneyDateButton.vue";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
-import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
-import DateTimeValue from "../fields/datetime/DateTimeValue.vue";
-import SearchInput from "@/components/filters/SearchInput.vue";
+import TasksListSection from "@/components/lists/TasksListSection.vue";
 import { mapState } from "vuex";
 
 export default {
@@ -177,11 +59,8 @@ export default {
     };
   },
   components: {
-    AddLastJourneyDateButton,
-    DateTimeEditableInput,
-    DateTimeValue,
-    SearchInput,
     TaskCreateForm,
+    TasksListSection,
   },
   methods: {
     convertUtcToLocal,
@@ -298,7 +177,7 @@ export default {
       if (!this.searchTerm || !this.localTasks) {
         return this.localTasks;
       }
-      return this.localTasks.filter(task => 
+      return this.localTasks.filter(task =>
         task.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         (task.opportunity && task.opportunity.name.toLowerCase().includes(this.searchTerm.toLowerCase())) ||
         (task.project && task.project.name.toLowerCase().includes(this.searchTerm.toLowerCase()))
