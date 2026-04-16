@@ -53,10 +53,9 @@
       <!-- Transações agrupadas por mês -->
       <div v-for="monthGroup in groupedTransactions" :key="monthGroup.monthKey" class="mb-8">
         <!-- Header do Mês -->
-        <div class="flex items-center gap-4 mb-4 sticky top-0 z-10">
-          <div class="flex items-center gap-3 bg-white px-6 py-3 rounded-lg shadow-sm border border-blue-100">
-            <font-awesome-icon icon="fa-solid fa-calendar-alt" class="text-primary text-lg" />
-            <span class="font-bold text-gray-900 text-lg whitespace-nowrap">{{ monthGroup.monthLabel }}</span>
+        <div class="flex items-center mb-4 sticky top-0 z-10">
+          <div class="flex items-center gap-3 bg-white pe-6 pb-1 pt-10">
+            <span class="font-bold text-primary text-lg whitespace-nowrap">{{ monthGroup.monthLabel }}</span>
             <span class="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
               {{ monthGroup.transactions.length }} {{ monthGroup.transactions.length === 1 ? 'movimentação' : 'movimentações' }}
             </span>
@@ -141,10 +140,10 @@
                       v-if="transaction.invoice?.proposal?.opportunity?.name"
                       :to="{ name: 'opportunityShow', params: { id: transaction.invoice.proposal.opportunity.id } }"
                       class="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors max-w-full"
-                      :title="transaction.invoice.proposal.opportunity.name"
+                      :title="transaction.invoice.proposal.opportunity.name.trim()"
                     >
                       <font-awesome-icon icon="fa-solid fa-bullseye" class="text-xs flex-shrink-0" />
-                      <span class="truncate">{{ transaction.invoice.proposal.opportunity.name }}</span>
+                      <span class="truncate">{{ transaction.invoice.proposal.opportunity.name.trim() }}</span>
                     </router-link>
                     <span v-else class="text-gray-400 text-sm italic">-</span>
                   </td>
@@ -171,7 +170,7 @@
                       :title="'Fatura #' + transaction.invoice.id"
                     >
                       <font-awesome-icon icon="fa-solid fa-receipt" class="text-sm" />
-                      #{{ transaction.invoice.id }}
+                      {{ formatDateBr(transaction.invoice.date_due) }}
                     </router-link>
                     <div v-else class="inline-flex items-center gap-1 text-amber-500 font-medium text-xs">
                       <font-awesome-icon icon="fa-solid fa-circle-dot" class="text-xs" />
