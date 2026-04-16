@@ -83,7 +83,7 @@
       <section class="section-container">
         <div class="flex-1 mr-10 mb-6 p-10 border border-primary rounded-lg">
           <h2 class="text-xl text-primary font-semibold">Descrição</h2>
-          <TextEditor
+          <text-editor
             name="description"
             v-model="opportunity.description"
             @save="updateOpportunity('description', $event)"
