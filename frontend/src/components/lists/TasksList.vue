@@ -6,7 +6,7 @@
         <h1>TAREFAS</h1>
       </div>
       <div class="page-action">
-        <TaskCreateForm @new-task-event="addTaskCreated" />
+        <task-create-form @new-task-event="addTaskCreated" />
       </div>
     </div>
 

@@ -18,10 +18,9 @@
         <!-- Agrupamento por mês -->
         <div v-for="monthGroup in groupedByMonth" :key="monthGroup.monthKey" class="mb-8">
           <!-- Header do Mês -->
-          <div class="flex items-center gap-4 mb-4">
-            <div class="flex items-center gap-3 bg-white px-6 py-3 rounded-lg shadow-sm border border-blue-100">
-              <font-awesome-icon icon="fa-solid fa-calendar-alt" class="text-primary text-lg" />
-              <span class="font-bold text-gray-900 text-lg whitespace-nowrap">{{ monthGroup.monthLabel }}</span>
+          <div class="flex items-center mb-4">
+            <div class="flex items-center gap-3 bg-white pt-5 pb-0">
+              <span class="font-bold text-primary text-lg whitespace-nowrap uppercase">{{ monthGroup.monthLabel }}</span>
               <span class="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
                 {{ monthGroup.totalTasks }} {{ monthGroup.totalTasks === 1 ? 'tarefa' : 'tarefas' }}
               </span>
@@ -110,51 +109,66 @@
 
             <!-- Controles extras (exibidos em uma nova linha abaixo) -->
             <div v-if="showControls[localTask.id]"
-              class="flex items-center justify-end space-x-3 pt-2 pb-2 px-4 bg-gray-50 border-l-4 border-gray-400 rounded-r-lg">
-              <!-- Botão de Toggle Cancelamento -->
-              <button
-                class="w-7 h-7 flex items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-700 transition"
-                @click="toggleCancelLine(localTask.id)" title="Cancelar tarefa">
-                <font-awesome-icon :icon="showCancelLine[localTask.id]
-                    ? 'fa-solid fa-minus'
-                    : 'fa-solid fa-times-circle'
-                  " />
-              </button>
+              class="flex items-start gap-4 pt-2 pb-10 px-4 bg-primary-content border-l-4 border-gray-400 rounded-r-lg">
+              
+              <!-- Coluna da Description (esquerda - maior) -->
+              <div class="flex-1 min-w-0">
+                <text-area-editable-input 
+                  label="Descrição"
+                  name="description" 
+                  v-model="localTask.description" 
+                  placeholder="Adicione uma descrição detalhada da tarefa"
+                  @save="updateTask('description', $event, localTask.id)" 
+                />
+              </div>
 
-              <!-- Botão para toggle do formulário de jornada -->
-              <button
-                class="w-7 h-7 flex items-center justify-center rounded-full bg-orange-500 text-white hover:bg-orange-700 transition"
-                @click="toggleJourneyForm(localTask.id)" title="Adicionar jornada">
-                <font-awesome-icon :icon="showJourneyForm[localTask.id]
-                    ? 'fa-solid fa-minus'
-                    : 'fa-solid fa-plus'
-                  " />
-              </button>
+              <!-- Coluna dos Botões (direita - menor) -->
+              <div class="flex items-center space-x-3 flex-shrink-0">
+                <!-- Botão de Toggle Cancelamento -->
+                <button
+                  class="w-7 h-7 flex items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-700 transition"
+                  @click="toggleCancelLine(localTask.id)" title="Cancelar tarefa">
+                  <font-awesome-icon :icon="showCancelLine[localTask.id]
+                      ? 'fa-solid fa-minus'
+                      : 'fa-solid fa-times-circle'
+                    " />
+                </button>
 
-              <!-- Botão quickform - iniciar jornada rapidamente -->
-              <button
-                class="w-7 h-7 flex items-center justify-center rounded-full bg-purple-500 text-white hover:bg-purple-700 transition"
-                @click="quickStartJourney(localTask.id)" title="Iniciar jornada agora">
-                <font-awesome-icon icon="fa-solid fa-bolt" />
-              </button>
+                <!-- Botão para toggle do formulário de jornada -->
+                <button
+                  class="w-7 h-7 flex items-center justify-center rounded-full bg-orange-500 text-white hover:bg-orange-700 transition"
+                  @click="toggleJourneyForm(localTask.id)" title="Adicionar jornada">
+                  <font-awesome-icon :icon="showJourneyForm[localTask.id]
+                      ? 'fa-solid fa-minus'
+                      : 'fa-solid fa-plus'
+                    " />
+                </button>
 
-              <add-last-journey-date-button :task="localTask" :showEndTaskButton="localTask.date_conclusion === null"
-                @add-last-journey-date="updateDateConclusion(localTask)" @update-task="updateTask" />
+                <!-- Botão quickform - iniciar jornada rapidamente -->
+                <button
+                  class="w-7 h-7 flex items-center justify-center rounded-full bg-purple-500 text-white hover:bg-purple-700 transition"
+                  @click="quickStartJourney(localTask.id)" title="Iniciar jornada agora">
+                  <font-awesome-icon icon="fa-solid fa-bolt" />
+                </button>
 
-              <!-- Botão para visualizar jornadas -->
-              <button v-if="localTask.journeys && localTask.journeys.length > 0"
-                class="w-7 h-7 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-700 transition relative"
-                @click="toggleJourneys(localTask.id)" title="Ver jornadas">
-                <font-awesome-icon icon="fa-solid fa-eye" />
-                <span class="absolute -top-1 -right-2 bg-red-400 text-xs rounded-full px-2 py-0.5">
-                  {{ localTask.journeys.length }}
-                </span>
-              </button>
-              <button v-else
-                class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-300 text-gray-500 cursor-not-allowed"
-                disabled title="Sem jornadas">
-                <font-awesome-icon icon="fa-solid fa-eye-slash" />
-              </button>
+                <add-last-journey-date-button :task="localTask" :showEndTaskButton="localTask.date_conclusion === null"
+                  @add-last-journey-date="updateDateConclusion(localTask)" @update-task="updateTask" />
+
+                <!-- Botão para visualizar jornadas -->
+                <button v-if="localTask.journeys && localTask.journeys.length > 0"
+                  class="w-7 h-7 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-700 transition relative"
+                  @click="toggleJourneys(localTask.id)" title="Ver jornadas">
+                  <font-awesome-icon icon="fa-solid fa-eye" />
+                  <span class="absolute -top-1 -right-2 bg-red-400 text-xs rounded-full px-2 py-0.5">
+                    {{ localTask.journeys.length }}
+                  </span>
+                </button>
+                <button v-else
+                  class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-300 text-gray-500 cursor-not-allowed"
+                  disabled title="Sem jornadas">
+                  <font-awesome-icon icon="fa-solid fa-eye-slash" />
+                </button>
+              </div>
             </div>
 
             <!-- Formulário de nova jornada -->
@@ -218,6 +232,7 @@ import JourneyCreateForm from "@/components/forms/JourneyCreateForm.vue";
 import JourneysListFromOpportunity from "@/components/lists/JourneysListFromOpportunity.vue";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField.vue";
+import TextAreaEditableInput from "@/components/forms/inputs/textarea/TextAreaEditableInput.vue";
 import SearchInput from "@/components/filters/SearchInput.vue";
 import { mapState } from "vuex";
 
@@ -259,6 +274,7 @@ export default {
     JourneysListFromOpportunity,
     TaskCreateForm,
     TextEditableField,
+    TextAreaEditableInput,
     SearchInput,
   },
   methods: {
@@ -465,7 +481,7 @@ export default {
     },
     groupedTasks() {
       if (this.filteredTasks && this.filteredTasks.length > 0) {
-        // Ordena as tarefas por data antes de agrupá-las
+        // Ordena as tarefas por data antes de agrupá-las (mais antiga primeiro)
         const sortedTasks = [...this.filteredTasks].sort((a, b) => {
           const dateA = new Date(a.date_due || "9999-12-31"); // Tarefas sem data vão para o final
           const dateB = new Date(b.date_due || "9999-12-31");
@@ -490,7 +506,7 @@ export default {
       const monthGroups = {};
       
       if (this.filteredTasks && this.filteredTasks.length > 0) {
-        // Ordena as tarefas por data
+        // Ordena as tarefas por data (mais antiga primeiro)
         const sortedTasks = [...this.filteredTasks].sort((a, b) => {
           const dateA = new Date(a.date_due || "9999-12-31");
           const dateB = new Date(b.date_due || "9999-12-31");
@@ -501,7 +517,7 @@ export default {
           if (task.date_due) {
             const date = new Date(task.date_due);
             const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-            const monthLabel = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(date);
+            const monthLabel = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(date).replace(' de ', ' ');
             
             if (!monthGroups[monthKey]) {
               monthGroups[monthKey] = {
@@ -536,11 +552,11 @@ export default {
         });
       }
       
-      // Retorna os grupos ordenados por mês (mais recente primeiro)
+      // Retorna os grupos ordenados por mês (mais antigo primeiro)
       return Object.values(monthGroups).sort((a, b) => {
         if (a.monthKey === "9999-99") return 1;
         if (b.monthKey === "9999-99") return -1;
-        return new Date(b.monthKey) - new Date(a.monthKey);
+        return new Date(a.monthKey) - new Date(b.monthKey);
       });
     },
   },

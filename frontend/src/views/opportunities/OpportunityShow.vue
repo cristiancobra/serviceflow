@@ -20,19 +20,6 @@
           />
         </h1>
       </div>
-      <div class="page-action">
-        <font-awesome-icon
-          v-if="!opportunity.date_conclusion"
-          icon="fa-solid fa-circle-check"
-          class="big-icon done"
-        />
-        <font-awesome-icon
-          v-if="!opportunity.date_canceled"
-          icon="fa-solid fa-x"
-          class="big-icon canceled"
-        />
-      </div>
-
     </div>
 
     <nav class="section-menu">
