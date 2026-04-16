@@ -28,6 +28,7 @@ class LinkRequest extends FormRequest
             'user_id' => 'nullable|exists:users,id',
             'task_id' => 'nullable|exists:tasks,id',
             'opportunity_id' => 'nullable|exists:opportunities,id',
+            'project_id' => 'nullable|exists:projects,id',
             'url' => 'required|url',
             'title' => 'required|string|max:255',
         ];

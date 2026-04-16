@@ -3,11 +3,7 @@
     <AddMessage :messageStatus="messageStatus" :messageText="messageText"
     @update:messageStatus="messageStatus = $event" />
 
-    <button type="button" class="btn btn-primary" @click="openModal">
-      <font-awesome-icon icon="fa-solid fa-plus" class="" />
-    </button>
-
-    <div v-if="isModalVisible" class="myModal">
+    <div v-if="modelValue" class="myModal">
       <div class="">
         <div class="modal-content">
           <div class="modal-header">
@@ -47,19 +43,25 @@ import TextInput from "./inputs/text/TextInput";
 
 export default {
   name: "LinkCreateForm",
-  emits: ["new-link-event"],
+  emits: ["new-link-event", "update:modelValue"],
   components: {
     AddMessage,
     TextInput,
   },
   props: {
+    modelValue: {
+      type: Boolean,
+      default: false,
+    },
     opportunityId: {
       type: Number,
-      required: true
+      required: false,
+      default: 0,
     },
     taskId: {
       type: Number,
-      required: true
+      required: false,
+      default: 0,
     }
   },
   data() {
@@ -70,7 +72,6 @@ export default {
         opportunity_id: this.opportunityId,
         task_id: this.taskId,
       },
-      isModalVisible: false,
       messageStatus: "",
       messageText: "",
     };
@@ -88,10 +89,10 @@ export default {
       this.form.task_id = this.taskId;
     },
     closeModal() {
-      this.isModalVisible = false;
-    },
-    openModal() {
-      this.isModalVisible = true;
+      this.$emit("update:modelValue", false);
+      this.clearForm();
+      this.messageStatus = "";
+      this.messageText = "";
     },
     setMessageStatus(status) {
       this.messageStatus = status;
@@ -107,16 +108,26 @@ export default {
       }, 20000);
     },
     async submitForm() {
-      this.form.task_id = this.taskId; 
-      this.form.opportunity_id = this.opportunityId;
+      // Prepara os dados do formulário, apenas incluindo task_id e opportunity_id se não forem 0
+      const formData = {
+        title: this.form.title,
+        url: this.form.url,
+      };
       
-      const { data, error } = await this.submitFormCreate("links", this.form);
+      if (this.taskId && this.taskId !== 0) {
+        formData.task_id = this.taskId;
+      }
+      
+      if (this.opportunityId && this.opportunityId !== 0) {
+        formData.opportunity_id = this.opportunityId;
+      }
+      
+      const { data, error } = await this.submitFormCreate("links", formData);
 
       if (data) {
         this.messageStatus = "success";
         this.messageText = "Link criado com sucesso!";
-        this.isError = false;
-        this.closeModal();
+        this.$emit("update:modelValue", false);
         this.clearForm();
         this.$emit("new-link-event", data);
       }

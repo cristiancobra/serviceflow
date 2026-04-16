@@ -114,6 +114,10 @@
 
     <!-- Tab Anexos -->
     <section v-if="activeTab === 'attachments'" class="mt-6">
+                    <button-new-form 
+                  target="link" 
+                  @open-modal="isCreateLinkModalVisible = true" 
+              />
       <links-list :links="opportunity.links || []" :opportunityId="opportunityId" />
     </section>
 

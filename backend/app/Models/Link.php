@@ -28,4 +28,9 @@ class Link extends Model
     {
         return $this->belongsTo(Opportunity::class);
     }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
 }

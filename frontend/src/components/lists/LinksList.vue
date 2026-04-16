@@ -6,7 +6,12 @@
         <h2>LINKS</h2>
       </div>
       <div class="section-action">
+        <button-new-form 
+          target="link" 
+          @open-modal="isCreateLinkModalVisible = true" 
+        />
         <link-create-form
+          v-model="isCreateLinkModalVisible"
           @new-link-event="addLinkCreated"
           :task-id="taskId"
           :opportunity-id="opportunityId"
@@ -56,17 +61,20 @@
 <script>
 import { destroy } from "@/utils/requests/httpUtils";
 import LinkCreateForm from "@/components/forms/LinkCreateForm.vue";
+import ButtonNewForm from "@/components/buttons/ButtonNewForm.vue";
 
 export default {
   name: "LinksList",
   components: {
     LinkCreateForm,
+    ButtonNewForm,
   },
   data() {
     return {
       localLinks: this.links,
       searchTerm: "",
       newLinkId: null,
+      isCreateLinkModalVisible: false,
     };
   },
   props: {
@@ -106,6 +114,13 @@ export default {
       if (window.confirm("Tem certeza que deseja excluir este link?")) {
         this.deleteLink(linkId);
       }
+    },
+    copyLink(url) {
+      navigator.clipboard.writeText(url).then(() => {
+        alert("Link copiado para a área de transferência!");
+      }).catch(err => {
+        console.error("Erro ao copiar link:", err);
+      });
     },
   },
 };

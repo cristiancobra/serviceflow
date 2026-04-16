@@ -19,11 +19,12 @@ class LinkController extends Controller
     public function index()
     {
         $links = Link::with([
-            'project',
-            'opportunity'
+            'task',
+            'opportunity',
+            'project'
         ])
             ->where('account_id', auth()->user()->account_id)
-            ->orderBy('date_due', 'desc')
+            ->orderBy('created_at', 'desc')
             ->paginate(500);
 
         return LinksResource::collection($links);

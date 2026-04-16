@@ -167,6 +167,17 @@
             </li>
           </router-link>
 
+          <router-link to="/links">
+            <li
+              class="nav-item"
+              @mouseover="toggleActive('links')"
+              :class="{ active: activeItem === 'links' }"
+            >
+              <font-awesome-icon icon="fas fa-link" class="router-link-text" />
+              <span class="router-link-text">LINKS</span>
+            </li>
+          </router-link>
+
           <li
             class="nav-item"
             @mouseover="showSubmenu('configuracoes')"

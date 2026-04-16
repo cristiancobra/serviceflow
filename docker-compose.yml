@@ -40,7 +40,7 @@ services:
 
   frontend:
     container_name: frontend-serviceflow
-    image: node:18
+    image: node:20
     working_dir: /app
     volumes:
       - ./frontend:/app
