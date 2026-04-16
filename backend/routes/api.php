@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\ProposalController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\Api\TransactionController;
+use App\Http\Controllers\Api\UploadController;
 use App\Http\Controllers\Api\UserController;
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +41,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	// Check token
 	Route::middleware('auth:sanctum')->get('/check-token', [AuthController::class, 'checkToken']);
+
+	// Upload de imagens do editor de texto
+	Route::post('/upload/editor-image', [UploadController::class, 'uploadEditorImage'])
+		->name('upload.editor-image');
 
 	// ACCOUNTS
 	Route::post('accounts/{account}/logo', [AccountController::class, 'uploadLogo'])
