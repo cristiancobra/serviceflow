@@ -150,4 +150,25 @@ class OpportunityController extends Controller
             return response()->json(['error' => 'Unable to count open opportunities'], 500);
         }
     }
+
+    /**
+     * Get only open opportunities (date_conclusion and date_canceled are null)
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function getOpenOpportunities()
+    {
+        try {
+            $opportunities = Opportunity::whereNull('date_conclusion')
+                ->whereNull('date_canceled')
+                ->orderBy('created_at', 'desc')
+                ->get(['id', 'name', 'company_id', 'created_at']);
+
+            return OpportunitiesResource::collection($opportunities);
+        } catch (\Exception $e) {
+            Log::error('Error fetching open opportunities: ' . $e->getMessage());
+
+            return response()->json(['error' => 'Unable to fetch open opportunities'], 500);
+        }
+    }
 }

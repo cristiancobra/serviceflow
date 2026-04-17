@@ -23,6 +23,7 @@ export const LOGOUT_URL = "logout";
 export const OPPORTUNITY_URL = "opportunities";
 export const OPPORTUNITY_URL_PARAMETER = "opportunities/";
 export const OPPORTUNITY_COUNT = "opportunities/totalOpportunities";
+export const OPPORTUNITY_OPEN_URL = "opportunities/open";
 export const PROJECT_URL = "projects";
 export const PROJECT_URL_PARAMETER = "projects/";
 export const PROJECTS_PRIORIZED_URL = "projects/prioritized";

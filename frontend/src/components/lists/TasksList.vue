@@ -73,7 +73,30 @@
               </p>
             </router-link>
             <div v-else>
-              <p>----</p>
+              <div v-if="editingOpportunity[localTask.id]" class="inline-edit-opportunity">
+                <opportunities-open-select-input
+                  v-model="selectedOpportunityId"
+                  fieldsToDisplay="name"
+                  :autoSelect="false"
+                  fieldNull="Nenhuma"
+                  @update:modelValue="saveOpportunity(localTask.id, $event)"
+                />
+                <button 
+                  @click="cancelEditOpportunity(localTask.id)" 
+                  class="btn-cancel-edit ms-2"
+                  title="Cancelar"
+                >
+                  <font-awesome-icon icon="fa-solid fa-times" />
+                </button>
+              </div>
+              <p 
+                v-else 
+                @click="startEditOpportunity(localTask.id)" 
+                class="text-sm text-gray-400 hover:text-primary cursor-pointer" 
+                title="Clique para vincular a uma oportunidade"
+              >
+                ----
+              </p>
             </div>
           </div>
 
@@ -125,6 +148,7 @@ import { index } from "@/utils/requests/httpUtils";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import DateTimeValue from "../fields/datetime/DateTimeValue.vue";
+import OpportunitiesOpenSelectInput from "@/components/forms/selects/OpportunitiesOpenSelectInput.vue";
 import { mapState } from "vuex";
 
 export default {
@@ -155,11 +179,14 @@ export default {
       totalTasks: 0,
       completedTasks: 0,
       newTaskId: null,
+      editingOpportunity: {},
+      selectedOpportunityId: null,
     };
   },
   components: {
     DateTimeEditableInput,
     DateTimeValue,
+    OpportunitiesOpenSelectInput,
     TaskCreateForm,
   },
   methods: {
@@ -314,6 +341,33 @@ export default {
         return "----";
       }
     },
+    startEditOpportunity(taskId) {
+      this.editingOpportunity[taskId] = true;
+      this.selectedOpportunityId = null;
+    },
+    cancelEditOpportunity(taskId) {
+      this.editingOpportunity[taskId] = false;
+      this.selectedOpportunityId = null;
+    },
+    async saveOpportunity(taskId, opportunityId) {
+      if (!opportunityId) {
+        this.cancelEditOpportunity(taskId);
+        return;
+      }
+
+      try {
+        const response = await axios.put(
+          `${BACKEND_URL}${TASK_URL_PARAMETER}${taskId}`,
+          { opportunity_id: opportunityId }
+        );
+
+        const updatedTask = response.data.data;
+        this.updateTasksList(updatedTask, taskId);
+        this.cancelEditOpportunity(taskId);
+      } catch (error) {
+        console.error("Erro ao atualizar oportunidade da tarefa:", error);
+      }
+    },
   },
   computed: {
     ...mapState({
@@ -423,5 +477,29 @@ a:active {
 .small-date {
   font-size: 0.8rem;
   font-weight: 400;
+}
+
+.inline-edit-opportunity {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-cancel-edit {
+  background: none;
+  border: none;
+  color: #dc2626;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  transition: color 0.2s;
+}
+
+.btn-cancel-edit:hover {
+  color: #991b1b;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 </style>

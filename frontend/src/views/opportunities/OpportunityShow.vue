@@ -125,6 +125,7 @@
     <section v-if="activeTab === 'tasks'" class="mt-6">
       <tasks-list-section
         :tasks="opportunity.tasks || []"
+        :opportunity="opportunity"
         @update-opportunity-duration="updateOpportunityDuration()"
       />
          Total da oportunidade:    {{ formatDuration(opportunity.duration_time) }}

@@ -59,7 +59,7 @@
             <div class="mb-4">
               <div class="flex flex-wrap -mx-2">
                 <div class="w-full md:w-1/2 px-2">
-                  <div v-if="currentOpportunity">
+                  <div v-if="opportunity">
                     <label
                       for="opportunity"
                       class="block text-sm font-medium text-gray-700 mb-1"
@@ -69,11 +69,12 @@
                       type="hidden"
                       id="opportunity"
                       name="opportunity_id"
-                      v-model="currentOpportunity.id"
+                      :value="opportunity.id"
                     />
                     <TextValue
-                      v-model="currentOpportunity.name"
+                      :modelValue="opportunity.name"
                       class="selected"
+                      :readonly="true"
                     />
                   </div>
                   <div v-else>
@@ -87,7 +88,7 @@
                   </div>
                 </div>
                 <div class="w-full md:w-1/2 px-2">
-                  <div v-if="currentProject">
+                  <div v-if="project">
                     <label
                       for="project"
                       class="block text-sm font-medium text-gray-700 mb-1"
@@ -97,9 +98,13 @@
                       type="hidden"
                       id="project"
                       name="project_id"
-                      v-model="currentProject.id"
+                      :value="project.id"
                     />
-                    <TextValue v-model="currentProject.name" class="selected" />
+                    <TextValue 
+                      :modelValue="project.name" 
+                      class="selected" 
+                      :readonly="true" 
+                    />
                   </div>
                   <div v-else>
                     <ProjectsSelectInput
@@ -191,6 +196,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    opportunity: {
+      type: Object,
+      default: null,
+    },
+    project: {
+      type: Object,
+      default: null,
+    },
   },
   data() {
     return {
@@ -221,7 +234,6 @@ export default {
       users: [],
     };
   },
-  inject: ["currentProject", "currentOpportunity"],
   methods: {
     submitFormCreate,
     addLeadCreated(newLead) {
@@ -284,12 +296,25 @@ export default {
       this.form.status = newStatus;
     },
   },
+  mounted() {
+    // Inicializar IDs se as props existirem
+    if (this.opportunity) {
+      this.form.opportunity_id = this.opportunity.id;
+    }
+    if (this.project) {
+      this.form.project_id = this.project.id;
+    }
+  },
   watch: {
-    currentOpportunity(newValue) {
-      this.form.opportunity_id = newValue.id;
+    opportunity(newValue) {
+      if (newValue) {
+        this.form.opportunity_id = newValue.id;
+      }
     },
-    currentProject(newValue) {
-      this.form.project_id = newValue.id;
+    project(newValue) {
+      if (newValue) {
+        this.form.project_id = newValue.id;
+      }
     },
   },
 };

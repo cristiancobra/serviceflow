@@ -85,6 +85,7 @@
      <section id="tasks">
       <tasks-list-section
         :tasks="project.tasks"
+        :project="project"
         @update-project-duration="updateProjectDuration()"
       />
     </section>

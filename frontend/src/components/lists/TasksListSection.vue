@@ -7,7 +7,12 @@
       </div>
       <div class="section-action">
         <button-new-form target="task" @open-modal="openTaskForm = true" />
-        <task-create-form v-model="openTaskForm" @new-task-event="addTaskCreated" />
+        <task-create-form 
+          v-model="openTaskForm" 
+          :opportunity="opportunity" 
+          :project="project" 
+          @new-task-event="addTaskCreated" 
+        />
       </div>
     </div>
 
@@ -73,8 +78,31 @@
                     {{ trimName(localTask.project.name) }}
                   </p>
                 </router-link>
-                <div v-else class="">
-                  <p>----</p>
+                <div v-else>
+                  <div v-if="editingOpportunity[localTask.id]" class="inline-edit-opportunity">
+                    <opportunities-open-select-input
+                      v-model="selectedOpportunityId"
+                      fieldsToDisplay="name"
+                      :autoSelect="false"
+                      fieldNull="Nenhuma"
+                      @update:modelValue="saveOpportunity(localTask.id, $event)"
+                    />
+                    <button 
+                      @click="cancelEditOpportunity(localTask.id)" 
+                      class="btn-cancel-edit ms-2"
+                      title="Cancelar"
+                    >
+                      <font-awesome-icon icon="fa-solid fa-times" />
+                    </button>
+                  </div>
+                  <p 
+                    v-else 
+                    @click="startEditOpportunity(localTask.id)" 
+                    class="text-sm text-gray-400 hover:text-primary cursor-pointer" 
+                    title="Clique para vincular a uma oportunidade"
+                  >
+                    ----
+                  </p>
                 </div>
               </div>
 
@@ -234,6 +262,7 @@ import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 import TextAreaEditableInput from "@/components/forms/inputs/textarea/TextAreaEditableInput.vue";
 import SearchInput from "@/components/filters/SearchInput.vue";
+import OpportunitiesOpenSelectInput from "@/components/forms/selects/OpportunitiesOpenSelectInput.vue";
 import { mapState } from "vuex";
 
 export default {
@@ -246,6 +275,14 @@ export default {
     showOpportunityColumn: {
       type: Boolean,
       default: false,
+    },
+    opportunity: {
+      type: Object,
+      default: null,
+    },
+    project: {
+      type: Object,
+      default: null,
     },
   },
   data() {
@@ -263,6 +300,8 @@ export default {
       showJourneys: {},
       showJourneyForm: {},
       totalTasks: 0,
+      editingOpportunity: {},
+      selectedOpportunityId: null,
     };
   },
   components: {
@@ -272,6 +311,7 @@ export default {
     DateTimeEditableInput,
     JourneyCreateForm,
     JourneysListFromOpportunity,
+    OpportunitiesOpenSelectInput,
     TaskCreateForm,
     TextEditableField,
     TextAreaEditableInput,
@@ -458,6 +498,33 @@ export default {
       );
       this.localTasks.splice(index, 1, updatedTask);
     },
+    startEditOpportunity(taskId) {
+      this.editingOpportunity[taskId] = true;
+      this.selectedOpportunityId = null;
+    },
+    cancelEditOpportunity(taskId) {
+      this.editingOpportunity[taskId] = false;
+      this.selectedOpportunityId = null;
+    },
+    async saveOpportunity(taskId, opportunityId) {
+      if (!opportunityId) {
+        this.cancelEditOpportunity(taskId);
+        return;
+      }
+
+      try {
+        const response = await axios.put(
+          `${BACKEND_URL}${TASK_URL_PARAMETER}${taskId}`,
+          { opportunity_id: opportunityId }
+        );
+
+        const updatedTask = response.data.data;
+        this.updateTasksList(updatedTask, taskId);
+        this.cancelEditOpportunity(taskId);
+      } catch (error) {
+        console.error("Erro ao atualizar oportunidade da tarefa:", error);
+      }
+    },
   },
   computed: {
     ...mapState({
@@ -574,3 +641,29 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.inline-edit-opportunity {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-cancel-edit {
+  background: none;
+  border: none;
+  color: #dc2626;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  transition: color 0.2s;
+}
+
+.btn-cancel-edit:hover {
+  color: #991b1b;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+</style>
