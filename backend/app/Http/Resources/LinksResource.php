@@ -23,6 +23,7 @@ class LinksResource extends JsonResource
             'opportunity_id' => $this->opportunity_id,
             'url' => $this->url,
             'title' => $this->title,
+            'observations' => $this->observations,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             

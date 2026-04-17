@@ -17,6 +17,7 @@ class Link extends Model
         'opportunity_id',
         'url',
         'title',
+        'observations',
     ];
 
     public function task()

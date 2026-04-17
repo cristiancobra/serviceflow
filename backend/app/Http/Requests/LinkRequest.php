@@ -31,6 +31,7 @@ class LinkRequest extends FormRequest
             'project_id' => 'nullable|exists:projects,id',
             'url' => 'required|url',
             'title' => 'required|string|max:255',
+            'observations' => 'nullable|string',
         ];
     }
 

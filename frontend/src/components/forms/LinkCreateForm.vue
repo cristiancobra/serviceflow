@@ -24,6 +24,10 @@
                 <TextInput label="URL" name="url" v-model="form.url" placeholder="URL do link" />
               </div>
 
+              <div class="row mt-4">
+                <TextAreaInput label="Observações" name="observations" v-model="form.observations" placeholder="Observações opcionais" :rows="3" />
+              </div>
+
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" @click="closeModal">Fechar</button>
                 <button type="submit" class="button-new">Criar</button>
@@ -40,6 +44,7 @@
 import { submitFormCreate } from "@/utils/requests/httpUtils";
 import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import TextInput from "./inputs/text/TextInput";
+import TextAreaInput from "./inputs/textarea/TextAreaInput.vue";
 
 export default {
   name: "LinkCreateForm",
@@ -47,6 +52,7 @@ export default {
   components: {
     AddMessage,
     TextInput,
+    TextAreaInput,
   },
   props: {
     modelValue: {
@@ -69,6 +75,7 @@ export default {
       form: {
         title: "",
         url: "",
+        observations: "",
         opportunity_id: this.opportunityId,
         task_id: this.taskId,
       },
@@ -85,6 +92,7 @@ export default {
     clearForm() {
       this.form.title = "";
       this.form.url = "";
+      this.form.observations = "";
       this.form.opportunity_id = this.opportunityId;
       this.form.task_id = this.taskId;
     },
@@ -112,6 +120,7 @@ export default {
       const formData = {
         title: this.form.title,
         url: this.form.url,
+        observations: this.form.observations,
       };
       
       if (this.taskId && this.taskId !== 0) {

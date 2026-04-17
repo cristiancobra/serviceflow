@@ -31,19 +31,22 @@
     <div
       v-for="link in localLinks"
       :key="link.id"
-      class="table-row"
+      class="table-row grid grid-cols-12 gap-4 items-center"
       :class="{ highlight: link.id === newLinkId }"
     >
-      <div class="col-6">
+      <div class="col-span-4">
         <font-awesome-icon icon="fa-solid fa-link" class="icon pe-3 primary" />
         <a class="link-name" :href="link.url" target="_blank">{{
           link.title
         }}</a>
       </div>
-      <div class="col-5">
+      <div class="col-span-4">
         <a class="link-url" :href="link.url" target="_blank">{{ link.url }}</a>
       </div>
-      <div class="col-1 d-flex justify-content-center">
+      <div class="col-span-2">
+        <span class="text-sm text-gray-600">{{ link.observations || '-' }}</span>
+      </div>
+      <div class="col-span-2 flex justify-center gap-2">
         <button
           class="button-circular delete"
           @click="confirmDeleteLink(link.id)"
