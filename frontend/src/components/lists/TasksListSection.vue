@@ -7,6 +7,15 @@
       </div>
       <div class="section-action">
         <button-new-form target="task" @open-modal="openTaskForm = true" />
+        
+        <button
+          @click="createOrganizationTask"
+          class="w-9 h-9 flex items-center justify-center rounded-full bg-green-500 text-white hover:bg-green-700 transition shadow-md"
+          title="Criar tarefa de organização (30min)"
+        >
+          <font-awesome-icon icon="fa-solid fa-calendar-check" />
+        </button>
+        
         <task-create-form 
           v-model="openTaskForm" 
           :opportunity="opportunity" 
@@ -251,6 +260,8 @@ import {
   BACKEND_URL,
   IMAGES_PATH,
   TASK_URL_PARAMETER,
+  TASK_URL,
+  JOURNEY_URL,
 } from "@/config/apiConfig";
 import AddLastJourneyDateButton from "@/components/tasks/buttons/AddLastJourneyDateButton.vue";
 import ButtonNewForm from "../buttons/ButtonNewForm.vue";
@@ -523,6 +534,55 @@ export default {
         this.cancelEditOpportunity(taskId);
       } catch (error) {
         console.error("Erro ao atualizar oportunidade da tarefa:", error);
+      }
+    },
+    async createOrganizationTask() {
+      try {
+        const now = new Date();
+        const dueDate = new Date(now.getTime() + 30 * 60000); // +30 minutos
+        
+        // 1. Criar a tarefa
+        const taskData = {
+          name: "Organização",
+          description: "Organização da agenda diária",
+          date_start: now.toISOString(),
+          date_due: dueDate.toISOString(),
+          user_id: this.userData.id,
+          status: "doing",
+          priority: "medium",
+          user_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        };
+
+        const taskResponse = await axios.post(
+          `${BACKEND_URL}${TASK_URL}`,
+          taskData
+        );
+
+        const newTask = taskResponse.data.data;
+        
+        // 2. Criar a jornada automaticamente
+        const journeyData = {
+          task_id: newTask.id,
+          start: now.toISOString(),
+          user_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        };
+
+        const journeyResponse = await axios.post(
+          `${BACKEND_URL}${JOURNEY_URL}`,
+          journeyData
+        );
+
+        const newJourney = journeyResponse.data.data;
+        
+        // 3. Atualizar a lista local
+        newTask.journeys = [newJourney];
+        this.addTaskCreated(newTask);
+        this.setJourneysVisible(newTask.id);
+        
+        console.log("✅ Tarefa de organização criada com sucesso!");
+        
+      } catch (error) {
+        console.error("❌ Erro ao criar tarefa de organização:", error);
       }
     },
   },
