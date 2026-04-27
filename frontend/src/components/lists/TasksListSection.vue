@@ -47,7 +47,7 @@
               {{ formatDateGroup(date) }}
             </p>
             <div v-for="localTask in tasks" v-bind:key="localTask.id">
-            <div class="list-line flex items-center space-x-10 pt-1 pb-1">
+            <div :id="'task-' + localTask.id" class="list-line flex items-center space-x-10 pt-1 pb-1">
               <div class="icons-column">
                 <!-- Ícone de cancelamento (X vermelho) ou conclusão (check verde) -->
                 <font-awesome-icon v-if="localTask.date_canceled" icon="fas fa-times-circle"
@@ -61,8 +61,10 @@
               </div>
 
               <div class="flex flex-row flex-[6] items-center justify-start m-0">
-                <text-editable-field name="name" v-model="localTask.name" placeholder="descrição detalhada da tarefa"
-                  @save="updateTask('name', $event, localTask.id)" />
+                <div :class="{ 'task-name-highlighted': showControls[localTask.id] }">
+                  <text-editable-field name="name" v-model="localTask.name" placeholder="descrição detalhada da tarefa"
+                    @save="updateTask('name', $event, localTask.id)" />
+                </div>
               </div>
 
               <!-- Coluna de Oportunidade/Projeto -->
@@ -70,6 +72,8 @@
                 <router-link class="flex no-underline text-inherit" v-if="localTask.opportunity" :to="{
                   name: 'opportunityShow',
                   params: { id: localTask.opportunity.id },
+                  query: { tab: 'tasks' },
+                  hash: '#task-' + localTask.id
                 }">
                   <p class="flex items-center gap-2 font-medium text-sm"
                     :class="getColorClassForName(localTask.opportunity.name)">
@@ -79,7 +83,11 @@
                   </p>
                 </router-link>
                 <router-link class="flex no-underline text-inherit" v-else-if="localTask.project"
-                  :to="{ name: 'projectShow', params: { id: localTask.project.id } }">
+                  :to="{ 
+                    name: 'projectShow', 
+                    params: { id: localTask.project.id },
+                    hash: '#task-' + localTask.id
+                  }">
                   <font-awesome-icon icon="fa-solid fa-folder-open"
                     :class="getColorClassForName(localTask.project.name)" />
                   <p class="flex items-center gap-2 font-medium text-sm"
@@ -447,6 +455,25 @@ export default {
     toggleControls(taskId) {
       this.showControls[taskId] = !this.showControls[taskId];
     },
+    openControlsForTask(taskId) {
+      this.showControls[taskId] = true;
+    },
+    checkAndOpenControlsFromHash() {
+      // Verifica se há um hash na URL indicando uma tarefa específica
+      if (this.$route && this.$route.hash) {
+        const taskId = this.$route.hash.substring(1); // Remove o '#'
+        
+        // Se o hash é do formato 'task-123', extrai o ID numérico
+        if (taskId.startsWith('task-')) {
+          const numericId = parseInt(taskId.replace('task-', ''));
+          
+          // Aguarda um momento para garantir que o scroll foi executado
+          setTimeout(() => {
+            this.openControlsForTask(numericId);
+          }, 1200);
+        }
+      }
+    },
     toggleJourneys(taskId) {
       this.showJourneys[taskId] = !this.showJourneys[taskId];
     },
@@ -695,12 +722,14 @@ export default {
   },
   mounted() {
     this.checkAndExpandOpenJourneys();
+    this.checkAndOpenControlsFromHash();
   },
   watch: {
     tasks: {
       handler(newVal) {
         this.localTasks = newVal;
         this.checkAndExpandOpenJourneys();
+        this.checkAndOpenControlsFromHash();
       },
       deep: true,
     },
@@ -731,5 +760,15 @@ export default {
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.task-name-highlighted {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.task-name-highlighted p {
+  font-weight: 700;
+  color: var(--primary);
 }
 </style>

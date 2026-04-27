@@ -258,6 +258,46 @@ export default {
         this.opportunity.proposals.splice(index, 1, updatedProposal);
       }
     },
+    scrollToTaskIfNeeded() {
+      // Só faz o scroll se estiver na aba 'tasks' e houver um hash na URL
+      if (this.$route.hash) {
+        // Remove o '#' do hash para obter o ID do elemento
+        const taskId = this.$route.hash.substring(1);
+        
+        // Função auxiliar para tentar fazer o scroll
+        const attemptScroll = (attempts = 0, maxAttempts = 15) => {
+          const element = document.getElementById(taskId);
+          
+          if (element) {
+            // Usa scrollIntoView com comportamento suave
+            setTimeout(() => {
+              element.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center'
+              });
+              
+              // Adiciona um efeito visual temporário para destacar a tarefa
+              element.classList.add('highlight-task');
+              setTimeout(() => {
+                element.classList.remove('highlight-task');
+              }, 2000);
+            }, 100);
+          } else if (attempts < maxAttempts) {
+            // Se o elemento não foi encontrado, tenta novamente após um delay
+            setTimeout(() => {
+              attemptScroll(attempts + 1, maxAttempts);
+            }, 300);
+          }
+        };
+        
+        // Aguarda um momento para garantir que o DOM foi atualizado
+        this.$nextTick(() => {
+          setTimeout(() => {
+            attemptScroll();
+          }, 500);
+        });
+      }
+    },
   },
   computed: {
     translatedStatus() {
@@ -282,12 +322,18 @@ export default {
       this.activeTab = this.$route.query.tab;
     }
     
-    this.getOpportunity();
+    this.getOpportunity().then(() => {
+      // Após carregar os dados, verifica se precisa fazer scroll
+      this.scrollToTaskIfNeeded();
+    });
   },
   watch: {
     activeTab(newTab) {
       // Atualiza a URL quando mudar de tab (sem reload da página)
       this.$router.replace({ query: { ...this.$route.query, tab: newTab } });
+      
+      // Verifica se precisa fazer scroll quando a tab mudar
+      this.scrollToTaskIfNeeded();
     }
   },
 };
@@ -338,5 +384,22 @@ a:active {
 .status {
   text-align: center;
   font-size: 3rem;
+}
+
+/* Estilo para destacar a tarefa quando navegamos até ela */
+.highlight-task {
+  background-color: #fff3cd;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 0 15px rgba(255, 193, 7, 0.5);
+  animation: highlightPulse 2s ease-in-out;
+}
+
+@keyframes highlightPulse {
+  0%, 100% {
+    background-color: #fff3cd;
+  }
+  50% {
+    background-color: #ffe69c;
+  }
 }
 </style>

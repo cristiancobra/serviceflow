@@ -218,6 +218,39 @@ export default {
           console.error('Erro ao atualizar duração do projeto:', error);
         });
     },
+    scrollToTaskIfNeeded() {
+      if (this.$route.hash) {
+        const taskId = this.$route.hash.substring(1);
+        
+        const attemptScroll = (attempts = 0, maxAttempts = 15) => {
+          const element = document.getElementById(taskId);
+          
+          if (element) {
+            setTimeout(() => {
+              element.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center'
+              });
+              
+              element.classList.add('highlight-task');
+              setTimeout(() => {
+                element.classList.remove('highlight-task');
+              }, 2000);
+            }, 100);
+          } else if (attempts < maxAttempts) {
+            setTimeout(() => {
+              attemptScroll(attempts + 1, maxAttempts);
+            }, 300);
+          }
+        };
+        
+        this.$nextTick(() => {
+          setTimeout(() => {
+            attemptScroll();
+          }, 500);
+        });
+      }
+    },
   },
   computed: {
     translatedStatus() {
@@ -226,7 +259,9 @@ export default {
   },
   mounted() {
     this.setProjectId(this.$route.params.id);
-    this.getProject();
+    this.getProject().then(() => {
+      this.scrollToTaskIfNeeded();
+    });
   },
 };
 </script>
@@ -362,5 +397,22 @@ a:active {
   text-align: center;
   font-weight: 400;
   color: var(--green);
+}
+
+/* Estilo para destacar a tarefa quando navegamos até ela */
+.highlight-task {
+  background-color: #fff3cd;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 0 15px rgba(255, 193, 7, 0.5);
+  animation: highlightPulse 2s ease-in-out;
+}
+
+@keyframes highlightPulse {
+  0%, 100% {
+    background-color: #fff3cd;
+  }
+  50% {
+    background-color: #ffe69c;
+  }
 }
 </style>

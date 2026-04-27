@@ -41,7 +41,12 @@
         <div v-if="journey.task" class="group-column">
           <router-link :class="getColorClassForName(journey.task.opportunity.name)" style="display: flex;"
             v-if="journey.task.opportunity"
-            :to="{ name: 'opportunityShow', params: { id: journey.task.opportunity.id } }">
+            :to="{ 
+              name: 'opportunityShow', 
+              params: { id: journey.task.opportunity.id },
+              query: { tab: 'tasks' },
+              hash: '#task-' + journey.task.id
+            }">
             <p class="group-name">
               <font-awesome-icon icon="fa-solid fa-bullseye"
                 :class="getColorClassForName(journey.task.opportunity.name)" />
@@ -49,7 +54,11 @@
             </p>
           </router-link>
           <router-link style="display: flex;" v-else-if="journey.task.project"
-            :to="{ name: 'projectShow', params: { id: journey.task.project.id } }">
+            :to="{ 
+              name: 'projectShow', 
+              params: { id: journey.task.project.id },
+              hash: '#task-' + journey.task.id
+            }">
             <font-awesome-icon icon="fa-solid fa-folder-open"
               :class="getColorClassForName(journey.task.project.name)" />
             <p class="group-name" :style="{ color: getColorClassForName(journey.task.project.name) }">
@@ -260,9 +269,18 @@ export default {
     },
     getTaskLink(task) {
       if (task.opportunity) {
-        return { name: 'opportunityShow', params: { id: task.opportunity.id } };
+        return { 
+          name: 'opportunityShow', 
+          params: { id: task.opportunity.id },
+          query: { tab: 'tasks' },
+          hash: '#task-' + task.id
+        };
       } else if (task.project) {
-        return { name: 'projectShow', params: { id: task.project.id } };
+        return { 
+          name: 'projectShow', 
+          params: { id: task.project.id },
+          hash: '#task-' + task.id
+        };
       } else {
         return null;
       }
