@@ -3,7 +3,7 @@ import router from '@/router';
 import store from '@/store';
 
 // Configurar a URL base do backend
-axios.defaults.baseURL = process.env.VUE_APP_BACKEND_URL;
+axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 
 // Permitir o envio de cookies com as requisições
 axios.defaults.withCredentials = true;
