@@ -1,6 +1,14 @@
 <template>
   <div class="flex flex-wrap justify-center gap-4 mt-10 mb-12">
     <button
+      class="px-6 py-2 border-2 rounded-lg font-semibold cursor-pointer transition-all duration-300 border-primary"
+      :class="activeFilter === null ? 'bg-primary text-white' : 'bg-white text-primary hover:bg-primary hover:text-white'"
+      @click="handleFilterClick(null)"
+    >
+      Todas
+    </button>
+    
+    <button
       class="px-6 py-2 border-2 rounded-lg font-semibold cursor-pointer transition-all duration-300 border-blue-500"
       :class="activeFilter === 'doing' ? 'bg-blue-500 text-white' : 'bg-white text-blue-500 hover:bg-blue-500 hover:text-white'"
       @click="handleFilterClick('doing')"
@@ -52,9 +60,7 @@ export default {
   },
   methods: {
     handleFilterClick(status) {
-      // Toggle: se clicar no filtro ativo, desativa
-      this.activeFilter = this.activeFilter === status ? null : status;
-      // Emite um único evento com o valor do filtro (ou null se desativado)
+      this.activeFilter = status;
       this.$emit("filter-change", this.activeFilter);
     },
   },

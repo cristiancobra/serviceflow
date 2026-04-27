@@ -1,33 +1,42 @@
 <template>
-  <div>
+  <div class="page-container">
+    <div class="page-header">
+      <div class="page-title">
+        <font-awesome-icon icon="fa-solid fa-tasks" class="page-icon" />
+        <h1>TAREFAS</h1>
+      </div>
+    </div>
+
     <TasksFilter
-      @filter-canceled="getTasksCanceled"
-      @filter-doing="getTasksDoing"
-      @filter-done="getTasksDone"
-      @filter-late="getTasksLate"
-      @filter-to-do="getTasksToDo"
+      @filter-change="handleFilterChange"
     />
 
     <ErrorMessage v-if="isError" :formResponse="formResponse" />
     <SuccessMessage v-if="isSuccess" :formResponse="formResponse" />
 
-      <TasksList template="index" />
+    <TasksListSection 
+      :tasks="filteredTasks" 
+      :showOpportunityColumn="true" 
+      sortOrder="desc" 
+    />
   </div>
 </template>
 
 <script>
 import { BACKEND_URL, TASK_URL_PARAMETER } from "@/config/apiConfig";
 import axios from "axios";
-import TasksList from "@/components/lists/TasksList.vue";
+import TasksListSection from "@/components/lists/TasksListSection.vue";
 import TasksFilter from "@/components/filters/TasksFilter.vue";
 import SuccessMessage from "../../components/forms/messages/SuccessMessage.vue";
+import ErrorMessage from "../../components/forms/messages/ErrorMessage.vue";
 
 export default {
   name: "TasksIndexView",
   components: {
-    TasksList,
+    TasksListSection,
     TasksFilter,
     SuccessMessage,
+    ErrorMessage,
   },
   data() {
     return {
@@ -41,59 +50,40 @@ export default {
     };
   },
   methods: {
-    getTasksCanceled() {
-      axios
-        .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=canceled`)
-        .then((response) => {
-          this.filteredTasks = response.data.data;
-        })
-        .catch((error) => {
-          console.error('Erro ao filtrar tarefas canceladas:', error);
-        });
+    async getTasks() {
+      try {
+        const response = await axios.get(`${BACKEND_URL}tasks`);
+        this.filteredTasks = response.data.data;
+      } catch (error) {
+        console.error('Erro ao buscar tarefas:', error);
+        this.isError = true;
+      }
     },
-    getTasksDoing() {
-      axios
-        .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=doing`)
-        .then((response) => {
-          this.filteredTasks = response.data.data;
-        })
-        .catch((error) => {
-          console.error('Erro ao filtrar tarefas em andamento:', error);
-        });
-    },
-    getTasksDone() {
-      axios
-        .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=done`)
-        .then((response) => {
-          this.filteredTasks = response.data.data;
-        })
-        .catch((error) => {
-          console.error('Erro ao filtrar tarefas concluídas:', error);
-        });
-    },
-    getTasksLate() {
-      axios
-        .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-date`)
-        .then((response) => {
-          this.filteredTasks = response.data.data;
-        })
-        .catch((error) => {
-          console.error('Erro ao filtrar tarefas atrasadas:', error);
-        });
-    },
-    getTasksToDo() {
-      axios
-        .get(`${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=to-do`)
-        .then((response) => {
-          this.filteredTasks = response.data.data;
-        })
-        .catch((error) => {
-          console.error('Erro ao filtrar tarefas a fazer:', error);
-        });
+    async handleFilterChange(status) {
+      try {
+        if (!status) {
+          // Se status for null, mostra todas as tarefas
+          await this.getTasks();
+          return;
+        }
+
+        let endpoint = '';
+        if (status === 'late') {
+          endpoint = `${BACKEND_URL}${TASK_URL_PARAMETER}filter-date`;
+        } else {
+          endpoint = `${BACKEND_URL}${TASK_URL_PARAMETER}filter-status?status=${status}`;
+        }
+
+        const response = await axios.get(endpoint);
+        this.filteredTasks = response.data.data;
+      } catch (error) {
+        console.error(`Erro ao filtrar tarefas (${status}):`, error);
+        this.isError = true;
+      }
     },
   },
   mounted() {
-    // this.getTasks();
+    this.getTasks();
   },
 };
 </script>

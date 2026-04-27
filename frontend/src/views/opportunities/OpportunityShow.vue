@@ -126,6 +126,7 @@
       <tasks-list-section
         :tasks="opportunity.tasks || []"
         :opportunity="opportunity"
+        sortOrder="asc"
         @update-opportunity-duration="updateOpportunityDuration()"
       />
          Total da oportunidade:    {{ formatDuration(opportunity.duration_time) }}

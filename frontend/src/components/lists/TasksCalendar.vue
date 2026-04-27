@@ -12,7 +12,11 @@
         <task-create-form v-model="isCreateTaskModalVisible" @new-task-event="addTaskCreated" />
       </div>
     </div>
-    <tasks-list-section :tasks="localTasks" :showOpportunityColumn="true" />
+    <tasks-list-section 
+      :tasks="localTasks" 
+      :showOpportunityColumn="true" 
+      sortOrder="asc" 
+    />
   </div>
 </template>
 

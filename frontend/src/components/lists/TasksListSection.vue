@@ -10,7 +10,7 @@
         
         <button
           @click="createOrganizationTask"
-          class="w-9 h-9 flex items-center justify-center rounded-full bg-green-500 text-white hover:bg-green-700 transition shadow-md"
+          class="w-9 h-9 flex items-center justify-center rounded-full bg-success text-white hover:bg-green-700 transition shadow-md"
           title="Criar tarefa de organização (30min)"
         >
           <font-awesome-icon icon="fa-solid fa-calendar-check" />
@@ -294,6 +294,11 @@ export default {
     project: {
       type: Object,
       default: null,
+    },
+    sortOrder: {
+      type: String,
+      default: 'asc', // 'asc' = mais antiga primeiro, 'desc' = mais recente primeiro
+      validator: (value) => ['asc', 'desc'].includes(value),
     },
   },
   data() {
@@ -608,11 +613,11 @@ export default {
     },
     groupedTasks() {
       if (this.filteredTasks && this.filteredTasks.length > 0) {
-        // Ordena as tarefas por data antes de agrupá-las (mais antiga primeiro)
+        // Ordena as tarefas por data antes de agrupá-las
         const sortedTasks = [...this.filteredTasks].sort((a, b) => {
           const dateA = new Date(a.date_due || "9999-12-31"); // Tarefas sem data vão para o final
           const dateB = new Date(b.date_due || "9999-12-31");
-          return dateA - dateB;
+          return this.sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
         });
 
         return sortedTasks.reduce((groups, localTask) => {
@@ -633,11 +638,11 @@ export default {
       const monthGroups = {};
       
       if (this.filteredTasks && this.filteredTasks.length > 0) {
-        // Ordena as tarefas por data (mais antiga primeiro)
+        // Ordena as tarefas por data
         const sortedTasks = [...this.filteredTasks].sort((a, b) => {
           const dateA = new Date(a.date_due || "9999-12-31");
           const dateB = new Date(b.date_due || "9999-12-31");
-          return dateA - dateB;
+          return this.sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
         });
 
         sortedTasks.forEach(task => {
@@ -679,11 +684,12 @@ export default {
         });
       }
       
-      // Retorna os grupos ordenados por mês (mais antigo primeiro)
+      // Retorna os grupos ordenados por mês
       return Object.values(monthGroups).sort((a, b) => {
         if (a.monthKey === "9999-99") return 1;
         if (b.monthKey === "9999-99") return -1;
-        return new Date(a.monthKey) - new Date(b.monthKey);
+        const comparison = new Date(a.monthKey) - new Date(b.monthKey);
+        return this.sortOrder === 'asc' ? comparison : -comparison;
       });
     },
   },

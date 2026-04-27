@@ -86,6 +86,7 @@
       <tasks-list-section
         :tasks="project.tasks"
         :project="project"
+        sortOrder="asc"
         @update-project-duration="updateProjectDuration()"
       />
     </section>

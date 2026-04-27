@@ -13,7 +13,11 @@
 
     </div>
 
-    <tasks-list-section :tasks="localTasks" :showOpportunityColumn="true" />
+    <tasks-list-section 
+      :tasks="localTasks" 
+      :showOpportunityColumn="true" 
+      sortOrder="asc" 
+    />
   </div>
 </template>
 
