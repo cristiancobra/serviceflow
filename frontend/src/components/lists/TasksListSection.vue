@@ -575,7 +575,7 @@ export default {
         
         // 1. Criar a tarefa
         const taskData = {
-          name: "Organização",
+          name: "Organização diária",
           description: "Organização da agenda diária",
           date_start: now.toISOString(),
           date_due: dueDate.toISOString(),
