@@ -1,6 +1,6 @@
 <template>
   <div class="image">
-    <img :src="require('@/assets/caixa_vazia-PB.png')" alt="logo-serviceflow" />
+    <img :src="caixaVaziaImage" alt="logo-serviceflow" />
 
     <p class="bold">Você não tem nenhum contato!</p>
     <p class="message">Cadastre seu primeiro</p>
@@ -15,6 +15,7 @@
   import { BACKEND_URL, LEAD_URL } from "@/config/apiConfig";
 import LeadCreateForm from "@/components/forms/LeadCreateForm.vue";
 import axios from "axios";
+import caixaVaziaImage from '@/assets/caixa_vazia-PB.png';
 
 export default {
   name: "NoLeadsMessage",
@@ -23,6 +24,7 @@ export default {
   },
   data() {
     return {
+      caixaVaziaImage,
       isActive: true,
     };
   },

@@ -3,7 +3,7 @@
     <nav class="navbar">
       <a class="navbar-brand" href="#">
         <img
-          :src="require('@/assets/logo-serviceflow-BRANCO.png')"
+          :src="logoServiceflow"
           class="logo"
           alt="logo-serviceflow"
         />
@@ -223,10 +223,12 @@
 import { mapActions } from "vuex";
 import { mapState } from "vuex";
 import NavbarUserMenu from "./NavbarUserMenu.vue";
+import logoServiceflow from '@/assets/logo-serviceflow-BRANCO.png';
 
 export default {
   data() {
     return {
+      logoServiceflow,
       activeItem: null,
       isNavbarOpen: false,
       submenus: {

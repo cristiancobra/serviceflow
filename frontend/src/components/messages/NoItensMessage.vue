@@ -1,6 +1,6 @@
 <template>
   <div class="image-container">
-    <img :src="require('@/assets/caixa_vazia-PB.png')" alt="logo-serviceflow" />
+    <img :src="caixaVaziaImage" alt="logo-serviceflow" />
 
     <p class="bold">Nenhum item cadastrado ainda!</p>
     <p class="message">Adicione no botão acima</p>
@@ -10,12 +10,15 @@
 </template>
   
   <script>
+import caixaVaziaImage from '@/assets/caixa_vazia-PB.png';
+
 export default {
   components: {
 
   },
   data() {
     return {
+      caixaVaziaImage,
     
     };
   },

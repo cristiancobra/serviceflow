@@ -1,6 +1,6 @@
 <template>
   <div class="image">
-    <img :src="require('@/assets/caixa_vazia-PB.png')" alt="logo-serviceflow" />
+    <img :src="caixaVaziaImage" alt="logo-serviceflow" />
 
     <p class="bold">Você não tem nenhum serviço!</p>
     <p class="message">Cadastre um seviços para poder faturar</p>
@@ -15,6 +15,7 @@
 import { BACKEND_URL, SERVICE_URL } from "@/config/apiConfig";
 import axios from "axios";
 import ServiceCreateForm from "@/components/forms/ServiceCreateForm.vue";
+import caixaVaziaImage from '@/assets/caixa_vazia-PB.png';
 
 export default {
   name: "NoServicesMessage",
@@ -23,6 +24,7 @@ export default {
   },
   data() {
     return {
+      caixaVaziaImage,
       isActive: true,
     };
   },

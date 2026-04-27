@@ -2,7 +2,7 @@
   <div>
     <div class="login-container" :class="{ 'slide-enter': transitionIn, 'slide-leave': transitionOut }">
       <div class="flex items-center px-8 py-4">
-        <img :src="require('@/assets/logo-serviceflow-BRANCO.png')" class="h-16 md:h-8 w-auto" alt="logo-serviceflow" />
+        <img :src="logoServiceflow" class="h-16 md:h-8 w-auto" alt="logo-serviceflow" />
       </div>
       <div class="login-box">
         <form @submit.prevent="submit">
@@ -43,10 +43,12 @@
 <script>
 import { mapActions } from 'vuex';
 import router from '@/router';
+import logoServiceflow from '@/assets/logo-serviceflow-BRANCO.png';
 
 export default {
   data() {
     return {
+      logoServiceflow,
       responseData: null,
       transitionIn: false,
       transitionOut: false,
