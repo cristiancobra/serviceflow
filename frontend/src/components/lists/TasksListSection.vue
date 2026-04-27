@@ -242,8 +242,8 @@
               localTask.journeys.length > 0 &&
               showJourneys[localTask.id]
             ">
-              <journeys-list-from-opportunity :journeys="localTask.journeys"
-                @update-task-duration="updateTaskDuration()" @last-journey-end="updateEndTaskButtonVisibility" />
+              <journeys-list-from-opportunity :journeys="localTask.journeys" :taskId="localTask.id"
+                @update-task-duration="updateTaskDuration" @last-journey-end="updateEndTaskButtonVisibility" />
             </div>
           </div>
         </div>
@@ -566,6 +566,25 @@ export default {
         this.cancelEditOpportunity(taskId);
       } catch (error) {
         console.error("Erro ao atualizar oportunidade da tarefa:", error);
+      }
+    },
+    async updateTaskDuration(taskId) {
+      try {
+        const response = await axios.get(
+          `${BACKEND_URL}${TASK_URL_PARAMETER}${taskId}`
+        );
+        
+        const updatedTask = response.data.data;
+        
+        // Atualiza a tarefa na lista local
+        const index = this.localTasks.findIndex(task => task.id === taskId);
+        if (index !== -1) {
+          this.localTasks[index].duration_time = updatedTask.duration_time;
+          // Também emite o evento para o componente pai (Opportunity/Project) se necessário
+          this.$emit('update-opportunity-duration');
+        }
+      } catch (error) {
+        console.error("Erro ao atualizar duração da tarefa:", error);
       }
     },
     async createOrganizationTask() {

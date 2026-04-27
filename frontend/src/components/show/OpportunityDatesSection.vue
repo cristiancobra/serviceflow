@@ -32,12 +32,25 @@
         :modelValue="opportunity.date_canceled"
         @save="$emit('update-field', 'date_canceled', $event)"
       />
+      
+      <div class="mt-6 pt-4 border-t border-gray-300">
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium text-gray-700 flex items-center">
+            <font-awesome-icon icon="fas fa-clock" class="text-primary mr-2" />
+            Duração Total:
+          </span>
+          <span class="text-lg font-bold text-primary">
+            {{ formatDuration(opportunity.duration_time) }}
+          </span>
+        </div>
+      </div>
     </div>
   </section>
 </template>
 
 <script>
 import DateEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
+import { formatDuration } from "@/utils/date/dateUtils";
 
 export default {
   name: "OpportunityDatesSection",
@@ -49,6 +62,9 @@ export default {
       type: Object,
       required: true,
     },
+  },
+  methods: {
+    formatDuration,
   },
   emits: ['update-field'],
 };

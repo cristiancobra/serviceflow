@@ -122,6 +122,10 @@ export default {
       type: [String, Number],
       default: null,
     },
+    taskId: {
+      type: [String, Number],
+      default: null,
+    },
   },
   data() {
     return {
@@ -253,6 +257,7 @@ export default {
 
         this.updatedJourney = response.data.data;
         this.updateJourneyInList(this.updatedJourney);
+        this.$emit("update-task-duration", this.taskId);
         this.emitLastJourneyEnd();
       } catch (error) {
         console.error("Erro ao atualizar a jornada:", error);
