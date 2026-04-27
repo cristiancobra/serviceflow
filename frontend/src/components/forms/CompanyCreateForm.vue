@@ -105,7 +105,7 @@
 <script>
 import { submitFormCreate } from "@/utils/requests/httpUtils";
 import ErrorMessage from "./messages/ErrorMessage.vue";
-import TextInput from "./inputs/text/TextInput";
+import TextInput from "./inputs/text/TextInput.vue";
 
 export default {
   name: "CompanyCreateForm",

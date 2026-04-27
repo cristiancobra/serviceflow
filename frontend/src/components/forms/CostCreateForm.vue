@@ -113,7 +113,7 @@
 
 <script>
 import { submitFormCreate } from "@/utils/requests/httpUtils";
-import TextInput from "./inputs/text/TextInput";
+import TextInput from "./inputs/text/TextInput.vue";
 
 export default {
   emits: ["new-cost-event"],

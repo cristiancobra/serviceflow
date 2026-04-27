@@ -170,7 +170,7 @@
 import { submitFormCreate } from "@/utils/requests/httpUtils";
 // import { inject } from "vue";
 // import AddMessage from "@/components/forms/messages/AddMessage.vue";
-import DateInput from "./inputs/date/DateInput";
+import DateInput from "./inputs/date/DateInput.vue";
 // import ErrorMessage from "./messages/ErrorMesssage.vue";
 import OpportunitiesSelectInput from "./selects/OpportunitiesSelectInput.vue";
 import ProjectsSelectInput from "./selects/ProjectsSelectInput.vue";

@@ -63,7 +63,7 @@
 <script>
 import { index } from "@/utils/requests/httpUtils";
 import { submitFormUpdate } from "@/utils/requests/httpUtils";
-import TextAreaInput from "./inputs/textarea/TextAreaInput";
+import TextAreaInput from "./inputs/textarea/TextAreaInput.vue";
 
 export default {
     components: {

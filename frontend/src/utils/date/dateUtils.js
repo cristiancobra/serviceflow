@@ -89,23 +89,28 @@ export function formatDateBr(date) {
 
 }
 
-// export function formatDateTimeBr(dateTime) {
-//     // Verifica se a data é válida
-//     if (!dateTime) return "";
+export function formatDateTimeBr(dateTime) {
+    // Verifica se a data é válida
+    if (!dateTime) return "";
 
-//     const dateObj = new Date(dateTime);
-//     const day = dateObj.getDate();
-//     const month = dateObj.getMonth() + 1; // Os meses em JavaScript começam em 0, então adicionamos 1
-//     const year = dateObj.getFullYear();
-//     const hours = padZero(dateObj.getHours());
-//     const minutes = padZero(dateObj.getMinutes());
-//     const seconds = padZero(dateObj.getSeconds());
+    const dateObj = new Date(dateTime);
+    const userTimezoneOffset = dateObj.getTimezoneOffset() * 60000;
+    const localDate = new Date(dateObj.getTime() + userTimezoneOffset);
 
-//     // Formate a data no formato desejado (exemplo: dd/mm/aaaa hh:mm:ss)
-//     const dateTimeBr = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+    const padZero = (num) => num.toString().padStart(2, '0');
 
-//     return dateTimeBr;
-// }
+    const day = padZero(localDate.getDate());
+    const month = padZero(localDate.getMonth() + 1);
+    const year = localDate.getFullYear();
+    const hours = padZero(localDate.getHours());
+    const minutes = padZero(localDate.getMinutes());
+    const seconds = padZero(localDate.getSeconds());
+
+    // Formate a data no formato desejado (exemplo: dd/mm/aaaa hh:mm:ss)
+    const dateTimeBr = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+
+    return dateTimeBr;
+}
 
 export function convertDateToLocal(dateString) {
     if (!dateString) return '';

@@ -87,14 +87,14 @@
 import { submitFormCreate } from "@/utils/requests/httpUtils";
 // import { inject } from "vue";
 // import AddMessage from "@/components/forms/messages/AddMessage.vue";
-import DateInput from "./inputs/date/DateInput";
+import DateInput from "./inputs/date/DateInput.vue";
 // import ErrorMessage from "./messages/ErrorMesssage.vue";
 import OpportunitiesSelectInput from "./selects/OpportunitiesSelectInput.vue";
 import ProjectsSelectInput from "./selects/ProjectsSelectInput.vue";
 // import SuccessMessage from "./messages/SuccessMessage.vue";
 // import TextAreaInput from "./inputs/textarea/TextAreaInput";
 import TextEditor from "./inputs/TextEditor.vue";
-import TextInput from "./inputs/text/TextInput";
+import TextInput from "./inputs/text/TextInput.vue";
 import TextValue from "../fields/text/TextValue";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
 

@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import DateEditableInput from "../fields/datetime/DateTimeEditableInput";
+import DateEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 
 export default {
   name: "OpportunityDatesSection",

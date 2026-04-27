@@ -43,7 +43,7 @@
 <script>
 import { submitFormCreate } from "@/utils/requests/httpUtils";
 import AddMessage from "@/components/forms/messages/AddMessage.vue";
-import TextInput from "./inputs/text/TextInput";
+import TextInput from "./inputs/text/TextInput.vue";
 import TextAreaInput from "./inputs/textarea/TextAreaInput.vue";
 
 export default {

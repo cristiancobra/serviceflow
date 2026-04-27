@@ -49,7 +49,7 @@
 
 <script>
 import { destroy, show, updateField } from "@/utils/requests/httpUtils";
-import TextEditableField from "@/components/fields/text/TextEditableField";
+import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 import ServiceCostsSection from "../../components/show/ServiceCostsSection.vue";
 import ServiceProfitMarginSection from "@/components/show/ServiceProfitMarginSection.vue";
 

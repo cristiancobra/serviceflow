@@ -143,11 +143,9 @@
 <script>
 import axios from "axios";
 import { BACKEND_URL, OPPORTUNITY_URL_PARAMETER } from "@/config/apiConfig";
-import { formatDuration } from "@/utils/date/dateUtils";
+import { formatDuration, formatDateBr, formatDateTimeBr } from "@/utils/date/dateUtils";
 import { destroy, show, updateField } from "@/utils/requests/httpUtils";
 import {
-  formatDateBr,
-  formatDateTimeBr,
   getStatusClass,
   getStatusIcon,
 } from "@/utils/card/cardUtils";
@@ -159,7 +157,7 @@ import LinksList from "@/components/lists/LinksList.vue";
 import OpportunityInfoSection from "@/components/show/OpportunityInfoSection.vue";
 import OpportunityDatesSection from "@/components/show/OpportunityDatesSection.vue";
 import ProposalsListSection from "@/components/lists/ProposalsListSection.vue";
-import TextEditableField from "@/components/fields/text/TextEditableField";
+import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 import TextEditor from "@/components/forms/inputs/TextEditor.vue";
 import TasksListSection from "../../components/lists/TasksListSection.vue";
 

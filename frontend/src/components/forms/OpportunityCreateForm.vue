@@ -170,14 +170,14 @@
 
 <script>
 import { submitFormCreate } from "@/utils/requests/httpUtils";
-import CompaniesSelectInput from "@/components/forms/selects/CompaniesSelectInput";
+import CompaniesSelectInput from "@/components/forms/selects/CompaniesSelectInput.vue";
 import DateInput from "@/components/forms/inputs/date/DateInput.vue";
 import CompanyCreateForm from "@/components/forms/CompanyCreateForm.vue";
 import LeadCreateForm from "@/components/forms/LeadCreateForm.vue";
 import LeadsSelectInput from "@/components/forms/selects/LeadsSelectInput.vue";
 import ProjectsSelectInput from "@/components/forms/selects/ProjectsSelectInput.vue";
-import TextAreaInput from "./inputs/textarea/TextAreaInput";
-import TextInput from "./inputs/text/TextInput";
+import TextAreaInput from "./inputs/textarea/TextAreaInput.vue";
+import TextInput from "./inputs/text/TextInput.vue";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
 import ErrorMessage from "@/components/forms/messages/ErrorMessage.vue";
 

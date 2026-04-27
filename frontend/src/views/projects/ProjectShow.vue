@@ -113,10 +113,10 @@ import { provide, ref } from "vue";
 import { show, updateField } from "@/utils/requests/httpUtils";
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
-import DateEditableInput from "@/components/fields/datetime/DateTimeEditableInput";
+import DateEditableInput from "@/components/fields/datetime/DateTimeEditableInput.vue";
 import OpportunitiesSelectEditableField from "../../components/fields/selects/OpportunitiesSelectEditableField.vue";
 import TasksListSection from "@/components/lists/TasksListSection.vue";
-import TextEditableField from "@/components/fields/text/TextEditableField";
+import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 import TextEditor from "@/components/forms/inputs/TextEditor.vue";
 
 export default {

@@ -259,7 +259,7 @@
 import { index } from "@/utils/requests/httpUtils";
 import { submitFormCreate } from "@/utils/requests/httpUtils";
 import DateInput from "@/components/forms/inputs/date/DateInput.vue";
-import TextAreaInput from "./inputs/textarea/TextAreaInput";
+import TextAreaInput from "./inputs/textarea/TextAreaInput.vue";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
 import MoneyEditableField from "../fields/number/MoneyEditableField.vue";
 // import ButtonNew from "@/components/ui/ButtonNew.vue";

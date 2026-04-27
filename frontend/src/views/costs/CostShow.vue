@@ -51,7 +51,7 @@
 
 <script>
 import { destroy, show, updateField } from "@/utils/requests/httpUtils";
-import TextEditableField from "@/components/fields/text/TextEditableField";
+import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 import MoneyEditableField from '../../components/fields/number/MoneyEditableField.vue';
 
 export default {

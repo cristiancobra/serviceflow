@@ -123,7 +123,7 @@
 
 <script>
 import { submitFormCreate } from "@/utils/requests/httpUtils";
-import TextInput from "./inputs/text/TextInput";
+import TextInput from "./inputs/text/TextInput.vue";
 import TextAreaInput from "./inputs/textarea/TextAreaInput.vue";
 import CompaniesSelectInput from "./selects/CompaniesSelectInput.vue";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";

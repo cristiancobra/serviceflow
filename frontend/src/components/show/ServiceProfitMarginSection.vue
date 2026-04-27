@@ -105,11 +105,11 @@
 
 <script>
 import { formatDateBr } from "@/utils/date/dateUtils";
-import DecimalEditableField from "@/components/fields/number/DecimalEditableField";
+import DecimalEditableField from "@/components/fields/number/DecimalEditableField.vue";
 // import IntegerEditableField from "@/components/fields/number/IntegerEditableField.vue";
 import HoursDecimalEditableField from "../../components/fields/number/HoursDecimalEditableField.vue";
 import MoneyField from "@/components/fields/number/MoneyField.vue";
-import MoneyEditableField from "@/components/fields/number/MoneyEditableField";
+import MoneyEditableField from "@/components/fields/number/MoneyEditableField.vue";
 
 export default {
   props: {
