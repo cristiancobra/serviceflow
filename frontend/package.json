@@ -2,12 +2,15 @@
   "name": "ServiceFlow",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build:dev": "vue-cli-service build --mode development",
-    "build:prod": "vue-cli-service build --mode production",
-    "build:css": "tailwindcss -i ./src/assets/main.css -o ./dist/output.css --watch",
-    "lint": "vue-cli-service lint"
+    "dev": "vite",
+    "serve": "vite",
+    "build": "vite build",
+    "build:dev": "vite build --mode development",
+    "build:prod": "vite build --mode production",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
     "@devindex/vue-mask": "^2.0.3",
@@ -38,33 +41,30 @@
     "vuex": "^4.0.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
-    "@babel/eslint-parser": "^7.12.16",
-    "@tailwindcss/postcss": "^4.1.11",
     "@tailwindcss/vite": "^4.1.17",
-    "@vue/cli-plugin-babel": "~5.0.9",
-    "@vue/cli-plugin-eslint": "~5.0.9",
-    "@vue/cli-plugin-router": "~5.0.0",
-    "@vue/cli-service": "~5.0.0",
+    "@vitejs/plugin-vue": "^5.0.4",
     "autoprefixer": "^10.4.21",
     "daisyui": "^5.5.11",
     "eslint": "^8.57.1",
     "eslint-plugin-vue": "^9.33.0",
     "postcss": "^8.5.6",
     "sass": "^1.66.1",
-    "tailwindcss": "^4.1.17"
+    "tailwindcss": "^4.1.17",
+    "vite": "^5.2.8"
   },
   "eslintConfig": {
     "root": true,
     "env": {
-      "node": true
+      "node": true,
+      "es2021": true
     },
     "extends": [
       "plugin:vue/vue3-essential",
       "eslint:recommended"
     ],
     "parserOptions": {
-      "parser": "@babel/eslint-parser"
+      "ecmaVersion": "latest",
+      "sourceType": "module"
     },
     "rules": {}
   },
