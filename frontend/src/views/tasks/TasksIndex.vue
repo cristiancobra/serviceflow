@@ -7,7 +7,7 @@
       </div>
     </div>
 
-    <TasksFilter
+    <tasks-filter
       @filter-change="handleFilterChange"
     />
 

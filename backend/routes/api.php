@@ -96,6 +96,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	Route::get('/journeys/check-open-journey', [JourneyController::class, 'checkOpenJourney']);
 
+	Route::get('/journeys/filter', [JourneyController::class, 'filterJourneys'])
+		->name('journeys.filter');
+
 	Route::get('/journeys-by-task-id', [JourneyController::class, 'getJourneysByTaskId'])
 		->name('journeysTaskId');
 

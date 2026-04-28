@@ -13,9 +13,9 @@
     </div>
 
     <section class="section-container">
-      <div class="table-row">
-        <div class="column-50" style="padding-right: 2rem">
-          <div class="table-row">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="space-y-6">
+          <div class="mb-4">
             <TextEditableField
               name="name"
               v-model="account.name"
@@ -24,7 +24,7 @@
               @save="updateAccount('name', $event)"
             />
           </div>
-          <div class="table-row">
+          <div class="mb-4">
             <TextEditableField
               name="email"
               v-model="account.email"
@@ -33,31 +33,33 @@
               @save="updateAccount('email', $event)"
             />
           </div>
-          <div class="table-row">
-            <TextEditableField
-              class="pt-3"
-              name="cnpj"
-              v-model="account.cnpj"
-              placeholder="cnpj da empresa"
-              label="CNPJ:"
-              @save="updateAccount('cnpj', $event)"
-            />
+          <div class="flex items-end gap-2 mb-4">
+            <div class="flex-1">
+              <TextEditableField
+                class="pt-3"
+                name="cnpj"
+                v-model="account.cnpj"
+                placeholder="cnpj da empresa"
+                label="CNPJ:"
+                @save="updateAccount('cnpj', $event)"
+              />
+            </div>
             <button
               @click="copyCnpjWithSymbols"
-              class="button"
+              class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
               title="Copiar com símbolos"
             >
               <font-awesome-icon icon="fa-solid fa-copy" />
             </button>
             <button
               @click="copyCnpjWithoutSymbols"
-              class="button"
+              class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
               title="Copiar apenas números"
             >
               <font-awesome-icon icon="fa-solid fa-hashtag" />
             </button>
           </div>
-          <div class="table-row">
+          <div class="mb-4">
             <TextEditableField
               name="inscricao_municipal"
               v-model="account.inscricao_municipal"
@@ -66,7 +68,7 @@
               @save="updateAccount('inscricao_municipal', $event)"
             />
           </div>
-          <div class="table-row">
+          <div class="mb-4">
             <TextEditableField
               name="phone"
               v-model="account.phone"
@@ -75,7 +77,7 @@
               @save="updateAccount('phone', $event)"
             />
           </div>
-          <div class="table-row">
+          <div class="mb-4">
             <TextEditableField
               name="address"
               v-model="account.address"
@@ -84,7 +86,7 @@
               @save="updateAccount('address', $event)"
             />
           </div>
-          <div class="table-row">
+          <div class="mb-4">
             <TextEditableField
               name="address_city"
               v-model="account.address_city"
@@ -94,33 +96,41 @@
             />
           </div>
         </div>
-        <div class="column-50" style="padding-left: 2rem">
-          <div class="mt-5">
-            <img :src="urlImageLogo" alt="Logo" />
+        <div class="space-y-6">
+          <div class="flex justify-center items-center p-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+            <img 
+              :src="urlImageLogo" 
+              alt="Logo" 
+              class="max-w-full h-auto max-h-64 object-contain"
+            />
           </div>
-          <form @submit.prevent="submitFormLogo">
-            <div class="table-row">
-              <label for="logo">Logo:</label>
+          <form @submit.prevent="submitFormLogo" class="space-y-4">
+            <div class="flex flex-col">
+              <label for="logo" class="mb-2 text-sm font-medium text-gray-700">Logo:</label>
               <input
                 type="file"
                 id="logo"
                 ref="logo"
                 @change="handleLogoUpload"
+                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
               />
             </div>
-            <div class="table-row">
-              <div class="col">
-                <button class="button" type="submit">Submit</button>
-              </div>
+            <div class="flex justify-start">
+              <button 
+                class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md" 
+                type="submit"
+              >
+                Enviar Logo
+              </button>
             </div>
           </form>
-          <div class="table-row">
-            <label for="primary_color">Primary Color</label>
+          <div class="flex flex-col">
+            <label for="primary_color" class="mb-2 text-sm font-medium text-gray-700">Cor Principal</label>
             <input
               type="color"
               name="primary_color"
               id="primary_color"
-              class="form-control"
+              class="h-12 w-full rounded-lg border border-gray-300 cursor-pointer"
               value="{{ old('primary_color', $account->primary_color) }}"
             />
           </div>

@@ -40,6 +40,54 @@ class JourneyController extends Controller
         // ];
     }
 
+    /**
+     * Filter journeys by various criteria
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function filterJourneys(Request $request)
+    {
+        $filter = $request->input('filter');
+
+        $journeys = Journey::with([
+            'user',
+            'task',
+            'task.project',
+            'task.opportunity',
+        ]);
+
+        switch ($filter) {
+            case 'open':
+                $journeys->whereNull('end');
+                break;
+            
+            case 'closed':
+                $journeys->whereNotNull('end');
+                break;
+            
+            case 'today':
+                $journeys->whereDate('start', now()->toDateString());
+                break;
+            
+            case 'week':
+                $journeys->whereBetween('start', [
+                    now()->startOfWeek()->toDateString(),
+                    now()->endOfWeek()->toDateString()
+                ]);
+                break;
+            
+            case 'month':
+                $journeys->whereMonth('start', now()->month)
+                    ->whereYear('start', now()->year);
+                break;
+        }
+
+        $filteredJourneys = $journeys->orderBy('start', 'desc')->paginate(50);
+
+        return JourneyResource::collection($filteredJourneys);
+    }
+
 
     /**
      * Store a newly created resource in storage.

@@ -1,50 +1,90 @@
 <template>
-    <div class="flex flex-wrap m-5">
-        <div class="w-2/3">
-            <div class="flex flex-col me-5 w-1/2">
-                <div class="w-full">
-                    <div class="flex flex-col mt-4">
-                        <faIcon icon="user" />
-                        <TextEditableField name="name" v-model="user.name" placeholder="nome do usuário"
-                            label="Nome do usuário:" @save="updateUser('name', $event)" />
-                    </div>
-                    <div class="flex flex-col mt-4">
-                        <TextEditableField name="email" v-model="user.email" placeholder="email do usuário"
-                            label="Email:" @save="updateUser('email', $event)" />
-                    </div>
-                    <div class="flex flex-col mt-4">
-                        <TextEditableField name="phone" v-model="user.phone" placeholder="telefone do usuário"
-                            label="Telefone:" @save="updateUser('phone', $event)" />
-                    </div>
-                    <div class="flex flex-col mt-4">
-                        <TextEditableField name="address" v-model="user.address" placeholder="Endereço do usuário"
-                            label="Endereço:" @save="updateUser('address', $event)" />
-                    </div>
-                    <div class="flex flex-col mt-4">
-                        <TextEditableField name="address_city" v-model="user.address_city" label="Cidade:"
-                            placeholder="Cidade:" @save="updateUser('address_city', $event)" />
-                    </div>
-                </div>
+    <div class="page-container">
+        <div class="page-header">
+            <div class="page-title">
+                <font-awesome-icon icon="fa-solid fa-user" class="page-icon" />
+                <h1>Perfil do Usuário</h1>
             </div>
         </div>
-        <div class="w-1/3">
-            <div class="photo-container mx-auto">
-                <img class="photo" :src="urlImagePhoto" alt="Foto">
-            </div>
-            <form @submit.prevent="submitFormPhoto">
-                <div class="flex flex-col mt-4">
-                    <label for="photo">Foto:</label>
-                    <input type="file" id="photo" ref="photo" @change="handlePhotoUpload">
-                </div>
-                <div class="flex flex-col mt-4">
-                    <div class="w-full">
-                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                            Enviar foto
-                        </button>
+
+        <section class="section-container">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="space-y-6">
+                    <div class="mb-4">
+                        <TextEditableField 
+                            name="name" 
+                            v-model="user.name" 
+                            placeholder="nome do usuário"
+                            label="Nome do usuário:" 
+                            @save="updateUser('name', $event)" 
+                        />
+                    </div>
+                    <div class="mb-4">
+                        <TextEditableField 
+                            name="email" 
+                            v-model="user.email" 
+                            placeholder="email do usuário"
+                            label="Email:" 
+                            @save="updateUser('email', $event)" 
+                        />
+                    </div>
+                    <div class="mb-4">
+                        <TextEditableField 
+                            name="phone" 
+                            v-model="user.phone" 
+                            placeholder="telefone do usuário"
+                            label="Telefone:" 
+                            @save="updateUser('phone', $event)" 
+                        />
+                    </div>
+                    <div class="mb-4">
+                        <TextEditableField 
+                            name="address" 
+                            v-model="user.address" 
+                            placeholder="Endereço do usuário"
+                            label="Endereço:" 
+                            @save="updateUser('address', $event)" 
+                        />
+                    </div>
+                    <div class="mb-4">
+                        <TextEditableField 
+                            name="address_city" 
+                            v-model="user.address_city" 
+                            label="Cidade:"
+                            placeholder="Cidade:" 
+                            @save="updateUser('address_city', $event)" 
+                        />
                     </div>
                 </div>
-            </form>
-        </div>
+                <div class="space-y-6">
+                    <div class="flex justify-center items-center p-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                        <div class="photo-container">
+                            <img class="photo" :src="urlImagePhoto" alt="Foto">
+                        </div>
+                    </div>
+                    <form @submit.prevent="submitFormPhoto" class="space-y-4">
+                        <div class="flex flex-col">
+                            <label for="photo" class="mb-2 text-sm font-medium text-gray-700">Foto:</label>
+                            <input 
+                                type="file" 
+                                id="photo" 
+                                ref="photo" 
+                                @change="handlePhotoUpload"
+                                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                            >
+                        </div>
+                        <div class="flex justify-start">
+                            <button 
+                                type="submit" 
+                                class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
+                            >
+                                Enviar Foto
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
     </div>
 </template>
 

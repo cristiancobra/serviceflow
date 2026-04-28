@@ -1,17 +1,33 @@
 <template>
-    <div class="page-container">
-    <JourneysFilter @filter-canceled="getJourneysCanceled" @filter-doing="getJourneysDoing"
-      @filter-done="getJourneysDone" @filter-late="getJourneysLate" @filter-to-do="getJourneysToDo" />
+  <div class="page-container">
+    <div class="page-header">
+      <div class="page-title">
+        <font-awesome-icon icon="fa-solid fa-clock" class="page-icon" />
+        <h1>JORNADAS</h1>
+      </div>
+    </div>
+
+    <journeys-filter
+      @filter-change="handleFilterChange"
+    />
+
     <ErrorMessage v-if="isError" :formResponse="formResponse" />
     <SuccessMessage v-if="isSuccess" :formResponse="formResponse" />
-    <JourneysList @toggle="toggle" />
+
+    <JourneysList 
+      :journeys="journeys"
+      :paginationData="paginationData" 
+    />
   </div>
 </template>
 
 <script>
+import axios from "axios";
+import { BACKEND_URL, JOURNEY_URL } from "@/config/apiConfig";
 import JourneysList from "@/components/lists/JourneysList.vue";
 import JourneysFilter from "@/components/filters/JourneysFilter.vue";
-import SuccessMessage from '../../components/forms/messages/SuccessMessage.vue';
+import SuccessMessage from "@/components/forms/messages/SuccessMessage.vue";
+import ErrorMessage from "@/components/forms/messages/ErrorMessage.vue";
 
 export default {
   name: "JourneysIndexView",
@@ -19,63 +35,59 @@ export default {
     JourneysList,
     JourneysFilter,
     SuccessMessage,
+    ErrorMessage,
   },
   data() {
     return {
       isError: false,
       isSuccess: false,
       hasError: false,
-      data: null,
+      formResponse: {},
       journeys: [],
-      newTask: null,
+      paginationData: null,
     };
   },
   methods: {
+    async getJourneys() {
+      try {
+        const response = await axios.get(`${BACKEND_URL}${JOURNEY_URL}`);
+        this.journeys = response.data.data;
+        this.paginationData = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar jornadas:', error);
+        this.isError = true;
+        this.formResponse = { message: 'Erro ao carregar jornadas' };
+      }
+    },
+    
+    async handleFilterChange(filter) {
+      try {
+        if (!filter) {
+          // Se não houver filtro, busca todas as jornadas
+          await this.getJourneys();
+          return;
+        }
+        
+        // Chama o endpoint de filtro do backend
+        const response = await axios.get(`${BACKEND_URL}${JOURNEY_URL}/filter`, {
+          params: { filter }
+        });
+        
+        this.journeys = response.data.data;
+        this.paginationData = response.data;
+      } catch (error) {
+        console.error(`Erro ao filtrar jornadas (${filter}):`, error);
+        this.isError = true;
+        this.formResponse = { message: 'Erro ao filtrar jornadas' };
+      }
+    },
+  },
+  mounted() {
+    this.getJourneys();
   },
 };
 </script>
 
 <style scoped>
-.headers-line {
-  margin-top: 40px;
-  margin-bottom: 50px;
-  margin-left: 80px;
-  margin-right: 80px;
-  display: flex;
-  justify-content: center;
-}
-
-.slot {
-  border-width: 2px;
-  border-style: solid;
-  border-color: white;
-  border-radius: 20px 20px 20px 20px;
-  padding: 10px 15px 10px 15px;
-  margin: 0 4px 0 4px;
-  color: white;
-  font-weight: 800;
-  width: 120px;
-}
-
-.new {
-  border-radius: 20px 20px 20px 20px;
-  background-color: white;
-  border-color: #ff3eb5;
-  color: #ff3eb5;
-  margin-left: 50px;
-  width: 60px;
-  font-size: 16px;
-}
-
-.new:hover {
-  background-color: #ff3eb5;
-  color: white;
-  margin-left: 50px;
-  width: 60px;
-}
-
-.show {
-  display: block;
-  transition: display 2s;
-}
+/* Estilos gerenciados por classes globais e Tailwind */
 </style>

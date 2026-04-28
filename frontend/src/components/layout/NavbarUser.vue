@@ -178,27 +178,6 @@
             </li>
           </router-link>
 
-          <li
-            class="nav-item"
-            @mouseover="showSubmenu('configuracoes')"
-            @mouseleave="hideSubmenu('configuracoes')"
-            :class="{ active: activeItem === 'configuracoes' }"
-          >
-            <font-awesome-icon icon="fas fa-cogs" class="router-link-text" />
-            <span class="router-link-text">CONFIGURAÇÕES</span>
-            <ul class="submenu" v-show="submenus.configuracoes">
-              <router-link :to="`/accounts/${accountId}`">
-                <li
-                  class="nav-item"
-                  @mouseover="toggleActive('account')"
-                  :class="{ active: activeItem === 'account' }"
-                >
-                  <font-awesome-icon icon="fas fa-user" />
-                  <span class="text-white ps-2">CONTA</span>
-                </li>
-              </router-link>
-            </ul>
-          </li>
           <router-link to="/logout">
             <li
               class="nav-item"

@@ -10,16 +10,27 @@
       <font-awesome-icon v-else icon="fas fa-user" :class="['user-faicon', { 'user-faicon-working': openJourney }]" />
     </div>
     <div v-if="dropdownVisible" class="dropdown-menu">
-      <router-link
-        v-if="openJourney"
-        :to="taskLink"
-        class="dropdown-item"
-      >
-        <font-awesome-icon icon="fas fa-play" class="play" />
-        {{ taskDisplayName }}
-      </router-link>
+      <div v-if="openJourney" class="flex items-center justify-between gap-2 p-2.5 text-white border-b border-white/20">
+        <router-link
+          :to="taskLink"
+          class="flex-1 flex items-center gap-2 text-white no-underline hover:opacity-80 transition-opacity min-w-0"
+        >
+          <font-awesome-icon icon="fas fa-play" class="flex-shrink-0" />
+          <span class="truncate">{{ taskDisplayName }}</span>
+        </router-link>
+        <button
+          @click="stopJourney(openJourney.id)"
+          class="w-7 h-7 flex-shrink-0 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-700 transition-all duration-200 hover:scale-105 text-sm"
+          title="Parar jornada"
+        >
+          <font-awesome-icon icon="fas fa-hand" />
+        </button>
+      </div>
       
       <router-link :to="`/users/${userData.id}`" class="dropdown-item">
+        PERFIL DO USUÁRIO
+      </router-link>
+      <router-link :to="`/accounts/${accountId}`" class="dropdown-item">
         CONTA
       </router-link>
       <router-link to="/journeys" class="dropdown-item">JORNADAS</router-link>
@@ -42,8 +53,8 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
-import { IMAGES_PATH, JOURNEY_RECENT } from "@/config/apiConfig";
+import { mapState, mapActions, mapMutations } from "vuex";
+import { IMAGES_PATH, JOURNEY_RECENT, BACKEND_URL, JOURNEY_URL_PARAMETER } from "@/config/apiConfig";
 import axios from "axios";
 
 export default {
@@ -58,6 +69,7 @@ export default {
     ...mapState({
       userData: (state) => state.userData,
       openJourney: (state) => state.openJourney,
+      accountId: (state) => state.accountId,
     }),
     taskLink() {    
       if (!this.openJourney) {
@@ -78,7 +90,7 @@ export default {
         };
       }
       
-      return null;
+      return '/journeys';
     },
     taskDisplayName() {
       return this.openJourney.task?.name || this.openJourney.name || 'Tarefa sem nome';
@@ -98,6 +110,7 @@ export default {
   },
   methods: {
     ...mapActions(['checkOpenJourneys']),
+    ...mapMutations(['setOpenJourney']),
     toggleDropdown() {
       this.dropdownVisible = !this.dropdownVisible;
       if (this.dropdownVisible) {
@@ -141,13 +154,35 @@ export default {
           query: { scrollTo: 'tasks' } 
         };
       }
-      return '/journeys';
+      return '/tasks';
     },
     truncateTaskName(name) {
       if (name.length > 35) {
         return name.substring(0, 35) + '...';
       }
       return name;
+    },
+    async stopJourney(journeyId) {
+      const fieldName = 'end';
+      const now = new Date();
+      const endValue = now.toISOString();
+      
+      const editedJourney = {
+        id: journeyId,
+        [fieldName]: endValue,
+      };
+
+      try {
+        await axios.put(
+          `${BACKEND_URL}${JOURNEY_URL_PARAMETER}${journeyId}`,
+          editedJourney
+        );
+        
+        this.setOpenJourney(null);
+        console.log('Jornada finalizada com sucesso');
+      } catch (error) {
+        console.error('Erro ao parar a jornada:', error);
+      }
     },
   },
   mounted() {

@@ -11,35 +11,50 @@
       </div>
     </div>
 
-    <div calss="list-line" v-if="journeys.length > 0">
-      <div class="">
+    <div class="search-container">
+      <input
+        type="text"
+        class="search-input"
+        v-model="searchTerm"
+        placeholder="Digite para buscar"
+      />
+    </div>
+
+    <section class="list-container">
+      <div class="mb-4" v-if="filteredJourneys.length > 0">
         <PaginateNav :paginationData="paginationData" @update-data="updatePaginationList" />
       </div>
-      <div class="p-5" v-if="!journeys">
+      
+      <div class="p-5 text-center text-gray-500" v-if="!localJourneys || localJourneys.length === 0">
         Ainda não possui nenhuma jornada
       </div>
-      <div v-else class="list-line" v-for="journey in journeys" v-bind:key="journey.id"
+      
+      <div class="p-5 text-center text-gray-500" v-else-if="filteredJourneys.length === 0">
+        Nenhuma jornada encontrada com os critérios de busca
+      </div>
+      
+      <div v-else class="list-line" v-for="journey in filteredJourneys" v-bind:key="journey.id"
         :class="{ 'highlight': journey.id === newJourneyId }">
-        <div class="date-column">
+        <div class="flex flex-[2] items-center justify-start mr-4">
           <date-editable-input name="start" v-model="journey.start" @save="updateJourney('start', $event, journey.id)" />
         </div>
-        <div class="date-column">
-          <time-editable-input class="ps-5" name="end" v-model="journey.end"
+        <div class="flex flex-[2] items-center justify-start mr-4 pl-5">
+          <time-editable-input name="end" v-model="journey.end"
             @save="updateJourney('end', $event, journey.id)" />
         </div>
-        <div class="date-column">
-          <p class="time-bold ps-5">
+        <div class="flex flex-[2] items-center justify-start mr-4 pl-5">
+          <p class="time-bold">
             {{ formatDuration(journey.duration) }}
           </p>
         </div>
-        <div v-if="journey.task" class="task-column">
-          <router-link v-if="getTaskLink(journey.task)" :to="getTaskLink(journey.task)">
+        <div v-if="journey.task" class="flex flex-[6] items-center justify-start">
+          <router-link v-if="getTaskLink(journey.task)" :to="getTaskLink(journey.task)" class="text-black text-sm">
             {{ journey.task.name }}
           </router-link>
-          <span v-else>{{ journey.task.name }}</span>
+          <span v-else class="text-black text-sm">{{ journey.task.name }}</span>
         </div>
-        <div v-if="journey.task" class="group-column">
-          <router-link :class="getColorClassForName(journey.task.opportunity.name)" style="display: flex;"
+        <div v-if="journey.task" class="flex flex-[4] items-center justify-start mr-4">
+          <router-link :class="getColorClassForName(journey.task.opportunity.name)" class="flex items-center"
             v-if="journey.task.opportunity"
             :to="{ 
               name: 'opportunityShow', 
@@ -47,13 +62,13 @@
               query: { tab: 'tasks' },
               hash: '#task-' + journey.task.id
             }">
-            <p class="group-name">
-              <font-awesome-icon icon="fa-solid fa-bullseye"
-                :class="getColorClassForName(journey.task.opportunity.name)" />
+            <font-awesome-icon icon="fa-solid fa-bullseye"
+              :class="getColorClassForName(journey.task.opportunity.name)" />
+            <p class="text-sm font-semibold ps-2" :class="getColorClassForName(journey.task.opportunity.name)">
               {{ trimName(journey.task.opportunity.name) }}
             </p>
           </router-link>
-          <router-link style="display: flex;" v-else-if="journey.task.project"
+          <router-link class="flex items-center" v-else-if="journey.task.project"
             :to="{ 
               name: 'projectShow', 
               params: { id: journey.task.project.id },
@@ -61,40 +76,44 @@
             }">
             <font-awesome-icon icon="fa-solid fa-folder-open"
               :class="getColorClassForName(journey.task.project.name)" />
-            <p class="group-name" :style="{ color: getColorClassForName(journey.task.project.name) }">
+            <p class="text-sm font-semibold ps-2" :class="getColorClassForName(journey.task.project.name)">
               {{ trimName(journey.task.project.name) }}
             </p>
           </router-link>
-          <div v-else class="">
-            <p>
+          <div v-else>
+            <p class="text-sm text-gray-400">
               ----
             </p>
           </div>
         </div>
-        <div class="icons-column">
-          <button v-if="!journey.end" 
-          class="button-circular stop"
-           @click="stopJourney(journey.id)"
-           >
-            <span class="stop">
-              <font-awesome-icon icon="fa-solid fa-hand" />
-            </span>
+        <div class="flex flex-1 items-center justify-start gap-2">
+          <button 
+            v-if="!journey.end" 
+            class="w-7 h-7 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-700 transition"
+            @click="stopJourney(journey.id)"
+            title="Parar jornada"
+          >
+            <font-awesome-icon icon="fa-solid fa-hand" class="text-sm" />
           </button>
-          <button class="button-circular delete" @click="deleteItem(journey)">
-            <span class="delete">
-              <font-awesome-icon icon="fa-solid fa-trash-alt" />
-            </span>
+          <button 
+            class="w-7 h-7 flex items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-700 transition"
+            @click="deleteItem(journey)"
+            title="Excluir jornada"
+          >
+            <font-awesome-icon icon="fa-solid fa-trash-alt" class="text-sm" />
           </button>
         </div>
       </div>
-      <PaginateNav :paginationData="paginationData" @update-data="updatePaginationList" />
-    </div>
+      <div class="mt-4">
+        <PaginateNav :paginationData="paginationData" @update-data="updatePaginationList" />
+      </div>
+    </section>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import { BACKEND_URL, JOURNEY_URL, JOURNEY_URL_PARAMETER } from "@/config/apiConfig";
+import { BACKEND_URL, JOURNEY_URL_PARAMETER } from "@/config/apiConfig";
 import { getColorClassForName, trimName } from "@/utils/card/cardUtils";
 import { displayLocalTime } from "@/utils/date/dateUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
@@ -112,15 +131,24 @@ export default {
     TimeEditableInput,
   },
   props: {
+    journeys: {
+      type: Array,
+      default: () => [],
+    },
     template: {
       type: String,
+    },
+    paginationData: {
+      type: Object,
+      default: null,
     },
   },
   data() {
     return {
-      journeys: [],
+      localJourneys: [],
       messageStatus: "",
       messageText: "",
+      searchTerm: "",
       updatedJourney: {
         id: null,
         details: null,
@@ -136,6 +164,20 @@ export default {
       newJourneyId: null,
     };
   },
+  computed: {
+    filteredJourneys() {
+      if (!this.searchTerm) {
+        return this.localJourneys;
+      }
+      const term = this.searchTerm.toLowerCase();
+      return this.localJourneys.filter(journey => {
+        const taskName = journey.task?.name?.toLowerCase() || '';
+        const opportunityName = journey.task?.opportunity?.name?.toLowerCase() || '';
+        const projectName = journey.task?.project?.name?.toLowerCase() || '';
+        return taskName.includes(term) || opportunityName.includes(term) || projectName.includes(term);
+      });
+    }
+  },
   emits: ["new-journey-event", "journey-updated", "journey-deleted"],
   methods: {
     displayLocalTime,
@@ -144,7 +186,7 @@ export default {
     getColorClassForName,
     trimName,
     addJourneyCreated(newJourney) {
-      this.journeys.unshift(newJourney);
+      this.localJourneys.unshift(newJourney);
       this.highlightNewJourney(newJourney.id);
       this.$emit("update-task-duration");
       this.emitLastJourneyEnd();
@@ -192,25 +234,17 @@ export default {
     },
     deleteItemList(itemId) {
       // Atualize a lista de jornadas após a exclusão
-      this.journeys = this.journeys.filter(
+      this.localJourneys = this.localJourneys.filter(
         (journey) => journey.id !== itemId
       );
     },
-    getJourneys() {
-      axios
-        .get(`${BACKEND_URL}${JOURNEY_URL}`)
-        .then((response) => {
-          this.journeys = response.data.data;
-        })
-        .catch((error) => console.log(error));
-    },
     emitLastJourneyEnd() {
-      if (this.journeys.length === 0) {
+      if (this.localJourneys.length === 0) {
         this.$emit('last-journey-end', null)
         return null;
       }
 
-      const sortedJourneys = [...this.journeys].sort((a, b) => {
+      const sortedJourneys = [...this.localJourneys].sort((a, b) => {
         if (a.end < b.end) return -1;
         if (a.end > b.end) return 1;
         return 0;
@@ -259,13 +293,13 @@ export default {
       }
     },
     updateJourneyInList(updatedJourney) {
-      const index = this.journeys.findIndex(journey => journey.id === updatedJourney.id);
+      const index = this.localJourneys.findIndex(journey => journey.id === updatedJourney.id);
       if (index !== -1) {
-        this.journeys.splice(index, 1, updatedJourney);
+        this.localJourneys.splice(index, 1, updatedJourney);
       }
     },
     updatePaginationList(newData) {
-      this.journeys = newData;
+      this.localJourneys = newData;
     },
     getTaskLink(task) {
       if (task.opportunity) {
@@ -286,25 +320,19 @@ export default {
       }
     },
   },
-  mounted() {
-      this.getJourneys();
+  watch: {
+    journeys: {
+      handler(newVal) {
+        this.localJourneys = newVal || [];
+      },
+      deep: true,
+      immediate: true,
+    },
   },
 };
 </script>
 
 <style scoped>
-.details {
-  text-align: left;
-  font-size: 1rem;
-  font-weight: 400;
-}
-
-.time {
-  text-align: center;
-  font-size: 16px;
-  font-weight: 400;
-}
-
 .time-bold {
   text-align: center;
   font-size: 16px;
@@ -312,152 +340,20 @@ export default {
   color: var(--purple);
 }
 
-.big-icon {
-  font-size: 2.6rem;
-  text-align: center;
-  font-weight: 400;
-  background-color: var(--gray);
-  color: white;
-}
-
-.icon-clock {
-  font-size: 1.8rem;
-  font-weight: 400;
-  color: var(--gray);
-}
-
-.icon-clock-new {
-  font-size: 26px;
-  font-weight: 900;
-  color: white;
-}
-
-.icon-clock-new:hover {
-  font-size: 2.5rem;
-  text-align: center;
-  font-weight: 400;
-  color: var(--purple);
-}
-
-
-.journey-container {
-  border-style: solid;
-  border-width: 2px;
-  border-color: var(--primary);
-  border-radius: 14px;
-  padding: 1rem;
-}
-
-
-
-.comments {
-  text-align: left;
-  font-size: 14px;
-  margin-top: 20px;
-}
-
 a {
-  color: rgb(61, 61, 61);
-}
-
-a:link {
   text-decoration: none;
+  color: inherit;
 }
 
 a:visited {
-  text-decoration: none;
+  color: inherit;
 }
 
 a:hover {
-  text-decoration: none;
+  color: inherit;
 }
 
 a:active {
-  text-decoration: none;
-}
-
-.new {
-  display: flex;
-  justify-content: end;
-  padding-top: 1rem;
-}
-
-.col-big {
-  flex: 6;
-}
-
-.col-medium {
-  flex: 2;
-}
-
-/* paginate */
-/* Adapte as cores e estilos conforme necessário */
-
-.pagination {
-  display: flex;
-  list-style: none;
-  padding: 0;
-}
-
-.page-item {
-  margin-right: 5px;
-}
-
-.page-link {
-  display: block;
-  padding: 10px;
-  background-color: #3498db;
-  color: #fff;
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-}
-
-.page-link:hover {
-  background-color: #2980b9;
-}
-
-.page-item-disabled .page-link {
-  background-color: #ccc;
-  color: #666;
-  cursor: not-allowed;
-}
-
-.prev-next-link {
-  display: block;
-  padding: 10px;
-  background-color: #3498db;
-  color: #fff;
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-}
-
-.prev-next-link:hover {
-  background-color: #2980b9;
-}
-
-.prev-next-link-disabled {
-  background-color: #ccc;
-  color: #666;
-  cursor: not-allowed;
-}
-
-.taskCard {
-  background-color: var(--purple-light);
-  color: black;
-  border-radius: 12px;
-  padding: 10px;
-  margin-bottom: 10px;
-  font-weight: 600;
-  text-align: left;
-}
-
-.title {
-  text-align: left;
+  color: inherit;
 }
 </style>
