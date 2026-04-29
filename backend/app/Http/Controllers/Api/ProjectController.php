@@ -55,6 +55,7 @@ class ProjectController extends Controller
     {
         try {
             $projectWithRelations = Project::with([
+                'company',
                 'tasks' => function ($query) {
                     $query->orderByRaw('date_conclusion IS NOT NULL ASC')
                         ->orderBy('date_start', 'desc')

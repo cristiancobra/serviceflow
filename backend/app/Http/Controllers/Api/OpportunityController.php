@@ -20,6 +20,8 @@ class OpportunityController extends Controller
     public function index()
     {
         $opportunities = Opportunity::with([
+            'company',
+            'lead',
             'project',
             'tasks' => function ($query) {
                 $query->orderBy('date_start', 'desc');

@@ -20,8 +20,9 @@ class TaskController extends Controller
     {
         $tasks = Task::with([
             'journeys.user',
-            'project',
-            'opportunity'
+            'project.company',
+            'opportunity.lead',
+            'opportunity.company'
         ])
             ->orderBy('date_due', 'desc')
             ->paginate(500);
@@ -64,8 +65,9 @@ class TaskController extends Controller
         return TasksResource::make(Task::with([
             'journeys.user',
             'links',
-            'project',
-            'opportunity'
+            'project.company',
+            'opportunity.lead',
+            'opportunity.company'
         ])
             ->find($task->id));
     }
@@ -94,8 +96,9 @@ class TaskController extends Controller
 
             $updatedTask = Task::with([
                 'journeys.user',
-                'project',
-                'opportunity'
+                'project.company',
+                'opportunity.lead',
+                'opportunity.company'
             ])->find($task->id);
 
             return TasksResource::make($updatedTask);
@@ -254,8 +257,9 @@ class TaskController extends Controller
     public function prioritizedTasks()
     {
         $tasks = Task::with([
-            'project',
-            'opportunity'
+            'project.company',
+            'opportunity.lead',
+            'opportunity.company'
         ])
             ->where('account_id', auth()->user()->account_id)
             ->where(function ($query) {

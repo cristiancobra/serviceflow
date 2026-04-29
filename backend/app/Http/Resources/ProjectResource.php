@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\CompanyResource;
 use App\Http\Resources\TasksResource;
 use App\Services\DateTimeConversionService;
 
@@ -41,6 +42,7 @@ class ProjectResource extends JsonResource
 			"updated_at" => $this->updated_at,
 
 			// relationships
+			"company" => new CompanyResource($this->whenLoaded('company')),
 			"tasks" => TasksResource::collection($this->whenLoaded('tasks')), // Adiciona o relacionamento tasks
 			];
     }
