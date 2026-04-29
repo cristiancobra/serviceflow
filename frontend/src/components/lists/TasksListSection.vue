@@ -58,26 +58,58 @@
                 </div>
 
                 <!-- Coluna de Oportunidade/Projeto -->
-                <div v-if="showOpportunityColumn" class="min-w-[250px] max-w-[350px] flex items-center justify-start">
+                <div v-if="showOpportunityColumn" class="min-w-[350px] max-w-[350px] flex items-center justify-start">
                   <router-link class="flex no-underline text-inherit items-center gap-2" v-if="localTask.opportunity" :to="{
                     name: 'opportunityShow',
                     params: { id: localTask.opportunity.id },
                     query: { tab: 'tasks' },
                     hash: '#task-' + localTask.id
                   }">
-                    <!-- Foto do Lead/Contato -->
-                    <img v-if="localTask.opportunity.lead && localTask.opportunity.lead.photo" 
-                         :src="`${imagesPath}${localTask.opportunity.lead.photo}`" 
-                         :alt="localTask.opportunity.lead.name"
-                         class="w-8 h-8 rounded-full border-2 border-white" 
-                         :title="localTask.opportunity.lead.name" />
-                    
-                    <!-- Foto da Empresa -->
-                    <img v-if="localTask.opportunity.company && localTask.opportunity.company.photo" 
-                         :src="`${imagesPath}${localTask.opportunity.company.photo}`" 
-                         :alt="localTask.opportunity.company.name"
-                         class="w-8 h-8 rounded-full border-2 border-white" 
-                         :title="localTask.opportunity.company.name" />
+                    <!-- Avatar da Empresa (ordem: foto > iniciais > ícone maleta) -->
+                    <template v-if="localTask.opportunity.company">
+                      <img v-if="localTask.opportunity.company.photo"
+                        :src="`${imagesPath}${localTask.opportunity.company.photo}`"
+                        :alt="localTask.opportunity.company.business_name || localTask.opportunity.company.legal_name"
+                        class="w-8 h-8 rounded-full border-2 border-white"
+                        :title="localTask.opportunity.company.business_name || localTask.opportunity.company.legal_name" />
+                      <div v-else-if="localTask.opportunity.company.business_name || localTask.opportunity.company.legal_name"
+                        class="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold"
+                        :style="{ backgroundColor: getInitialsColor(localTask.opportunity.company.business_name || localTask.opportunity.company.legal_name) }"
+                        :title="localTask.opportunity.company.business_name || localTask.opportunity.company.legal_name">
+                        {{ getInitials(localTask.opportunity.company.business_name || localTask.opportunity.company.legal_name) }}
+                      </div>
+                      <div v-else
+                        class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center bg-gray-200 text-gray-500"
+                        title="Empresa sem nome">
+                        <font-awesome-icon icon="fa-solid fa-briefcase" class="text-sm" />
+                      </div>
+                    </template>
+                    <template v-else>
+                      <!-- Nenhuma company associada -->
+                      <div class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center bg-gray-200 text-gray-500"
+                        title="Sem empresa associada">
+                        <font-awesome-icon icon="fa-solid fa-briefcase" class="text-sm" />
+                      </div>
+                    </template>
+                    <!-- Avatar do Lead (ordem: foto > iniciais > ícone usuário) -->
+                    <template v-if="localTask.opportunity.lead">
+                      <img v-if="localTask.opportunity.lead.photo"
+                        :src="`${imagesPath}${localTask.opportunity.lead.photo}`"
+                        :alt="localTask.opportunity.lead.name"
+                        class="w-8 h-8 rounded-full border-2 border-white ml-[-10px]"
+                        :title="localTask.opportunity.lead.name" />
+                      <div v-else-if="localTask.opportunity.lead.name"
+                        class="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold ml-[-10px]"
+                        :style="{ backgroundColor: getInitialsColor(localTask.opportunity.lead.name) }"
+                        :title="localTask.opportunity.lead.name">
+                        {{ getInitials(localTask.opportunity.lead.name) }}
+                      </div>
+                      <div v-else
+                        class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center bg-gray-200 text-gray-500 ml-[-10px]"
+                        title="Lead sem nome">
+                        <font-awesome-icon icon="fa-solid fa-user" class="text-sm" />
+                      </div>
+                    </template>
                     
                     <div class="flex items-center gap-2 font-medium text-sm"
                       :class="getColorClassForName(localTask.opportunity.name)">
@@ -91,12 +123,31 @@
                     params: { id: localTask.project.id },
                     hash: '#task-' + localTask.id
                   }">
-                    <!-- Foto da Empresa do Projeto -->
-                    <img v-if="localTask.project.company && localTask.project.company.photo" 
-                         :src="`${imagesPath}${localTask.project.company.photo}`" 
-                         :alt="localTask.project.company.name"
-                         class="w-8 h-8 rounded-full border-2 border-white" 
-                         :title="localTask.project.company.name" />
+                    <!-- Avatar da Empresa do Projeto (ordem: foto > iniciais > ícone maleta) -->
+                    <template v-if="localTask.project.company">
+                      <img v-if="localTask.project.company.photo"
+                           :src="`${imagesPath}${localTask.project.company.photo}`"
+                           :alt="localTask.project.company.business_name || localTask.project.company.legal_name"
+                           class="w-8 h-8 rounded-full border-2 border-white"
+                           :title="localTask.project.company.business_name || localTask.project.company.legal_name" />
+                      <div v-else-if="localTask.project.company.business_name || localTask.project.company.legal_name"
+                           class="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold"
+                           :style="{ backgroundColor: getInitialsColor(localTask.project.company.business_name || localTask.project.company.legal_name) }"
+                           :title="localTask.project.company.business_name || localTask.project.company.legal_name">
+                        {{ getInitials(localTask.project.company.business_name || localTask.project.company.legal_name) }}
+                      </div>
+                      <div v-else
+                           class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center bg-gray-200 text-gray-500"
+                           title="Empresa sem nome">
+                        <font-awesome-icon icon="fa-solid fa-briefcase" class="text-sm" />
+                      </div>
+                    </template>
+                    <template v-else>
+                      <div class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center bg-gray-200 text-gray-500"
+                           title="Sem empresa associada">
+                        <font-awesome-icon icon="fa-solid fa-briefcase" class="text-sm" />
+                      </div>
+                    </template>
                     
                     <div class="flex items-center gap-2 font-medium text-sm"
                       :class="getColorClassForName(localTask.project.name)">
@@ -105,8 +156,14 @@
                       {{ trimName(localTask.project.name) }}
                     </div>
                   </router-link>
-                  <div v-else>
-                    <div v-if="editingOpportunity[localTask.id]" class="inline-edit-opportunity">
+                  <div v-else class="flex items-center gap-2">
+                    <!-- Círculo genérico para tarefas sem oportunidade ou projeto -->
+                    <div class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center bg-gray-200 text-gray-500 flex-shrink-0"
+                         title="Tarefa sem vínculo">
+                      <font-awesome-icon icon="fa-solid fa-tasks" class="text-sm" />
+                    </div>
+                    
+                    <div v-if="editingOpportunity[localTask.id]" class="inline-edit-opportunity flex-1">
                       <opportunities-open-select-input v-model="selectedOpportunityId" fieldsToDisplay="name"
                         :autoSelect="false" fieldNull="Nenhuma"
                         @update:modelValue="saveOpportunity(localTask.id, $event)" />
@@ -358,6 +415,40 @@ export default {
     getDeadlineClass,
     getStatusIcon,
     trimName,
+    getInitials(name) {
+      if (!name) return '??';
+      const words = name.trim().split(' ').filter(word => word.length > 0);
+      if (words.length === 0) return '??';
+      if (words.length === 1) return words[0].substring(0, 2).toUpperCase();
+      return (words[0][0] + words[words.length - 1][0]).toUpperCase();
+    },
+    getInitialsColor(name) {
+      if (!name) return '#94a3b8'; // slate-400
+      
+      // Lista de cores vibrantes e acessíveis
+      const colors = [
+        '#ef4444', // red-500
+        '#f97316', // orange-500
+        '#f59e0b', // amber-500
+        '#84cc16', // lime-500
+        '#10b981', // emerald-500
+        '#14b8a6', // teal-500
+        '#06b6d4', // cyan-500
+        '#3b82f6', // blue-500
+        '#6366f1', // indigo-500
+        '#8b5cf6', // violet-500
+        '#a855f7', // purple-500
+        '#ec4899', // pink-500
+      ];
+      
+      // Gera um índice baseado no hash do nome
+      let hash = 0;
+      for (let i = 0; i < name.length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      
+      return colors[Math.abs(hash) % colors.length];
+    },
     addTaskCreated(newTask) {
       this.localTasks.unshift(newTask);
       this.openTaskForm = false;
