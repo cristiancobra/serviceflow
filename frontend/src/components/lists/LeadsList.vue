@@ -1,6 +1,6 @@
 <template>
-    <div class="page-container">
-        <div class="page-header">
+    <div class="">
+        <!-- <div class="page-header">
             <div class="page-title">
                 <font-awesome-icon icon="fa-solid fa-user" class="page-icon" />
                 <div>
@@ -18,7 +18,7 @@
                     @new-lead-event="addLeadCreated" 
                 />
             </div>
-        </div>
+        </div> -->
 
         <section class="section-container">
             <div class="search-container">
@@ -36,7 +36,13 @@
                     <router-link :to="{ name: 'leadShow', params: { id: lead.id } }" class="card-link">
                         <div class="card-header">
                             <div class="avatar">
-                                <font-awesome-icon icon="fa-solid fa-user-circle" class="avatar-icon" />
+                                <img 
+                                    v-if="lead.photo" 
+                                    :src="`${imagesPath}${lead.photo}`" 
+                                    :alt="lead.name"
+                                    class="avatar-image"
+                                />
+                                <font-awesome-icon v-else icon="fa-solid fa-user-circle" class="avatar-icon" />
                             </div>
                             <div class="card-title">
                                 <h3>{{ lead.name }}</h3>
@@ -65,6 +71,7 @@
 
 <script>
 import { index } from "@/utils/requests/httpUtils";
+import { IMAGES_PATH } from "@/config/apiConfig";
 import LeadCreateForm from "@/components/forms/LeadCreateForm.vue";
 import SearchInput from "@/components/filters/SearchInput.vue";
 
@@ -92,6 +99,9 @@ export default {
                 (lead.email && lead.email.toLowerCase().includes(this.searchTerm.toLowerCase())) ||
                 (lead.cel_phone && lead.cel_phone.toLowerCase().includes(this.searchTerm.toLowerCase()))
             );
+        },
+        imagesPath() {
+            return IMAGES_PATH;
         }
     },
     methods: {
@@ -278,6 +288,14 @@ export default {
 .avatar-icon {
     font-size: 40px;
     color: var(--primary, #007bff);
+}
+
+.avatar-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary, #007bff);
 }
 
 .card-title h3 {

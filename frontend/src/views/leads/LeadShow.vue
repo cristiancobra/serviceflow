@@ -1,6 +1,11 @@
 <template>
   <div class="container mx-auto px-4 py-8 max-w-6xl">
-    <!-- Error Message -->
+    <!-- Messages -->
+    <add-message 
+      :messageStatus="messageStatus" 
+      :messageText="messageText"
+      @update:messageStatus="setMessageStatus"
+    />
     <error-message v-if="validationErrors" :formResponse="validationErrors" />
 
     <!-- Header Card -->
@@ -25,6 +30,49 @@
           placeholder="Comentários..."
         />
       </p>
+    </div>
+
+    <!-- Photo Section -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <h2 class="text-xl font-bold text-gray-800 mb-4 border-b border-gray-200 pb-2">
+        Foto
+      </h2>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="flex justify-center items-center p-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+          <div class="photo-container">
+            <img v-if="lead.photo" class="photo" :src="urlImagePhoto" alt="Foto do Lead">
+            <div v-else class="flex items-center justify-center h-full text-gray-400">
+              <font-awesome-icon icon="fas fa-user" class="text-6xl" />
+            </div>
+          </div>
+        </div>
+        <div class="space-y-4">
+          <form @submit.prevent="submitFormPhoto">
+            <div class="flex flex-col mb-4">
+              <label for="photo" class="mb-2 text-sm font-medium text-gray-700">Foto:</label>
+              <input 
+                type="file" 
+                id="photo" 
+                ref="photo" 
+                @change="handlePhotoUpload"
+                accept="image/*"
+                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              >
+              <p class="mt-2 text-xs text-gray-500">
+                Formatos: JPG, PNG, GIF ou WEBP. Tamanho máximo: 2MB
+              </p>
+            </div>
+            <div class="flex justify-start">
+              <button 
+                type="submit" 
+                class="px-6 py-2 text-white bg-primary hover:bg-primary-content hover:text-primary font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
+              >
+                Enviar Foto
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
 
     <!-- Contact Information Section -->
@@ -420,10 +468,13 @@
 <script>
 import { show, destroy, updateField } from '@/utils/requests/httpUtils';
 import { formatDateBr } from '@/utils/date/dateUtils'; 
+import { BACKEND_URL, LEAD_URL, IMAGES_PATH } from '@/config/apiConfig';
+import axios from 'axios';
 import SelectEditableInput from '@/components/fields/select/SelectEditableInput.vue';
 import TextEditableField from '@/components/fields/text/TextEditableField.vue';
 import DateEditableInput from '@/components/fields/date/DateEditableInput.vue';
 import ErrorMessage from '@/components/forms/messages/ErrorMessage.vue';
+import AddMessage from '@/components/forms/messages/AddMessage.vue';
 
 export default {
   name: "LeadShow",
@@ -432,6 +483,7 @@ export default {
     TextEditableField,
     DateEditableInput,
     ErrorMessage,
+    AddMessage,
   },
   data() {
     return {
@@ -439,6 +491,9 @@ export default {
       leadId: "",
       proposals: [],
       validationErrors: null,
+      newPhoto: null,
+      messageStatus: '',
+      messageText: '',
       leadTypeOptions: [
         { value: 'client', label: 'Cliente' },
         { value: 'supplier', label: 'Fornecedor' },
@@ -527,6 +582,9 @@ export default {
       }
       return total;
     },
+    urlImagePhoto() {
+      return `${IMAGES_PATH}${this.lead.photo}`;
+    },
   },
   methods: {
     formatDateBr,
@@ -595,6 +653,70 @@ export default {
     async deleteLead() {
       this.response = await destroy('leads', this.leadId);
       this.$router.push({ name: "leadsIndex" });
+    },
+    async handlePhotoUpload() {
+      this.newPhoto = this.$refs.photo.files[0];
+      
+      if (this.newPhoto) {
+        // Validar tamanho do arquivo (máximo 2MB)
+        const maxSize = 2 * 1024 * 1024; // 2MB em bytes
+        if (this.newPhoto.size > maxSize) {
+          this.messageStatus = 'error';
+          this.messageText = 'Arquivo muito grande! O tamanho máximo é 2MB.';
+          this.$refs.photo.value = ''; // Limpa o input
+          this.newPhoto = null;
+          return;
+        }
+
+        // Validar tipo de arquivo
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'];
+        if (!allowedTypes.includes(this.newPhoto.type)) {
+          this.messageStatus = 'error';
+          this.messageText = 'Formato inválido! Use: JPG, PNG, GIF ou WEBP.';
+          this.$refs.photo.value = ''; // Limpa o input
+          this.newPhoto = null;
+          return;
+        }
+
+        await this.submitFormPhoto();
+      }
+    },
+    async submitFormPhoto() {
+      let formData = new FormData();
+      if (this.newPhoto) {
+        formData.append('photo', this.newPhoto);
+      }
+
+      try {
+        const response = await axios.post(`${BACKEND_URL}${LEAD_URL}/${this.leadId}/photo`, formData);
+        this.lead.photo = response.data.data.photo;
+        this.newPhoto = null;
+        
+        // Mensagem de sucesso
+        this.messageStatus = 'success';
+        this.messageText = 'Foto enviada com sucesso!';
+      } catch (error) {
+        console.error('Erro ao fazer upload da foto:', error);
+        
+        // Mensagem de erro com detalhes
+        if (error.response && error.response.status === 422) {
+          // Erro de validação
+          const errors = error.response.data.errors;
+          if (errors && errors.photo) {
+            this.messageText = errors.photo[0];
+          } else {
+            this.messageText = 'Erro de validação. Verifique o arquivo.';
+          }
+        } else if (error.response && error.response.status === 413) {
+          this.messageText = 'Arquivo muito grande! Máximo 2MB.';
+        } else {
+          this.messageText = 'Erro ao fazer upload da foto. Tente novamente.';
+        }
+        this.messageStatus = 'error';
+      }
+    },
+    setMessageStatus(status) {
+      this.messageStatus = status;
     },
   },
   async mounted() {
@@ -689,5 +811,20 @@ a:active {
   background-color: #c82333;
   border-color: #c82333;
   color: white;
+}
+
+.photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-container {
+  width: 200px;
+  height: 200px;
+  border: 2px solid #48d1cc;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #f9fafb;
 }
 </style>

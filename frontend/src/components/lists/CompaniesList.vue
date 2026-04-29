@@ -1,14 +1,6 @@
 <template>
-  <div class="page-container">
-    <div class="page-header">
-      <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-briefcase" class="page-icon" />
-        <h1>EMPRESAS</h1>
-      </div>
-      <div class="page-action">
-        <CompanyCreateForm @new-company-event="addCompanyCreated" />
-      </div>
-    </div>
+  <div class="">
+
 
     <section class="section-container">
       <div class="search-container">

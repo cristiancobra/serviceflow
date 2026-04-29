@@ -17,6 +17,7 @@ class Lead extends Model
         'category',
         'user_id',
         'name',
+        'photo',
         'email',
         'cel_phone',
         'linkedin',

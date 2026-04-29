@@ -20,6 +20,7 @@ class LeadResource extends JsonResource
             'category' => $this->category,
             'user_id' => $this->user_id,
             'name' => $this->name,
+            'photo' => $this->photo,
             'email' => $this->email,
             'cel_phone' => $this->cel_phone,
             'linkedin' => $this->linkedin,

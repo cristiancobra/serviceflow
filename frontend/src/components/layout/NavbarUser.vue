@@ -202,7 +202,7 @@
 import { mapActions } from "vuex";
 import { mapState } from "vuex";
 import NavbarUserMenu from "./NavbarUserMenu.vue";
-import logoServiceflow from '@/assets/logo-serviceflow-BRANCO.png';
+import logoServiceflow from '@/assets/logo-serviceflow-ROXO.png';
 
 export default {
   data() {

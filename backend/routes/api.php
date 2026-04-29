@@ -76,6 +76,9 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::apiResource('companies', CompanyController::class)
 		->names('companies');
 
+	Route::post('companies/{company}/photo', [CompanyController::class, 'updatePhoto'])
+		->name('companies.updatePhoto');
+
 	// COSTS
 	Route::apiResource('costs', CostController::class)
 		->names('costs');
@@ -108,6 +111,9 @@ Route::middleware('auth:sanctum')->group(function () {
 	// LEADS
 	Route::apiResource('leads', LeadController::class)
 		->names('leads');
+
+	Route::post('leads/{lead}/photo', [LeadController::class, 'updatePhoto'])
+		->name('leads.updatePhoto');
 
 	// LINKS
 	Route::apiResource('links', LinkController::class)

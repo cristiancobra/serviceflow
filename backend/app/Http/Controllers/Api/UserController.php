@@ -103,6 +103,10 @@ class UserController extends Controller
      */
     public function updatePhoto(Request $request, User $user)
     {
+        $request->validate([
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:3048', // Max 2MB
+        ]);
+
         if ($request->hasFile('photo')) {
             if ($user->photo) {
                 Storage::disk('public')->delete($user->photo);

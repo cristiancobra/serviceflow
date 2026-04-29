@@ -76,7 +76,7 @@
                         <div class="flex justify-start">
                             <button 
                                 type="submit" 
-                                class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
+                                class="px-6 py-2 text-white bg-primary hover:bg-primary-content hover:text-primary font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
                             >
                                 Enviar Foto
                             </button>

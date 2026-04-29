@@ -10,6 +10,7 @@ use App\Http\Requests\LeadCreateRequest;
 use App\Http\Requests\LeadUpdateRequest;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Storage;
 
 class LeadController extends Controller
 {
@@ -133,5 +134,31 @@ class LeadController extends Controller
                 'errors' => $validationException->errors(),
             ], 422);
         }
+    }
+
+    /**
+     * Update lead photo
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Lead  $lead
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updatePhoto(Request $request, Lead $lead)
+    {
+        $request->validate([
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:3048', // Max 2MB
+        ]);
+
+        if ($request->hasFile('photo')) {
+            if ($lead->photo) {
+                Storage::disk('public')->delete($lead->photo);
+            }
+            $photo = $request->file('photo');
+            $path = $photo->store('img/leads/photos', 'public');
+            $lead->photo = $path;
+            $lead->save();
+        }
+
+        return LeadResource::make($lead);
     }
 }

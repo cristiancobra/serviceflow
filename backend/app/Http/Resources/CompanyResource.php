@@ -18,6 +18,7 @@ class CompanyResource extends JsonResource
             "id" => $this->id,
             "legal_name" => $this->legal_name,
             "business_name" => $this->business_name,
+            "photo" => $this->photo,
             "email" => $this->email,
             "cel_phone" => $this->cel_phone,
             "created_at" => $this->created_at,

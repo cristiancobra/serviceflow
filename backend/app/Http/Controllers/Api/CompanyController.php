@@ -9,6 +9,9 @@ use App\Http\Requests\CompanyUpdateRequest;
 use App\Models\Company;
 use App\Http\Resources\CompaniesResource;
 use App\Http\Resources\CompanyResource;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class CompanyController extends Controller
 {
@@ -119,5 +122,31 @@ class CompanyController extends Controller
                 'errors' => $validationException->errors(),
             ], 422);
         }
+    }
+
+    /**
+     * Update company photo
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Company  $company
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updatePhoto(Request $request, Company $company)
+    {
+        $request->validate([
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // Max 2MB
+        ]);
+
+        if ($request->hasFile('photo')) {
+            if ($company->photo) {
+                Storage::disk('public')->delete($company->photo);
+            }
+            $photo = $request->file('photo');
+            $path = $photo->store('img/companies/photos', 'public');
+            $company->photo = $path;
+            $company->save();
+        }
+
+        return CompanyResource::make($company);
     }
 }
