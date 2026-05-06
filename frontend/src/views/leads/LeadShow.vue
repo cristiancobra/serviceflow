@@ -732,6 +732,10 @@ export default {
       if (!this.lead.opportunities) {
         this.lead.opportunities = [];
       }
+      // Garantir que a nova oportunidade tenha a estrutura correta
+      if (!newOpportunity.proposals) {
+        newOpportunity.proposals = [];
+      }
       this.lead.opportunities.unshift(newOpportunity);
       // Mostrar mensagem de sucesso
       this.messageStatus = 'success';

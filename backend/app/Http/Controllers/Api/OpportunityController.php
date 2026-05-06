@@ -50,6 +50,9 @@ class OpportunityController extends Controller
 
             $opportunity->save();
 
+            // Carregar relações para retornar dados completos
+            $opportunity->load(['proposals.invoices', 'company', 'lead', 'user']);
+
             return OpportunitiesResource::make($opportunity);
         } catch (ValidationException $validationException) {
             return response()->json([
