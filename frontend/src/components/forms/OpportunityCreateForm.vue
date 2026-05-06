@@ -234,6 +234,19 @@ export default {
     };
   },
   watch: {
+    modelValue: {
+      handler(isOpen) {
+        if (isOpen) {
+          // Quando o modal abrir, repreencher com os valores atuais
+          if (this.currentProject) {
+            this.form.project_id = this.currentProject.id;
+          }
+          if (this.currentLead) {
+            this.form.lead_id = this.currentLead.id;
+          }
+        }
+      },
+    },
     currentProject: {
       handler(newProject) {
         if (newProject) {
@@ -259,12 +272,14 @@ export default {
       this.clearForm();
     },
     async submitForm() {
+      console.log('Enviando oportunidade com dados:', this.form);
       const { data, error } = await this.submitFormCreate(
         "opportunities",
         this.form
       );
 
       if (data) {
+        console.log('Oportunidade criada:', data);
         this.$emit("update:modelValue", false);
         this.$emit("new-opportunity-event", data);
         this.clearForm();
