@@ -22,6 +22,7 @@ class OpportunityController extends Controller
         $opportunities = Opportunity::with([
             'company',
             'lead',
+            'user',
             'project',
             'tasks' => function ($query) {
                 $query->orderBy('date_start', 'desc');
@@ -77,6 +78,7 @@ class OpportunityController extends Controller
             },
             'company',
             'lead',
+            'user',
             'links',
             'proposals.invoices.transactions',
         ])->find($opportunity->id));
@@ -105,6 +107,7 @@ class OpportunityController extends Controller
                 },
                 'company',
                 'lead',
+                'user',
                 'links',
             ])->find($opportunity->id));
         } catch (ValidationException $validationException) {

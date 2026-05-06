@@ -29,7 +29,7 @@
           <div class="flex items-center mb-4">
             <div class="flex items-center gap-3 bg-white pt-5 pb-0">
               <span class="font-bold text-primary text-lg whitespace-nowrap uppercase">{{ monthGroup.monthLabel
-                }}</span>
+              }}</span>
               <span class="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
                 {{ monthGroup.totalTasks }} {{ monthGroup.totalTasks === 1 ? 'tarefa' : 'tarefas' }}
               </span>
@@ -52,117 +52,121 @@
                   <font-awesome-icon v-else icon="fas fa-check-circle" class="text-2xl" :class="isValidDate(localTask.date_conclusion) ? 'text-success' : 'text-gray-400'
                     " />
 
-                  <img v-if="userData.photo" :src="urlImagePhoto" :alt="userData.name"
-                    class="w-8 h-8 rounded-full border-2 border-white mr-0" />
-                  <font-awesome-icon v-else icon="fa-solid fa-user" class="primary pe-2" />
+                  <user-avatar
+                    :photo="userData.photo"
+                    :name="userData.name"
+                    :user-id="userData.id"
+                  />
                 </div>
 
                 <!-- Coluna de Oportunidade/Projeto -->
-                <div v-if="showOpportunityColumn" class="min-w-[350px] max-w-[350px] flex items-center justify-start">
-                  <router-link class="flex no-underline text-inherit items-center gap-2" v-if="localTask.opportunity" :to="{
-                    name: 'opportunityShow',
-                    params: { id: localTask.opportunity.id },
-                    query: { tab: 'tasks' },
-                    hash: '#task-' + localTask.id
-                  }">
-                    <!-- Avatar da Empresa (ordem: foto > iniciais > ícone maleta) -->
-                    <template v-if="localTask.opportunity.company">
-                      <img v-if="localTask.opportunity.company.photo"
-                        :src="`${imagesPath}${localTask.opportunity.company.photo}`"
-                        :alt="localTask.opportunity.company.business_name || localTask.opportunity.company.legal_name"
-                        class="w-8 h-8 rounded-full border-2 border-white"
-                        :title="localTask.opportunity.company.business_name || localTask.opportunity.company.legal_name" />
-                      <div v-else-if="localTask.opportunity.company.business_name || localTask.opportunity.company.legal_name"
-                        class="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold"
-                        :style="{ backgroundColor: getInitialsColor(localTask.opportunity.company.business_name || localTask.opportunity.company.legal_name) }"
-                        :title="localTask.opportunity.company.business_name || localTask.opportunity.company.legal_name">
-                        {{ getInitials(localTask.opportunity.company.business_name || localTask.opportunity.company.legal_name) }}
-                      </div>
-                      <div v-else
-                        class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center bg-gray-200 text-gray-500"
-                        title="Empresa sem nome">
-                        <font-awesome-icon icon="fa-solid fa-briefcase" class="text-sm" />
-                      </div>
-                    </template>
-                    <template v-else>
-                      <!-- Nenhuma company associada -->
-                      <div class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center bg-gray-200 text-gray-500"
-                        title="Sem empresa associada">
-                        <font-awesome-icon icon="fa-solid fa-briefcase" class="text-sm" />
-                      </div>
-                    </template>
-                    <!-- Avatar do Lead (ordem: foto > iniciais > ícone usuário) -->
-                    <template v-if="localTask.opportunity.lead">
-                      <img v-if="localTask.opportunity.lead.photo"
-                        :src="`${imagesPath}${localTask.opportunity.lead.photo}`"
-                        :alt="localTask.opportunity.lead.name"
-                        class="w-8 h-8 rounded-full border-2 border-white ml-[-10px]"
-                        :title="localTask.opportunity.lead.name" />
-                      <div v-else-if="localTask.opportunity.lead.name"
-                        class="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold ml-[-10px]"
-                        :style="{ backgroundColor: getInitialsColor(localTask.opportunity.lead.name) }"
-                        :title="localTask.opportunity.lead.name">
-                        {{ getInitials(localTask.opportunity.lead.name) }}
-                      </div>
-                      <div v-else
-                        class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center bg-gray-200 text-gray-500 ml-[-10px]"
-                        title="Lead sem nome">
-                        <font-awesome-icon icon="fa-solid fa-user" class="text-sm" />
-                      </div>
-                    </template>
-                    
-                    <div class="flex items-center gap-2 font-medium text-sm"
-                      :class="getColorClassForName(localTask.opportunity.name)">
-                      <font-awesome-icon icon="fa-solid fa-bullseye"
-                        :class="getColorClassForName(localTask.opportunity.name)" />
-                      {{ trimName(localTask.opportunity.name) }}
+                <div v-if="showOpportunityColumn" class="min-w-[350px] max-w-[350px] flex items-center justify-start gap-2">
+
+                  <template v-if="localTask.opportunity">
+                    <!-- Avatar da Empresa -->
+                    <div v-if="editingCompany[localTask.id]" class="inline-edit-entity">
+                      <companies-select-input
+                        v-model="selectedCompanyId"
+                        name="company_id"
+                        fieldsToDisplay="legal_name"
+                        fieldNull="Nenhuma"
+                        @update:modelValue="saveCompany(localTask.id, $event)"
+                      />
+                      <button @click="cancelEditCompany(localTask.id)" class="btn-cancel-edit ms-2" title="Cancelar">
+                        <font-awesome-icon icon="fa-solid fa-times" />
+                      </button>
                     </div>
-                  </router-link>
-                  <router-link class="flex no-underline text-inherit items-center gap-2" v-else-if="localTask.project" :to="{
-                    name: 'projectShow',
-                    params: { id: localTask.project.id },
-                    hash: '#task-' + localTask.id
-                  }">
-                    <!-- Avatar da Empresa do Projeto (ordem: foto > iniciais > ícone maleta) -->
-                    <template v-if="localTask.project.company">
-                      <img v-if="localTask.project.company.photo"
-                           :src="`${imagesPath}${localTask.project.company.photo}`"
-                           :alt="localTask.project.company.business_name || localTask.project.company.legal_name"
-                           class="w-8 h-8 rounded-full border-2 border-white"
-                           :title="localTask.project.company.business_name || localTask.project.company.legal_name" />
-                      <div v-else-if="localTask.project.company.business_name || localTask.project.company.legal_name"
-                           class="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold"
-                           :style="{ backgroundColor: getInitialsColor(localTask.project.company.business_name || localTask.project.company.legal_name) }"
-                           :title="localTask.project.company.business_name || localTask.project.company.legal_name">
-                        {{ getInitials(localTask.project.company.business_name || localTask.project.company.legal_name) }}
-                      </div>
-                      <div v-else
-                           class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center bg-gray-200 text-gray-500"
-                           title="Empresa sem nome">
-                        <font-awesome-icon icon="fa-solid fa-briefcase" class="text-sm" />
-                      </div>
-                    </template>
-                    <template v-else>
-                      <div class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center bg-gray-200 text-gray-500"
-                           title="Sem empresa associada">
-                        <font-awesome-icon icon="fa-solid fa-briefcase" class="text-sm" />
-                      </div>
-                    </template>
-                    
-                    <div class="flex items-center gap-2 font-medium text-sm"
-                      :class="getColorClassForName(localTask.project.name)">
-                      <font-awesome-icon icon="fa-solid fa-folder-open"
-                        :class="getColorClassForName(localTask.project.name)" />
-                      {{ trimName(localTask.project.name) }}
+                    <company-avatar
+                      v-else
+                      :photo="localTask.opportunity.company?.photo"
+                      :business-name="localTask.opportunity.company?.business_name"
+                      :legal-name="localTask.opportunity.company?.legal_name"
+                      :company-id="localTask.opportunity.company?.id"
+                      @click.native="!localTask.opportunity.company?.id && startEditCompany(localTask.id)"
+                      :custom-class="!localTask.opportunity.company?.id ? 'cursor-pointer hover:opacity-70' : ''"
+                    />
+                    <!-- Avatar do Lead -->
+                    <div v-if="editingLead[localTask.id]" class="inline-edit-entity">
+                      <leads-select-input
+                        v-model="selectedLeadId"
+                        name="lead_id"
+                        fieldsToDisplay="name"
+                        fieldNull="Nenhum"
+                        @update:modelValue="saveLead(localTask.id, $event)"
+                      />
+                      <button @click="cancelEditLead(localTask.id)" class="btn-cancel-edit ms-2" title="Cancelar">
+                        <font-awesome-icon icon="fa-solid fa-times" />
+                      </button>
                     </div>
-                  </router-link>
-                  <div v-else class="flex items-center gap-2">
-                    <!-- Círculo genérico para tarefas sem oportunidade ou projeto -->
-                    <div class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center bg-gray-200 text-gray-500 flex-shrink-0"
-                         title="Tarefa sem vínculo">
-                      <font-awesome-icon icon="fa-solid fa-tasks" class="text-sm" />
+                    <lead-avatar
+                      v-else
+                      :photo="localTask.opportunity.lead?.photo"
+                      :name="localTask.opportunity.lead?.name"
+                      :lead-id="localTask.opportunity.lead?.id"
+                      :overlap="true"
+                      @click.native="!localTask.opportunity.lead?.id && startEditLead(localTask.id)"
+                      :custom-class="!localTask.opportunity.lead?.id ? 'cursor-pointer hover:opacity-70' : ''"
+                    />
+
+                    <router-link class="flex no-underline text-inherit items-center gap-2"
+                      :to="{
+                        name: 'opportunityShow',
+                        params: { id: localTask.opportunity.id },
+                        query: { tab: 'tasks' },
+                        hash: '#task-' + localTask.id
+                      }">
+                      <div class="flex items-center gap-2 font-medium text-sm"
+                        :class="getColorClassForName(localTask.opportunity.name)">
+                        <font-awesome-icon icon="fa-solid fa-bullseye"
+                          :class="getColorClassForName(localTask.opportunity.name)" />
+                        {{ trimName(localTask.opportunity.name) }}
+                      </div>
+                    </router-link>
+                  </template>
+                  
+                  <template v-else-if="localTask.project">
+                    <!-- Avatar da Empresa do Projeto -->
+                    <div v-if="editingProjectCompany[localTask.id]" class="inline-edit-entity">
+                      <companies-select-input
+                        v-model="selectedProjectCompanyId"
+                        name="company_id"
+                        fieldsToDisplay="legal_name"
+                        fieldNull="Nenhuma"
+                        @update:modelValue="saveProjectCompany(localTask.id, $event)"
+                      />
+                      <button @click="cancelEditProjectCompany(localTask.id)" class="btn-cancel-edit ms-2" title="Cancelar">
+                        <font-awesome-icon icon="fa-solid fa-times" />
+                      </button>
                     </div>
-                    
+                    <company-avatar
+                      v-else
+                      :photo="localTask.project.company?.photo"
+                      :business-name="localTask.project.company?.business_name"
+                      :legal-name="localTask.project.company?.legal_name"
+                      :company-id="localTask.project.company?.id"
+                      @click.native="!localTask.project.company?.id && startEditProjectCompany(localTask.id)"
+                      :custom-class="!localTask.project.company?.id ? 'cursor-pointer hover:opacity-70' : ''"
+                    />
+
+                    <router-link class="flex no-underline text-inherit items-center gap-2"
+                      :to="{
+                        name: 'projectShow',
+                        params: { id: localTask.project.id },
+                        hash: '#task-' + localTask.id
+                      }">
+                      <div class="flex items-center gap-2 font-medium text-sm"
+                        :class="getColorClassForName(localTask.project.name)">
+                        <font-awesome-icon icon="fa-solid fa-folder-open"
+                          :class="getColorClassForName(localTask.project.name)" />
+                        {{ trimName(localTask.project.name) }}
+                      </div>
+                    </router-link>
+                  </template>
+                  
+                  <template v-else>
+                    <!-- Avatar genérico para tarefas sem oportunidade ou projeto -->
+                    <company-avatar />
+
                     <div v-if="editingOpportunity[localTask.id]" class="inline-edit-opportunity flex-1">
                       <opportunities-open-select-input v-model="selectedOpportunityId" fieldsToDisplay="name"
                         :autoSelect="false" fieldNull="Nenhuma"
@@ -177,7 +181,7 @@
                       title="Clique para vincular a uma oportunidade">
                       ----
                     </p>
-                  </div>
+                  </template>
                 </div>
 
                 <!-- coluna do nome da tarefa  -->
@@ -338,6 +342,9 @@ import {
 import AddLastJourneyDateButton from "@/components/tasks/buttons/AddLastJourneyDateButton.vue";
 import ButtonNewForm from "../buttons/ButtonNewForm.vue";
 import CancellationReasonSelectInput from "@/components/forms/selects/CancellationReasonSelectInput.vue";
+import CompanyAvatar from "@/components/common/CompanyAvatar.vue";
+import LeadAvatar from "@/components/common/LeadAvatar.vue";
+import UserAvatar from "@/components/common/UserAvatar.vue";
 import DateTimeEditableInput from "@/components/fields/datetime/DateTimeEditableInput.vue";
 import JourneyCreateForm from "@/components/forms/JourneyCreateForm.vue";
 import JourneysListFromOpportunity from "@/components/lists/JourneysListFromOpportunity.vue";
@@ -346,6 +353,8 @@ import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 import TextAreaEditableInput from "@/components/forms/inputs/textarea/TextAreaEditableInput.vue";
 import SearchInput from "@/components/filters/SearchInput.vue";
 import OpportunitiesOpenSelectInput from "@/components/forms/selects/OpportunitiesOpenSelectInput.vue";
+import CompaniesSelectInput from "@/components/forms/selects/CompaniesSelectInput.vue";
+import LeadsSelectInput from "@/components/forms/selects/LeadsSelectInput.vue";
 import { mapState } from "vuex";
 
 export default {
@@ -390,20 +399,31 @@ export default {
       totalTasks: 0,
       editingOpportunity: {},
       selectedOpportunityId: null,
+      editingCompany: {},
+      selectedCompanyId: null,
+      editingLead: {},
+      selectedLeadId: null,
+      editingProjectCompany: {},
+      selectedProjectCompanyId: null,
     };
   },
   components: {
     AddLastJourneyDateButton,
     ButtonNewForm,
     CancellationReasonSelectInput,
+    CompaniesSelectInput,
+    CompanyAvatar,
     DateTimeEditableInput,
     JourneyCreateForm,
     JourneysListFromOpportunity,
+    LeadAvatar,
+    LeadsSelectInput,
     OpportunitiesOpenSelectInput,
     TaskCreateForm,
     TextEditableField,
     TextAreaEditableInput,
     SearchInput,
+    UserAvatar,
   },
   methods: {
     convertUtcToLocal,
@@ -415,40 +435,6 @@ export default {
     getDeadlineClass,
     getStatusIcon,
     trimName,
-    getInitials(name) {
-      if (!name) return '??';
-      const words = name.trim().split(' ').filter(word => word.length > 0);
-      if (words.length === 0) return '??';
-      if (words.length === 1) return words[0].substring(0, 2).toUpperCase();
-      return (words[0][0] + words[words.length - 1][0]).toUpperCase();
-    },
-    getInitialsColor(name) {
-      if (!name) return '#94a3b8'; // slate-400
-      
-      // Lista de cores vibrantes e acessíveis
-      const colors = [
-        '#ef4444', // red-500
-        '#f97316', // orange-500
-        '#f59e0b', // amber-500
-        '#84cc16', // lime-500
-        '#10b981', // emerald-500
-        '#14b8a6', // teal-500
-        '#06b6d4', // cyan-500
-        '#3b82f6', // blue-500
-        '#6366f1', // indigo-500
-        '#8b5cf6', // violet-500
-        '#a855f7', // purple-500
-        '#ec4899', // pink-500
-      ];
-      
-      // Gera um índice baseado no hash do nome
-      let hash = 0;
-      for (let i = 0; i < name.length; i++) {
-        hash = name.charCodeAt(i) + ((hash << 5) - hash);
-      }
-      
-      return colors[Math.abs(hash) % colors.length];
-    },
     addTaskCreated(newTask) {
       this.localTasks.unshift(newTask);
       this.openTaskForm = false;
@@ -666,6 +652,108 @@ export default {
         console.error("Erro ao atualizar oportunidade da tarefa:", error);
       }
     },
+    startEditCompany(taskId) {
+      this.editingCompany[taskId] = true;
+      this.selectedCompanyId = null;
+    },
+    cancelEditCompany(taskId) {
+      this.editingCompany[taskId] = false;
+      this.selectedCompanyId = null;
+    },
+    async saveCompany(taskId, companyId) {
+      if (!companyId) {
+        this.cancelEditCompany(taskId);
+        return;
+      }
+
+      const task = this.localTasks.find(t => t.id === taskId);
+      if (!task || !task.opportunity) return;
+
+      try {
+        const response = await axios.put(
+          `${BACKEND_URL}opportunities/${task.opportunity.id}`,
+          { company_id: companyId }
+        );
+
+        // Atualiza a task inteira para refletir mudanças
+        const taskResponse = await axios.get(
+          `${BACKEND_URL}${TASK_URL_PARAMETER}${taskId}`
+        );
+        const updatedTask = taskResponse.data.data;
+        this.updateTasksList(updatedTask, taskId);
+        this.cancelEditCompany(taskId);
+      } catch (error) {
+        console.error("Erro ao atualizar empresa da oportunidade:", error);
+      }
+    },
+    startEditLead(taskId) {
+      this.editingLead[taskId] = true;
+      this.selectedLeadId = null;
+    },
+    cancelEditLead(taskId) {
+      this.editingLead[taskId] = false;
+      this.selectedLeadId = null;
+    },
+    async saveLead(taskId, leadId) {
+      if (!leadId) {
+        this.cancelEditLead(taskId);
+        return;
+      }
+
+      const task = this.localTasks.find(t => t.id === taskId);
+      if (!task || !task.opportunity) return;
+
+      try {
+        const response = await axios.put(
+          `${BACKEND_URL}opportunities/${task.opportunity.id}`,
+          { lead_id: leadId }
+        );
+
+        // Atualiza a task inteira para refletir mudanças
+        const taskResponse = await axios.get(
+          `${BACKEND_URL}${TASK_URL_PARAMETER}${taskId}`
+        );
+        const updatedTask = taskResponse.data.data;
+        this.updateTasksList(updatedTask, taskId);
+        this.cancelEditLead(taskId);
+      } catch (error) {
+        console.error("Erro ao atualizar lead da oportunidade:", error);
+      }
+    },
+    startEditProjectCompany(taskId) {
+      this.editingProjectCompany[taskId] = true;
+      this.selectedProjectCompanyId = null;
+    },
+    cancelEditProjectCompany(taskId) {
+      this.editingProjectCompany[taskId] = false;
+      this.selectedProjectCompanyId = null;
+    },
+    async saveProjectCompany(taskId, companyId) {
+      if (!companyId) {
+        this.cancelEditProjectCompany(taskId);
+        return;
+      }
+
+      const task = this.localTasks.find(t => t.id === taskId);
+      if (!task || !task.project) return;
+
+      try {
+        const response = await axios.put(
+          `${BACKEND_URL}projects/${task.project.id}`,
+          { company_id: companyId }
+        );
+
+        // Atualiza a task inteira para refletir mudanças
+        const taskResponse = await axios.get(
+          `${BACKEND_URL}${TASK_URL_PARAMETER}${taskId}`
+        );
+        const updatedTask = taskResponse.data.data;
+        this.updateTasksList(updatedTask, taskId);
+        this.cancelEditProjectCompany(taskId);
+      } catch (error) {
+        console.error("Erro ao atualizar empresa do projeto:", error);
+      }
+    },
     async updateTaskDuration(taskId) {
       try {
         const response = await axios.get(
@@ -862,6 +950,13 @@ export default {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.inline-edit-entity {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 200px;
 }
 
 .btn-cancel-edit {

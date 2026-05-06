@@ -1,24 +1,24 @@
 <template>
-  <div v-if="!editing" @click="startEditing">
+  <div v-if="!editing" @click="startEditing" class="cursor-pointer hover:bg-gray-50 p-2 rounded">
     <label class="form-label" :for="name">{{ label }}</label>
-    <p v-if="selectedName">
+    <p v-if="selectedName" class="text-gray-900 font-medium mt-1">
       {{ selectedName }}
     </p>
-    <p v-else>
+    <p v-else class="text-gray-400 italic mt-1">
       não possui
     </p>
   </div>
-  <SelectInput v-else :label="label" :name="name" v-model="localValue" :items="companies"
-    :fieldsToDisplay="fieldsToDisplay" :fieldNull="fieldNullValue" @update:modelValue="updateInput" />
+  <CustomSelectInput v-else :label="label" :name="name" v-model="localValue" :items="companies"
+    :fieldsToDisplay="fieldsToDisplay" :fieldNull="fieldNullValue" avatarType="company" @update:modelValue="updateInput" />
 </template>
 
 <script>
 import { index, show } from "@/utils/requests/httpUtils";
-import SelectInput from "@/components/forms/selects/SelectInput.vue";
+import CustomSelectInput from "@/components/forms/selects/CustomSelectInput.vue";
 
 export default {
   components: {
-    SelectInput,
+    CustomSelectInput,
   },
   props: {
     label: String,
@@ -35,7 +35,7 @@ export default {
       autoSelectUser: null,
       editing: false,
       fieldNullValue: null,
-      fieldsToDisplay: "name",
+      fieldsToDisplay: "legal_name",
       localValue: this.modelValue,
       selectedName: "",
       companies: [],
@@ -59,7 +59,7 @@ export default {
     // },
     async showName() {
       const current = await show("companies", this.modelValue);
-      this.selectedName = current.legal_name;
+      this.selectedName = current.business_name || current.legal_name;
     },
     startEditing() {
       this.editing = true;

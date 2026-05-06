@@ -27,16 +27,16 @@ export default {
     fieldsToDisplay: [String, Array],
     fieldNull: String,
     optionLabel: String,
+    modelValue: null,
   },
   data() {
     return {
       companies: [],
-      modelValue: null,
     };
   },
   methods: {
     updateInput(value) {
-      this.modelValue = value;
+      this.$emit('update:modelValue', value);
     },
     async getCompanies() {
       try {

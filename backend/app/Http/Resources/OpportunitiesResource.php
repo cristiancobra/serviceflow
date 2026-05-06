@@ -6,6 +6,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\CompanyResource;
 use App\Http\Resources\LeadsResource;
 use App\Http\Resources\LinksResource;
+use App\Http\Resources\UsersResource;
 use App\Services\DateTimeConversionService;
 
 class OpportunitiesResource extends JsonResource
@@ -43,9 +44,10 @@ class OpportunitiesResource extends JsonResource
             // 'project' => new ProjectResource($this->whenLoaded('project')),
             'company' => new CompanyResource($this->whenLoaded('company')),
             'lead' => new LeadsResource($this->whenLoaded('lead')),
+            'user' => new UsersResource($this->whenLoaded('user')),
             'links' => LinksResource::collection($this->whenLoaded('links')),
             'tasks' => TasksResource::collection($this->whenLoaded('tasks')),
             'proposals' => ProposalsResource::collection($this->whenLoaded('proposals')),
-			];
+		];
     }
 }

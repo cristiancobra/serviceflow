@@ -96,8 +96,6 @@ class ProjectController extends Controller
                         ->with('journeys');
                 },
                 'company',
-                'lead',
-                'links',
             ])->find($project->id));
             
         } catch (ValidationException $validationException) {
