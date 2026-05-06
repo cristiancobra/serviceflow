@@ -306,10 +306,10 @@
         />
       </div>
       
-      <!-- Proposals List -->
-      <div v-if="opportunitiesWithProposals.length > 0" class="space-y-6">
+      <!-- Opportunities List -->
+      <div v-if="lead.opportunities && lead.opportunities.length > 0" class="space-y-6">
         <div 
-          v-for="opportunity in opportunitiesWithProposals" 
+          v-for="opportunity in lead.opportunities" 
           :key="opportunity.id"
           class="border border-gray-300 rounded-lg p-5 bg-gray-50"
         >
@@ -326,7 +326,7 @@
                 </router-link>
               </div>
               <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
-                {{ opportunity.proposals.length }} proposta{{ opportunity.proposals.length !== 1 ? 's' : '' }}
+                {{ opportunity.proposals?.length || 0 }} proposta{{ (opportunity.proposals?.length || 0) !== 1 ? 's' : '' }}
               </span>
             </div>
             <div v-if="opportunity.description" class="text-sm text-gray-600 mt-2">
@@ -335,7 +335,7 @@
           </div>
           
           <!-- Proposals within this Opportunity -->
-          <div class="space-y-3">
+          <div v-if="opportunity.proposals && opportunity.proposals.length > 0" class="space-y-3">
             <div 
               v-for="proposal in opportunity.proposals" 
               :key="proposal.id"
@@ -400,14 +400,19 @@
               </div>
             </div>
           </div>
+          
+          <!-- Empty state for opportunity without proposals -->
+          <div v-else class="text-center py-4">
+            <p class="text-gray-500 text-sm">Nenhuma proposta criada para esta oportunidade ainda</p>
+          </div>
         </div>
       </div>
       
       <!-- Empty State -->
       <div v-else class="text-center py-8">
-        <font-awesome-icon icon="fas fa-file-invoice-dollar" class="text-gray-300 text-4xl mb-3" />
-        <p class="text-gray-500 text-lg">Nenhuma proposta encontrada para este lead</p>
-        <p class="text-gray-400 text-sm">As propostas aparecerão aqui quando forem criadas</p>
+        <font-awesome-icon icon="fas fa-bullseye" class="text-gray-300 text-4xl mb-3" />
+        <p class="text-gray-500 text-lg">Nenhuma oportunidade encontrada para este lead</p>
+        <p class="text-gray-400 text-sm">As oportunidades aparecerão aqui quando forem criadas</p>
       </div>
       
       <!-- Financial Summary -->
@@ -732,7 +737,7 @@ export default {
       if (!this.lead.opportunities) {
         this.lead.opportunities = [];
       }
-      // Garantir que a nova oportunidade tenha a estrutura correta
+      // Garantir que a oportunidade tenha um array de proposals (mesmo que vazio)
       if (!newOpportunity.proposals) {
         newOpportunity.proposals = [];
       }
