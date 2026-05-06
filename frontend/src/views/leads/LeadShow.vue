@@ -298,9 +298,12 @@
           <font-awesome-icon icon="fas fa-money-bill-wave" class="text-green-500 mr-3" />
           FINANCEIRO
         </h2>
-        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
-          {{ proposals.length }} proposta{{ proposals.length !== 1 ? 's' : '' }}
-        </span>
+        <button-new-form target="opportunity" @open-modal="isCreateOpportunityModalVisible = true" />
+        <opportunity-create-form 
+          v-model="isCreateOpportunityModalVisible"
+          :current-lead="lead"
+          @new-opportunity-event="addOpportunityCreated" 
+        />
       </div>
       
       <!-- Proposals List -->
@@ -475,6 +478,8 @@ import TextEditableField from '@/components/fields/text/TextEditableField.vue';
 import DateEditableInput from '@/components/fields/date/DateEditableInput.vue';
 import ErrorMessage from '@/components/forms/messages/ErrorMessage.vue';
 import AddMessage from '@/components/forms/messages/AddMessage.vue';
+import ButtonNewForm from '@/components/buttons/ButtonNewForm.vue';
+import OpportunityCreateForm from '@/components/forms/OpportunityCreateForm.vue';
 
 export default {
   name: "LeadShow",
@@ -484,6 +489,8 @@ export default {
     DateEditableInput,
     ErrorMessage,
     AddMessage,
+    ButtonNewForm,
+    OpportunityCreateForm,
   },
   data() {
     return {
@@ -494,6 +501,7 @@ export default {
       newPhoto: null,
       messageStatus: '',
       messageText: '',
+      isCreateOpportunityModalVisible: false,
       leadTypeOptions: [
         { value: 'client', label: 'Cliente' },
         { value: 'supplier', label: 'Fornecedor' },
@@ -717,6 +725,17 @@ export default {
     },
     setMessageStatus(status) {
       this.messageStatus = status;
+    },
+    addOpportunityCreated(newOpportunity) {
+      this.isCreateOpportunityModalVisible = false;
+      // Adicionar a nova oportunidade à lista de oportunidades do lead
+      if (!this.lead.opportunities) {
+        this.lead.opportunities = [];
+      }
+      this.lead.opportunities.unshift(newOpportunity);
+      // Mostrar mensagem de sucesso
+      this.messageStatus = 'success';
+      this.messageText = 'Oportunidade criada com sucesso!';
     },
   },
   async mounted() {

@@ -71,8 +71,14 @@
                   v-model="form.lead_id"
                   fieldsToDisplay="name"
                   fieldNull="Não possui"
+                  :disabled="!!currentLead"
                 />
+                <p v-if="currentLead" class="mt-1 text-sm text-gray-600">
+                  <font-awesome-icon icon="fas fa-info-circle" class="mr-1" />
+                  Oportunidade vinculada a este contato
+                </p>
                 <button
+                  v-else
                   type="button"
                   class="mt-2 text-sm text-blue-600 hover:text-blue-800 font-semibold"
                   @click="toggleLead()"
@@ -205,6 +211,10 @@ export default {
       type: Object,
       default: null,
     },
+    currentLead: {
+      type: Object,
+      default: null,
+    },
   },
   data() {
     return {
@@ -228,6 +238,14 @@ export default {
       handler(newProject) {
         if (newProject) {
           this.form.project_id = newProject.id;
+        }
+      },
+      immediate: true,
+    },
+    currentLead: {
+      handler(newLead) {
+        if (newLead) {
+          this.form.lead_id = newLead.id;
         }
       },
       immediate: true,
