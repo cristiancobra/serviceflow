@@ -1,19 +1,20 @@
 <template>
   <div class="w-full mb-5 flex flex-col items-start">
-    <label class="text-left font-bold mb-2" :for="name">{{ label }}:</label>
+    <label v-if="label" class="text-left text-gray-700 font-bold mb-2" :for="name">{{ label }}:</label>
 
     <div
       v-if="!editing"
-      class="w-full border-none p-1 cursor-pointer bg-transparent min-h-[60px] whitespace-pre-wrap"
+      class="w-full border-none p-1 cursor-pointer bg-transparent min-h-[60px] whitespace-pre-wrap text-gray-700"
       @click="startEditing"
       ref="editableContent"
     >
-      {{ modelValue || placeholder }}
+      <span v-if="!modelValue" class="text-gray-400 italic">{{ placeholder }}</span>
+      <span v-else>{{ modelValue }}</span>
     </div>
 
     <div v-else class="w-full">
       <textarea
-        class="w-full border border-gray-300 rounded-md p-3 mr-3 focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none overflow-hidden"
+        class="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-primary focus:border-transparent resize-none overflow-hidden text-gray-800 bg-white"
         :value="modelValue"
         :id="name"
         :name="name"
@@ -25,25 +26,22 @@
         rows="3"
       ></textarea>
       <div class="flex gap-2 mt-2">
-        <button 
-          class="bg-primary-500 hover:bg-primary-600 text-white font-medium py-1 px-3 rounded text-sm mr-2" 
-          @click="saveChanges"
-        >
-          Salvar
-        </button>
-        <button 
-          class="bg-gray-500 hover:bg-gray-600 text-white font-medium py-1 px-3 rounded text-sm" 
-          @click="cancelEditing"
-        >
-          Cancelar
-        </button>
+        <save-button @click="saveChanges" @mousedown.prevent />
+        <cancel-button @click="cancelEditing" @mousedown.prevent />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import SaveButton from '@/components/buttons/SaveButton.vue';
+import CancelButton from '@/components/buttons/CancelButton.vue';
+
 export default {
+  components: {
+    SaveButton,
+    CancelButton,
+  },
   data() {
     return {
       editing: false,

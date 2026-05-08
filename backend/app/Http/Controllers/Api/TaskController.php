@@ -143,7 +143,13 @@ class TaskController extends Controller
     {
         $status = $request->input('status'); // Obtenha o valor do parâmetro 'status'
 
-        $tasks = Task::orderBy('created_at', 'desc');
+        $tasks = Task::with([
+            'journeys.user',
+            'project.company',
+            'opportunity.lead',
+            'opportunity.company'
+        ])
+            ->orderBy('created_at', 'desc');
 
         if ($status) {
             $tasks->where('status', $status);
@@ -162,13 +168,19 @@ class TaskController extends Controller
     public function filterTasksByDate()
     {
 
-        $tasks = Task::whereIn(
-            'status',
-            [
-                'to-do',
-                'doing'
-            ]
-        )
+        $tasks = Task::with([
+            'journeys.user',
+            'project.company',
+            'opportunity.lead',
+            'opportunity.company'
+        ])
+            ->whereIn(
+                'status',
+                [
+                    'to-do',
+                    'doing'
+                ]
+            )
             ->orderBy('date_due', 'desc')
             ->paginate(50);
 
@@ -257,6 +269,7 @@ class TaskController extends Controller
     public function prioritizedTasks()
     {
         $tasks = Task::with([
+            'journeys.user',
             'project.company',
             'opportunity.lead',
             'opportunity.company'
@@ -284,10 +297,16 @@ class TaskController extends Controller
     public function tasksMetrics()
     {
         return TasksResource::collection(
-            Task::whereIn('status', [
-                'to-do',
-                'doing'
+            Task::with([
+                'journeys.user',
+                'project.company',
+                'opportunity.lead',
+                'opportunity.company'
             ])
+                ->whereIn('status', [
+                    'to-do',
+                    'doing'
+                ])
                 ->orderBy('created_at', 'desc')
                 ->get()
         );

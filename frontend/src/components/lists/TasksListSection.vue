@@ -28,7 +28,7 @@
           <!-- Header do Mês -->
           <div class="flex items-center mb-4">
             <div class="flex items-center gap-3 bg-white pt-5 pb-0">
-              <span class="font-bold text-primary text-lg whitespace-nowrap uppercase">{{ monthGroup.monthLabel
+              <span class="font-bold text-black text-lg whitespace-nowrap uppercase">{{ monthGroup.monthLabel
               }}</span>
               <span class="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
                 {{ monthGroup.totalTasks }} {{ monthGroup.totalTasks === 1 ? 'tarefa' : 'tarefas' }}
@@ -86,26 +86,11 @@
                       :custom-class="!localTask.opportunity.company?.id ? 'cursor-pointer hover:opacity-70' : ''"
                     />
                     <!-- Avatar do Lead -->
-                    <div v-if="editingLead[localTask.id]" class="inline-edit-entity">
-                      <leads-select-input
-                        v-model="selectedLeadId"
-                        name="lead_id"
-                        fieldsToDisplay="name"
-                        fieldNull="Nenhum"
-                        @update:modelValue="saveLead(localTask.id, $event)"
-                      />
-                      <button @click="cancelEditLead(localTask.id)" class="btn-cancel-edit ms-2" title="Cancelar">
-                        <font-awesome-icon icon="fa-solid fa-times" />
-                      </button>
-                    </div>
                     <lead-avatar
-                      v-else
                       :photo="localTask.opportunity.lead?.photo"
                       :name="localTask.opportunity.lead?.name"
                       :lead-id="localTask.opportunity.lead?.id"
                       :overlap="true"
-                      @click.native="!localTask.opportunity.lead?.id && startEditLead(localTask.id)"
-                      :custom-class="!localTask.opportunity.lead?.id ? 'cursor-pointer hover:opacity-70' : ''"
                     />
 
                     <router-link class="flex no-underline text-inherit items-center gap-2"
@@ -126,26 +111,11 @@
                   
                   <template v-else-if="localTask.project">
                     <!-- Avatar da Empresa do Projeto -->
-                    <div v-if="editingProjectCompany[localTask.id]" class="inline-edit-entity">
-                      <companies-select-input
-                        v-model="selectedProjectCompanyId"
-                        name="company_id"
-                        fieldsToDisplay="legal_name"
-                        fieldNull="Nenhuma"
-                        @update:modelValue="saveProjectCompany(localTask.id, $event)"
-                      />
-                      <button @click="cancelEditProjectCompany(localTask.id)" class="btn-cancel-edit ms-2" title="Cancelar">
-                        <font-awesome-icon icon="fa-solid fa-times" />
-                      </button>
-                    </div>
                     <company-avatar
-                      v-else
                       :photo="localTask.project.company?.photo"
                       :business-name="localTask.project.company?.business_name"
                       :legal-name="localTask.project.company?.legal_name"
                       :company-id="localTask.project.company?.id"
-                      @click.native="!localTask.project.company?.id && startEditProjectCompany(localTask.id)"
-                      :custom-class="!localTask.project.company?.id ? 'cursor-pointer hover:opacity-70' : ''"
                     />
 
                     <router-link class="flex no-underline text-inherit items-center gap-2"
@@ -186,7 +156,7 @@
 
                 <!-- coluna do nome da tarefa  -->
                 <div class="flex flex-row flex-[6] items-center justify-start m-0">
-                  <div :class="{ 'task-name-highlighted': showControls[localTask.id] }">
+                  <div>
                     <text-editable-field name="name" v-model="localTask.name"
                       placeholder="descrição detalhada da tarefa" @save="updateTask('name', $event, localTask.id)" />
                   </div>
@@ -213,111 +183,26 @@
                     @save="updateTask('date_conclusion', $event, localTask.id)" />
                 </div>
 
-                <!-- Botão para mostrar/ocultar controles extras (sempre visível na mesma posição) -->
+                <!-- Botão para abrir modal de detalhes -->
                 <button
                   class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-500 text-white hover:bg-gray-700 transition"
-                  @click="toggleControls(localTask.id)"
-                  :title="showControls[localTask.id] ? 'Ocultar controles' : 'Mostrar controles'">
-                  <font-awesome-icon
-                    :icon="showControls[localTask.id] ? 'fa-solid fa-chevron-up' : 'fa-solid fa-ellipsis-h'" />
+                  @click="openTaskModal(localTask.id)"
+                  title="Ver detalhes da tarefa">
+                  <font-awesome-icon icon="fa-solid fa-plus" />
                 </button>
-              </div>
-
-              <!-- Controles extras (exibidos em uma nova linha abaixo) -->
-              <div v-if="showControls[localTask.id]"
-                class="flex items-start gap-4 pt-2 pb-10 px-4 bg-primary-content border-l-4 border-gray-400 rounded-r-lg">
-
-                <!-- Coluna da Description (esquerda - maior) -->
-                <div class="flex-1 min-w-0">
-                  <text-area-editable-input label="Descrição" name="description" v-model="localTask.description"
-                    placeholder="Adicione uma descrição detalhada da tarefa"
-                    @save="updateTask('description', $event, localTask.id)" />
-                </div>
-
-                <!-- Coluna dos Botões (direita - menor) -->
-                <div class="flex items-center space-x-3 flex-shrink-0">
-                  <!-- Botão de Toggle Cancelamento -->
-                  <button
-                    class="w-7 h-7 flex items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-700 transition"
-                    @click="toggleCancelLine(localTask.id)" title="Cancelar tarefa">
-                    <font-awesome-icon :icon="showCancelLine[localTask.id]
-                      ? 'fa-solid fa-minus'
-                      : 'fa-solid fa-times-circle'
-                      " />
-                  </button>
-
-                  <!-- Botão para toggle do formulário de jornada -->
-                  <button
-                    class="w-7 h-7 flex items-center justify-center rounded-full bg-orange-500 text-white hover:bg-orange-700 transition"
-                    @click="toggleJourneyForm(localTask.id)" title="Adicionar jornada">
-                    <font-awesome-icon :icon="showJourneyForm[localTask.id]
-                      ? 'fa-solid fa-minus'
-                      : 'fa-solid fa-plus'
-                      " />
-                  </button>
-
-                  <!-- Botão quickform - iniciar jornada rapidamente -->
-                  <button
-                    class="w-7 h-7 flex items-center justify-center rounded-full bg-purple-500 text-white hover:bg-purple-700 transition"
-                    @click="quickStartJourney(localTask.id)" title="Iniciar jornada agora">
-                    <font-awesome-icon icon="fa-solid fa-bolt" />
-                  </button>
-
-                  <add-last-journey-date-button :task="localTask"
-                    :showEndTaskButton="localTask.date_conclusion === null"
-                    @add-last-journey-date="updateDateConclusion(localTask)" @update-task="updateTask" />
-
-                  <!-- Botão para visualizar jornadas -->
-                  <button v-if="localTask.journeys && localTask.journeys.length > 0"
-                    class="w-7 h-7 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-700 transition relative"
-                    @click="toggleJourneys(localTask.id)" title="Ver jornadas">
-                    <font-awesome-icon icon="fa-solid fa-eye" />
-                    <span class="absolute -top-1 -right-2 bg-red-400 text-xs rounded-full px-2 py-0.5">
-                      {{ localTask.journeys.length }}
-                    </span>
-                  </button>
-                  <button v-else
-                    class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-300 text-gray-500 cursor-not-allowed"
-                    disabled title="Sem jornadas">
-                    <font-awesome-icon icon="fa-solid fa-eye-slash" />
-                  </button>
-                </div>
-              </div>
-
-              <!-- Formulário de nova jornada -->
-              <div v-if="showJourneyForm[localTask.id]" class="mt-3 mb-3">
-                <journey-create-form :taskId="localTask.id" @new-journey-event="addJourneyCreated"
-                  @close="toggleJourneyForm(localTask.id)" />
-              </div>
-
-              <!-- Linha de cancelamento -->
-              <div id="cancel-line"
-                class="flex items-center space-x-20 pt-4 pb-4 mt-3 mb-3 px-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg shadow-sm"
-                v-if="showCancelLine[localTask.id]">
-                <span class="font-semibold text-red-700">Cancelada:</span>
-                <font-awesome-icon icon="fa-solid fa-times-circle" class="text-red-500 ms-3 me-2" />
-                <date-time-editable-input name="date_canceled" v-model="localTask.date_canceled"
-                  @save="updateTask('date_canceled', $event, localTask.id)" />
-
-                <cancellation-reason-select-input name="cancellation_reason" v-model="localTask.cancellation_reason"
-                  :disabled="!localTask.date_canceled" @update:modelValue="
-                    updateTask('cancellation_reason', $event, localTask.id)
-                    " />
-              </div>
-
-              <div class="journeys-line" v-if="
-                localTask.journeys &&
-                localTask.journeys.length > 0 &&
-                showJourneys[localTask.id]
-              ">
-                <journeys-list-from-opportunity :journeys="localTask.journeys" :taskId="localTask.id"
-                  @update-task-duration="updateTaskDuration" @last-journey-end="updateEndTaskButtonVisibility" />
               </div>
             </div>
           </div>
         </div>
       </section>
     </section>
+
+    <!-- Modal de Detalhes da Tarefa -->
+    <task-detail-modal
+      v-model="showTaskModal"
+      :taskId="selectedTaskId"
+      @task-updated="handleTaskUpdated"
+    />
   </div>
 </template>
 
@@ -339,22 +224,18 @@ import {
   TASK_URL,
   JOURNEY_URL,
 } from "@/config/apiConfig";
-import AddLastJourneyDateButton from "@/components/tasks/buttons/AddLastJourneyDateButton.vue";
 import ButtonNewForm from "../buttons/ButtonNewForm.vue";
-import CancellationReasonSelectInput from "@/components/forms/selects/CancellationReasonSelectInput.vue";
 import CompanyAvatar from "@/components/common/CompanyAvatar.vue";
 import LeadAvatar from "@/components/common/LeadAvatar.vue";
 import UserAvatar from "@/components/common/UserAvatar.vue";
 import DateTimeEditableInput from "@/components/fields/datetime/DateTimeEditableInput.vue";
-import JourneyCreateForm from "@/components/forms/JourneyCreateForm.vue";
-import JourneysListFromOpportunity from "@/components/lists/JourneysListFromOpportunity.vue";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField.vue";
-import TextAreaEditableInput from "@/components/forms/inputs/textarea/TextAreaEditableInput.vue";
 import SearchInput from "@/components/filters/SearchInput.vue";
 import OpportunitiesOpenSelectInput from "@/components/forms/selects/OpportunitiesOpenSelectInput.vue";
 import CompaniesSelectInput from "@/components/forms/selects/CompaniesSelectInput.vue";
 import LeadsSelectInput from "@/components/forms/selects/LeadsSelectInput.vue";
+import TaskDetailModal from "@/components/modals/details/TaskDetailModal.vue";
 import { mapState } from "vuex";
 
 export default {
@@ -391,11 +272,6 @@ export default {
       openTaskForm: false,
       percentage: 0,
       searchTerm: "",
-      showCancelLine: {},
-      showControls: {},
-      showGroupColumn: false,
-      showJourneys: {},
-      showJourneyForm: {},
       totalTasks: 0,
       editingOpportunity: {},
       selectedOpportunityId: null,
@@ -405,25 +281,23 @@ export default {
       selectedLeadId: null,
       editingProjectCompany: {},
       selectedProjectCompanyId: null,
+      showTaskModal: false,
+      selectedTaskId: null,
     };
   },
   components: {
-    AddLastJourneyDateButton,
     ButtonNewForm,
-    CancellationReasonSelectInput,
     CompaniesSelectInput,
     CompanyAvatar,
     DateTimeEditableInput,
-    JourneyCreateForm,
-    JourneysListFromOpportunity,
     LeadAvatar,
     LeadsSelectInput,
     OpportunitiesOpenSelectInput,
     TaskCreateForm,
     TextEditableField,
-    TextAreaEditableInput,
     SearchInput,
     UserAvatar,
+    TaskDetailModal,
   },
   methods: {
     convertUtcToLocal,
@@ -438,33 +312,6 @@ export default {
     addTaskCreated(newTask) {
       this.localTasks.unshift(newTask);
       this.openTaskForm = false;
-    },
-    addJourneyCreated({ journey, taskId }) {
-      const task = this.localTasks.find((t) => t.id === taskId);
-
-      if (task) {
-        // Garante que journeys exista como array
-        if (!task.journeys) task.journeys = [];
-
-        this.setJourneysVisible(taskId);
-        task.journeys.unshift(journey);
-        this.highlightNewJourney(journey.id);
-      } else {
-        console.warn("Tarefa não encontrada para o ID:", taskId);
-      }
-    },
-    checkAndExpandOpenJourneys() {
-      if (!this.localTasks || !Array.isArray(this.localTasks)) return;
-
-      this.localTasks.forEach((task) => {
-        if (task.journeys && task.journeys.length > 0) {
-          // Verifica se há alguma jornada aberta (sem end)
-          const hasOpenJourney = task.journeys.some((journey) => !journey.end);
-          if (hasOpenJourney) {
-            this.setJourneysVisible(task.id);
-          }
-        }
-      });
     },
     formatDateGroup(date) {
       // Trata o caso de "Sem Data"
@@ -511,12 +358,6 @@ export default {
 
       return `${statusClass} ${priorityClass}`;
     },
-    highlightNewJourney(journeyId) {
-      this.newJourneyId = journeyId;
-      setTimeout(() => {
-        this.newJourneyId = null;
-      }, 2000);
-    },
     isValidDate(date) {
       if (
         date != "1969-12-31 18:00:00" &&
@@ -526,81 +367,7 @@ export default {
       ) {
         return true;
       }
-    },
-    setJourneysVisible(taskId) {
-      if (!this.showJourneys) {
-        this.showJourneys = {}; // Garante que showJourneys seja inicializado
-      }
-      this.showJourneys[taskId] = true;
-    },
-    toggleCancelLine(taskId) {
-      this.showCancelLine[taskId] = !this.showCancelLine[taskId];
-    },
-    toggleControls(taskId) {
-      this.showControls[taskId] = !this.showControls[taskId];
-    },
-    openControlsForTask(taskId) {
-      this.showControls[taskId] = true;
-    },
-    checkAndOpenControlsFromHash() {
-      // Verifica se há um hash na URL indicando uma tarefa específica
-      if (this.$route && this.$route.hash) {
-        const taskId = this.$route.hash.substring(1); // Remove o '#'
-
-        // Se o hash é do formato 'task-123', extrai o ID numérico
-        if (taskId.startsWith('task-')) {
-          const numericId = parseInt(taskId.replace('task-', ''));
-
-          // Aguarda um momento para garantir que o scroll foi executado
-          setTimeout(() => {
-            this.openControlsForTask(numericId);
-          }, 1200);
-        }
-      }
-    },
-    toggleJourneys(taskId) {
-      this.showJourneys[taskId] = !this.showJourneys[taskId];
-    },
-    toggleJourneyForm(taskId) {
-      this.showJourneyForm[taskId] = !this.showJourneyForm[taskId];
-    },
-    updateDateConclusion(task) {
-      if (task.journeys && task.journeys.length > 0) {
-        // Ordena as jornadas e pega a data de término da mais recente
-        const sortedJourneys = [...task.journeys].sort(
-          (a, b) => new Date(b.end) - new Date(a.end)
-        );
-        const journeyEnd = sortedJourneys[0].end;
-
-        // Passa o valor de journeyEnd para o método updateTask
-        this.updateTask("date_conclusion", journeyEnd, task.id);
-        this.showEndTaskButton = false;
-        this.messageStatus = "success";
-        this.messageText = `Tarefa finalizada com data da última jornada`;
-      } else {
-        console.log(
-          "Nenhuma jornada encontrada para calcular a data de conclusão."
-        );
-      }
-    },
-    async quickStartJourney(taskId) {
-      try {
-        const quickForm = {
-          task_id: taskId,
-          start: new Date(),
-          user_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-        };
-
-        const response = await axios.post(
-          `${BACKEND_URL}journeys`,
-          quickForm
-        );
-
-        const newJourney = response.data.data;
-        this.addJourneyCreated({ journey: newJourney, taskId });
-      } catch (error) {
-        console.error("Erro ao iniciar jornada rapidamente:", error);
-      }
+      return false;
     },
     async updateTask(fieldName, editedValue, localTaskId) {
       const updatedField = {};
@@ -754,25 +521,6 @@ export default {
         console.error("Erro ao atualizar empresa do projeto:", error);
       }
     },
-    async updateTaskDuration(taskId) {
-      try {
-        const response = await axios.get(
-          `${BACKEND_URL}${TASK_URL_PARAMETER}${taskId}`
-        );
-
-        const updatedTask = response.data.data;
-
-        // Atualiza a tarefa na lista local
-        const index = this.localTasks.findIndex(task => task.id === taskId);
-        if (index !== -1) {
-          this.localTasks[index].duration_time = updatedTask.duration_time;
-          // Também emite o evento para o componente pai (Opportunity/Project) se necessário
-          this.$emit('update-opportunity-duration');
-        }
-      } catch (error) {
-        console.error("Erro ao atualizar duração da tarefa:", error);
-      }
-    },
     async createOrganizationTask() {
       try {
         const now = new Date();
@@ -820,6 +568,17 @@ export default {
 
       } catch (error) {
         console.error("❌ Erro ao criar tarefa de organização:", error);
+      }
+    },
+    openTaskModal(taskId) {
+      this.selectedTaskId = taskId;
+      this.showTaskModal = true;
+    },
+    handleTaskUpdated(updatedTask) {
+      // Atualiza a tarefa na lista local
+      const index = this.localTasks.findIndex(task => task.id === updatedTask.id);
+      if (index !== -1) {
+        this.localTasks.splice(index, 1, updatedTask);
       }
     },
   },
@@ -929,15 +688,12 @@ export default {
     },
   },
   mounted() {
-    this.checkAndExpandOpenJourneys();
-    this.checkAndOpenControlsFromHash();
+    // Modal approach - no inline expansion needed
   },
   watch: {
     tasks: {
       handler(newVal) {
         this.localTasks = newVal;
-        this.checkAndExpandOpenJourneys();
-        this.checkAndOpenControlsFromHash();
       },
       deep: true,
     },
