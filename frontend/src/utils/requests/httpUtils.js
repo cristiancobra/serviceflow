@@ -196,6 +196,7 @@ export const validateModel = (model) => {
     "bank_accounts",
     "companies",
     "costs",
+    "departments",
     "leads",
     "links",
     "invoices",

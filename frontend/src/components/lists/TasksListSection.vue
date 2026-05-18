@@ -155,8 +155,9 @@
                 </div>
 
                 <!-- coluna do nome da tarefa  -->
-                <div class="flex flex-row flex-[6] items-center justify-start m-0">
-                  <div>
+                <div class="flex flex-row flex-[6] items-center justify-start m-0 gap-2">
+                  <department-badge :task="localTask" @department-updated="handleDepartmentUpdated" />
+                  <div class="flex-1">
                     <text-editable-field name="name" v-model="localTask.name"
                       placeholder="descrição detalhada da tarefa" @save="updateTask('name', $event, localTask.id)" />
                   </div>
@@ -236,6 +237,7 @@ import OpportunitiesOpenSelectInput from "@/components/forms/selects/Opportuniti
 import CompaniesSelectInput from "@/components/forms/selects/CompaniesSelectInput.vue";
 import LeadsSelectInput from "@/components/forms/selects/LeadsSelectInput.vue";
 import TaskDetailModal from "@/components/modals/details/TaskDetailModal.vue";
+import DepartmentBadge from "@/components/badges/DepartmentBadge.vue";
 import { mapState } from "vuex";
 
 export default {
@@ -290,6 +292,7 @@ export default {
     CompaniesSelectInput,
     CompanyAvatar,
     DateTimeEditableInput,
+    DepartmentBadge,
     LeadAvatar,
     LeadsSelectInput,
     OpportunitiesOpenSelectInput,
@@ -576,6 +579,13 @@ export default {
     },
     handleTaskUpdated(updatedTask) {
       // Atualiza a tarefa na lista local
+      const index = this.localTasks.findIndex(task => task.id === updatedTask.id);
+      if (index !== -1) {
+        this.localTasks.splice(index, 1, updatedTask);
+      }
+    },
+    handleDepartmentUpdated(updatedTask) {
+      // Atualiza a tarefa na lista local quando o departamento é alterado
       const index = this.localTasks.findIndex(task => task.id === updatedTask.id);
       if (index !== -1) {
         this.localTasks.splice(index, 1, updatedTask);

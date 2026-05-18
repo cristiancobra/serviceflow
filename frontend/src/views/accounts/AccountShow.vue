@@ -137,6 +137,11 @@
         </div>
       </div>
     </section>
+
+    <!-- Seção de Departamentos -->
+    <section class="section-container mt-8">
+      <departments-manager />
+    </section>
   </div>
 </template>
 
@@ -150,6 +155,7 @@ import { BACKEND_URL, ACCOUNT_URL, IMAGES_PATH } from "@/config/apiConfig";
 import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import axios from "axios";
 import TextEditableField from "@/components/fields/text/TextEditableField.vue";
+import DepartmentsManager from "@/components/lists/DepartmentsManager.vue";
 
 export default {
   data() {
@@ -172,6 +178,7 @@ export default {
   components: {
     AddMessage,
     TextEditableField,
+    DepartmentsManager,
   },
   methods: {
     submitFormCreate,
