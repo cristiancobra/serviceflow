@@ -8,6 +8,7 @@ use App\Models\Task;
 use App\Http\Resources\TasksResource;
 use App\Http\Requests\TaskRequest;
 use App\Services\DateTimeConversionService;
+use Illuminate\Validation\ValidationException;
 
 class TaskController extends Controller
 {
@@ -22,7 +23,8 @@ class TaskController extends Controller
             'journeys.user',
             'project.company',
             'opportunity.lead',
-            'opportunity.company'
+            'opportunity.company',
+            'department'
         ])
             ->orderBy('date_due', 'desc')
             ->paginate(500);
@@ -44,7 +46,7 @@ class TaskController extends Controller
 
             $task->save();
 
-            return TasksResource::make($task->load('project'));
+            return TasksResource::make($task->load('project', 'department'));
         } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",
@@ -67,7 +69,8 @@ class TaskController extends Controller
             'links',
             'project.company',
             'opportunity.lead',
-            'opportunity.company'
+            'opportunity.company',
+            'department'
         ])
             ->find($task->id));
     }
@@ -98,7 +101,8 @@ class TaskController extends Controller
                 'journeys.user',
                 'project.company',
                 'opportunity.lead',
-                'opportunity.company'
+                'opportunity.company',
+                'department'
             ])->find($task->id);
 
             return TasksResource::make($updatedTask);
@@ -147,7 +151,8 @@ class TaskController extends Controller
             'journeys.user',
             'project.company',
             'opportunity.lead',
-            'opportunity.company'
+            'opportunity.company',
+            'department'
         ])
             ->orderBy('created_at', 'desc');
 
@@ -172,7 +177,8 @@ class TaskController extends Controller
             'journeys.user',
             'project.company',
             'opportunity.lead',
-            'opportunity.company'
+            'opportunity.company',
+            'department'
         ])
             ->whereIn(
                 'status',

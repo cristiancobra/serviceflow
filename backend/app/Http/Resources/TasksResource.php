@@ -29,6 +29,7 @@ class TasksResource extends JsonResource
 			"goal_id" => $this->goal_id,
 			"project_id" => $this->project_id,
 			"opportunity_id" => $this->opportunity_id,
+			"department_id" => $this->department_id,
 			"name" => $this->name,
 			"category" => $this->category,
 			"date_start" => DateTimeConversionService::convertFromUtc($this->date_start, $timezone),
@@ -49,6 +50,15 @@ class TasksResource extends JsonResource
 			 "links" => LinksResource::collection($this->whenLoaded('links')),
 			 "project" => new ProjectResource($this->whenLoaded('project')),
 			"opportunity" => new OpportunitiesResource($this->whenLoaded('opportunity')),
+			"department" => $this->whenLoaded('department', function () {
+				return [
+					'id' => $this->department->id,
+					'name' => $this->department->name,
+					'slug' => $this->department->slug,
+					'color' => $this->department->color,
+					'icon' => $this->department->icon,
+				];
+			}),
 			];
     }
 }

@@ -22,10 +22,10 @@ class Task extends Model
         'opportunity_id',
         'project_id',
         'stage_id',
+        'department_id',
         'date_entered',
         'created_by',
         'name',
-        'department',
         'description',
         'date_due',
         'date_start',
@@ -70,6 +70,14 @@ class Task extends Model
     public function project()
     {
         return $this->belongsTo(Project::class);
+    }
+
+    /**
+     * Get the department from task
+     */
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
     }
 	
 		

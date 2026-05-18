@@ -29,6 +29,14 @@ protected $fillable = [
     'deleted_at',
     'created_at',
     'updated_at',
-]; 
+];
+
+/**
+ * Get the departments for this account
+ */
+public function departments()
+{
+    return $this->hasMany(Department::class);
+}
 
 }

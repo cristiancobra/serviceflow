@@ -193,6 +193,10 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::apiResource('tasks', TaskController::class)
 		->names('tasks');
 
+	// DEPARTMENTS
+	Route::apiResource('departments', App\Http\Controllers\Api\DepartmentController::class)
+		->names('departments');
+
 	// USERS
 	Route::apiResource('users', UserController::class)
 		->names('users');
