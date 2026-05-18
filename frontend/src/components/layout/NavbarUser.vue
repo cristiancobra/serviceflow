@@ -26,7 +26,7 @@
               :class="{ active: activeItem === 'home' }"
             >
               <font-awesome-icon icon="fas fa-calendar" class="router-link-text" />
-              <span class="router-link-text">AGENDA</span>
+              <span class="router-link-text"></span>
             </li>
           </router-link>
 
@@ -37,7 +37,7 @@
               :class="{ active: activeItem === 'contacts' }"
             >
               <font-awesome-icon icon="fas fa-user" class="router-link-text" />
-              <span class="router-link-text">CONTATOS</span>
+              <span class="router-link-text"></span>
             </li>
           </router-link>
 
@@ -48,7 +48,7 @@
               :class="{ active: activeItem === 'companies' }"
             >
               <font-awesome-icon icon="fas fa-briefcase" class="router-link-text" />
-              <span class="router-link-text">EMPRESAS</span>
+              <span class="router-link-text"></span>
             </li>
           </router-link>
 
@@ -59,7 +59,7 @@
               :class="{ active: activeItem === 'opportunities' }"
             >
               <font-awesome-icon icon="fas fa-bullseye" class="router-link-text" />
-              <span class="router-link-text">OPORTUNIDADES</span>
+              <span class="router-link-text"></span>
             </li>
           </router-link>
 
@@ -69,8 +69,8 @@
             @mouseleave="hideSubmenu('financeiro')"
             :class="{ active: activeItem === 'financeiro' }"
           >
-            <font-awesome-icon icon="fas fa-cogs" class="router-link-text" />
-            <span class="router-link-text">FINANCEIRO</span>
+            <font-awesome-icon icon="fas fa-coins" class="router-link-text" />
+            <span class="router-link-text"></span>
             <ul class="submenu" v-show="submenus.financeiro">
               <router-link to="/financial">
                 <li
@@ -152,7 +152,7 @@
               :class="{ active: activeItem === 'projects' }"
             >
               <font-awesome-icon icon="fas fa-project-diagram" class="router-link-text" />
-              <span class="router-link-text">PROJETOS</span>
+              <span class="router-link-text"></span>
             </li>
           </router-link>
 
@@ -163,7 +163,7 @@
               :class="{ active: activeItem === 'tasks' }"
             >
               <font-awesome-icon icon="fas fa-tasks" class="router-link-text" />
-              <span class="router-link-text">TAREFAS</span>
+              <span class="router-link-text"></span>
             </li>
           </router-link>
 
@@ -174,7 +174,7 @@
               :class="{ active: activeItem === 'links' }"
             >
               <font-awesome-icon icon="fas fa-link" class="router-link-text" />
-              <span class="router-link-text">LINKS</span>
+              <span class="router-link-text"></span>
             </li>
           </router-link>
 
@@ -186,10 +186,29 @@
               :class="{ active: activeItem === 'logout' }"
             >
               <font-awesome-icon icon="fas fa-sign-out" class="router-link-text" />
-              <span class="router-link-text">SAIR</span>
+              <span class="router-link-text"></span>
             </li>
           </router-link>
         </ul>
+
+        <div v-if="openJourney" class="flex items-center gap-2 mt-2 px-3 py-1 rounded-full bg-white/80 border border-primary shadow-sm" style="max-width: 420px; margin: 0 auto;">
+          <router-link
+            :to="taskLink"
+            class="flex-1 flex items-center gap-2 text-primary no-underline hover:opacity-80 transition-opacity min-w-0"
+            style="min-width:0"
+          >
+            <font-awesome-icon icon="fas fa-play" class="flex-shrink-0 text-green-600" />
+            <span class="truncate font-semibold text-primary">{{ taskDisplayName }}</span>
+          </router-link>
+          <button
+            @click="stopJourney(openJourney.id)"
+            class="w-7 h-7 flex-shrink-0 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-700 transition-all duration-200 hover:scale-105 text-sm shadow"
+            title="Parar jornada"
+            style="margin-left: 2px"
+          >
+            <font-awesome-icon icon="fas fa-hand" />
+          </button>
+        </div>
 
         <navbar-user-menu />
       </div>
@@ -199,8 +218,9 @@
 
 
 <script>
-import { mapActions } from "vuex";
-import { mapState } from "vuex";
+import { mapActions, mapState, mapMutations } from "vuex";
+import { BACKEND_URL, JOURNEY_URL_PARAMETER } from "@/config/apiConfig";
+import axios from "axios";
 import NavbarUserMenu from "./NavbarUserMenu.vue";
 import logoServiceflow from '@/assets/logo-serviceflow-ROXO.png';
 
@@ -221,6 +241,7 @@ export default {
   },
   methods: {
     ...mapActions(["logout"]),
+    ...mapMutations(["setOpenJourney"]),
     async submitLogout() {
       await this.logout();
       this.toggleActive("logout");
@@ -237,9 +258,30 @@ export default {
     hideSubmenu(submenu) {
       this.submenus[submenu] = false;
     },
+    async stopJourney(journeyId) {
+      const now = new Date().toISOString();
+      try {
+        await axios.put(`${BACKEND_URL}${JOURNEY_URL_PARAMETER}${journeyId}`, { id: journeyId, end: now });
+        this.setOpenJourney(null);
+      } catch (error) {
+        console.error("Erro ao parar a jornada:", error);
+      }
+    },
   },
   computed: {
-    ...mapState(["accountId"]),
+    ...mapState(["accountId", "openJourney"]),
+    taskLink() {
+      if (!this.openJourney) return null;
+      if (this.openJourney.opportunity_id) {
+        return { name: "opportunityShow", params: { id: this.openJourney.opportunity_id }, query: { scrollTo: "tasks" } };
+      } else if (this.openJourney.project_id) {
+        return { name: "projectShow", params: { id: this.openJourney.project_id }, query: { scrollTo: "tasks" } };
+      }
+      return "/journeys";
+    },
+    taskDisplayName() {
+      return this.openJourney?.task?.name || this.openJourney?.name || "Tarefa sem nome";
+    },
   },
 };
 </script>
@@ -354,14 +396,14 @@ export default {
   color: white;
   font-size: 0.8rem;
   text-decoration: none;
-  padding-left: 0.9rem;
-  padding-right: 0.9rem;
+  padding-left: 0.2rem;
+  padding-right: 0.2rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
 }
 
 .nav-item.active {
-  border-color: white;
+  border-color: var(--primary);
   border-style: solid;
   border-width: 1px;
   border-radius: 30px;

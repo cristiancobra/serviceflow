@@ -94,7 +94,7 @@
 
     <!-- Tab Propostas -->
     <section v-if="activeTab === 'proposals'" class="mt-6">
-      <div class="flex flex-col lg:flex-row gap-6">
+      
         <div class="flex-1">
           <proposals-list-section
             :proposals="opportunity.proposals || []"
@@ -108,8 +108,13 @@
             :proposal="safeAcceptedProposal"
             @reload-proposal="getOpportunity"
           />
+          <debit-invoices-section
+            :proposal="safeAcceptedProposal"
+            @reload-proposal="getOpportunity"
+          />
         </div>
-      </div>
+        
+      
     </section>
 
     <!-- Tab Anexos -->
@@ -153,6 +158,7 @@ import { provide, ref } from "vue";
 import { translateStatus } from "@/utils/translations/translationsUtils";
 import { translatePriority } from "@/utils/translations/translationsUtils";
 import CreditInvoicesSection from "@/components/lists/CreditInvoicesSection.vue";
+import DebitInvoicesSection from "@/components/lists/DebitInvoicesSection.vue";
 import LinksList from "@/components/lists/LinksList.vue";
 import OpportunityInfoSection from "@/components/show/OpportunityInfoSection.vue";
 import OpportunityDatesSection from "@/components/show/OpportunityDatesSection.vue";
@@ -165,6 +171,7 @@ export default {
   name: "ProjectShow",
   components: {
     CreditInvoicesSection,
+    DebitInvoicesSection,
     LinksList,
     OpportunityInfoSection,
     OpportunityDatesSection,

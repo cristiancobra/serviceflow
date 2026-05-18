@@ -10,23 +10,7 @@
       <font-awesome-icon v-else icon="fas fa-user" :class="['user-faicon', { 'user-faicon-working': openJourney }]" />
     </div>
     <div v-if="dropdownVisible" class="dropdown-menu">
-      <div v-if="openJourney" class="flex items-center justify-between gap-2 p-2.5 text-white border-b border-white/20">
-        <router-link
-          :to="taskLink"
-          class="flex-1 flex items-center gap-2 text-white no-underline hover:opacity-80 transition-opacity min-w-0"
-        >
-          <font-awesome-icon icon="fas fa-play" class="flex-shrink-0" />
-          <span class="truncate">{{ taskDisplayName }}</span>
-        </router-link>
-        <button
-          @click="stopJourney(openJourney.id)"
-          class="w-7 h-7 flex-shrink-0 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-700 transition-all duration-200 hover:scale-105 text-sm"
-          title="Parar jornada"
-        >
-          <font-awesome-icon icon="fas fa-hand" />
-        </button>
-      </div>
-      
+     
       <router-link :to="`/users/${userData.id}`" class="dropdown-item">
         PERFIL DO USUÁRIO
       </router-link>
@@ -71,30 +55,6 @@ export default {
       openJourney: (state) => state.openJourney,
       accountId: (state) => state.accountId,
     }),
-    taskLink() {    
-      if (!this.openJourney) {
-        return null;
-      }
-      
-      if (this.openJourney.opportunity_id) {
-        return { 
-          name: 'opportunityShow', 
-          params: { id: this.openJourney.opportunity_id }, 
-          query: { scrollTo: 'tasks' } 
-        };
-      } else if (this.openJourney.project_id) {
-        return { 
-          name: 'projectShow', 
-          params: { id: this.openJourney.project_id }, 
-          query: { scrollTo: 'tasks' } 
-        };
-      }
-      
-      return '/journeys';
-    },
-    taskDisplayName() {
-      return this.openJourney.task?.name || this.openJourney.name || 'Tarefa sem nome';
-    },
     urlImagePhoto() {
       return `${IMAGES_PATH}${this.userData.photo}`;
     },
@@ -161,28 +121,6 @@ export default {
         return name.substring(0, 35) + '...';
       }
       return name;
-    },
-    async stopJourney(journeyId) {
-      const fieldName = 'end';
-      const now = new Date();
-      const endValue = now.toISOString();
-      
-      const editedJourney = {
-        id: journeyId,
-        [fieldName]: endValue,
-      };
-
-      try {
-        await axios.put(
-          `${BACKEND_URL}${JOURNEY_URL_PARAMETER}${journeyId}`,
-          editedJourney
-        );
-        
-        this.setOpenJourney(null);
-        console.log('Jornada finalizada com sucesso');
-      } catch (error) {
-        console.error('Erro ao parar a jornada:', error);
-      }
     },
   },
   mounted() {
