@@ -30,8 +30,11 @@
 </template>
 
 <script>
+
+import axios from "axios";
 import { submitFormUpdate } from "@/utils/requests/httpUtils";
 import DepartmentsSelectInput from "@/components/forms/selects/DepartmentsSelectInput.vue";
+import { BACKEND_URL, TASK_URL_PARAMETER } from "@/config/apiConfig";
 
 export default {
   name: "DepartmentBadge",
@@ -99,10 +102,13 @@ export default {
         });
 
         if (data) {
+          // Buscar a tarefa completa usando axios e configs já importados
+          const response = await axios.get(`${BACKEND_URL}${TASK_URL_PARAMETER}${this.task.id}`);
+          const updatedTask = response.data.data || {};
           this.task.department_id = departmentId;
-          this.department = data.department || null;
+          this.department = updatedTask.department || null;
           this.isEditing = false;
-          this.$emit('department-updated', data);
+          this.$emit('department-updated', updatedTask);
         } else if (error) {
           console.error("Erro ao atualizar departamento:", error);
           alert("Erro ao atualizar departamento");

@@ -32,6 +32,7 @@
           </button>
         </div>
         <div class="p-4">
+          <error-message v-if="formResponse" :formResponse="formResponse" />
           <form id="taskForm" @submit.prevent="submitForm">
             <div class="mb-4">
               <div class="form-control w-full">
@@ -55,6 +56,17 @@
                 rows=5
                 @input="$emit('update:modelValue', $event.target.value)"
               ></textarea>
+            </div>
+            <div class="mb-4">
+            </div>
+            <div class="mb-4">
+              <label class="text-black" for="department_id">Departamento</label>
+              <DepartmentsSelectInput
+                v-model="form.department_id"
+                name="department_id"
+                fieldsToDisplay="name"
+                fieldNull="Sem departamento"
+              />
             </div>
             <div class="mb-4">
               <div class="flex flex-wrap -mx-2">
@@ -174,9 +186,11 @@ import DateInput from "./inputs/date/DateInput.vue";
 // import ErrorMessage from "./messages/ErrorMesssage.vue";
 import OpportunitiesSelectInput from "./selects/OpportunitiesSelectInput.vue";
 import ProjectsSelectInput from "./selects/ProjectsSelectInput.vue";
+import DepartmentsSelectInput from "./selects/DepartmentsSelectInput.vue";
 // import SuccessMessage from "./messages/SuccessMessage.vue";
 import TextValue from "../fields/text/TextValue.vue";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
+import ErrorMessage from "../forms/messages/ErrorMessage.vue";
 
 export default {
   name: "TaskCreateForm",
@@ -187,9 +201,11 @@ export default {
     // ErrorMessage,
     OpportunitiesSelectInput,
     ProjectsSelectInput,
+    DepartmentsSelectInput,
     // SuccessMessage,
     TextValue,
     UsersSelectInput,
+    ErrorMessage,
   },
   props: {
     modelValue: {
@@ -212,6 +228,7 @@ export default {
       data: [],
       form: {
         company_id: null,
+        department_id: null,
         contact_id: null,
         date_due: null,
         date_start: null,
@@ -232,6 +249,7 @@ export default {
       newTask: null,
       // selectedProject: inject('currentProject'),
       users: [],
+      formResponse: null,
     };
   },
   methods: {
@@ -267,9 +285,10 @@ export default {
         this.closeModal();
         this.clearForm();
         this.$emit("new-task-event", data);
+        this.formResponse = null;
       }
       if (error) {
-        this.errors = error;
+        this.formResponse = error.response?.data || { errors: { geral: ['Erro ao criar tarefa'] } };
       }
     },
     toggleCompany() {
