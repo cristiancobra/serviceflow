@@ -278,7 +278,8 @@ class TaskController extends Controller
             'journeys.user',
             'project.company',
             'opportunity.lead',
-            'opportunity.company'
+            'opportunity.company',
+            'department'
         ])
             ->where('account_id', auth()->user()->account_id)
             ->where(function ($query) {
