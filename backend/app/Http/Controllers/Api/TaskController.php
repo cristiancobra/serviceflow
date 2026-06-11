@@ -9,6 +9,7 @@ use App\Http\Resources\TasksResource;
 use App\Http\Requests\TaskRequest;
 use App\Services\DateTimeConversionService;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller
 {
@@ -146,6 +147,7 @@ class TaskController extends Controller
     public function filterTasksByStatus(Request $request)
     {
         $status = $request->input('status'); // Obtenha o valor do parâmetro 'status'
+        $perPage = $request->input('per_page', 500);
 
         $tasks = Task::with([
             'journeys.user',
@@ -154,13 +156,69 @@ class TaskController extends Controller
             'opportunity.company',
             'department'
         ])
-            ->orderBy('created_at', 'desc');
+            ->where('account_id', auth()->user()->account_id)
+            ->orderBy('date_due', 'desc');
 
         if ($status) {
-            $tasks->where('status', $status);
+            if ($status === 'done') {
+                // Tarefas concluídas
+                $tasks->whereNotNull('date_conclusion')
+                      ->whereNull('date_canceled');
+            } elseif ($status === 'canceled') {
+                // Tarefas canceladas
+                $tasks->whereNotNull('date_canceled');
+            } else {
+                // Outros status (to-do, doing, wait)
+                $tasks->where('status', $status)
+                      ->whereNull('date_conclusion')
+                      ->whereNull('date_canceled');
+            }
+        } else {
+            // Se não houver status, retorna todas as tarefas não canceladas
+            $tasks->whereNull('date_canceled');
         }
 
-        $filteredTasks = $tasks->get();
+        $filteredTasks = $tasks->paginate($perPage);
+
+        return TasksResource::collection($filteredTasks);
+    }
+
+    /**
+     * Filtra tarefas por departamento
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function filterTasksByDepartment(Request $request)
+    {
+        $departmentId = $request->input('department_id');
+        $perPage = $request->input('per_page', 500);
+
+        Log::info('🔍 Filtrando tarefas por departamento', [
+            'department_id' => $departmentId,
+            'account_id' => auth()->user()->account_id
+        ]);
+
+        $tasks = Task::with([
+            'journeys.user',
+            'project.company',
+            'opportunity.lead',
+            'opportunity.company',
+            'department'
+        ])
+            ->where('account_id', auth()->user()->account_id)
+            ->whereNull('date_canceled')
+            ->orderBy('date_due', 'desc');
+
+        if ($departmentId) {
+            $tasks->where('department_id', $departmentId);
+        }
+
+        $filteredTasks = $tasks->paginate($perPage);
+
+        Log::info('✅ Tarefas filtradas', [
+            'total' => $filteredTasks->total(),
+            'count' => $filteredTasks->count()
+        ]);
 
         return TasksResource::collection($filteredTasks);
     }

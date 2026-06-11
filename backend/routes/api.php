@@ -175,6 +175,9 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::get('tasks/filter-status', [TaskController::class, 'filterTasksByStatus'])
 	->name('tasks.filter-status');
 	
+	Route::get('tasks/filter-department', [TaskController::class, 'filterTasksByDepartment'])
+	->name('tasks.filter-department');
+	
 	Route::get('tasks/filter-date', [TaskController::class, 'filterTasksByDate'])
 	->name('tasks.filter-date');
 	

@@ -7,9 +7,10 @@
       </div>
     </div>
 
-    <tasks-filter
+    <!-- Filtro antigo - removido pois agora está integrado ao TasksListSection -->
+    <!-- <tasks-filter
       @filter-change="handleFilterChange"
-    />
+    /> -->
 
     <ErrorMessage v-if="isError" :formResponse="formResponse" />
     <SuccessMessage v-if="isSuccess" :formResponse="formResponse" />
@@ -17,7 +18,9 @@
     <TasksListSection 
       :tasks="filteredTasks" 
       :showOpportunityColumn="true" 
-      sortOrder="desc" 
+      sortOrder="desc"
+      @filter-change="handleFilterChange"
+      @department-filter-change="handleDepartmentFilterChange"
     />
   </div>
 </template>
@@ -26,7 +29,7 @@
 import { BACKEND_URL, TASK_URL_PARAMETER } from "@/config/apiConfig";
 import axios from "axios";
 import TasksListSection from "@/components/lists/TasksListSection.vue";
-import TasksFilter from "@/components/filters/TasksFilter.vue";
+// import TasksFilter from "@/components/filters/TasksFilter.vue"; // Filtro antigo - agora está integrado ao TasksListSection
 import SuccessMessage from "../../components/forms/messages/SuccessMessage.vue";
 import ErrorMessage from "../../components/forms/messages/ErrorMessage.vue";
 
@@ -34,7 +37,7 @@ export default {
   name: "TasksIndexView",
   components: {
     TasksListSection,
-    TasksFilter,
+    // TasksFilter, // Filtro antigo - agora está integrado ao TasksListSection
     SuccessMessage,
     ErrorMessage,
   },
@@ -81,8 +84,31 @@ export default {
         this.isError = true;
       }
     },
+    async handleDepartmentFilterChange(departmentId) {
+      console.log('🎬 handleDepartmentFilterChange no pai recebeu:', departmentId);
+      try {
+        if (!departmentId) {
+          // Se departmentId for null, mostra todas as tarefas
+          console.log('🔄 Carregando todas as tarefas');
+          await this.getTasks();
+          return;
+        }
+
+        const endpoint = `${BACKEND_URL}${TASK_URL_PARAMETER}filter-department?department_id=${departmentId}`;
+        console.log('🌐 Chamando endpoint:', endpoint);
+        const response = await axios.get(endpoint);
+        console.log('✅ Resposta recebida:', response.data);
+        this.filteredTasks = response.data.data;
+        console.log('📊 filteredTasks atualizado com', this.filteredTasks.length, 'tarefas');
+      } catch (error) {
+        console.error(`❌ Erro ao filtrar tarefas por departamento (${departmentId}):`, error);
+        this.isError = true;
+      }
+    },
   },
   mounted() {
+    console.log('🚀 TasksIndex montado!');
+    console.log('🔧 Métodos disponíveis:', Object.keys(this.$options.methods || {}));
     this.getTasks();
   },
 };
