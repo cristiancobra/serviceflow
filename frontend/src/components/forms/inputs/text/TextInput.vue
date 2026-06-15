@@ -1,7 +1,7 @@
 <template>
   <div class="label-input-container">
-    <label v-if="label" class="form-label" :for="name">{{ label }}</label>
-    <input class="text-input" type="text" :name="name" :value="modelValue" :placeholder="placeholder"
+    <label v-if="label" class="form-label text-gray-700 font-semibold" :for="name">{{ label }}</label>
+    <input class="text-input text-gray-800 bg-white" type="text" :name="name" :value="modelValue" :placeholder="placeholder"
     @input="$emit('update:modelValue', $event.target.value)"
    />
   </div>

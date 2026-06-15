@@ -98,6 +98,29 @@
             />
           </div>
 
+          <!-- Links -->
+          <div class="mb-6">
+            <task-links-list 
+              :links="task.links || []"
+              :show-header="true"
+              :show-task-column="false"
+              @delete-link="confirmDeleteLink"
+              @copy-link="copyLink"
+            >
+              <template #action>
+                <button-new-form 
+                  target="link" 
+                  @open-modal="showLinkForm = true" 
+                />
+                <link-create-form
+                  v-model="showLinkForm"
+                  :taskId="task.id"
+                  @new-link-event="addLinkCreated"
+                />
+              </template>
+            </task-links-list>
+          </div>
+
           <!-- Jornadas -->
           <div v-if="task.journeys && task.journeys.length > 0" class="mb-6">
             <div class="flex items-center justify-between mb-4">
@@ -211,8 +234,11 @@ import TextAreaEditableInput from "@/components/forms/inputs/textarea/TextAreaEd
 import JourneysListFromOpportunity from "@/components/lists/JourneysListFromOpportunity.vue";
 import CancellationReasonSelectInput from "@/components/forms/selects/CancellationReasonSelectInput.vue";
 import JourneyCreateForm from "@/components/forms/JourneyCreateForm.vue";
+import LinkCreateForm from "@/components/forms/LinkCreateForm.vue";
 import CloseButton from "@/components/buttons/CloseButton.vue";
 import AddJourneyButton from "@/components/buttons/AddJourneyButton.vue";
+import TaskLinksList from "@/components/lists/TaskLinksList.vue";
+import ButtonNewForm from "@/components/buttons/ButtonNewForm.vue";
 
 export default {
   name: "TaskDetailModal",
@@ -222,8 +248,11 @@ export default {
     JourneysListFromOpportunity,
     CancellationReasonSelectInput,
     JourneyCreateForm,
+    LinkCreateForm,
     CloseButton,
     AddJourneyButton,
+    TaskLinksList,
+    ButtonNewForm,
   },
   props: {
     modelValue: {
@@ -241,6 +270,7 @@ export default {
       loading: false,
       showCancelArea: false,
       showJourneyForm: false,
+      showLinkForm: false,
     };
   },
   methods: {
@@ -330,6 +360,37 @@ export default {
       this.task.journeys.unshift(journey);
       this.showJourneyForm = false;
       this.$emit('task-updated', this.task);
+    },
+
+    addLinkCreated(linkData) {
+      if (!this.task.links) this.task.links = [];
+      this.task.links.unshift(linkData);
+      this.showLinkForm = false;
+      this.$emit('task-updated', this.task);
+    },
+
+    async deleteLink(linkId) {
+      try {
+        await axios.delete(`${BACKEND_URL}links/${linkId}`);
+        this.task.links = this.task.links.filter(link => link.id !== linkId);
+        this.$emit('task-updated', this.task);
+      } catch (error) {
+        console.error("Erro ao deletar link:", error);
+      }
+    },
+
+    confirmDeleteLink(linkId) {
+      if (window.confirm("Tem certeza que deseja excluir este link?")) {
+        this.deleteLink(linkId);
+      }
+    },
+
+    copyLink(url) {
+      navigator.clipboard.writeText(url).then(() => {
+        alert("Link copiado para a área de transferência!");
+      }).catch(err => {
+        console.error("Erro ao copiar link:", err);
+      });
     },
 
     async refreshTask() {

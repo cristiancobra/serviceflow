@@ -52,7 +52,7 @@
                   <div class="col-span-3 flex items-center">
                       <font-awesome-icon icon="fa-solid fa-link" class="text-blue-500 mr-2" />
                       <a 
-                          class="link-name hover:underline truncate" 
+                          class="text-blue-600 font-semibold hover:underline truncate" 
                           :href="link.url" 
                           target="_blank"
                           :title="link.title"
@@ -62,7 +62,7 @@
                   </div>
                   <div class="col-span-3">
                       <a 
-                          class="link-url hover:underline text-gray-600 truncate block" 
+                          class="text-sm text-gray-600 hover:underline truncate block" 
                           :href="link.url" 
                           target="_blank"
                           :title="link.url"
@@ -96,85 +96,12 @@
       </section>
 
       <!-- LINKS DE TAREFAS -->
-      <section class="section-container mt-6">
-          <div class="section-header">
-              <div class="section-title">
-                  <font-awesome-icon icon="fa-solid fa-tasks" class="icon" />
-                  <h2>LINKS DE TAREFAS</h2>
-              </div>
-          </div>
-
-          <div v-if="linksWithTask.length === 0" class="p-4 text-center">
-              <p class="text-gray-500">Nenhum link de tarefa</p>
-          </div>
-
-          <div v-else class="overflow-x-auto">
-              <!-- Header da tabela -->
-              <div class="grid grid-cols-12 gap-4 px-4 py-3 bg-gray-100 border-b border-gray-200 font-semibold text-sm text-gray-700">
-                  <div class="col-span-3">Título</div>
-                  <div class="col-span-2">URL</div>
-                  <div class="col-span-3">Observações</div>
-                  <div class="col-span-2">Tarefa</div>
-                  <div class="col-span-2 text-center">Ações</div>
-              </div>
-              
-              <!-- Linhas da tabela -->
-              <div 
-                  v-for="link in linksWithTask" 
-                  :key="link.id"
-                  class="grid grid-cols-12 gap-4 px-4 py-3 border-b border-gray-200 hover:bg-gray-50 transition-colors items-center"
-              >
-                  <div class="col-span-3 flex items-center">
-                      <font-awesome-icon icon="fa-solid fa-link" class="text-blue-500 mr-2" />
-                      <a 
-                          class="link-name hover:underline truncate" 
-                          :href="link.url" 
-                          target="_blank"
-                          :title="link.title"
-                      >
-                          {{ link.title }}
-                      </a>
-                  </div>
-                  <div class="col-span-2">
-                      <a 
-                          class="link-url hover:underline text-gray-600 truncate block" 
-                          :href="link.url" 
-                          target="_blank"
-                          :title="link.url"
-                      >
-                          {{ link.url }}
-                      </a>
-                  </div>
-                  <div class="col-span-3">
-                      <span class="text-sm text-gray-600 truncate block" :title="link.observations">
-                          {{ link.observations || '-' }}
-                      </span>
-                  </div>
-                  <div class="col-span-2">
-                      <span v-if="link.task" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 truncate">
-                          <font-awesome-icon icon="fa-solid fa-tasks" class="mr-1" />
-                          {{ link.task.name }}
-                      </span>
-                  </div>
-                  <div class="col-span-2 flex justify-center gap-2">
-                      <button
-                          class="w-8 h-8 flex items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors shadow-sm"
-                          @click="confirmDeleteLink(link.id)"
-                          title="Excluir link"
-                      >
-                          <font-awesome-icon icon="fa-solid fa-trash-alt" class="text-sm" />
-                      </button>
-                      <button
-                          class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors shadow-sm"
-                          @click="copyLink(link.url)"
-                          title="Copiar link"
-                      >
-                          <font-awesome-icon icon="fa-solid fa-copy" class="text-sm" />
-                      </button>
-                  </div>
-              </div>
-          </div>
-      </section>
+      <task-links-list 
+          :links="linksWithTask"
+          container-class="mt-6"
+          @delete-link="confirmDeleteLink"
+          @copy-link="copyLink"
+      />
 
       <!-- LINKS DE OPORTUNIDADES -->
       <section class="section-container mt-6">
@@ -208,7 +135,7 @@
                   <div class="col-span-3 flex items-center">
                       <font-awesome-icon icon="fa-solid fa-link" class="text-blue-500 mr-2" />
                       <a 
-                          class="link-name hover:underline truncate" 
+                          class="text-blue-600 font-semibold hover:underline truncate" 
                           :href="link.url" 
                           target="_blank"
                           :title="link.title"
@@ -218,7 +145,7 @@
                   </div>
                   <div class="col-span-2">
                       <a 
-                          class="link-url hover:underline text-gray-600 truncate block" 
+                          class="text-sm text-gray-600 hover:underline truncate block" 
                           :href="link.url" 
                           target="_blank"
                           :title="link.url"
@@ -289,7 +216,7 @@
                   <div class="col-span-3 flex items-center">
                       <font-awesome-icon icon="fa-solid fa-link" class="text-blue-500 mr-2" />
                       <a 
-                          class="link-name hover:underline truncate" 
+                          class="text-blue-600 font-semibold hover:underline truncate" 
                           :href="link.url" 
                           target="_blank"
                           :title="link.title"
@@ -299,7 +226,7 @@
                   </div>
                   <div class="col-span-2">
                       <a 
-                          class="link-url hover:underline text-gray-600 truncate block" 
+                          class="text-sm text-gray-600 hover:underline truncate block" 
                           :href="link.url" 
                           target="_blank"
                           :title="link.url"
@@ -345,12 +272,14 @@ import { index, destroy } from "@/utils/requests/httpUtils";
 import LinkCreateForm from "@/components/forms/LinkCreateForm.vue";
 import SearchInput from "@/components/filters/SearchInput.vue";
 import ButtonNewForm from "@/components/buttons/ButtonNewForm.vue";
+import TaskLinksList from "@/components/lists/TaskLinksList.vue";
 
 export default {
   components: {
       LinkCreateForm,
       SearchInput,
       ButtonNewForm,
+      TaskLinksList,
   },
   data() {
       return {
@@ -422,15 +351,5 @@ export default {
 </script>
 
 <style scoped>
-.link-name {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--primary-color);
-}
-
-.link-url {
-  font-size: 0.9rem;
-  font-weight: 400;
-  color: var(--secondary-color);
-}
+/* Estilos removidos - usando Tailwind classes inline */
 </style>

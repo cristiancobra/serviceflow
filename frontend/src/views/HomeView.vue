@@ -2,8 +2,6 @@
   <div class="page-container">
     <div class="page-header">
       <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-tasks" class="page-icon" />
-        <h1 class="">AGENDA</h1>
       </div>
       <div class="section-action">
         <div class="text-800 text-white">

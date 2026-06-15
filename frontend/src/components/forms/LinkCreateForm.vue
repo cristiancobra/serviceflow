@@ -3,37 +3,78 @@
     <AddMessage :messageStatus="messageStatus" :messageText="messageText"
     @update:messageStatus="messageStatus = $event" />
 
-    <div v-if="modelValue" class="myModal">
-      <div class="">
-        <div class="modal-content">
-          <div class="modal-header">
-            <font-awesome-icon icon="fa-solid fa-link" class="icon pe-3 primary" />
-            <h5 class="modal-title" id="linkModalLabel">Novo Link</h5>
-            <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
+    <div v-if="modelValue" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+      <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <!-- Header -->
+        <div class="sticky top-0 bg-gradient-to-r from-blue-50 to-blue-25 border-b border-gray-200 px-8 py-6">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-3">
+              <font-awesome-icon icon="fa-solid fa-link" class="text-2xl text-primary" />
+              <h3 class="text-2xl font-bold text-gray-800">Novo Link</h3>
+            </div>
+            <button 
+              type="button" 
+              class="text-gray-400 hover:text-gray-600 transition-colors"
+              @click="closeModal" 
+              aria-label="Close"
+            >
+              <font-awesome-icon icon="fa-solid fa-times" class="text-2xl" />
+            </button>
           </div>
-          <div class="modal-body">
-            <form @submit.prevent="submitForm">
+        </div>
 
-              <div class="row">
-                <div class="col-12">
-                  <TextInput label="Título" name="title" v-model="form.title" placeholder="Título do link" />
-                </div>
-              </div>
+        <!-- Body -->
+        <div class="px-8 py-6">
+          <form @submit.prevent="submitForm">
+            <!-- Título -->
+            <div class="mb-6">
+              <TextInput 
+                label="Título" 
+                name="title" 
+                v-model="form.title" 
+                placeholder="Título do link" 
+              />
+            </div>
 
-              <div class="row mt-4">
-                <TextInput label="URL" name="url" v-model="form.url" placeholder="URL do link" />
-              </div>
+            <!-- URL -->
+            <div class="mb-6">
+              <TextInput 
+                label="URL" 
+                name="url" 
+                v-model="form.url" 
+                placeholder="https://exemplo.com" 
+              />
+            </div>
 
-              <div class="row mt-4">
-                <TextAreaInput label="Observações" name="observations" v-model="form.observations" placeholder="Observações opcionais" :rows="3" />
-              </div>
+            <!-- Observações -->
+            <div class="mb-6">
+              <TextAreaInput 
+                label="Observações" 
+                name="observations" 
+                v-model="form.observations" 
+                placeholder="Observações opcionais" 
+                :rows="3" 
+              />
+            </div>
 
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" @click="closeModal">Fechar</button>
-                <button type="submit" class="button-new">Criar</button>
-              </div>
-            </form>
-          </div>
+            <!-- Footer com Ações -->
+            <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
+              <button 
+                type="button" 
+                class="px-6 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+                @click="closeModal"
+              >
+                Fechar
+              </button>
+              <button 
+                type="submit" 
+                class="px-6 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors"
+              >
+                <font-awesome-icon icon="fa-solid fa-plus" class="me-2" />
+                Criar Link
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
