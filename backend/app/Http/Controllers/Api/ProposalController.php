@@ -147,10 +147,12 @@ class ProposalController extends Controller
     {
         $proposal = Proposal::with([
             'invoices.lead',
+            'invoices.company',
             'invoices.transactions',
             'proposalServices',
             'proposalCosts',
             'opportunity',
+            'opportunity.company',
             'opportunity.lead',
         ])
             ->find($proposal->id);

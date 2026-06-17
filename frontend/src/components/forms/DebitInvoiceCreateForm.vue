@@ -52,31 +52,55 @@
           <!-- Fornecedor Lead (Pessoa) -->
           <div v-if="supplierType === 'lead'">
             <leads-select-input 
+              ref="leadsSelect"
               label="Fornecedor (Pessoa)" 
               v-model="form.lead_id" 
               fieldsToDisplay="name" 
               fieldNull="Selecione um fornecedor"
             />
+            <button
+              type="button"
+              class="mt-2 text-sm text-blue-600 hover:text-blue-800 font-semibold"
+              @click="toggleLead()"
+            >
+              + Adicionar novo contato
+            </button>
           </div>
 
           <!-- Fornecedor Company (Empresa) -->
           <div v-if="supplierType === 'company'">
             <companies-select-input 
+              ref="companiesSelect"
               label="Empresa Fornecedora" 
               v-model="form.company_id" 
               :fieldsToDisplay="['business_name', 'legal_name']" 
               fieldNull="Selecione uma empresa"
             />
+            <button
+              type="button"
+              class="mt-2 text-sm text-blue-600 hover:text-blue-800 font-semibold"
+              @click="toggleCompany()"
+            >
+              + Adicionar nova empresa
+            </button>
           </div>
 
           <!-- Responsável na Empresa -->
           <div v-if="supplierType === 'company'">
             <leads-select-input 
-              label="Responsável na Empresa" 
+              ref="leadsSelectResponsible"
+              label="Responsável na Empresa (opcional)" 
               v-model="form.lead_id" 
               fieldsToDisplay="name" 
               fieldNull="Selecione um responsável"
             />
+            <button
+              type="button"
+              class="mt-2 text-sm text-blue-600 hover:text-blue-800 font-semibold"
+              @click="toggleLead()"
+            >
+              + Adicionar novo contato
+            </button>
           </div>
 
           <!-- Valor Total -->
@@ -220,6 +244,17 @@
         </form>
       </div>
     </div>
+
+    <!-- Modais em sobreposição -->
+    <company-create-form 
+      v-model="isActiveFormCompany"
+      @new-company-event="addCompanyCreated" 
+    />
+    
+    <lead-create-form 
+      v-model="isActiveFormLead"
+      @new-lead-event="addLeadCreated" 
+    />
   </div>
 </template>
 
@@ -227,6 +262,8 @@
 import { submitFormCreate } from "@/utils/requests/httpUtils";
 import LeadsSelectInput from "./selects/LeadsSelectInput.vue";
 import CompaniesSelectInput from "./selects/CompaniesSelectInput.vue";
+import CompanyCreateForm from "./CompanyCreateForm.vue";
+import LeadCreateForm from "./LeadCreateForm.vue";
 
 export default {
   name: "DebitInvoiceCreateForm",
@@ -234,6 +271,8 @@ export default {
   components: {
     LeadsSelectInput,
     CompaniesSelectInput,
+    CompanyCreateForm,
+    LeadCreateForm,
   },
   props: {
     proposal: {
@@ -252,6 +291,8 @@ export default {
       totalAmount: 0,
       installmentQuantity: 1,
       supplierType: "lead", // 'lead' ou 'company'
+      isActiveFormCompany: false,
+      isActiveFormLead: false,
       form: {
         lead_id: null,
         company_id: null,
@@ -378,15 +419,12 @@ export default {
           return;
         }
       } else if (this.supplierType === 'company') {
-        // Se for empresa, precisa de company_id E lead_id (responsável)
+        // Se for empresa, precisa apenas de company_id (responsável é opcional)
         if (!this.form.company_id) {
           this.errorMessage = "Selecione uma empresa fornecedora.";
           return;
         }
-        if (!this.form.lead_id) {
-          this.errorMessage = "Selecione um responsável na empresa.";
-          return;
-        }
+        // lead_id (responsável) é opcional para empresas
       }
 
       if (this.totalAmount <= 0) {
@@ -449,6 +487,34 @@ export default {
         console.error("Erro:", error);
       } finally {
         this.isSubmitting = false;
+      }
+    },
+    toggleCompany() {
+      this.isActiveFormCompany = !this.isActiveFormCompany;
+      if (this.isActiveFormCompany) {
+        this.isActiveFormLead = false;
+      }
+    },
+    toggleLead() {
+      this.isActiveFormLead = !this.isActiveFormLead;
+      if (this.isActiveFormLead) {
+        this.isActiveFormCompany = false;
+      }
+    },
+    addCompanyCreated(newCompany) {
+      this.form.company_id = newCompany.id;
+      this.isActiveFormCompany = false;
+      // Recarregar a lista de empresas
+      this.$refs.companiesSelect?.reload();
+    },
+    addLeadCreated(newLead) {
+      this.form.lead_id = newLead.id;
+      this.isActiveFormLead = false;
+      // Recarregar a lista de leads apropriada
+      if (this.supplierType === 'lead') {
+        this.$refs.leadsSelect?.reload();
+      } else {
+        this.$refs.leadsSelectResponsible?.reload();
       }
     },
   },

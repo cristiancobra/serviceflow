@@ -87,6 +87,8 @@ class OpportunityController extends Controller
             'user',
             'links',
             'proposals.invoices.transactions',
+            'proposals.invoices.lead',
+            'proposals.invoices.company',
         ])->find($opportunity->id));
     }
 

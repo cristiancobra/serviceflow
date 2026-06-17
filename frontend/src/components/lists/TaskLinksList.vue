@@ -1,5 +1,5 @@
 <template>
-  <section class="section-container" :class="containerClass">
+  <section class="" :class="containerClass">
       <div v-if="showHeader" class="section-header">
           <div class="section-title">
               <font-awesome-icon icon="fa-solid fa-tasks" class="icon" />

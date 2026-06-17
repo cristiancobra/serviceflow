@@ -7,6 +7,7 @@ use App\Http\Resources\ProposalsResource;
 use App\Http\Resources\TransactionsResource;
 use App\Http\Resources\UsersResource;
 use App\Http\Resources\LeadsResource;
+use App\Http\Resources\CompaniesResource;
 use App\Services\DateTimeConversionService;
 
 class InvoicesResource extends JsonResource
@@ -42,6 +43,7 @@ class InvoicesResource extends JsonResource
             'transactions' => TransactionsResource::collection($this->whenLoaded('transactions')),
             'user' => new UsersResource($this->whenLoaded('user')),
             'lead' => new LeadResource($this->whenLoaded('lead')),
+            'company' => new CompaniesResource($this->whenLoaded('company')),
         ];
     }
 }

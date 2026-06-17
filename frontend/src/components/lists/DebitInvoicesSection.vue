@@ -87,7 +87,7 @@
             <div class="flex flex-col gap-1">
               <span class="text-sm font-medium text-gray-600">Fornecedor</span>
               <span class="text-base font-semibold text-gray-800">
-                {{ invoice.lead?.name || "Sem fornecedor" }}
+                {{ invoice.company?.business_name || invoice.company?.legal_name || invoice.lead?.name || "Sem fornecedor" }}
               </span>
             </div>
           </div>
@@ -173,7 +173,7 @@
         <!-- Pagamentos Realizados -->
         <div
           v-if="invoice.transactions && invoice.transactions.length > 0"
-          class="mt-0 space-y-1 rounded-xl border border-gray-200 bg-white p-2 border-t-4 shadow-sm"
+          class="mt-0 space-y-1 rounded-xl border border-gray-200 bg-white p-2 px-16 border-t-4 shadow-sm"
         >
           <div
             v-for="transaction in invoice.transactions"
@@ -210,7 +210,7 @@
             </div>
             <div class="flex-1"></div>
             <div
-              class="text-right inline-flex items-center rounded-md bg-emerald-50 px-2 py-1 ring-1 ring-emerald-200 text-emerald-700"
+              class="text-right inline-flex items-center rounded-md  px-2 py-1 text-emerald-700"
             >
               <money-field
                 name="amount"
@@ -319,11 +319,7 @@ export default {
   computed: {
     debitInvoices() {
       return (this.proposal?.invoices || [])
-        .filter((invoice) => invoice.type === "debit")
-        .map((invoice) => ({
-          ...invoice,
-          lead: invoice.lead || { name: "Sem fornecedor" },
-        }));
+        .filter((invoice) => invoice.type === "debit");
     },
     // Calcula o total das faturas de custo operacional já criadas
     totalOperationalCostInvoices() {
