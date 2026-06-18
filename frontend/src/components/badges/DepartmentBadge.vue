@@ -1,6 +1,6 @@
 <template>
-  <div class="department-badge-container">
-    <!-- Badge de visualização -->
+  <div class="inline-block min-w-fit">
+    <!-- Badge de visualização (apenas ícone) -->
     <span
       v-if="!isEditing"
       @click="startEdit"
@@ -9,12 +9,20 @@
       class="cursor-pointer hover:opacity-80 transition-opacity"
       :title="department ? `Departamento: ${department.name}` : 'Clique para definir departamento'"
     >
-      <font-awesome-icon v-if="department?.icon" :icon="`fa-solid ${department.icon}`" class="mr-1" />
-      {{ badgeLabel }}
+      <font-awesome-icon 
+        v-if="department?.icon" 
+        :icon="`fa-solid ${department.icon}`" 
+        class="text-base"
+      />
+      <font-awesome-icon 
+        v-else
+        icon="fa-solid fa-folder"
+        class="text-base"
+      />
     </span>
 
     <!-- Select de edição -->
-    <div v-else class="inline-edit-department">
+    <div v-else class="inline-flex items-center gap-2">
       <departments-select-input
         v-model="localDepartmentId"
         name="department_id"
@@ -22,7 +30,7 @@
         fieldNull="Sem departamento"
         @update:modelValue="saveDepartment"
       />
-      <button @click="cancelEdit" class="btn-cancel-edit ms-2" title="Cancelar">
+      <button @click="cancelEdit" class="px-2 py-1 bg-red-500 text-white border-0 rounded cursor-pointer text-sm transition-colors hover:bg-red-600" title="Cancelar">
         <font-awesome-icon icon="fa-solid fa-times" />
       </button>
     </div>
@@ -59,7 +67,7 @@ export default {
       return this.department ? this.department.name : 'Sem departamento';
     },
     badgeClasses() {
-      const baseClasses = 'inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-semibold border';
+      const baseClasses = 'inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold border';
       
       if (!this.department) {
         return `${baseClasses} bg-gray-100 text-gray-500 border-gray-300`;
@@ -133,29 +141,5 @@ export default {
 </script>
 
 <style scoped>
-.department-badge-container {
-  display: inline-block;
-  min-width: fit-content;
-}
-
-.inline-edit-department {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.btn-cancel-edit {
-  padding: 0.25rem 0.5rem;
-  background-color: #ef4444;
-  color: white;
-  border: none;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  font-size: 0.875rem;
-  transition: background-color 0.2s;
-}
-
-.btn-cancel-edit:hover {
-  background-color: #dc2626;
-}
+/* Estilos customizados removidos - usando Tailwind */
 </style>
