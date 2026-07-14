@@ -4,40 +4,70 @@
     <div class="main">
       <router-view />
     </div>
+    <!-- Modal global de detalhes da tarefa -->
+    <task-detail-modal
+      :modelValue="showTaskModal"
+      @update:modelValue="updateTaskModalState"
+      :taskId="selectedTaskId"
+      @task-updated="handleTaskUpdated"
+    />
   </div>
 </template>
 
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapState, mapMutations } from 'vuex';
 import NavbarUser from "./components/layout/NavbarUser.vue";
+import TaskDetailModal from "@/components/modals/details/TaskDetailModal.vue";
 
 export default {
   data() {
     return {
       showNavbar: null,
+      showTaskModal: false,
     };
   },
   components: {
     NavbarUser,
+    TaskDetailModal,
+  },
+  computed: {
+    ...mapState(['selectedTaskId']),
   },
   methods: {
     ...mapActions(['checkAuthentication']),
+    ...mapMutations(['setSelectedTaskId']),
     async startAuthCheck() {
       this.checkAuthentication();
       setInterval(async () => {
         await this.checkAuthentication();
       }, 60000); // Verifica a cada 60 segundos
+    },
+    handleTaskUpdated(updatedTask) {
+      // Tarefa foi atualizada no modal
+    },
+    updateTaskModalState(isOpen) {
+      this.showTaskModal = isOpen;
+      if (!isOpen) {
+        this.setSelectedTaskId(null);
+      }
+    }
+  },
+  watch: {
+    selectedTaskId(newVal) {
+      if (newVal) {
+        this.showTaskModal = true;
+      } else {
+        this.showTaskModal = false;
+      }
+    },
+    $route(to) {
+      this.showNavbar = to.name !== 'login';
     }
   },
   created() {
     this.showNavbar = this.$route.name !== 'login'; // Inicializa a condição da navbar
     this.startAuthCheck(); // Inicia a verificação periódica de autenticação
-  },
-  watch: {
-    $route(to) {
-      this.showNavbar = to.name !== 'login';
-    }
   },
 };
 </script>

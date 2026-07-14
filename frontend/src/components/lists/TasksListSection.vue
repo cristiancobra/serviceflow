@@ -243,13 +243,6 @@
         </div>
       </section>
     </section>
-
-    <!-- Modal de Detalhes da Tarefa -->
-    <task-detail-modal
-      v-model="showTaskModal"
-      :taskId="selectedTaskId"
-      @task-updated="handleTaskUpdated"
-    />
   </div>
 </template>
 
@@ -281,10 +274,9 @@ import SearchInput from "@/components/filters/SearchInput.vue";
 import OpportunitiesOpenSelectInput from "@/components/forms/selects/OpportunitiesOpenSelectInput.vue";
 import CompaniesSelectInput from "@/components/forms/selects/CompaniesSelectInput.vue";
 import LeadsSelectInput from "@/components/forms/selects/LeadsSelectInput.vue";
-import TaskDetailModal from "@/components/modals/details/TaskDetailModal.vue";
 import DepartmentBadge from "@/components/badges/DepartmentBadge.vue";
 import TaskStatusBadge from "@/components/badges/TaskStatusBadge.vue";
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 
 export default {
   name: "TasksList",
@@ -330,8 +322,6 @@ export default {
       selectedLeadId: null,
       editingProjectCompany: {},
       selectedProjectCompanyId: null,
-      showTaskModal: false,
-      selectedTaskId: null,
       activeFilter: null, // Filtro ativo (null = todas as tarefas)
       isLoadingTasks: false, // Indicador de carregamento
       isDropdownOpen: false, // Estado do dropdown
@@ -362,7 +352,6 @@ export default {
     TextEditableField,
     SearchInput,
     UserAvatar,
-    TaskDetailModal,
   },
   methods: {
     convertUtcToLocal,
@@ -373,6 +362,7 @@ export default {
     getDeadlineClass,
     getStatusIcon,
     trimName,
+    ...mapMutations(['setSelectedTaskId']),
     addTaskCreated(newTask) {
       this.localTasks.unshift(newTask);
       this.openTaskForm = false;
@@ -643,15 +633,12 @@ export default {
         this.addTaskCreated(newTask);
         this.setJourneysVisible(newTask.id);
 
-        console.log("✅ Tarefa de organização criada com sucesso!");
-
       } catch (error) {
         console.error("❌ Erro ao criar tarefa de organização:", error);
       }
     },
     openTaskModal(taskId) {
-      this.selectedTaskId = taskId;
-      this.showTaskModal = true;
+      this.setSelectedTaskId(taskId);
     },
     handleTaskUpdated(updatedTask) {
       // Atualiza a tarefa na lista local
@@ -712,20 +699,15 @@ export default {
       this.isDepartmentDropdownOpen = !this.isDepartmentDropdownOpen;
     },
     selectDepartment(departmentId) {
-      console.log('🎯 selectDepartment chamado com:', departmentId);
       this.activeDepartment = departmentId;
       this.isDepartmentDropdownOpen = false;
       this.handleDepartmentFilterClick(departmentId);
     },
     async handleDepartmentFilterClick(departmentId) {
-      console.log('📋 handleDepartmentFilterClick chamado com:', departmentId);
-      console.log('📋 opportunity:', this.opportunity, 'project:', this.project);
-      
       // Se há um opportunity ou project, significa que estamos em uma página de detalhes
       // Neste caso, filtramos localmente
       if (this.opportunity || this.project) {
         // Filtro local
-        console.log('🔍 Filtrando localmente');
         if (!departmentId) {
           this.localTasks = this.tasks;
         } else {
@@ -735,17 +717,12 @@ export default {
       }
       
       // Se não há opportunity/project, emite evento para componente pai
-      console.log('📤 Emitindo evento department-filter-change');
-      console.log('📤 Valor sendo emitido:', departmentId);
-      console.log('📤 Parent:', this.$parent);
-      const emitted = this.$emit('department-filter-change', departmentId);
-      console.log('📤 Evento emitido, retorno:', emitted);
+      this.$emit('department-filter-change', departmentId);
     },
     async getDepartments() {
       try {
         const response = await axios.get(`${BACKEND_URL}departments`);
         this.departments = response.data.data;
-        console.log('📋 Departamentos carregados:', this.departments);
       } catch (error) {
         console.error('❌ Erro ao buscar departamentos:', error);
         this.departments = [];

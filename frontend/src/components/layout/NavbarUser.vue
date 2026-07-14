@@ -192,14 +192,14 @@
         </ul>
 
         <div v-if="openJourney" class="flex items-center gap-2 mt-2 px-3 py-1 rounded-full bg-white/80 border border-primary shadow-sm" style="max-width: 420px; margin: 0 auto;">
-          <router-link
-            :to="taskLink"
-            class="flex-1 flex items-center gap-2 text-primary no-underline hover:opacity-80 transition-opacity min-w-0"
+          <button
+            @click="openTaskModal"
+            class="flex-1 flex items-center gap-2 text-primary no-underline hover:opacity-80 transition-opacity min-w-0 bg-transparent border-0 cursor-pointer"
             style="min-width:0"
           >
             <font-awesome-icon icon="fas fa-play" class="flex-shrink-0 text-green-600" />
             <span class="truncate font-semibold text-primary">{{ taskDisplayName }}</span>
-          </router-link>
+          </button>
           <button
             @click="stopJourney(openJourney.id)"
             class="w-7 h-7 flex-shrink-0 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-700 transition-all duration-200 hover:scale-105 text-sm shadow"
@@ -241,7 +241,7 @@ export default {
   },
   methods: {
     ...mapActions(["logout"]),
-    ...mapMutations(["setOpenJourney"]),
+    ...mapMutations(["setOpenJourney", "setSelectedTaskId"]),
     async submitLogout() {
       await this.logout();
       this.toggleActive("logout");
@@ -267,18 +267,14 @@ export default {
         console.error("Erro ao parar a jornada:", error);
       }
     },
+    openTaskModal() {
+      if (this.openJourney && this.openJourney.task_id) {
+        this.setSelectedTaskId(this.openJourney.task_id);
+      }
+    },
   },
   computed: {
     ...mapState(["accountId", "openJourney"]),
-    taskLink() {
-      if (!this.openJourney) return null;
-      if (this.openJourney.opportunity_id) {
-        return { name: "opportunityShow", params: { id: this.openJourney.opportunity_id }, query: { scrollTo: "tasks" } };
-      } else if (this.openJourney.project_id) {
-        return { name: "projectShow", params: { id: this.openJourney.project_id }, query: { scrollTo: "tasks" } };
-      }
-      return "/journeys";
-    },
     taskDisplayName() {
       return this.openJourney?.task?.name || this.openJourney?.name || "Tarefa sem nome";
     },

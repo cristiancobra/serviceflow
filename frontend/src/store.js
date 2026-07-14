@@ -12,6 +12,7 @@ export default createStore({
     photo: null,
     messageStatus: null,
     messageText: null,
+    selectedTaskId: null,
   },
   mutations: {
     clearMessage(state) {
@@ -33,6 +34,9 @@ export default createStore({
     },
     setUserData(state, userData) {
       state.userData = userData;
+    },
+    setSelectedTaskId(state, taskId) {
+      state.selectedTaskId = taskId;
     },
   },
   actions: {

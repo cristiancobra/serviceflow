@@ -85,30 +85,23 @@ export default {
       }
     },
     async handleDepartmentFilterChange(departmentId) {
-      console.log('🎬 handleDepartmentFilterChange no pai recebeu:', departmentId);
       try {
         if (!departmentId) {
           // Se departmentId for null, mostra todas as tarefas
-          console.log('🔄 Carregando todas as tarefas');
           await this.getTasks();
           return;
         }
 
         const endpoint = `${BACKEND_URL}${TASK_URL_PARAMETER}filter-department?department_id=${departmentId}`;
-        console.log('🌐 Chamando endpoint:', endpoint);
         const response = await axios.get(endpoint);
-        console.log('✅ Resposta recebida:', response.data);
         this.filteredTasks = response.data.data;
-        console.log('📊 filteredTasks atualizado com', this.filteredTasks.length, 'tarefas');
       } catch (error) {
-        console.error(`❌ Erro ao filtrar tarefas por departamento (${departmentId}):`, error);
+        console.error(`Erro ao filtrar tarefas por departamento (${departmentId}):`, error);
         this.isError = true;
       }
     },
   },
   mounted() {
-    console.log('🚀 TasksIndex montado!');
-    console.log('🔧 Métodos disponíveis:', Object.keys(this.$options.methods || {}));
     this.getTasks();
   },
 };
