@@ -36,7 +36,7 @@ export default {
   },
   methods: {
     ...mapActions(['checkAuthentication']),
-    ...mapMutations(['setSelectedTaskId']),
+    ...mapMutations(['setSelectedTaskId', 'setUpdatedTask']),
     async startAuthCheck() {
       this.checkAuthentication();
       setInterval(async () => {
@@ -44,7 +44,7 @@ export default {
       }, 60000); // Verifica a cada 60 segundos
     },
     handleTaskUpdated(updatedTask) {
-      // Tarefa foi atualizada no modal
+      this.setUpdatedTask(updatedTask);
     },
     updateTaskModalState(isOpen) {
       this.showTaskModal = isOpen;

@@ -759,6 +759,7 @@ export default {
     },
     ...mapState({
       userData: (state) => state.userData,
+      updatedTask: (state) => state.updatedTask,
     }),
     imagesPath() {
       return IMAGES_PATH;
@@ -880,6 +881,13 @@ export default {
         this.localTasks = newVal;
       },
       deep: true,
+    },
+    updatedTask(task) {
+      if (!task) return;
+      const idx = this.localTasks.findIndex(t => t.id === task.id);
+      if (idx !== -1) {
+        this.localTasks.splice(idx, 1, task);
+      }
     },
   },
 };

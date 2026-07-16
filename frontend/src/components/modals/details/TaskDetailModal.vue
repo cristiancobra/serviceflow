@@ -44,6 +44,37 @@
                   {{ task.project.name }}
                 </router-link>
               </div>
+
+              <div v-else class="flex items-center gap-2 text-sm mt-2">
+                <template v-if="!showOpportunitySelect">
+                  <font-awesome-icon icon="fa-solid fa-bullseye" class="text-gray-400" />
+                  <button
+                    type="button"
+                    class="text-gray-400 hover:text-primary font-medium transition-colors"
+                    @click="showOpportunitySelect = true"
+                  >
+                    Adicionar oportunidade
+                  </button>
+                </template>
+                <template v-else>
+                  <opportunities-select-input
+                    name="opportunity_id"
+                    label="Oportunidade"
+                    fieldToDisplay="name"
+                    fieldNull="Nenhuma"
+                    v-model="selectedOpportunity"
+                    @update:modelValue="onOpportunitySelected"
+                  />
+                  <button
+                    type="button"
+                    class="text-gray-400 hover:text-red-500 ml-1 transition-colors"
+                    title="Cancelar"
+                    @click="showOpportunitySelect = false"
+                  >
+                    <font-awesome-icon icon="fa-solid fa-times" />
+                  </button>
+                </template>
+              </div>
             </div>
             
             <close-button @click="closeModal" />
@@ -239,6 +270,7 @@ import CloseButton from "@/components/buttons/CloseButton.vue";
 import AddJourneyButton from "@/components/buttons/AddJourneyButton.vue";
 import TaskLinksList from "@/components/lists/TaskLinksList.vue";
 import ButtonNewForm from "@/components/buttons/ButtonNewForm.vue";
+import OpportunitiesSelectInput from "@/components/forms/selects/OpportunitiesSelectInput.vue";
 
 export default {
   name: "TaskDetailModal",
@@ -253,6 +285,7 @@ export default {
     AddJourneyButton,
     TaskLinksList,
     ButtonNewForm,
+    OpportunitiesSelectInput,
   },
   props: {
     modelValue: {
@@ -261,7 +294,7 @@ export default {
     },
     taskId: {
       type: Number,
-      required: true,
+      default: null,
     },
   },
   data() {
@@ -271,6 +304,8 @@ export default {
       showCancelArea: false,
       showJourneyForm: false,
       showLinkForm: false,
+      showOpportunitySelect: false,
+      selectedOpportunity: null,
     };
   },
   methods: {
@@ -398,6 +433,13 @@ export default {
       this.$emit('task-updated', this.task);
     },
 
+    async onOpportunitySelected(opportunityId) {
+      if (!opportunityId) return;
+      await this.updateTask('opportunity_id', opportunityId);
+      this.showOpportunitySelect = false;
+      this.selectedOpportunity = null;
+    },
+
     isValidDate(date) {
       if (
         date != "1969-12-31 18:00:00" &&
@@ -415,9 +457,18 @@ export default {
     },
   },
   watch: {
-    modelValue(newVal) {
+    taskId(newVal) {
       if (newVal) {
         this.loadTask();
+      } else {
+        this.task = null;
+      }
+    },
+    modelValue(newVal) {
+      if (newVal && this.taskId) {
+        this.loadTask();
+      } else if (!newVal) {
+        this.task = null;
       }
     },
   },
