@@ -4,7 +4,8 @@
 </template>
 
 <script>
-import { index } from "@/utils/requests/httpUtils";
+import axios from "axios";
+import { BACKEND_URL } from "@/config/apiConfig";
 import SelectInput from "./SelectInput.vue";
 
 export default {
@@ -33,7 +34,8 @@ export default {
   methods: {
     async getOpportunities() {
       try {
-        this.opportunities = await index(`opportunities`);
+        const response = await axios.get(`${BACKEND_URL}opportunities/open`);
+        this.opportunities = response.data.data;
       } catch (error) {
         console.error("Erro ao acessar oportunidades:", error);
       }
