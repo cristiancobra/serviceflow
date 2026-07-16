@@ -86,9 +86,17 @@
       </div>
 
       <section class="">
-        <!-- Lista de tarefas sem agrupamento -->
-        <div v-for="localTask in filteredTasks" v-bind:key="localTask.id">
-          <div :id="'task-' + localTask.id" class="list-line flex items-center space-x-10 pt-1 pb-1">
+        <!-- Lista de tarefas agrupadas por mês -->
+        <template v-for="monthGroup in groupedByMonth" :key="monthGroup.monthKey">
+          <div class="flex items-center gap-2 mb-3 mt-4">
+            <span class="font-bold text-black text-sm uppercase tracking-wide whitespace-nowrap">
+              {{ monthGroup.monthLabel }}
+            </span>
+            <div class="h-px flex-1 bg-gray-200"></div>
+          </div>
+          <template v-for="(dayTasks, dayKey) in monthGroup.tasksByDay" :key="dayKey">
+            <div v-for="localTask in dayTasks" :key="localTask.id">
+              <div :id="'task-' + localTask.id" class="list-line flex items-center space-x-10 pt-1 pb-1">
 
             <!-- Coluna do Dia e Horário -->
             <div class="min-w-[70px] max-w-[70px] flex flex-col items-start justify-center">
@@ -239,8 +247,10 @@
               title="Ver detalhes da tarefa">
               <font-awesome-icon icon="fa-solid fa-plus" />
             </button>
-          </div>
-        </div>
+              </div>
+            </div>
+          </template>
+        </template>
       </section>
     </section>
   </div>
@@ -859,8 +869,6 @@ export default {
         if (b.monthKey === "9999-99") return -1;
         const comparison = new Date(a.monthKey) - new Date(b.monthKey);
         return this.sortOrder === 'asc' ? comparison : -comparison;
-    // Carrega os departamentos
-    this.getDepartments();
       });
     },
   },

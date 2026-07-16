@@ -86,6 +86,27 @@ class TaskController extends Controller
     public function update(TaskRequest $request, Task $task)
     {
         try {
+            // Valida regra de negócio: não pode finalizar sem jornada ou com jornada aberta
+            if ($request->date_conclusion) {
+                $task->loadMissing('journeys');
+                $journeys = $task->journeys;
+
+                if ($journeys->isEmpty()) {
+                    return response()->json([
+                        'message' => 'A tarefa não pode ser finalizada sem nenhuma jornada registrada.',
+                        'errors' => ['date_conclusion' => ['A tarefa não pode ser finalizada sem nenhuma jornada registrada.']],
+                    ], 422);
+                }
+
+                $hasOpenJourney = $journeys->contains(fn($j) => is_null($j->end));
+                if ($hasOpenJourney) {
+                    return response()->json([
+                        'message' => 'A tarefa não pode ser finalizada enquanto houver jornada em aberto.',
+                        'errors' => ['date_conclusion' => ['A tarefa não pode ser finalizada enquanto houver jornada em aberto.']],
+                    ], 422);
+                }
+            }
+
             $task->fill($request->validated());
 
             if (

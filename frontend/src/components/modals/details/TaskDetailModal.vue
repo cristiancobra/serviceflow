@@ -131,14 +131,18 @@
 
           <!-- Links -->
           <div class="mb-6">
-            <task-links-list 
-              :links="task.links || []"
-              :show-header="true"
-              :show-task-column="false"
-              @delete-link="confirmDeleteLink"
-              @copy-link="copyLink"
-            >
-              <template #action>
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <button
+                type="button"
+                class="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
+                @click="showLinks = !showLinks"
+              >
+                <font-awesome-icon icon="fa-solid fa-link" class="text-primary" />
+                Links
+                <span v-if="task.links && task.links.length" class="text-gray-400 font-normal">({{ task.links.length }})</span>
+                <font-awesome-icon :icon="showLinks ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'" class="text-xs text-gray-400" />
+              </button>
+              <div class="flex items-center gap-1">
                 <button-new-form 
                   target="link" 
                   @open-modal="showLinkForm = true" 
@@ -148,15 +152,24 @@
                   :taskId="task.id"
                   @new-link-event="addLinkCreated"
                 />
-              </template>
-            </task-links-list>
+              </div>
+            </div>
+            <div v-if="showLinks">
+              <task-links-list 
+                :links="task.links || []"
+                :show-header="false"
+                :show-task-column="false"
+                @delete-link="confirmDeleteLink"
+                @copy-link="copyLink"
+              />
+            </div>
           </div>
 
           <!-- Jornadas -->
           <div v-if="task.journeys && task.journeys.length > 0" class="mb-6">
             <div class="flex items-center justify-between mb-4">
               <h4 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                <font-awesome-icon icon="fa-solid fa-route" class="text-primary" />
+                <font-awesome-icon icon="fa-solid fa-clock" class="text-primary" />
                 Jornadas
                 <span class="text-sm font-normal text-gray-500">({{ task.journeys.length }})</span>
               </h4>
@@ -204,7 +217,7 @@
             <div class="flex gap-3">
               <button
                 type="button"
-                class="px-4 py-2 bg-purple-500 text-white rounded-lg font-semibold hover:bg-purple-600 transition-colors"
+                class="px-4 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-purple-600 transition-colors"
                 @click="quickStartJourney"
                 title="Iniciar jornada agora"
               >
@@ -218,18 +231,7 @@
                 title="Adicionar jornada manualmente"
               />
 
-              <button
-                v-if="!task.date_conclusion"
-                type="button"
-                class="px-4 py-2 bg-success text-white rounded-lg font-semibold hover:bg-green-700 transition-colors"
-                @click="finishTask"
-                title="Finalizar tarefa"
-              >
-                <font-awesome-icon icon="fa-solid fa-check" class="me-2" />
-                Finalizar
-              </button>
-
-              <button
+                   <button
                 type="button"
                 class="px-4 py-2 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-colors"
                 @click="toggleCancelArea"
@@ -240,14 +242,43 @@
               </button>
             </div>
 
-            <!-- Botão Fechar -->
-            <button
-              type="button"
-              class="px-6 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
-              @click="closeModal"
-            >
-              Fechar
-            </button>
+
+            <!-- Botões Finalizar + Fechar -->
+            <div class="flex gap-2">
+              <div
+                v-if="!task.date_conclusion"
+                class="relative group"
+              >
+                <button
+                  type="button"
+                  :disabled="!canFinishTask"
+                  class="px-4 py-2 text-white rounded-lg font-semibold transition-colors"
+                  :class="canFinishTask
+                    ? 'bg-success hover:bg-green-700 cursor-pointer'
+                    : 'bg-gray-300 cursor-not-allowed opacity-60'"
+                  @click="finishTask"
+                  title="Finalizar tarefa"
+                >
+                  <font-awesome-icon icon="fa-solid fa-check" class="me-2" />
+                  Finalizar
+                </button>
+                <div
+                  v-if="!canFinishTask"
+                  class="absolute bottom-full right-0 mb-2 w-64 bg-gray-800 text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50"
+                >
+                  {{ canFinishTaskMessage }}
+                  <div class="absolute top-full right-4 border-4 border-transparent border-t-gray-800"></div>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                class="px-6 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+                @click="closeModal"
+              >
+                Fechar
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -297,6 +328,23 @@ export default {
       default: null,
     },
   },
+  computed: {
+    canFinishTask() {
+      if (!this.task) return false;
+      const journeys = this.task.journeys || [];
+      if (journeys.length === 0) return false;
+      return journeys.every(j => j.end);
+    },
+    canFinishTaskMessage() {
+      if (!this.task) return '';
+      const journeys = this.task.journeys || [];
+      if (journeys.length === 0)
+        return 'A tarefa não pode ser finalizada sem nenhuma jornada registrada.';
+      if (journeys.some(j => !j.end))
+        return 'A tarefa não pode ser finalizada enquanto houver jornada em aberto.';
+      return '';
+    },
+  },
   data() {
     return {
       task: null,
@@ -304,6 +352,7 @@ export default {
       showCancelArea: false,
       showJourneyForm: false,
       showLinkForm: false,
+      showLinks: false,
       showOpportunitySelect: false,
       selectedOpportunity: null,
     };
@@ -369,17 +418,12 @@ export default {
     },
 
     async finishTask() {
-      if (this.task.journeys && this.task.journeys.length > 0) {
-        // Ordena e pega a data da última jornada
-        const sortedJourneys = [...this.task.journeys].sort(
-          (a, b) => new Date(b.end) - new Date(a.end)
-        );
-        const journeyEnd = sortedJourneys[0].end;
-        await this.updateTask("date_conclusion", journeyEnd);
-      } else {
-        // Finaliza com data atual
-        await this.updateTask("date_conclusion", new Date().toISOString());
-      }
+      if (!this.canFinishTask) return;
+      const sortedJourneys = [...this.task.journeys].sort(
+        (a, b) => new Date(b.end) - new Date(a.end)
+      );
+      await this.updateTask("date_conclusion", sortedJourneys[0].end);
+      this.closeModal();
     },
 
     toggleCancelArea() {
