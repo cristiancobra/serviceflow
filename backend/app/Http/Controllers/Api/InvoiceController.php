@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\InvoiceRequest;
 use App\Models\Invoice;
 use App\Http\Resources\InvoicesResource;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Log;
 
@@ -16,17 +17,29 @@ class InvoiceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $invoices = Invoice::with([
+        $query = Invoice::with([
             'proposal',
             'proposal.opportunity',
             'proposal.opportunity.company',
             'proposal.opportunity.lead',
             'transactions',
-        ])
-            ->orderBy('date_due', 'desc')
-            ->paginate(500);
+        ])->orderBy('date_due', 'desc');
+
+        $filter = $request->query('filter');
+
+        if ($filter === 'overdue_debit') {
+            $query->where('type', 'debit')
+                  ->where('date_due', '<', now()->toDateString())
+                  ->whereNotIn('status', [Invoice::STATUS_PAID, Invoice::STATUS_CANCELLED]);
+        } elseif ($filter === 'overdue_credit') {
+            $query->where('type', 'credit')
+                  ->where('date_due', '<', now()->toDateString())
+                  ->whereNotIn('status', [Invoice::STATUS_PAID, Invoice::STATUS_CANCELLED]);
+        }
+
+        $invoices = $query->paginate(500);
 
         return InvoicesResource::collection($invoices);
     }
