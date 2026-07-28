@@ -29,8 +29,8 @@ class InvoiceRequest extends FormRequest
             return [
                 'proposal_id' => 'required|exists:proposals,id',
                 'user_id' => 'required|exists:users,id',
-                'lead_id' => 'nullable|exists:leads,id',
-                'company_id' => 'nullable|exists:companies,id',
+                'lead_id' => 'required|exists:leads,id',
+                'company_id' => 'required|exists:companies,id',
                 'date_due' => 'required|date',
                 'price' => 'sometimes|numeric|min:0',
                 'prices' => 'sometimes|array',
@@ -46,8 +46,8 @@ class InvoiceRequest extends FormRequest
             return [
                 'proposal_id' => 'sometimes|exists:proposals,id',
                 'user_id' => 'sometimes|exists:users,id',
-                'lead_id' => 'nullable|exists:leads,id',
-                'company_id' => 'nullable|exists:companies,id',
+                'lead_id' => 'required|exists:leads,id',
+                'company_id' => 'required|exists:companies,id',
                 'date_due' => 'sometimes|date',
                 'price' => 'sometimes|numeric|min:0',
                 'type' => 'sometimes|string|in:credit,debit',

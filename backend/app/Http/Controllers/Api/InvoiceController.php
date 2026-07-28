@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InvoiceRequest;
 use App\Models\Invoice;
+use App\Models\Proposal;
 use App\Http\Resources\InvoicesResource;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -54,6 +55,9 @@ class InvoiceController extends Controller
     {
         try {
             $validated = $request->validated();
+            
+            // Tenta preencher company_id e lead_id da opportunity se não foram informados
+            $validated = $this->fillCompanyAndLeadFromOpportunity($validated);
             
             // Verifica se é uma fatura de débito individual (com price) ou múltiplas faturas (com prices)
             if (isset($validated['price']) && !isset($validated['prices'])) {
@@ -123,6 +127,9 @@ class InvoiceController extends Controller
         try {
             $validated = $request->validated();
             
+            // Tenta preencher company_id e lead_id da opportunity se não foram informados
+            $validated = $this->fillCompanyAndLeadFromOpportunity($validated);
+            
             // Fatura de débito individual
             $invoiceData = [
                 'proposal_id' => $validated['proposal_id'],
@@ -162,6 +169,9 @@ class InvoiceController extends Controller
     {
         try {
             $validated = $request->validated();
+            
+            // Tenta preencher company_id e lead_id da opportunity se não foram informados
+            $validated = $this->fillCompanyAndLeadFromOpportunity($validated);
             
             // Verifica se existem múltiplas faturas (parceladas)
             if (!isset($validated['prices'])) {
@@ -463,6 +473,56 @@ class InvoiceController extends Controller
                 $lastInvoice->update(['price' => $newPricePerInvoice + $difference, 'balance' => $newPricePerInvoice + $difference]);
             }
         }
+    }
+
+    /**
+     * Copia company_id e lead_id da opportunity se a proposal tiver uma
+     * 
+     * @param array $validated Os dados validados da requisição
+     * @return array Os dados validados com company_id e lead_id preenchidos
+     */
+    private function fillCompanyAndLeadFromOpportunity(array $validated)
+    {
+        // Se já tem company_id e lead_id, não precisa fazer nada
+        if (!empty($validated['company_id']) && !empty($validated['lead_id'])) {
+            return $validated;
+        }
+
+        // Se não tem proposal_id, não pode copiar nada
+        if (empty($validated['proposal_id'])) {
+            return $validated;
+        }
+
+        try {
+            $proposal = Proposal::with('opportunity')->find($validated['proposal_id']);
+            
+            if ($proposal && $proposal->opportunity) {
+                $opportunity = $proposal->opportunity;
+                
+                // Copia company_id se não foi informado
+                if (empty($validated['company_id']) && !empty($opportunity->company_id)) {
+                    $validated['company_id'] = $opportunity->company_id;
+                }
+                
+                // Copia lead_id se não foi informado
+                if (empty($validated['lead_id']) && !empty($opportunity->lead_id)) {
+                    $validated['lead_id'] = $opportunity->lead_id;
+                }
+                
+                Log::info('Filled company_id and lead_id from opportunity', [
+                    'proposal_id' => $proposal->id,
+                    'opportunity_id' => $opportunity->id,
+                    'company_id' => $validated['company_id'] ?? null,
+                    'lead_id' => $validated['lead_id'] ?? null
+                ]);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error filling company_id and lead_id from opportunity', [
+                'error' => $e->getMessage()
+            ]);
+        }
+
+        return $validated;
     }
 
     /**
