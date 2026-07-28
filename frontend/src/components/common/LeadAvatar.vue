@@ -1,32 +1,32 @@
 <template>
   <component
-    :is="leadId ? 'router-link' : 'div'"
-    :to="leadId ? { name: 'leadShow', params: { id: leadId } } : null"
+    :is="leadIdData ? 'router-link' : 'div'"
+    :to="leadIdData ? { name: 'leadShow', params: { id: leadIdData } } : null"
     :class="[
       'flex items-center justify-center rounded-full border-2',
       sizeClasses,
       overlap ? 'ml-[-10px]' : '',
       hasLeadData ? 'border-white' : 'border-gray-300 bg-gray-200',
-      leadId ? 'cursor-pointer hover:opacity-80 transition-opacity' : '',
+      leadIdData ? 'cursor-pointer hover:opacity-80 transition-opacity' : '',
       customClass
     ]"
     :title="displayTitle"
   >
     <!-- Foto -->
     <img
-      v-if="photo"
-      :src="`${imagesPath}${photo}`"
-      :alt="name"
+      v-if="photoData"
+      :src="`${imagesPath}${photoData}`"
+      :alt="nameData"
       class="w-full h-full rounded-full object-cover"
     />
     
     <!-- Iniciais -->
     <div
-      v-else-if="name"
+      v-else-if="nameData"
       class="w-full h-full flex items-center justify-center text-white text-xs font-bold rounded-full"
-      :style="{ backgroundColor: getInitialsColor(name) }"
+      :style="{ backgroundColor: getInitialsColor(nameData) }"
     >
-      {{ getInitials(name) }}
+      {{ getInitials(nameData) }}
     </div>
     
     <!-- Ícone fallback -->
@@ -44,6 +44,12 @@ import { IMAGES_PATH } from "@/config/apiConfig";
 export default {
   name: "LeadAvatar",
   props: {
+    // Aceita um objeto Lead completo (para convenience)
+    lead: {
+      type: Object,
+      default: null
+    },
+    // Ou dados individuais (para flexibility)
     photo: {
       type: String,
       default: null
@@ -74,11 +80,21 @@ export default {
     imagesPath() {
       return IMAGES_PATH;
     },
+    // Extrai dados do objeto lead se fornecido, caso contrário usa as props individuais
+    photoData() {
+      return this.lead?.photo || this.photo;
+    },
+    nameData() {
+      return this.lead?.name || this.name;
+    },
+    leadIdData() {
+      return this.lead?.id || this.leadId;
+    },
     hasLeadData() {
-      return this.photo || this.name;
+      return this.photoData || this.nameData;
     },
     displayTitle() {
-      return this.name || "Lead sem nome";
+      return this.nameData || "Lead sem nome";
     },
     sizeClasses() {
       const sizes = {

@@ -1,13 +1,5 @@
 <template>
   <div>
-    <InvoicesFilter
-      @filter-pending="getInvoicesPending"
-      @filter-paid="getInvoicesPaid"
-      @filter-overdue="getInvoicesOverdue"
-      @filter-canceled="getInvoicesCanceled"
-      @filter-all="getInvoicesAll"
-    />
-
     <ErrorMessage v-if="isError" :formResponse="formResponse" />
     <SuccessMessage v-if="isSuccess" :formResponse="formResponse" />
 
@@ -17,7 +9,6 @@
 
 <script>
 import InvoicesList from "@/components/lists/InvoicesList.vue";
-import InvoicesFilter from "@/components/filters/InvoicesFilter.vue";
 import SuccessMessage from "@/components/forms/messages/SuccessMessage.vue";
 import ErrorMessage from "@/components/forms/messages/ErrorMessage.vue";
 
@@ -25,7 +16,6 @@ export default {
   name: "InvoicesIndexView",
   components: {
     InvoicesList,
-    InvoicesFilter,
     SuccessMessage,
     ErrorMessage,
   },

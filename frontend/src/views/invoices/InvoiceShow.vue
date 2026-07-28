@@ -75,46 +75,36 @@
           <!-- Empresa -->
           <div class="flex items-center gap-3">
             <company-avatar
-              :photo="invoice.proposal?.opportunity?.company?.photo"
-              :business-name="invoice.proposal?.opportunity?.company?.business_name"
-              :legal-name="invoice.proposal?.opportunity?.company?.legal_name"
-              :company-id="invoice.proposal?.opportunity?.company?.id"
+              :photo="invoice.company?.photo"
+              :business-name="invoice.company?.business_name"
+              :legal-name="invoice.company?.legal_name"
+              :company-id="invoice.company?.id"
               size="md"
             />
-            <router-link
-              v-if="invoice.proposal?.opportunity?.company"
-              :to="{
-                name: 'companyShow',
-                params: { id: invoice.proposal.opportunity.company.id },
-              }"
-              class="text-blue-600 hover:text-blue-800 flex items-center gap-2"
-            >
-              <font-awesome-icon icon="fa-solid fa-magnifying-glass" class="text-sm" />
-              {{ invoice.proposal.opportunity.company.business_name || invoice.proposal.opportunity.company.legal_name }}
-            </router-link>
-            <p v-else class="text-gray-500">Sem empresa</p>
+            <companies-select-editable-field
+              label="Empresa"
+              name="company_id"
+              :modelValue="invoice.company_id"
+              @update:modelValue="updateInvoice('company_id', $event)"
+              class="flex-1"
+            />
           </div>
 
           <!-- Lead -->
           <div class="flex items-center gap-3">
             <lead-avatar
-              :photo="invoice.proposal?.opportunity?.lead?.photo"
-              :name="invoice.proposal?.opportunity?.lead?.name"
-              :lead-id="invoice.proposal?.opportunity?.lead?.id"
+              :photo="invoice.lead?.photo"
+              :name="invoice.lead?.name"
+              :lead-id="invoice.lead?.id"
               size="md"
             />
-            <router-link
-              v-if="invoice.proposal?.opportunity?.lead"
-              :to="{
-                name: 'leadShow',
-                params: { id: invoice.proposal.opportunity.lead.id },
-              }"
-              class="text-blue-600 hover:text-blue-800 flex items-center gap-2"
-            >
-              <font-awesome-icon icon="fa-solid fa-magnifying-glass" class="text-sm" />
-              {{ invoice.proposal.opportunity.lead.name }}
-            </router-link>
-            <p v-else class="text-gray-500">Sem cliente</p>
+            <leads-select-editable-field
+              label="Cliente"
+              name="lead_id"
+              :modelValue="invoice.lead_id"
+              @update:modelValue="updateInvoice('lead_id', $event)"
+              class="flex-1"
+            />
           </div>
 
           <!-- Oportunidade -->
@@ -331,7 +321,9 @@ import SelectStatusButton from "../../components/buttons/SelectStatusButton.vue"
 import DescriptionSection from "@/components/show/DescriptionSection.vue";
 import MoneyEditableField from "../../components/fields/number/MoneyEditableField.vue";
 import CompanyAvatar from "@/components/common/CompanyAvatar.vue";
+import CompaniesSelectEditableField from "@/components/fields/selects/CompaniesSelectEditableField.vue";
 import LeadAvatar from "@/components/common/LeadAvatar.vue";
+import LeadsSelectEditableField from "@/components/fields/selects/LeadsSelectEditableField.vue";
 // import DateEditableInput from "../../components/fields/date/DateEditableInput.vue";
 
 export default {
@@ -351,7 +343,9 @@ export default {
     DescriptionSection,
     MoneyEditableField,
     CompanyAvatar,
+    CompaniesSelectEditableField,
     LeadAvatar,
+    LeadsSelectEditableField,
   },
   computed: {
     invoiceTotal() {
