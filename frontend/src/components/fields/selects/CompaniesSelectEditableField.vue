@@ -8,12 +8,23 @@
       não possui
     </p>
   </div>
-  <CustomSelectInput v-else :label="label" :name="name" v-model="localValue" :items="companies"
-    :fieldsToDisplay="fieldsToDisplay" :fieldNull="fieldNullValue" avatarType="company" @update:modelValue="updateInput" />
+  <CustomSelectInput 
+    v-else 
+    :label="label" 
+    :name="name" 
+    v-model="localValue" 
+    :items="companies"
+    :fieldsToDisplay="fieldsToDisplay" 
+    :fieldNull="fieldNullValue" 
+    avatarType="company" 
+    :allow-create-new="true"
+    @update:modelValue="updateInput" 
+    @create-new="createNewCompany"
+  />
 </template>
 
 <script>
-import { index, show } from "@/utils/requests/httpUtils";
+import { index, show, store } from "@/utils/requests/httpUtils";
 import CustomSelectInput from "@/components/forms/selects/CustomSelectInput.vue";
 
 export default {
@@ -39,6 +50,7 @@ export default {
       localValue: this.modelValue,
       selectedName: "",
       companies: [],
+      isCreating: false,
     };
   },
   methods: {
@@ -68,6 +80,39 @@ export default {
       console.log("CompaniesSelectEditableField updateInput:", newValue);
       this.$emit('update:modelValue', newValue);
       this.editing = false;
+    },
+    async createNewCompany(companyName) {
+      console.log("createNewCompany:", companyName);
+      if (!companyName.trim()) {
+        return;
+      }
+
+      this.isCreating = true;
+      try {
+        const newCompany = await store("companies", {
+          legal_name: companyName.trim(),
+          business_name: companyName.trim(),
+        });
+        console.log("newCompany created:", newCompany);
+
+        // Adiciona a nova empresa à lista
+        this.companies.push(newCompany);
+
+        // Seleciona a nova empresa
+        this.localValue = newCompany.id;
+        this.$emit('update:modelValue', newCompany.id);
+
+        // Atualiza o nome exibido
+        this.selectedName = newCompany.business_name || newCompany.legal_name;
+
+        // Fecha a edição
+        this.editing = false;
+      } catch (error) {
+        console.error("Erro ao criar nova empresa:", error);
+        alert("Erro ao criar nova empresa");
+      } finally {
+        this.isCreating = false;
+      }
     },
   },
   watch: {
