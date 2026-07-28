@@ -70,7 +70,6 @@
       </div>
 
       <div class="rounded-lg border border-gray-200 p-6 mb-6">
-        <h3 class="text-lg font-bold text-gray-800 mb-4">Detalhes da Oportunidade</h3>
         <div class="space-y-4">
           <!-- Empresa -->
           <div class="flex items-center gap-3">

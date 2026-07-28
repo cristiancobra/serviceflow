@@ -65,7 +65,9 @@ export default {
       this.editing = true;
     },
     updateInput(newValue) {
+      console.log("CompaniesSelectEditableField updateInput:", newValue);
       this.$emit('update:modelValue', newValue);
+      this.editing = false;
     },
   },
   watch: {
