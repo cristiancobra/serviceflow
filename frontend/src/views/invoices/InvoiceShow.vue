@@ -69,44 +69,89 @@
         </div>
       </div>
 
-      <div class="flex flex-wrap gap-20">
-        <div class="mt-5 mb-5">
-          <label class="text-black font-bold">Oportunidade</label>
-          <router-link
-            v-if="invoice.proposal?.opportunity"
-            :to="{
-              name: 'opportunityShow',
-              params: { id: invoice.proposal.opportunity.id },
-            }"
-            class="text-blue-600 hover:text-blue-800 flex items-center"
-          >
-            <font-awesome-icon
-              icon="fa-solid fa-magnifying-glass"
-              class="mr-2"
+      <div class="rounded-lg border border-gray-200 p-6 mb-6">
+        <h3 class="text-lg font-bold text-gray-800 mb-4">Detalhes da Oportunidade</h3>
+        <div class="space-y-4">
+          <!-- Empresa -->
+          <div class="flex items-center gap-3">
+            <company-avatar
+              :photo="invoice.proposal?.opportunity?.company?.photo"
+              :business-name="invoice.proposal?.opportunity?.company?.business_name"
+              :legal-name="invoice.proposal?.opportunity?.company?.legal_name"
+              :company-id="invoice.proposal?.opportunity?.company?.id"
+              size="md"
             />
-            {{
-              invoice.proposal.opportunity?.name || "Sem oportunidade associada"
-            }}
-          </router-link>
-          <p v-else class="text-black text-gray-500">
-            Sem oportunidade associada
-          </p>
-        </div>
+            <router-link
+              v-if="invoice.proposal?.opportunity?.company"
+              :to="{
+                name: 'companyShow',
+                params: { id: invoice.proposal.opportunity.company.id },
+              }"
+              class="text-blue-600 hover:text-blue-800 flex items-center gap-2"
+            >
+              <font-awesome-icon icon="fa-solid fa-magnifying-glass" class="text-sm" />
+              {{ invoice.proposal.opportunity.company.business_name || invoice.proposal.opportunity.company.legal_name }}
+            </router-link>
+            <p v-else class="text-gray-500">Sem empresa</p>
+          </div>
 
-        <div class="mt-5 mb-5">
-          <label class="text-black font-bold">Proposta</label>
+          <!-- Lead -->
+          <div class="flex items-center gap-3">
+            <lead-avatar
+              :photo="invoice.proposal?.opportunity?.lead?.photo"
+              :name="invoice.proposal?.opportunity?.lead?.name"
+              :lead-id="invoice.proposal?.opportunity?.lead?.id"
+              size="md"
+            />
+            <router-link
+              v-if="invoice.proposal?.opportunity?.lead"
+              :to="{
+                name: 'leadShow',
+                params: { id: invoice.proposal.opportunity.lead.id },
+              }"
+              class="text-blue-600 hover:text-blue-800 flex items-center gap-2"
+            >
+              <font-awesome-icon icon="fa-solid fa-magnifying-glass" class="text-sm" />
+              {{ invoice.proposal.opportunity.lead.name }}
+            </router-link>
+            <p v-else class="text-gray-500">Sem cliente</p>
+          </div>
+
+          <!-- Oportunidade -->
+          <div>
+            <label class="text-gray-700 font-semibold text-sm mb-2 block">Oportunidade</label>
+            <router-link
+              v-if="invoice.proposal?.opportunity"
+              :to="{
+                name: 'opportunityShow',
+                params: { id: invoice.proposal.opportunity.id },
+              }"
+              class="text-blue-600 hover:text-blue-800 flex items-center gap-2"
+            >
+              <font-awesome-icon icon="fa-solid fa-magnifying-glass" class="text-sm" />
+              {{ invoice.proposal.opportunity.name }}
+            </router-link>
+            <p v-else class="text-gray-500">Sem oportunidade associada</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-lg border border-gray-200 p-6 mb-6">
+        <h3 class="text-lg font-bold text-gray-800 mb-4">Proposta</h3>
+        <div>
+          <label class="text-gray-700 font-semibold text-sm mb-2 block">Proposta Associada</label>
           <router-link
             v-if="invoice.proposal"
             :to="{ name: 'proposalShow', params: { id: invoice.proposal.id } }"
-            class="text-blue-600 hover:text-blue-800 flex items-center"
+            class="text-blue-600 hover:text-blue-800 flex items-center gap-2"
           >
             <font-awesome-icon
               icon="fa-solid fa-magnifying-glass"
-              class="mr-2"
+              class="text-sm"
             />
             Proposta {{ invoice.proposal.id }} - {{ invoice.proposal.description }}
           </router-link>
-          <p v-else class="text-black text-gray-500">Sem proposta associada</p>
+          <p v-else class="text-gray-500">Sem proposta associada</p>
         </div>
       </div>
     </div>
@@ -285,6 +330,8 @@ import TransactionCreateForm from "../../components/forms/TransactionCreateForm.
 import SelectStatusButton from "../../components/buttons/SelectStatusButton.vue";
 import DescriptionSection from "@/components/show/DescriptionSection.vue";
 import MoneyEditableField from "../../components/fields/number/MoneyEditableField.vue";
+import CompanyAvatar from "@/components/common/CompanyAvatar.vue";
+import LeadAvatar from "@/components/common/LeadAvatar.vue";
 // import DateEditableInput from "../../components/fields/date/DateEditableInput.vue";
 
 export default {
@@ -303,7 +350,8 @@ export default {
     SelectStatusButton,
     DescriptionSection,
     MoneyEditableField,
-    // DateEditableInput,
+    CompanyAvatar,
+    LeadAvatar,
   },
   computed: {
     invoiceTotal() {
