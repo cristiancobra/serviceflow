@@ -38,6 +38,18 @@
         v-if="isOpen"
         class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"
       >
+        <!-- Search input -->
+        <div class="sticky top-0 bg-white p-2 border-b border-gray-200">
+          <input
+            :value="searchQuery || ''"
+            @input="searchQuery = $event.target.value"
+            type="text"
+            placeholder="Buscar..."
+            class="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            @click.stop
+          />
+        </div>
+
         <!-- Null option -->
         <div
           v-if="fieldNull"
@@ -47,9 +59,9 @@
           {{ fieldNull }}
         </div>
         
-        <!-- Items -->
+        <!-- Filtered Items -->
         <div
-          v-for="item in items"
+          v-for="item in filteredItems"
           :key="item.id"
           @click="selectItem(item)"
           :class="[
@@ -65,6 +77,24 @@
             size="sm"
           />
           <span class="text-gray-900">{{ displayItemText(item) }}</span>
+        </div>
+
+        <!-- Create new option -->
+        <div
+          v-if="searchQuery && searchQuery.trim() && filteredItems.length === 0 && allowCreateNew"
+          @click="$emit('create-new', searchQuery.trim())"
+          class="px-3 py-2 hover:bg-blue-50 cursor-pointer transition-colors flex items-center gap-2 text-blue-600 font-medium border-t border-gray-200"
+        >
+          <font-awesome-icon icon="fa-solid fa-plus" class="text-sm" />
+          <span>Criar: {{ searchQuery.trim() }}</span>
+        </div>
+
+        <!-- No results message -->
+        <div
+          v-if="searchQuery && searchQuery.trim() && filteredItems.length === 0 && !allowCreateNew"
+          class="px-3 py-4 text-center text-gray-500"
+        >
+          Nenhum resultado encontrado
         </div>
       </div>
     </transition>
@@ -99,12 +129,17 @@ export default {
       type: String,
       validator: (value) => ['company', 'lead', 'user', null].includes(value),
       default: null
+    },
+    allowCreateNew: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
       localValue: this.modelValue,
       isOpen: false,
+      searchQuery: "",
     };
   },
   computed: {
@@ -119,23 +154,45 @@ export default {
         user: 'UserAvatar'
       };
       return components[this.avatarType];
+    },
+    filteredItems() {
+      if (!this.searchQuery || !this.searchQuery.trim()) {
+        return this.items;
+      }
+
+      const query = this.searchQuery.toLowerCase();
+      return this.items.filter(item => {
+        const displayText = this.displayItemText(item).toLowerCase();
+        return displayText.includes(query);
+      });
     }
   },
   methods: {
     toggleDropdown() {
       if (!this.disabled) {
         this.isOpen = !this.isOpen;
+        if (this.isOpen) {
+          this.$nextTick(() => {
+            const input = this.$el.querySelector('input[placeholder="Buscar..."]');
+            if (input) input.focus();
+          });
+        } else {
+          this.searchQuery = "";
+        }
       }
     },
     closeDropdown() {
       this.isOpen = false;
+      this.searchQuery = "";
     },
     selectItem(item) {
+      console.log("CustomSelectInput selectItem:", item);
       if (item === null) {
         this.localValue = null;
       } else {
         this.localValue = item.id;
       }
+      console.log("emitting update:modelValue with:", this.localValue);
       this.$emit("update:modelValue", this.localValue);
       this.closeDropdown();
     },
@@ -198,8 +255,6 @@ export default {
       this.localValue = this.modelValue;
     } else if (this.fieldNull) {
       this.localValue = null;
-    } else {
-      this.localValue = '';
     }
   },
   directives: {

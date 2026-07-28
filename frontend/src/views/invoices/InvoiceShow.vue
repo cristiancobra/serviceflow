@@ -425,13 +425,17 @@ export default {
     },
     async updateInvoice(fieldName, editedValue) {
       try {
+        console.log("updateInvoice called:", fieldName, editedValue);
         this.errorMessage = null; // Limpa erro anterior
-        this.invoice = await updateField(
+        await updateField(
           "invoices",
           this.invoiceId,
           fieldName,
           editedValue
         );
+        console.log("updateField success");
+        // Recarrega a fatura completa com todas as relações
+        await this.getInvoice();
       } catch (error) {
         // Captura erro de validação do backend
         if (error.response && error.response.status === 422) {

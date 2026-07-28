@@ -8,12 +8,23 @@
       não possui
     </p>
   </div>
-  <CustomSelectInput v-else :label="label" :name="name" v-model="localValue" :items="leads"
-    :fieldsToDisplay="fieldsToDisplay" :fieldNull="fieldNullValue" avatarType="lead" @update:modelValue="updateInput" />
+  <CustomSelectInput 
+    v-else 
+    :label="label" 
+    :name="name" 
+    v-model="localValue" 
+    :items="leads"
+    :fieldsToDisplay="fieldsToDisplay" 
+    :fieldNull="fieldNullValue" 
+    avatarType="lead" 
+    :allow-create-new="true"
+    @update:modelValue="updateInput" 
+    @create-new="createNewLead"
+  />
 </template>
 
 <script>
-import { index, show } from "@/utils/requests/httpUtils";
+import { index, show, store } from "@/utils/requests/httpUtils";
 import CustomSelectInput from "@/components/forms/selects/CustomSelectInput.vue";
 
 export default {
@@ -32,31 +43,19 @@ export default {
   },
   data() {
     return {
-      autoSelectUser: null,
       editing: false,
       fieldNullValue: null,
       fieldsToDisplay: "name",
       localValue: this.modelValue,
       selectedName: "",
       leads: [],
+      isCreating: false,
     };
   },
   methods: {
     async getCompanies() {
       this.leads = await index("leads");
     },
-    // async getAuthenticatedUser() {
-    //   axios
-    //     .get(`${BACKEND_URL}${USER_CURRENT_URL}`)
-    //     .then((response) => {
-    //       this.autoSelectUser = response.data.data.id;
-    //       this.localValue = this.autoSelectUser;
-    //       this.$emit('update:modelValue', this.localValue);
-    //     })
-    //     .catch((error) => {
-    //       console.error("Erro ao buscar usuário:", error);
-    //     });
-    // },
     async showName() {
       const current = await show("leads", this.modelValue);
       this.selectedName = current.name;
@@ -65,7 +64,41 @@ export default {
       this.editing = true;
     },
     updateInput(newValue) {
+      console.log("LeadsSelectEditableField updateInput:", newValue);
       this.$emit('update:modelValue', newValue);
+      this.editing = false;
+    },
+    async createNewLead(leadName) {
+      console.log("createNewLead:", leadName);
+      if (!leadName.trim()) {
+        return;
+      }
+
+      this.isCreating = true;
+      try {
+        const newLead = await store("leads", {
+          name: leadName.trim(),
+        });
+        console.log("newLead created:", newLead);
+
+        // Adiciona o novo lead à lista
+        this.leads.push(newLead);
+
+        // Seleciona o novo lead
+        this.localValue = newLead.id;
+        this.$emit('update:modelValue', newLead.id);
+
+        // Atualiza o nome exibido
+        this.selectedName = newLead.name;
+
+        // Fecha a edição
+        this.editing = false;
+      } catch (error) {
+        console.error("Erro ao criar novo lead:", error);
+        alert("Erro ao criar novo cliente");
+      } finally {
+        this.isCreating = false;
+      }
     },
   },
   watch: {
@@ -75,18 +108,10 @@ export default {
         this.showName();
       }
     },
-    // autoSelectUser(newValue) {
-    //   if (newValue !== null) {
-    //     this.autoSelectUser = newValue;
-    //   }
-    // }
   },
   mounted() {
     if (this.fieldNull) {
       this.fieldNullValue = this.fieldNull;
-    }
-    if (this.autoSelect) {
-      this.getAuthenticatedUser();
     }
     if (this.modelValue) {
       this.showName();

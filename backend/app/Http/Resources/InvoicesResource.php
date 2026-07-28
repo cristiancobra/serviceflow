@@ -26,6 +26,8 @@ class InvoicesResource extends JsonResource
             'id' => $this->id,
             'proposal_id' => $this->proposal_id,
             'user_id' => $this->user_id,
+            'lead_id' => $this->lead_id,
+            'company_id' => $this->company_id,
             'date_due' => DateTimeConversionService::convertFromUtc($this->date_due, $timezone),
             'price' => $this->price,
             'total_paid' => $this->total_paid,
