@@ -67,7 +67,7 @@ export default {
       return this.department ? this.department.name : 'Sem departamento';
     },
     badgeClasses() {
-      const baseClasses = 'inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold border';
+      const baseClasses = 'inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-semibold border';
       
       if (!this.department) {
         return `${baseClasses} bg-gray-100 text-gray-500 border-gray-300`;

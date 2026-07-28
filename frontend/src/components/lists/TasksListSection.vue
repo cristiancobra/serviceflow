@@ -25,28 +25,23 @@
         <div class="flex-1 w-full md:w-auto">
           <SearchInput v-model="searchTerm" placeholder="Buscar tarefas" />
         </div>
-        
+
         <!-- Dropdown de Filtro por Status -->
         <div class="relative" ref="filterDropdown">
-          <button
-            @click="toggleDropdown"
+          <button @click="toggleDropdown"
             class="px-4 py-2 border-2 rounded-lg font-semibold text-sm cursor-pointer transition-all duration-300 flex items-center gap-2 min-w-[220px] justify-between"
             :class="currentFilterClass">
             <span>{{ currentFilterLabel }}</span>
-            <font-awesome-icon :icon="isDropdownOpen ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'" class="text-xs" />
+            <font-awesome-icon :icon="isDropdownOpen ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"
+              class="text-xs" />
           </button>
-          
+
           <!-- Dropdown Menu Status -->
-          <div
-            v-show="isDropdownOpen"
+          <div v-show="isDropdownOpen"
             class="absolute top-full left-0 mt-2 w-full bg-white border-2 border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden">
-            <button
-              v-for="filter in filterOptions"
-              :key="filter.value"
-              @click="selectFilter(filter.value)"
+            <button v-for="filter in filterOptions" :key="filter.value" @click="selectFilter(filter.value)"
               class="w-full px-4 py-2 text-left font-semibold text-sm cursor-pointer transition-all duration-300 border-b border-gray-100 last:border-b-0"
-              :class="filter.class"
-              :title="filter.title">
+              :class="filter.class" :title="filter.title">
               {{ filter.label }}
             </button>
           </div>
@@ -54,27 +49,22 @@
 
         <!-- Dropdown de Filtro por Departamento -->
         <div class="relative" ref="departmentDropdown">
-          <button
-            @click="toggleDepartmentDropdown"
+          <button @click="toggleDepartmentDropdown"
             class="px-4 py-2 border-2 rounded-lg font-semibold text-sm cursor-pointer transition-all duration-300 flex items-center gap-2 min-w-[220px] justify-between bg-white border-gray-300 text-gray-700 hover:border-primary hover:text-primary">
             <span>{{ currentDepartmentLabel }}</span>
-            <font-awesome-icon :icon="isDepartmentDropdownOpen ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'" class="text-xs" />
+            <font-awesome-icon :icon="isDepartmentDropdownOpen ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"
+              class="text-xs" />
           </button>
-          
+
           <!-- Dropdown Menu Departamentos -->
-          <div
-            v-show="isDepartmentDropdownOpen"
+          <div v-show="isDepartmentDropdownOpen"
             class="absolute top-full left-0 mt-2 w-full bg-white border-2 border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden max-h-[300px] overflow-y-auto">
-            <button
-              @click="selectDepartment(null)"
+            <button @click="selectDepartment(null)"
               class="w-full px-4 py-2 text-left font-semibold text-sm cursor-pointer transition-all duration-300 border-b border-gray-100 hover:bg-gray-50"
               title="Todos os departamentos">
               Todos os departamentos
             </button>
-            <button
-              v-for="department in departments"
-              :key="department.id"
-              @click="selectDepartment(department.id)"
+            <button v-for="department in departments" :key="department.id" @click="selectDepartment(department.id)"
               class="w-full px-4 py-2 text-left font-semibold text-sm cursor-pointer transition-all duration-300 border-b border-gray-100 last:border-b-0 hover:opacity-80"
               :style="{ backgroundColor: department.color + '20', color: department.color }"
               :title="department.description">
@@ -96,157 +86,136 @@
           </div>
           <template v-for="(dayTasks, dayKey) in monthGroup.tasksByDay" :key="dayKey">
             <div v-for="localTask in dayTasks" :key="localTask.id">
-              <div :id="'task-' + localTask.id" class="list-line flex items-center space-x-10 pt-1 pb-1">
+              <div :id="'task-' + localTask.id" class="list-line items-center pt-1 pb-1"
+                :style="{ display: 'grid', gap: '0 1.5rem', gridTemplateColumns: showOpportunityColumn ? '70px 90px 1fr 64px 200px 50px 140px 28px' : '70px 90px 1fr 50px 140px 28px' }">
 
-            <!-- Coluna do Dia e Horário -->
-            <div class="min-w-[70px] max-w-[70px] flex flex-col items-start justify-center">
-              <span class="text-sm font-semibold" :class="getDeadlineClass(localTask.date_due ? localTask.date_due.split(' ')[0] : 'Sem Data')">
-                {{ formatTaskDate(localTask.date_due) }}
-              </span>
-              <span v-if="localTask.date_due" class="text-xs text-gray-500">
-                {{ formatTaskTime(localTask.date_due) }}
-              </span>
-            </div>
-
-            <!-- coluna de ícones-->
-            <div class="flex items-center gap-0">
-              <!-- Badge de Status da Tarefa -->
-              <task-status-badge :task="localTask" />
-
-              <user-avatar
-                :photo="userData.photo"
-                :name="userData.name"
-                :user-id="userData.id"
-              />
-            </div>
-
-            <!-- Coluna Badge do Departamento -->
-            <div class="min-w-[40px] max-w-[40px] flex items-center justify-center">
-              <department-badge :task="localTask" @department-updated="handleDepartmentUpdated" />
-            </div>
-
-            <!-- Coluna do nome da tarefa -->
-            <div class="flex flex-[6] items-center justify-start">
-              <text-editable-field name="name" v-model="localTask.name"
-                placeholder="descrição detalhada da tarefa" @save="updateTask('name', $event, localTask.id)" />
-            </div>
-
-            <!-- Coluna de Avatares (Company e Lead) -->
-            <div v-if="showOpportunityColumn" class="flex items-center gap-1">
-              <template v-if="localTask.opportunity">
-                <!-- Avatar da Empresa -->
-                <div v-if="editingCompany[localTask.id]" class="flex items-center gap-2 min-w-[200px]">
-                  <companies-select-input
-                    v-model="selectedCompanyId"
-                    name="company_id"
-                    fieldsToDisplay="legal_name"
-                    fieldNull="Nenhuma"
-                    @update:modelValue="saveCompany(localTask.id, $event)"
-                  />
-                  <button @click="cancelEditCompany(localTask.id)" class="bg-transparent border-0 text-red-600 cursor-pointer px-2 py-1 text-sm transition-colors hover:text-red-800 ms-2" title="Cancelar">
-                    <font-awesome-icon icon="fa-solid fa-times" />
-                  </button>
+                <!-- Coluna do Dia e Horário -->
+                <div class="flex flex-col items-start justify-center">
+                  <span class="text-sm font-semibold"
+                    :class="getDeadlineClass(localTask.date_due ? localTask.date_due.split(' ')[0] : 'Sem Data', localTask.date_conclusion)">
+                    {{ formatTaskDate(localTask.date_due) }}
+                  </span>
+                  <span v-if="localTask.date_due" class="text-xs text-gray-500">
+                    {{ formatTaskTime(localTask.date_due) }}
+                  </span>
                 </div>
-                <company-avatar
-                  v-else
-                  :photo="localTask.opportunity.company?.photo"
-                  :business-name="localTask.opportunity.company?.business_name"
-                  :legal-name="localTask.opportunity.company?.legal_name"
-                  :company-id="localTask.opportunity.company?.id"
-                  @click.native="!localTask.opportunity.company?.id && startEditCompany(localTask.id)"
-                  :custom-class="!localTask.opportunity.company?.id ? 'cursor-pointer hover:opacity-70' : ''"
-                />
-                <!-- Avatar do Lead -->
-                <lead-avatar
-                  :photo="localTask.opportunity.lead?.photo"
-                  :name="localTask.opportunity.lead?.name"
-                  :lead-id="localTask.opportunity.lead?.id"
-                  :overlap="true"
-                />
-              </template>
-              
-              <template v-else-if="localTask.project">
-                <!-- Avatar da Empresa do Projeto -->
-                <company-avatar
-                  :photo="localTask.project.company?.photo"
-                  :business-name="localTask.project.company?.business_name"
-                  :legal-name="localTask.project.company?.legal_name"
-                  :company-id="localTask.project.company?.id"
-                />
-              </template>
-              
-              <template v-else>
-                <!-- Avatar genérico -->
-                <company-avatar />
-              </template>
-            </div>
 
-            <!-- Coluna Nome da Oportunidade/Projeto -->
-            <div v-if="showOpportunityColumn" class="min-w-[200px] max-w-[200px] flex items-center justify-start">
-              <template v-if="localTask.opportunity">
-                <router-link class="flex no-underline text-inherit items-center gap-1"
-                  :to="{
-                    name: 'opportunityShow',
-                    params: { id: localTask.opportunity.id },
-                    query: { tab: 'tasks' },
-                    hash: '#task-' + localTask.id
-                  }">
-                  <div class="flex items-center gap-1 font-medium text-xs">
-                    <font-awesome-icon icon="fa-solid fa-bullseye" class="text-xs" />
-                    {{ trimName(localTask.opportunity.name) }}
-                  </div>
-                </router-link>
-              </template>
-              
-              <template v-else-if="localTask.project">
-                <router-link class="flex no-underline text-inherit items-center gap-1"
-                  :to="{
-                    name: 'projectShow',
-                    params: { id: localTask.project.id },
-                    hash: '#task-' + localTask.id
-                  }">
-                  <div class="flex items-center gap-1 font-medium text-xs">
-                    <font-awesome-icon icon="fa-solid fa-folder-open" class="text-xs" />
-                    {{ trimName(localTask.project.name) }}
-                  </div>
-                </router-link>
-              </template>
-              
-              <template v-else>
-                <div v-if="editingOpportunity[localTask.id]" class="flex items-center gap-2 flex-1">
-                  <opportunities-open-select-input v-model="selectedOpportunityId" fieldsToDisplay="name"
-                    :autoSelect="false" fieldNull="Nenhuma"
-                    @update:modelValue="saveOpportunity(localTask.id, $event)" />
-                  <button @click="cancelEditOpportunity(localTask.id)" class="bg-transparent border-0 text-red-600 cursor-pointer px-2 py-1 text-sm transition-colors hover:text-red-800 ms-2"
-                    title="Cancelar">
-                    <font-awesome-icon icon="fa-solid fa-times" />
-                  </button>
+                <!-- coluna de ícones-->
+                <div class="flex items-center gap-1">
+                  <!-- Badge de Status da Tarefa -->
+                  <user-avatar :photo="userData.photo" :name="userData.name" :user-id="userData.id" />
+                  <department-badge :task="localTask" @department-updated="handleDepartmentUpdated" />
+                  <task-status-badge :task="localTask" />
                 </div>
-                <p v-else @click="startEditOpportunity(localTask.id)"
-                  class="text-xs text-gray-400 hover:text-primary cursor-pointer"
-                  title="Clique para vincular a uma oportunidade">
-                  ----
-                </p>
-              </template>
-            </div>
 
-            <div class="flex items-center justify-center text-center text-primary mr-4 font-bold">
-              {{ formatDuration(localTask.duration_time) }}
-            </div>
+                <!-- Coluna do nome da tarefa -->
+                <div class="flex items-center justify-start font-semibold min-w-0 overflow-hidden"
+                  :class="getDeadlineClass(localTask.date_due ? localTask.date_due.split(' ')[0] : 'Sem Data', localTask.date_conclusion)">
+                  <text-editable-field name="name" v-model="localTask.name" placeholder="descrição detalhada da tarefa"
+                    @save="updateTask('name', $event, localTask.id)" />
+                </div>
 
-            <div class="flex flex-1 md:flex-[2] items-center justify-start mr-4">
-              <font-awesome-icon icon="fa-solid fa-check-circle" class="text-success me-2" />
-              <date-time-editable-input name="date_conclusion" v-model="localTask.date_conclusion"
-                @save="updateTask('date_conclusion', $event, localTask.id)" />
-            </div>
+                <!-- Coluna de Avatares (Company e Lead) -->
+                <div v-if="showOpportunityColumn" class="flex items-center gap-1">
+                  <template v-if="localTask.opportunity">
+                    <!-- Avatar da Empresa -->
+                    <div v-if="editingCompany[localTask.id]" class="flex items-center gap-2 min-w-[200px]">
+                      <companies-select-input v-model="selectedCompanyId" name="company_id" fieldsToDisplay="legal_name"
+                        fieldNull="Nenhuma" @update:modelValue="saveCompany(localTask.id, $event)" />
+                      <button @click="cancelEditCompany(localTask.id)"
+                        class="bg-transparent border-0 text-red-600 cursor-pointer px-2 py-1 text-sm transition-colors hover:text-red-800 ms-2"
+                        title="Cancelar">
+                        <font-awesome-icon icon="fa-solid fa-times" />
+                      </button>
+                    </div>
+                    <company-avatar v-else :photo="localTask.opportunity.company?.photo"
+                      :business-name="localTask.opportunity.company?.business_name"
+                      :legal-name="localTask.opportunity.company?.legal_name"
+                      :company-id="localTask.opportunity.company?.id"
+                      @click.native="!localTask.opportunity.company?.id && startEditCompany(localTask.id)"
+                      :custom-class="!localTask.opportunity.company?.id ? 'cursor-pointer hover:opacity-70' : ''" />
+                    <!-- Avatar do Lead -->
+                    <lead-avatar :photo="localTask.opportunity.lead?.photo" :name="localTask.opportunity.lead?.name"
+                      :lead-id="localTask.opportunity.lead?.id" :overlap="true" />
+                  </template>
 
-            <!-- Botão para abrir modal de detalhes -->
-            <button
-              class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-500 text-white hover:bg-gray-700 transition"
-              @click="openTaskModal(localTask.id)"
-              title="Ver detalhes da tarefa">
-              <font-awesome-icon icon="fa-solid fa-plus" />
-            </button>
+                  <template v-else-if="localTask.project">
+                    <!-- Avatar da Empresa do Projeto -->
+                    <company-avatar :photo="localTask.project.company?.photo"
+                      :business-name="localTask.project.company?.business_name"
+                      :legal-name="localTask.project.company?.legal_name" :company-id="localTask.project.company?.id" />
+                  </template>
+
+                  <template v-else>
+                    <!-- Avatar genérico -->
+                    <company-avatar />
+                  </template>
+                </div>
+
+                <!-- Coluna Nome da Oportunidade/Projeto -->
+                <div v-if="showOpportunityColumn" class="flex items-center justify-start overflow-hidden">
+                  <template v-if="localTask.opportunity">
+                    <router-link class="flex no-underline text-inherit items-center gap-1" :to="{
+                      name: 'opportunityShow',
+                      params: { id: localTask.opportunity.id },
+                      query: { tab: 'tasks' },
+                      hash: '#task-' + localTask.id
+                    }">
+                      <div class="flex items-center gap-1 font-medium text-xs">
+                        <font-awesome-icon icon="fa-solid fa-bullseye" class="text-xs" />
+                        {{ trimName(localTask.opportunity.name) }}
+                      </div>
+                    </router-link>
+                  </template>
+
+                  <template v-else-if="localTask.project">
+                    <router-link class="flex no-underline text-inherit items-center gap-1" :to="{
+                      name: 'projectShow',
+                      params: { id: localTask.project.id },
+                      hash: '#task-' + localTask.id
+                    }">
+                      <div class="flex items-center gap-1 font-medium text-xs">
+                        <font-awesome-icon icon="fa-solid fa-folder-open" class="text-xs" />
+                        {{ trimName(localTask.project.name) }}
+                      </div>
+                    </router-link>
+                  </template>
+
+                  <template v-else>
+                    <div v-if="editingOpportunity[localTask.id]" class="flex items-center gap-2 flex-1">
+                      <opportunities-open-select-input v-model="selectedOpportunityId" fieldsToDisplay="name"
+                        :autoSelect="false" fieldNull="Nenhuma"
+                        @update:modelValue="saveOpportunity(localTask.id, $event)" />
+                      <button @click="cancelEditOpportunity(localTask.id)"
+                        class="bg-transparent border-0 text-red-600 cursor-pointer px-2 py-1 text-sm transition-colors hover:text-red-800 ms-2"
+                        title="Cancelar">
+                        <font-awesome-icon icon="fa-solid fa-times" />
+                      </button>
+                    </div>
+                    <p v-else @click="startEditOpportunity(localTask.id)"
+                      class="text-xs text-gray-400 hover:text-primary cursor-pointer"
+                      title="Clique para vincular a uma oportunidade">
+                      ----
+                    </p>
+                  </template>
+                </div>
+
+                <div class="flex items-center justify-center text-center text-primary font-bold">
+                  {{ formatDuration(localTask.duration_time) }}
+                </div>
+
+                <div class="flex items-center justify-start">
+                  <font-awesome-icon icon="fa-solid fa-check-circle" class="text-success me-2" />
+                  <date-time-editable-input name="date_conclusion" v-model="localTask.date_conclusion"
+                    @save="updateTask('date_conclusion', $event, localTask.id)" />
+                </div>
+
+                <!-- Botão para abrir modal de detalhes -->
+                <button
+                  class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-500 text-white hover:bg-gray-700 transition"
+                  @click="openTaskModal(localTask.id)" title="Ver detalhes da tarefa">
+                  <font-awesome-icon icon="fa-solid fa-plus" />
+                </button>
               </div>
             </div>
           </template>
@@ -666,7 +635,7 @@ export default {
     },
     async handleFilterClick(status) {
       this.activeFilter = status;
-      
+
       // Se há um opportunity ou project, significa que estamos em uma página de detalhes
       // Neste caso, filtramos localmente
       if (this.opportunity || this.project) {
@@ -686,7 +655,7 @@ export default {
         }
         return;
       }
-      
+
       // Se não há opportunity/project, emite evento para componente pai
       this.$emit('filter-change', status);
     },
@@ -725,7 +694,7 @@ export default {
         }
         return;
       }
-      
+
       // Se não há opportunity/project, emite evento para componente pai
       this.$emit('department-filter-change', departmentId);
     },
@@ -749,7 +718,7 @@ export default {
       if (!filter || filter.value === null) {
         return 'bg-primary text-white border-primary';
       }
-      
+
       const colorMap = {
         'to-do': 'bg-orange-500 text-white border-orange-500',
         'doing': 'bg-blue-500 text-white border-blue-500',
@@ -757,7 +726,7 @@ export default {
         'done': 'bg-success text-white border-success',
         'canceled': 'bg-gray-500 text-white border-gray-500',
       };
-      
+
       return colorMap[filter.value] || 'bg-primary text-white border-primary';
     },
     currentDepartmentLabel() {

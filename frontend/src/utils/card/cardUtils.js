@@ -65,28 +65,22 @@ export function getStatusClass(status) {
     }
 }
 
-export function getDeadlineClass(dateDue) {
+export function getDeadlineClass(dateDue, dateConclusion = null) {
+    if (dateConclusion) {
+        return "text-success";
+    }
+
     const today = new Date();
     const formatedDateDue = new Date(dateDue + "T00:00:00");
 
-    // Normalizar as datas para ignorar o horário
     today.setHours(0, 0, 0, 0);
     formatedDateDue.setHours(0, 0, 0, 0);
 
-    // Comparar apenas ano, mês e dia
-    if (
-        formatedDateDue.getFullYear() === today.getFullYear() &&
-        formatedDateDue.getMonth() === today.getMonth() &&
-        formatedDateDue.getDate() === today.getDate()
-    ) {
-        return "featured-text";
-    }
-
     if (formatedDateDue < today) {
-        return "alert-text";
+        return "text-red-600";
     }
 
-    return "default-text";
+    return "text-black";
 }
 
 export function getPriorityClass(priority) {
