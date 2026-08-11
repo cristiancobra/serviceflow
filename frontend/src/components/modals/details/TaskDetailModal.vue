@@ -21,7 +21,14 @@
                   :class="isValidDate(task.date_conclusion) ? 'text-success' : 'text-gray-400'"
                 />
                 
-                <h3 class="text-2xl font-bold text-gray-800">{{ task.name }}</h3>
+                <div class="text-2xl font-bold text-gray-800 flex-1">
+                  <text-editable-field 
+                    name="name" 
+                    v-model="task.name" 
+                    placeholder="descrição detalhada da tarefa"
+                    @save="updateTask('name', $event)" 
+                  />
+                </div>
               </div>
               
               <!-- Oportunidade/Projeto -->
@@ -293,6 +300,7 @@ import { getDeadlineClass } from "@/utils/card/cardUtils";
 import { BACKEND_URL, TASK_URL_PARAMETER, JOURNEY_URL } from "@/config/apiConfig";
 import DateTimeEditableInput from "@/components/fields/datetime/DateTimeEditableInput.vue";
 import TextAreaEditableInput from "@/components/forms/inputs/textarea/TextAreaEditableInput.vue";
+import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 import JourneysListFromOpportunity from "@/components/lists/JourneysListFromOpportunity.vue";
 import CancellationReasonSelectInput from "@/components/forms/selects/CancellationReasonSelectInput.vue";
 import JourneyCreateForm from "@/components/forms/JourneyCreateForm.vue";
@@ -308,6 +316,7 @@ export default {
   components: {
     DateTimeEditableInput,
     TextAreaEditableInput,
+    TextEditableField,
     JourneysListFromOpportunity,
     CancellationReasonSelectInput,
     JourneyCreateForm,
