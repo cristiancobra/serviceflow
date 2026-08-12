@@ -102,6 +102,16 @@
                   <span class="text-white ps-2">FATURAS</span>
                 </li>
               </router-link>
+              <router-link to="/contas-a-pagar">
+                <li
+                  class="nav-item"
+                  @mouseover="toggleActive('contas-a-pagar')"
+                  :class="{ active: activeItem === 'contas-a-pagar' }"
+                >
+                  <font-awesome-icon icon="fas fa-file-invoice-dollar" />
+                  <span class="text-white ps-2">CONTAS A PAGAR</span>
+                </li>
+              </router-link>
               <router-link to="/transactions">
                 <li
                   class="nav-item"

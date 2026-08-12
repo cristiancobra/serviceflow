@@ -8,6 +8,7 @@ use App\Http\Resources\TransactionsResource;
 use App\Http\Resources\UsersResource;
 use App\Http\Resources\LeadsResource;
 use App\Http\Resources\CompaniesResource;
+use App\Http\Resources\TasksResource;
 use App\Services\DateTimeConversionService;
 
 class InvoicesResource extends JsonResource
@@ -25,9 +26,11 @@ class InvoicesResource extends JsonResource
         return [
             'id' => $this->id,
             'proposal_id' => $this->proposal_id,
+            'name' => $this->name,
             'user_id' => $this->user_id,
             'lead_id' => $this->lead_id,
             'company_id' => $this->company_id,
+            'department_id' => $this->department_id,
             'date_due' => DateTimeConversionService::convertFromUtc($this->date_due, $timezone),
             'price' => $this->price,
             'total_paid' => $this->total_paid,
@@ -46,6 +49,16 @@ class InvoicesResource extends JsonResource
             'user' => new UsersResource($this->whenLoaded('user')),
             'lead' => new LeadResource($this->whenLoaded('lead')),
             'company' => new CompaniesResource($this->whenLoaded('company')),
+            'department' => $this->whenLoaded('department', function () {
+                return [
+                    'id' => $this->department->id,
+                    'name' => $this->department->name,
+                    'slug' => $this->department->slug,
+                    'color' => $this->department->color,
+                    'icon' => $this->department->icon,
+                ];
+            }),
+            'tasks' => TasksResource::collection($this->whenLoaded('tasks')),
         ];
     }
 }

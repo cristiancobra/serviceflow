@@ -6,6 +6,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\LinksResource;
 use App\Http\Resources\JourneyResource;
 use App\Http\Resources\ProjectResource;
+use App\Http\Resources\InvoicesResource;
 use App\Services\DateTimeConversionService;
 
 class TasksResource extends JsonResource
@@ -29,6 +30,7 @@ class TasksResource extends JsonResource
 			"goal_id" => $this->goal_id,
 			"project_id" => $this->project_id,
 			"opportunity_id" => $this->opportunity_id,
+			"invoice_id" => $this->invoice_id,
 			"department_id" => $this->department_id,
 			"name" => $this->name,
 			"category" => $this->category,
@@ -50,6 +52,7 @@ class TasksResource extends JsonResource
 			 "links" => LinksResource::collection($this->whenLoaded('links')),
 			 "project" => new ProjectResource($this->whenLoaded('project')),
 			"opportunity" => new OpportunitiesResource($this->whenLoaded('opportunity')),
+			"invoice" => new InvoicesResource($this->whenLoaded('invoice')),
 			"department" => $this->whenLoaded('department', function () {
 				return [
 					'id' => $this->department->id,

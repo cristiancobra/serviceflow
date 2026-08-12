@@ -32,6 +32,7 @@ class TaskRequest extends FormRequest
             'user_id' => 'sometimes|exists:users,id',
             'project_id' => 'nullable',
             'opportunity_id' => 'nullable',
+            'invoice_id' => 'nullable|exists:invoices,id',
             'department_id' => 'nullable|exists:departments,id',
             'name' => 'sometimes|string|max:255',
             'description' => 'nullable|string',

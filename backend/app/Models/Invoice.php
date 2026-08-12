@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Task;
 
 class Invoice extends Model
 {
@@ -19,9 +20,11 @@ class Invoice extends Model
 
     protected $fillable = [
         'proposal_id',
+        'name',
         'user_id',
         'lead_id',
         'company_id',
+        'department_id',
         'date_due',
         'price',
         'total_paid',
@@ -58,6 +61,16 @@ class Invoice extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
     }
 
     /**

@@ -27,10 +27,12 @@ class InvoiceRequest extends FormRequest
         // Regras para criação (store)
         if ($this->isMethod('post')) {
             return [
-                'proposal_id' => 'required|exists:proposals,id',
+                'proposal_id' => 'nullable|exists:proposals,id',
+                'name' => 'nullable|string|max:255',
                 'user_id' => 'required|exists:users,id',
-                'lead_id' => 'required|exists:leads,id',
-                'company_id' => 'required|exists:companies,id',
+                'lead_id' => 'nullable|exists:leads,id',
+                'company_id' => 'nullable|exists:companies,id',
+                'department_id' => 'nullable|exists:departments,id',
                 'date_due' => 'required|date',
                 'price' => 'sometimes|numeric|min:0',
                 'prices' => 'sometimes|array',
@@ -38,16 +40,20 @@ class InvoiceRequest extends FormRequest
                 'type' => 'sometimes|string|in:credit,debit',
                 'category' => 'nullable|string|max:255',
                 'observations' => 'sometimes|string|nullable',
+                'generate_task' => 'sometimes|boolean',
+                'task_department_id' => 'nullable|exists:departments,id',
             ];
         }
 
         // Regras para atualização (update/patch)
         if ($this->isMethod('put') || $this->isMethod('patch')) {
             return [
-                'proposal_id' => 'sometimes|exists:proposals,id',
+                'proposal_id' => 'nullable|exists:proposals,id',
+                'name' => 'nullable|string|max:255',
                 'user_id' => 'sometimes|exists:users,id',
-                'lead_id' => 'sometimes|exists:leads,id',
-                'company_id' => 'sometimes|exists:companies,id',
+                'lead_id' => 'nullable|exists:leads,id',
+                'company_id' => 'nullable|exists:companies,id',
+                'department_id' => 'nullable|exists:departments,id',
                 'date_due' => 'sometimes|date',
                 'price' => 'sometimes|numeric|min:0',
                 'type' => 'sometimes|string|in:credit,debit',

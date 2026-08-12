@@ -14,6 +14,7 @@ import LeadsIndex from '../views/leads/LeadsIndex.vue'
 import LeadShow from '../views/leads/LeadShow.vue'
 import InvoiceShow from '@/views/invoices/InvoiceShow.vue'
 import InvoicesIndex from '@/views/invoices/InvoicesIndex.vue'
+import AccountsPayableIndex from '@/views/invoices/AccountsPayableIndex.vue'
 import LinksIndex from '../views/links/LinksIndex.vue'
 import OpportunitiesIndex from '../views/opportunities/OpportunitiesIndex.vue'
 import OpportunityShow from '../views/opportunities/OpportunityShow.vue'
@@ -84,6 +85,11 @@ const routes = [
     path: '/invoices',
     name: 'invoicesIndex',
     component: InvoicesIndex
+  },
+  {
+    path: '/contas-a-pagar',
+    name: 'accountsPayable',
+    component: AccountsPayableIndex
   },
   {
     path: '/leads',

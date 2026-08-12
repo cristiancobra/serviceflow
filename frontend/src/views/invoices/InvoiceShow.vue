@@ -36,6 +36,19 @@
 
     <div class="section-container">
       <div class="flex align-items-center justify-end mb-6">
+        <!-- Nome da conta (para invoices standalone) -->
+        <div v-if="invoice.name" class="flex-1 mr-6">
+          <h2 class="text-2xl font-bold text-gray-900">{{ invoice.name }}</h2>
+          <p class="text-sm text-gray-500 mt-0.5">
+            <span
+              v-if="invoice.category"
+              class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 mr-2"
+            >
+              {{ getCategoryLabel(invoice.category) }}
+            </span>
+            Conta a pagar
+          </p>
+        </div>
         <div
           class="relative rounded-2xl border-2 border-primary bg-primary-50/60 p-4 shadow-sm"
         >
@@ -107,10 +120,9 @@
           </div>
 
           <!-- Oportunidade -->
-          <div>
+          <div v-if="invoice.proposal?.opportunity">
             <label class="text-gray-700 font-semibold text-sm mb-2 block">Oportunidade</label>
             <router-link
-              v-if="invoice.proposal?.opportunity"
               :to="{
                 name: 'opportunityShow',
                 params: { id: invoice.proposal.opportunity.id },
@@ -120,12 +132,11 @@
               <font-awesome-icon icon="fa-solid fa-magnifying-glass" class="text-sm" />
               {{ invoice.proposal.opportunity.name }}
             </router-link>
-            <p v-else class="text-gray-500">Sem oportunidade associada</p>
           </div>
         </div>
       </div>
 
-      <div class="rounded-lg border border-gray-200 p-6 mb-6">
+      <div v-if="invoice.proposal_id" class="rounded-lg border border-gray-200 p-6 mb-6">
         <h3 class="text-lg font-bold text-gray-800 mb-4">Proposta</h3>
         <div>
           <label class="text-gray-700 font-semibold text-sm mb-2 block">Proposta Associada</label>
@@ -141,6 +152,32 @@
             Proposta {{ invoice.proposal.id }} - {{ invoice.proposal.description }}
           </router-link>
           <p v-else class="text-gray-500">Sem proposta associada</p>
+        </div>
+      </div>
+
+      <!-- Tarefa Financeira vinculada -->
+      <div v-if="invoice.tasks && invoice.tasks.length > 0" class="rounded-lg border border-green-200 bg-green-50 p-6 mb-6">
+        <h3 class="text-lg font-bold text-green-800 mb-3 flex items-center gap-2">
+          <font-awesome-icon icon="fa-solid fa-check-circle" class="text-green-600" />
+          Tarefas Vinculadas
+        </h3>
+        <div class="space-y-2">
+          <div
+            v-for="task in invoice.tasks"
+            :key="task.id"
+            class="flex items-center justify-between p-3 bg-white rounded-lg border border-green-200"
+          >
+            <div class="flex items-center gap-3">
+              <span
+                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold"
+                :class="task.status === 'done' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'"
+              >
+                {{ task.status === 'done' ? 'Concluída' : 'Pendente' }}
+              </span>
+              <span class="text-sm font-medium text-gray-800">{{ task.name }}</span>
+            </div>
+            <span v-if="task.date_due" class="text-xs text-gray-500">{{ formatDateBr(task.date_due) }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -383,11 +420,15 @@ export default {
         this.errorMessage = null;
         await this.destroy("invoices", this.invoiceId);
         
-        // Redireciona para a proposta após excluir com sucesso
-        this.$router.push({
-          name: "proposalShow",
-          params: { id: this.invoice.proposal_id },
-        });
+        // Redireciona após excluir com sucesso
+        if (this.invoice.proposal_id) {
+          this.$router.push({
+            name: "proposalShow",
+            params: { id: this.invoice.proposal_id },
+          });
+        } else {
+          this.$router.push({ name: "accountsPayable" });
+        }
       } catch (error) {
         // Trata erros de validação do backend
         if (error.response && error.response.status === 422) {
@@ -404,13 +445,20 @@ export default {
 
       const dateObj = new Date(date);
       const day = dateObj.getDate();
-      const month = dateObj.getMonth() + 1; // Os meses em JavaScript começam em 0, então adicionamos 1
+      const month = dateObj.getMonth() + 1;
       const year = dateObj.getFullYear();
 
-      // Formate a data no formato desejado (exemplo: dd/mm/aaaa)
-      const dateBr = `${day}/${month}/${year}`;
-
-      return dateBr;
+      return `${day}/${month}/${year}`;
+    },
+    getCategoryLabel(category) {
+      const map = {
+        fixed_cost: 'Custo Fixo',
+        recurring: 'Recorrente',
+        supplier: 'Fornecedor',
+        operational: 'Operacional',
+        other: 'Outro',
+      };
+      return map[category] || category;
     },
     exportPDF() {
       const url = `${BACKEND_URL}invoices/${this.invoice.id}/pdf?isVisibleQuantity=${this.isVisibleQuantity}`;

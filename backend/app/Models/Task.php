@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Invoice;
 
 class Task extends Model
 {
@@ -20,6 +21,7 @@ class Task extends Model
         'account_id',
         'contact_id',
         'opportunity_id',
+        'invoice_id',
         'project_id',
         'stage_id',
         'department_id',
@@ -78,6 +80,11 @@ class Task extends Model
     public function department()
     {
         return $this->belongsTo(Department::class);
+    }
+
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class);
     }
 	
 		

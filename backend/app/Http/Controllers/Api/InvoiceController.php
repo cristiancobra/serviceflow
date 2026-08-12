@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\InvoiceRequest;
 use App\Models\Invoice;
 use App\Models\Proposal;
+use App\Models\Task;
 use App\Http\Resources\InvoicesResource;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -25,7 +26,11 @@ class InvoiceController extends Controller
             'proposal.opportunity',
             'proposal.opportunity.company',
             'proposal.opportunity.lead',
+            'lead',
+            'company',
+            'department',
             'transactions',
+            'tasks',
         ])->orderBy('date_due', 'desc');
 
         $filter = $request->query('filter');
@@ -37,6 +42,17 @@ class InvoiceController extends Controller
         } elseif ($filter === 'overdue_credit') {
             $query->where('type', 'credit')
                   ->where('date_due', '<', now()->toDateString())
+                  ->whereNotIn('status', [Invoice::STATUS_PAID, Invoice::STATUS_CANCELLED]);
+        } elseif ($filter === 'pending_debit') {
+            $query->where('type', 'debit')
+                  ->whereIn('status', [Invoice::STATUS_PENDING, Invoice::STATUS_PARTIAL]);
+        } elseif ($filter === 'upcoming_7') {
+            $query->where('type', 'debit')
+                  ->whereBetween('date_due', [now()->toDateString(), now()->addDays(7)->toDateString()])
+                  ->whereNotIn('status', [Invoice::STATUS_PAID, Invoice::STATUS_CANCELLED]);
+        } elseif ($filter === 'upcoming_30') {
+            $query->where('type', 'debit')
+                  ->whereBetween('date_due', [now()->toDateString(), now()->addDays(30)->toDateString()])
                   ->whereNotIn('status', [Invoice::STATUS_PAID, Invoice::STATUS_CANCELLED]);
         }
 
@@ -130,12 +146,13 @@ class InvoiceController extends Controller
             // Tenta preencher company_id e lead_id da opportunity se não foram informados
             $validated = $this->fillCompanyAndLeadFromOpportunity($validated);
             
-            // Fatura de débito individual
             $invoiceData = [
-                'proposal_id' => $validated['proposal_id'],
+                'proposal_id' => $validated['proposal_id'] ?? null,
+                'name' => $validated['name'] ?? null,
                 'user_id' => $validated['user_id'],
                 'lead_id' => $validated['lead_id'] ?? null,
                 'company_id' => $validated['company_id'] ?? null,
+                'department_id' => $validated['department_id'] ?? null,
                 'price' => $validated['price'],
                 'balance' => $validated['price'],
                 'date_due' => $validated['date_due'],
@@ -145,7 +162,35 @@ class InvoiceController extends Controller
             ];
             
             $invoice = Invoice::create($invoiceData);
-            return InvoicesResource::collection([$invoice]);
+
+            // Geração opcional de tarefa financeira
+            $taskCreated = false;
+            if (!empty($validated['generate_task'])) {
+                try {
+                    $invoiceName = $invoice->name ?? ('Fatura #' . $invoice->id);
+                    Task::create([
+                        'account_id' => auth()->user()->account_id,
+                        'user_id'    => auth()->user()->id,
+                        'invoice_id' => $invoice->id,
+                        'department_id' => $validated['task_department_id'] ?? null,
+                        'name'       => 'Pagar: ' . $invoiceName,
+                        'date_due'   => $validated['date_due'] ?? null,
+                        'status'     => 'to-do',
+                        'priority'   => 'medium',
+                    ]);
+                    $taskCreated = true;
+                } catch (\Exception $taskException) {
+                    Log::error('Erro ao criar tarefa para invoice', [
+                        'invoice_id' => $invoice->id,
+                        'error'      => $taskException->getMessage(),
+                    ]);
+                }
+            }
+
+            $response = InvoicesResource::collection([$invoice->load('tasks')])->response()->getData(true);
+            $response['task_created'] = $taskCreated;
+
+            return response()->json($response);
         } catch (ValidationException $validationException) {
             return response()->json([
                 'message' => "Erro de validação",
@@ -227,8 +272,12 @@ class InvoiceController extends Controller
                 'proposal.opportunity',
                 'proposal.opportunity.company',
                 'proposal.opportunity.lead',
+                'lead',
+                'company',
+                'department',
                 'user',
-                'transactions'
+                'transactions',
+                'tasks',
             ]));
         }
         return response()->json([
