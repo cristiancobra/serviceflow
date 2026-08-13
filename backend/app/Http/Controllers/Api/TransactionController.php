@@ -21,6 +21,8 @@ class TransactionController extends Controller
         $transactions = Transaction::with([
             'invoice.proposal.opportunity.company',
             'invoice.proposal.opportunity.lead',
+            'invoice.company',
+            'invoice.lead',
             'bankAccount'
         ])
             ->orderBy('transaction_date', 'desc')

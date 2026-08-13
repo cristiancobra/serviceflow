@@ -128,8 +128,8 @@
                   <td class="w-3/12 px-3 py-3 text-left">
                     <div class="flex items-center gap-2">
                       <font-awesome-icon icon="fa-solid fa-building" class="text-gray-400 text-sm flex-shrink-0" />
-                      <span class="text-sm font-medium text-gray-900 truncate" :title="getClientName(transaction.invoice?.proposal?.opportunity) || '-'">
-                        {{ getClientName(transaction.invoice?.proposal?.opportunity) || '-' }}
+                      <span class="text-sm font-medium text-gray-900 truncate" :title="getClientName(transaction.invoice?.proposal?.opportunity, transaction.invoice) || '-'">
+                        {{ getClientName(transaction.invoice?.proposal?.opportunity, transaction.invoice) || '-' }}
                       </span>
                     </div>
                   </td>
@@ -295,12 +295,12 @@ export default {
           return true;
         }
         
-        if (transaction.invoice?.proposal?.opportunity) {
-          const opportunity = transaction.invoice.proposal.opportunity;
-          const clientName = this.getClientName(opportunity).toLowerCase();
-          if (clientName.includes(term)) {
-            return true;
-          }
+        const clientName = this.getClientName(
+          transaction.invoice?.proposal?.opportunity,
+          transaction.invoice
+        ).toLowerCase();
+        if (clientName.includes(term)) {
+          return true;
         }
         
         if (transaction.bank_account) {
@@ -355,16 +355,16 @@ export default {
   methods: {
     formatDateBr,
     
-    getClientName(opportunity) {
-      if (!opportunity) return 'Cliente não identificado';
-      if (opportunity.company?.business_name) {
-        return opportunity.company.business_name;
+    getClientName(opportunity, invoice) {
+      if (opportunity) {
+        if (opportunity.company?.business_name) return opportunity.company.business_name;
+        if (opportunity.company?.legal_name) return opportunity.company.legal_name;
+        if (opportunity.lead?.name) return opportunity.lead.name;
       }
-      if (opportunity.company?.legal_name) {
-        return opportunity.company.legal_name;
-      }
-      if (opportunity.lead?.name) {
-        return opportunity.lead.name;
+      if (invoice) {
+        if (invoice.company?.business_name) return invoice.company.business_name;
+        if (invoice.company?.legal_name) return invoice.company.legal_name;
+        if (invoice.lead?.name) return invoice.lead.name;
       }
       return 'Cliente não identificado';
     },
