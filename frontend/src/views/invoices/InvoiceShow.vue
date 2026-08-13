@@ -219,7 +219,7 @@
       <div class="section-header">
         <div class="section-title">
           <font-awesome-icon icon="fas fa-coins" class="icon text-xl pe-3" />
-          <h2>Pagamentos Recebidos</h2>
+          <h2>{{ isDebit ? 'Pagamentos Feitos' : 'Pagamentos Recebidos' }}</h2>
         </div>
         <div class="section-action">
           <button
@@ -241,10 +241,10 @@
         v-if="!invoice.transactions || invoice.transactions.length === 0"
         class="w-full rounded-xl border border-dashed border-indigo-200 bg-gradient-to-r from-indigo-50 to-sky-50 py-8 text-center text-indigo-700 shadow-sm"
       >
-        <p class="text-sm font-medium">Nenhum pagamento recebido</p>
+        <p class="text-sm font-medium">{{ isDebit ? 'Nenhum pagamento feito' : 'Nenhum pagamento recebido' }}</p>
       </div>
 
-      <!-- <div
+      <div
         v-else
         class="mt-4 space-y-2 rounded-xl border border-gray-200 bg-white p-2 border-t-4 border-t-indigo-500 shadow-sm"
       >
@@ -279,7 +279,7 @@
             />
           </div>
         </div>
-      </div> -->
+      </div>
 
       <!-- Totais da fatura -->
       <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -290,12 +290,14 @@
           </div>
         </div>
         <div
-          class="rounded-xl border border-emerald-200 bg-emerald-50 p-4 shadow-sm"
+          :class="isDebit
+            ? 'rounded-xl border border-red-200 bg-red-50 p-4 shadow-sm'
+            : 'rounded-xl border border-emerald-200 bg-emerald-50 p-4 shadow-sm'"
         >
-          <div class="text-xs font-semibold text-emerald-700">
-            Total Recebido
+          <div :class="isDebit ? 'text-xs font-semibold text-red-700' : 'text-xs font-semibold text-emerald-700'">
+            {{ isDebit ? 'Total Pago' : 'Total Recebido' }}
           </div>
-          <div class="mt-1 text-1xl font-bold text-emerald-800">
+          <div :class="isDebit ? 'mt-1 text-1xl font-bold text-red-800' : 'mt-1 text-1xl font-bold text-emerald-800'">
             <money-field name="paid" :modelValue="transactionsTotal" readonly />
           </div>
         </div>
@@ -360,7 +362,7 @@ import CompanyAvatar from "@/components/common/CompanyAvatar.vue";
 import CompaniesSelectEditableField from "@/components/fields/selects/CompaniesSelectEditableField.vue";
 import LeadAvatar from "@/components/common/LeadAvatar.vue";
 import LeadsSelectEditableField from "@/components/fields/selects/LeadsSelectEditableField.vue";
-// import DateEditableInput from "../../components/fields/date/DateEditableInput.vue";
+import DateEditableInput from "../../components/fields/date/DateEditableInput.vue";
 
 export default {
   data() {
@@ -382,6 +384,7 @@ export default {
     CompaniesSelectEditableField,
     LeadAvatar,
     LeadsSelectEditableField,
+    DateEditableInput,
   },
   computed: {
     invoiceTotal() {
@@ -395,6 +398,9 @@ export default {
     },
     balance() {
       return this.invoiceTotal - this.transactionsTotal;
+    },
+    isDebit() {
+      return this.invoice?.type === 'debit';
     },
   },
   methods: {
