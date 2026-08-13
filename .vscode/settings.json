@@ -1,6 +1,8 @@
 {
     "chat.tools.terminal.autoApprove": {
         "git push": true,
-        "docker compose": true
+        "docker compose": true,
+        "git remote": true,
+        "ssh-add": true
     }
 }
