@@ -66,46 +66,46 @@
         <!-- Tabela do Mês -->
         <div class="bg-white rounded-lg overflow-hidden shadow-md border border-gray-200 mb-6">
           <div class="overflow-x-auto">
-            <table class="w-full">
+            <table class="w-full table-fixed">
               <thead class="bg-gradient-to-r from-gray-100 to-gray-200 border-b-2 border-gray-300">
                 <tr>
-                  <th class="w-1/12 px-3 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-900">
+                  <th class="w-[8%] px-3 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-900">
                     <font-awesome-icon icon="fa-solid fa-calendar" class="mr-1" />
                     Data
                   </th>
-                  <th class="w-3/12 px-3 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-900">
+                  <th class="w-[20%] px-3 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-900">
                     <font-awesome-icon icon="fa-solid fa-user" class="mr-1" />
                     Cliente
                   </th>
-                  <th class="w-2/12 px-3 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-900">
+                  <th class="w-[16%] px-3 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-900">
                     <font-awesome-icon icon="fa-solid fa-bullseye" class="mr-1" />
                     Oportunidade
                   </th>
-                  <th class="w-1/12 px-3 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-900">
+                  <th class="w-[6%] px-3 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-900">
                     <font-awesome-icon icon="fa-solid fa-file-contract" class="mr-1" />
                     Proposta
                   </th>
-                  <th class="w-2/12 px-3 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-900">
+                  <th class="w-[10%] px-3 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-900">
                     <font-awesome-icon icon="fa-solid fa-receipt" class="mr-1" />
                     Fatura
                   </th>
-                  <th class="w-1/12 px-3 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-900">
+                  <th class="w-[8%] px-3 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-900">
                     <font-awesome-icon icon="fa-solid fa-calendar-check" class="mr-1" />
                     Vencimento
                   </th>
-                  <th class="w-2/12 px-3 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-900">
+                  <th class="w-[14%] px-3 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-900">
                     <font-awesome-icon icon="fa-solid fa-wallet" class="mr-1" />
                     Conta
                   </th>
-                  <th class="w-1/12 px-3 py-4 text-right text-xs font-bold uppercase tracking-wider text-gray-900">
+                  <th class="w-[9%] px-3 py-4 text-right text-xs font-bold uppercase tracking-wider text-gray-900">
                     <font-awesome-icon icon="fa-solid fa-money-bill-wave" class="mr-1" />
                     Valor
                   </th>
-                  <th class="w-1/12 px-3 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-900">
+                  <th class="w-[5%] px-3 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-900">
                     <font-awesome-icon icon="fa-solid fa-flag" class="mr-1" />
                     Status
                   </th>
-                  <th class="w-1/12 px-3 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-900">
+                  <th class="w-[4%] px-3 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-900">
                     <font-awesome-icon icon="fa-solid fa-exchange-alt" class="mr-1" />
                     Tipo
                   </th>
@@ -118,15 +118,15 @@
                   class="hover:bg-gray-50 transition-colors"
                 >
                   <!-- Data -->
-                  <td class="w-1/12 px-3 py-3 text-center">
+                  <td class="w-[8%] px-3 py-3 text-center">
                     <span class="inline-block bg-primary-content text-black px-3 py-1 rounded-md text-xs font-semibold">
                       {{ formatDateBr(transaction.transaction_date) }}
                     </span>
                   </td>
                   
                   <!-- Cliente -->
-                  <td class="w-3/12 px-3 py-3 text-left">
-                    <div class="flex items-center gap-2">
+                  <td class="w-[20%] px-3 py-3 text-left max-w-0">
+                    <div class="flex items-center gap-2 min-w-0">
                       <font-awesome-icon icon="fa-solid fa-building" class="text-gray-400 text-sm flex-shrink-0" />
                       <span class="text-sm font-medium text-gray-900 truncate" :title="getClientName(transaction.invoice?.proposal?.opportunity, transaction.invoice) || '-'">
                         {{ getClientName(transaction.invoice?.proposal?.opportunity, transaction.invoice) || '-' }}
@@ -135,21 +135,21 @@
                   </td>
                   
                   <!-- Oportunidade -->
-                  <td class="w-2/12 px-3 py-3 text-left">
+                  <td class="w-[16%] px-3 py-3 text-left max-w-0">
                     <router-link
                       v-if="transaction.invoice?.proposal?.opportunity?.name"
                       :to="{ name: 'opportunityShow', params: { id: transaction.invoice.proposal.opportunity.id } }"
-                      class="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors max-w-full"
+                      class="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors min-w-0"
                       :title="transaction.invoice.proposal.opportunity.name.trim()"
                     >
                       <font-awesome-icon icon="fa-solid fa-bullseye" class="text-xs flex-shrink-0" />
-                      <span class="truncate">{{ transaction.invoice.proposal.opportunity.name.trim() }}</span>
+                      <span class="truncate block">{{ transaction.invoice.proposal.opportunity.name.trim() }}</span>
                     </router-link>
                     <span v-else class="text-gray-400 text-sm italic">-</span>
                   </td>
                   
                   <!-- Proposta -->
-                  <td class="w-1/12 px-3 py-3 text-center">
+                  <td class="w-[6%] px-3 py-3 text-center">
                     <router-link
                       v-if="transaction.invoice?.proposal"
                       :to="{ name: 'proposalShow', params: { id: transaction.invoice.proposal.id } }"
@@ -162,7 +162,7 @@
                   </td>
                   
                   <!-- Fatura -->
-                  <td class="w-2/12 px-3 py-3 text-left">
+                  <td class="w-[10%] px-3 py-3 text-left">
                     <router-link
                       v-if="transaction.invoice"
                       :to="{ name: 'invoiceShow', params: { id: transaction.invoice.id } }"
@@ -179,7 +179,7 @@
                   </td>
                   
                   <!-- Data Vencimento -->
-                  <td class="w-1/12 px-3 py-3 text-center">
+                  <td class="w-[8%] px-3 py-3 text-center">
                     <span v-if="transaction.invoice?.date_due" class="text-sm font-medium text-gray-900">
                       {{ formatDateBr(transaction.invoice.date_due) }}
                     </span>
@@ -187,8 +187,8 @@
                   </td>
                   
                   <!-- Conta -->
-                  <td class="w-2/12 px-3 py-3 text-left">
-                    <div class="flex items-center gap-2">
+                  <td class="w-[14%] px-3 py-3 text-left max-w-0">
+                    <div class="flex items-center gap-2 min-w-0">
                       <font-awesome-icon icon="fa-solid fa-university" class="text-gray-400 text-sm flex-shrink-0" />
                       <span class="text-sm font-medium text-gray-900 truncate" :title="transaction.bank_account?.name || transaction.bank_account?.bank_name || '-'">
                         {{ transaction.bank_account?.name || transaction.bank_account?.bank_name || '-' }}
@@ -197,14 +197,14 @@
                   </td>
                   
                   <!-- Valor -->
-                  <td class="w-1/12 px-3 py-3 text-right">
+                  <td class="w-[9%] px-3 py-3 text-right">
                     <span class="text-sm font-bold" :class="transaction.type === 'credit' ? 'text-green-600' : 'text-red-600'">
                       <money-field name="amount" v-model="transaction.amount" :readonly="true" />
                     </span>
                   </td>
                   
                   <!-- Status -->
-                  <td class="w-1/12 px-3 py-3 text-center">
+                  <td class="w-[5%] px-3 py-3 text-center">
                     <span 
                       class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border transition-shadow"
                       :class="getStatusClass(transaction.status)"
@@ -215,7 +215,7 @@
                   </td>
                   
                   <!-- Tipo -->
-                  <td class="w-1/12 px-3 py-3 text-center">
+                  <td class="w-[4%] px-3 py-3 text-center">
                     <span
                       :class="{
                         'bg-green-100': transaction.type === 'credit',
