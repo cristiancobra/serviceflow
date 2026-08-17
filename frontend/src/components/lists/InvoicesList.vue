@@ -59,27 +59,38 @@
 
 
 
-      <!-- Cabeçalho da Tabela -->
-      <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
-        <div class="flex items-center py-4 px-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100">
-          <div class="w-12 text-gray-700 text-center font-semibold text-sm">Tipo</div>
-          <div class="w-1/12 text-gray-700 text-center font-semibold text-sm">Status</div>
-          <div class="w-1/12 text-gray-700 text-center font-semibold text-sm">Data</div>
-          <div class="w-3/12 text-gray-700 text-center font-semibold text-sm">Oportunidade</div>
-          <div class="w-2/12 text-gray-700 text-center font-semibold text-sm">Cliente</div>
-          <div class="w-1/12 text-gray-700 text-center font-semibold text-sm">Valor</div>
-          <div class="w-1/12 text-gray-700 text-center font-semibold text-sm">Pago</div>
-          <div class="w-1/12 text-gray-700 text-center font-semibold text-sm">Saldo</div>
+      <!-- Estado Vazio -->
+      <div v-if="filteredInvoices.length === 0" class="flex items-center justify-center py-12 px-6 bg-white rounded-lg border border-gray-200">
+        <p class="text-gray-500 text-sm">Nenhuma fatura encontrada</p>
+      </div>
+
+      <!-- Faturas agrupadas por mês -->
+      <div v-for="monthGroup in groupedInvoices" :key="monthGroup.monthKey" class="mb-8">
+        <!-- Header do Mês -->
+        <div class="flex items-center mb-4 sticky top-0 z-10">
+          <div class="flex items-center gap-3 bg-white pe-6 pb-1 pt-10">
+            <span class="font-bold text-primary text-lg whitespace-nowrap">{{ monthGroup.monthLabel }}</span>
+            <span class="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+              {{ monthGroup.invoices.length }} {{ monthGroup.invoices.length === 1 ? 'fatura' : 'faturas' }}
+            </span>
+          </div>
         </div>
 
-        <!-- Linhas da Tabela -->
-        <div v-if="filteredInvoices.length === 0" class="flex items-center justify-center py-12 px-6 bg-white">
-          <p class="text-gray-500 text-sm">Nenhuma fatura encontrada</p>
-        </div>
+        <!-- Tabela do Mês -->
+        <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
+          <div class="flex items-center py-4 px-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100">
+            <div class="w-12 text-gray-700 text-center font-semibold text-sm">Tipo</div>
+            <div class="w-1/12 text-gray-700 text-center font-semibold text-sm">Status</div>
+            <div class="w-1/12 text-gray-700 text-center font-semibold text-sm">Data</div>
+            <div class="w-3/12 text-gray-700 text-center font-semibold text-sm">Oportunidade</div>
+            <div class="w-2/12 text-gray-700 text-center font-semibold text-sm">Cliente</div>
+            <div class="w-1/12 text-gray-700 text-center font-semibold text-sm">Valor</div>
+            <div class="w-1/12 text-gray-700 text-center font-semibold text-sm">Pago</div>
+            <div class="w-1/12 text-gray-700 text-center font-semibold text-sm">Saldo</div>
+          </div>
 
-        <div v-else>
           <component
-            v-for="(invoice, index) in filteredInvoices" :key="invoice.id"
+            v-for="(invoice, index) in monthGroup.invoices" :key="invoice.id"
             :is="invoice.proposal?.opportunity_id ? 'router-link' : 'div'"
             :to="invoice.proposal?.opportunity_id ? { name: 'opportunityShow', params: { id: invoice.proposal.opportunity_id } } : undefined"
             class="flex items-center py-1 px-6 border-b border-gray-100 bg-white hover:bg-blue-50 transition-colors duration-150 cursor-pointer"
@@ -245,6 +256,27 @@ export default {
       }
 
       return filtered;
+    },
+    groupedInvoices() {
+      const groups = {};
+
+      this.filteredInvoices.forEach(invoice => {
+        const date = new Date(invoice.date_due);
+        const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        const monthLabel = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(date);
+
+        if (!groups[monthKey]) {
+          groups[monthKey] = {
+            monthKey,
+            monthLabel: monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1),
+            invoices: []
+          };
+        }
+
+        groups[monthKey].invoices.push(invoice);
+      });
+
+      return Object.values(groups).sort((a, b) => b.monthKey.localeCompare(a.monthKey));
     },
   },
   methods: {
