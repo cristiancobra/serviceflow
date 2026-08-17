@@ -42,13 +42,30 @@
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Ícone (Font Awesome)</label>
-            <input
-              v-model="newDepartment.icon"
-              type="text"
-              placeholder="fa-cogs"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+            <label class="block text-sm font-medium text-gray-700 mb-1">Ícone</label>
+            <button
+              type="button"
+              @click="showIconPicker = showIconPicker === 'new' ? null : 'new'"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg flex items-center gap-2 bg-white hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <font-awesome-icon :icon="`fa-solid ${newDepartment.icon}`" class="text-gray-600" />
+              <span class="text-gray-700 text-sm">{{ newDepartment.icon }}</span>
+              <font-awesome-icon icon="fa-solid fa-chevron-down" class="ml-auto text-gray-400 text-xs" />
+            </button>
+            <div v-if="showIconPicker === 'new'" class="mt-1 p-2 border border-gray-200 rounded-lg bg-white shadow grid grid-cols-6 gap-1 max-h-40 overflow-y-auto">
+              <button
+                v-for="ic in departmentIcons"
+                :key="ic.name"
+                type="button"
+                @click="newDepartment.icon = ic.name; showIconPicker = null"
+                :class="newDepartment.icon === ic.name ? 'bg-blue-100 text-blue-600 ring-1 ring-blue-400' : 'text-gray-600 hover:bg-gray-100'"
+                class="p-2 rounded flex flex-col items-center gap-0.5 transition-colors"
+                :title="ic.label"
+              >
+                <font-awesome-icon :icon="`fa-solid ${ic.name}`" />
+                <span class="text-xs leading-tight truncate w-full text-center">{{ ic.label }}</span>
+              </button>
+            </div>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Ordem</label>
@@ -169,13 +186,30 @@
               </div>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Ícone (Font Awesome)</label>
-              <input
-                v-model="editForm.icon"
-                type="text"
-                placeholder="fa-cogs"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+              <label class="block text-sm font-medium text-gray-700 mb-1">Ícone</label>
+              <button
+                type="button"
+                @click="showIconPicker = showIconPicker === 'edit' ? null : 'edit'"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg flex items-center gap-2 bg-white hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <font-awesome-icon v-if="editForm.icon" :icon="`fa-solid ${editForm.icon}`" class="text-gray-600" />
+                <span class="text-gray-700 text-sm">{{ editForm.icon || 'Selecione um ícone' }}</span>
+                <font-awesome-icon icon="fa-solid fa-chevron-down" class="ml-auto text-gray-400 text-xs" />
+              </button>
+              <div v-if="showIconPicker === 'edit'" class="mt-1 p-2 border border-gray-200 rounded-lg bg-white shadow grid grid-cols-6 gap-1 max-h-40 overflow-y-auto">
+                <button
+                  v-for="ic in departmentIcons"
+                  :key="ic.name"
+                  type="button"
+                  @click="editForm.icon = ic.name; showIconPicker = null"
+                  :class="editForm.icon === ic.name ? 'bg-blue-100 text-blue-600 ring-1 ring-blue-400' : 'text-gray-600 hover:bg-gray-100'"
+                  class="p-2 rounded flex flex-col items-center gap-0.5 transition-colors"
+                  :title="ic.label"
+                >
+                  <font-awesome-icon :icon="`fa-solid ${ic.name}`" />
+                  <span class="text-xs leading-tight truncate w-full text-center">{{ ic.label }}</span>
+                </button>
+              </div>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Ordem</label>
@@ -224,7 +258,40 @@ export default {
     return {
       departments: [],
       showAddForm: false,
+      showIconPicker: null,
       editingId: null,
+      departmentIcons: [
+        { name: 'fa-folder',          label: 'Pasta' },
+        { name: 'fa-building',        label: 'Prédio' },
+        { name: 'fa-briefcase',       label: 'Negócios' },
+        { name: 'fa-users',           label: 'Equipe' },
+        { name: 'fa-user-tie',        label: 'Executivo' },
+        { name: 'fa-cogs',            label: 'Operações' },
+        { name: 'fa-chart-line',      label: 'Análise' },
+        { name: 'fa-coins',           label: 'Finanças' },
+        { name: 'fa-dollar-sign',     label: 'Pagamentos' },
+        { name: 'fa-wallet',          label: 'Carteira' },
+        { name: 'fa-envelope',        label: 'E-mail' },
+        { name: 'fa-globe',           label: 'Global' },
+        { name: 'fa-home',            label: 'Sede' },
+        { name: 'fa-tools',           label: 'Manutenção' },
+        { name: 'fa-tasks',           label: 'Tarefas' },
+        { name: 'fa-project-diagram', label: 'Projetos' },
+        { name: 'fa-comments',        label: 'Comunicação' },
+        { name: 'fa-phone',           label: 'Suporte' },
+        { name: 'fa-receipt',         label: 'Recibos' },
+        { name: 'fa-file-invoice',    label: 'Faturas' },
+        { name: 'fa-tag',             label: 'Marketing' },
+        { name: 'fa-truck',           label: 'Logística' },
+        { name: 'fa-city',            label: 'Filial' },
+        { name: 'fa-university',      label: 'Banco' },
+        { name: 'fa-shopping-cart',   label: 'Vendas' },
+        { name: 'fa-server',          label: 'TI' },
+        { name: 'fa-heart',           label: 'RH' },
+        { name: 'fa-shield',          label: 'Segurança' },
+        { name: 'fa-flask',           label: 'Pesquisa' },
+        { name: 'fa-clipboard',       label: 'Relatórios' },
+      ],
       newDepartment: {
         name: "",
         color: "#3B82F6",
