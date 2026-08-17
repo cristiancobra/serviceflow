@@ -1,175 +1,146 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import AccountShow from '../views/accounts/AccountShow.vue'
-import HomeView from '../views/HomeView.vue'
-import LoginView from '../views/LoginView.vue'
-import BankAccountsIndex from '../views/bank-accounts/BankAccountsIndex.vue'
-import BankAccountShow from '../views/bank-accounts/BankAccountShow.vue'
-import CompaniesIndex from '../views/companies/CompaniesIndex.vue'
-import CompanyShow from '../views/companies/CompanyShow.vue'
-import CostsIndex from '../views/costs/CostsIndex.vue'
-import CostShow from '../views/costs/CostShow.vue'
-import Financial from '../views/dashboards/FinancialView.vue'
-import JourneysIndex from '../views/journeys/JourneysIndex.vue'
-import LeadsIndex from '../views/leads/LeadsIndex.vue'
-import LeadShow from '../views/leads/LeadShow.vue'
-import InvoiceShow from '@/views/invoices/InvoiceShow.vue'
-import InvoicesIndex from '@/views/invoices/InvoicesIndex.vue'
-import AccountsPayableIndex from '@/views/invoices/AccountsPayableIndex.vue'
-import LinksIndex from '../views/links/LinksIndex.vue'
-import OpportunitiesIndex from '../views/opportunities/OpportunitiesIndex.vue'
-import OpportunityShow from '../views/opportunities/OpportunityShow.vue'
-import ServicesIndex from '../views/services/ServicesIndex.vue'
-import ServiceShow from '../views/services/ServiceShow.vue'
 import store from '@/store'
-import ProjectsIndex from '../views/projects/ProjectsIndex.vue'
-import ProjectShow from '../views/projects/ProjectShow.vue'
-import ProposalsIndex from '@/views/proposals/ProposalsIndex.vue'
-import ProposalShow from '@/views/proposals/ProposalShow.vue'
-import TasksIndex from '../views/tasks/TasksIndex.vue'
-import TransactionsIndex from '../views/transactions/TransactionsIndex.vue'
-import UserShow from '@/views/users/UserShow.vue'
-
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: () => import('../views/HomeView.vue')
   },
   {
     path: '/accounts/:id',
     name: 'accountShow',
-    component: AccountShow
+    component: () => import('../views/accounts/AccountShow.vue')
   },
   {
     path: '/bank-accounts',
     name: 'bank-accounts',
-    component: BankAccountsIndex
+    component: () => import('../views/bank-accounts/BankAccountsIndex.vue')
   },
   {
     path: '/bank-accounts/:id',
     name: 'bank-accounts-show',
-    component: BankAccountShow
+    component: () => import('../views/bank-accounts/BankAccountShow.vue')
   },
   {
     path: '/companies',
     name: 'companiesIndex',
-    component: CompaniesIndex
+    component: () => import('../views/companies/CompaniesIndex.vue')
   },
   {
     path: '/companies/:id',
     name: 'companyShow',
-    component: CompanyShow
+    component: () => import('../views/companies/CompanyShow.vue')
   },
   {
     path: '/costs',
     name: 'costsIndex',
-    component: CostsIndex
+    component: () => import('../views/costs/CostsIndex.vue')
   },
   {
     path: '/costs/:id',
     name: 'costShow',
-    component: CostShow
+    component: () => import('../views/costs/CostShow.vue')
   },
   {
     path: '/financial',
     name: 'financial',
-    component: Financial
+    component: () => import('../views/dashboards/FinancialView.vue')
   },
   {
     path: '/invoices/:id',
     name: 'invoiceShow',
-    component: InvoiceShow
+    component: () => import('@/views/invoices/InvoiceShow.vue')
   },
   {
     path: '/invoices',
     name: 'invoicesIndex',
-    component: InvoicesIndex
+    component: () => import('@/views/invoices/InvoicesIndex.vue')
   },
   {
     path: '/contas-a-pagar',
     name: 'accountsPayable',
-    component: AccountsPayableIndex
+    component: () => import('@/views/invoices/AccountsPayableIndex.vue')
   },
   {
     path: '/leads',
     name: 'leadsIndex',
-    component: LeadsIndex
+    component: () => import('../views/leads/LeadsIndex.vue')
   },
   {
     path: '/journeys',
     name: 'journeysIndex',
-    component: JourneysIndex
+    component: () => import('../views/journeys/JourneysIndex.vue')
   },
   {
     path: '/leads/:id',
     name: 'leadShow',
-    component: LeadShow
+    component: () => import('../views/leads/LeadShow.vue')
   },
   {
     path: '/links',
     name: 'linksIndex',
-    component: LinksIndex
+    component: () => import('../views/links/LinksIndex.vue')
   },
   {
     path: '/login',
     name: 'login',
-    component: LoginView
+    component: () => import('../views/LoginView.vue')
   },
   {
     path: '/services',
     name: 'serviceIndex',
-    component: ServicesIndex
+    component: () => import('../views/services/ServicesIndex.vue')
   },
   {
     path: '/services/:id',
     name: 'serviceShow',
-    component: ServiceShow
+    component: () => import('../views/services/ServiceShow.vue')
   },
   {
     path: '/opportunities',
     name: 'opportunitiesIndex',
-    component: OpportunitiesIndex
+    component: () => import('../views/opportunities/OpportunitiesIndex.vue')
   },
   {
     path: '/opportunities/:id',
     name: 'opportunityShow',
-    component: OpportunityShow
+    component: () => import('../views/opportunities/OpportunityShow.vue')
   },
   {
     path: '/projects',
     name: 'projectsIndex',
-    component: ProjectsIndex
+    component: () => import('../views/projects/ProjectsIndex.vue')
   },
   {
     path: '/projects/:id',
     name: 'projectShow',
-    component: ProjectShow
+    component: () => import('../views/projects/ProjectShow.vue')
   },
   {
     path: '/proposals',
     name: 'proposalsIndex',
-    component: ProposalsIndex
+    component: () => import('@/views/proposals/ProposalsIndex.vue')
   },
   {
     path: '/proposals/:id',
     name: 'proposalShow',
-    component: ProposalShow
+    component: () => import('@/views/proposals/ProposalShow.vue')
   },
   {
     path: '/tasks',
     name: 'tasksIndex',
-    component: TasksIndex
+    component: () => import('../views/tasks/TasksIndex.vue')
   },
   {
     path: '/transactions',
     name: 'transactionsIndex',
-    component: TransactionsIndex
+    component: () => import('../views/transactions/TransactionsIndex.vue')
   },
   {
     path: '/users/:id',
     name: 'userShow',
-    component: UserShow
+    component: () => import('@/views/users/UserShow.vue')
   }
 ]
 
