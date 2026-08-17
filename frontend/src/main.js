@@ -28,11 +28,64 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 /* import specific icons */
-import { fas } from '@fortawesome/free-solid-svg-icons'
-import { fab } from '@fortawesome/free-brands-svg-icons'
+import {
+  faArrowDown, faArrowLeft, faArrowUp,
+  faBalanceScale, faBolt, faBriefcase, faBuilding, faBuildingColumns, faBullseye,
+  faCalendar, faCalendarAlt, faCalendarCheck, faCalendarPlus,
+  faCamera, faChartLine, faCheck, faCheckCircle, faCheckSquare,
+  faChevronDown, faChevronRight, faChevronUp,
+  faCircle, faCircleCheck, faCircleDot, faCircleExclamation,
+  faCity, faClipboard, faClock, faCogs, faCoins, faComments, faCopy, faCreditCard,
+  faDollar, faDollarSign, faEdit, faEnvelope,
+  faExchangeAlt, faExclamationCircle, faExternalLinkAlt,
+  faEye, faEyeSlash,
+  faFileContract, faFileInvoice, faFileInvoiceDollar,
+  faFlag, faFlask, faFolder, faFolderOpen,
+  faGlobe, faHand, faHashtag, faHeart, faHistory, faHome, faHourglassHalf,
+  faIdCard, faInbox, faInfo, faInfoCircle,
+  faLandmark, faLink, faList, faLock,
+  faMagnifyingGlass, faMailBulk, faMapMarkerAlt, faMinus, faMobileAlt,
+  faMoneyBill, faMoneyBillWave,
+  faPauseCircle, faPen, faPercent, faPhone, faPlay, faPlayCircle,
+  faPlus, faPlusCircle, faProjectDiagram,
+  faReceipt, faRotate, faSearch, faServer, faShield, faShoppingCart,
+  faSignOut, faSpinner, faStop, faSync,
+  faTag, faTags, faTasks, faTimes, faTimesCircle, faTools, faTrash, faTrashAlt,
+  faTriangleExclamation, faTruck,
+  faUniversity, faUser, faUserCircle, faUserPlus, faUserTie, faUsers,
+  faWallet, faX, faXmark
+} from '@fortawesome/free-solid-svg-icons'
+import { faFacebook, faInstagram, faLinkedin } from '@fortawesome/free-brands-svg-icons'
 
 /* add icons to the library */
-library.add(fas, fab)
+library.add(
+  faArrowDown, faArrowLeft, faArrowUp,
+  faBalanceScale, faBolt, faBriefcase, faBuilding, faBuildingColumns, faBullseye,
+  faCalendar, faCalendarAlt, faCalendarCheck, faCalendarPlus,
+  faCamera, faChartLine, faCheck, faCheckCircle, faCheckSquare,
+  faChevronDown, faChevronRight, faChevronUp,
+  faCircle, faCircleCheck, faCircleDot, faCircleExclamation,
+  faCity, faClipboard, faClock, faCogs, faCoins, faComments, faCopy, faCreditCard,
+  faDollar, faDollarSign, faEdit, faEnvelope,
+  faExchangeAlt, faExclamationCircle, faExternalLinkAlt,
+  faEye, faEyeSlash,
+  faFileContract, faFileInvoice, faFileInvoiceDollar,
+  faFlag, faFlask, faFolder, faFolderOpen,
+  faGlobe, faHand, faHashtag, faHeart, faHistory, faHome, faHourglassHalf,
+  faIdCard, faInbox, faInfo, faInfoCircle,
+  faLandmark, faLink, faList, faLock,
+  faMagnifyingGlass, faMailBulk, faMapMarkerAlt, faMinus, faMobileAlt,
+  faMoneyBill, faMoneyBillWave,
+  faPauseCircle, faPen, faPercent, faPhone, faPlay, faPlayCircle,
+  faPlus, faPlusCircle, faProjectDiagram,
+  faReceipt, faRotate, faSearch, faServer, faShield, faShoppingCart,
+  faSignOut, faSpinner, faStop, faSync,
+  faTag, faTags, faTasks, faTimes, faTimesCircle, faTools, faTrash, faTrashAlt,
+  faTriangleExclamation, faTruck,
+  faUniversity, faUser, faUserCircle, faUserPlus, faUserTie, faUsers,
+  faWallet, faX, faXmark,
+  faFacebook, faInstagram, faLinkedin
+)
 
 // paginate
 import Paginate from "vuejs-paginate-next";
