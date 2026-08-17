@@ -55,7 +55,7 @@
           <div
             class="absolute -top-3 left-4 inline-flex items-center gap-2 rounded-md bg-primary px-2 py-0.5 text-xs font-semibold text-white shadow"
           >
-            <font-awesome-icon icon="fas fa-badge-dollar" class="hidden" />
+            <font-awesome-icon icon="fas fa-dollar-sign" class="hidden" />
             <span>VALOR DA FATURA</span>
           </div>
           <div class="flex items-center justify-between gap-4">

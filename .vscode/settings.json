@@ -3,6 +3,7 @@
         "git push": true,
         "docker compose": true,
         "git remote": true,
-        "ssh-add": true
+        "ssh-add": true,
+        "npm run build": true
     }
 }
