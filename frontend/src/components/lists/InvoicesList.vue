@@ -78,8 +78,10 @@
         </div>
 
         <div v-else>
-          <router-link v-for="(invoice, index) in filteredInvoices" :key="invoice.id"
-            :to="{ name: 'opportunityShow', params: { id: invoice.proposal.opportunity_id } }"
+          <component
+            v-for="(invoice, index) in filteredInvoices" :key="invoice.id"
+            :is="invoice.proposal?.opportunity_id ? 'router-link' : 'div'"
+            :to="invoice.proposal?.opportunity_id ? { name: 'opportunityShow', params: { id: invoice.proposal.opportunity_id } } : undefined"
             class="flex items-center py-1 px-6 border-b border-gray-100 bg-white hover:bg-blue-50 transition-colors duration-150 cursor-pointer"
             :class="{ 'bg-gray-50': index % 2 === 0 }">
             <!-- Tipo -->
@@ -148,7 +150,7 @@
                 'text-gray-600': invoice.balance < 0,
               }" readonly />
             </div>
-          </router-link>
+          </component>
         </div>
       </div>
     </section>
