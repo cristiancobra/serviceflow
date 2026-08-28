@@ -61,6 +61,15 @@
             {{ formatDuration(journey.duration) }}
           </p>
         </div>
+        <div class="flex items-center mr-5 text-gray-600 min-w-0">
+          <TextEditableField
+            name="details"
+            class="text-sm truncate"
+            v-model="journey.details"
+            emptyText="sem detalhamento"
+            @save="updateJourney('details', $event, journey.id)"
+          />
+        </div>
         <div class="flex items-center mr-5 ml-auto gap-2">
           <button
             v-if="!journey.end"
@@ -102,11 +111,13 @@ import { mapMutations } from "vuex";
 import DateEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import TimeEditableInput from "@/components/forms/inputs/time/TimeEditableInput.vue";
 import PaginateNav from "@/components/layout/PaginateNav.vue";
+import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 
 export default {
   name: "JourneysList",
   components: {
     DateEditableInput,
+    TextEditableField,
     PaginateNav,
     TimeEditableInput,
   },

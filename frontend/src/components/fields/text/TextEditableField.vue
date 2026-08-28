@@ -3,11 +3,11 @@
     <label v-if="label" class="" :for="name">{{ label }}</label>
     <div v-if="!editing" @click="startEditing">
       <div v-if="modelValue" class="">
-        <p>
+        <p class="text-gray-900">
         {{ modelValue }}
         </p>
       </div>
-      <div v-else>não informado</div>
+      <div v-else class="text-gray-400">{{ emptyText }}</div>
     </div>
     <div v-else-if="editing">
       <input
@@ -38,6 +38,10 @@ export default {
     modelValue: [String, Number],
     placeholder: String,
     status: String,
+    emptyText: {
+      type: String,
+      default: "não informado",
+    },
   },
   methods: {
     startEditing() {

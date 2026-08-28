@@ -210,14 +210,6 @@
             <font-awesome-icon icon="fas fa-play" class="flex-shrink-0 text-green-600" />
             <span class="truncate font-semibold text-primary">{{ taskDisplayName }}</span>
           </button>
-          <button
-            @click="stopJourney(openJourney.id)"
-            class="w-7 h-7 flex-shrink-0 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-700 transition-all duration-200 hover:scale-105 text-sm shadow"
-            title="Parar jornada"
-            style="margin-left: 2px"
-          >
-            <font-awesome-icon icon="fas fa-hand" />
-          </button>
         </div>
 
         <navbar-user-menu />
@@ -229,8 +221,6 @@
 
 <script>
 import { mapActions, mapState, mapMutations } from "vuex";
-import { BACKEND_URL, JOURNEY_URL_PARAMETER } from "@/config/apiConfig";
-import axios from "axios";
 import NavbarUserMenu from "./NavbarUserMenu.vue";
 import logoServiceflow from '@/assets/logo-serviceflow-ROXO.png';
 
@@ -251,7 +241,7 @@ export default {
   },
   methods: {
     ...mapActions(["logout"]),
-    ...mapMutations(["setOpenJourney", "setSelectedTaskId"]),
+    ...mapMutations(["setSelectedTaskId"]),
     async submitLogout() {
       await this.logout();
       this.toggleActive("logout");
@@ -267,15 +257,6 @@ export default {
     },
     hideSubmenu(submenu) {
       this.submenus[submenu] = false;
-    },
-    async stopJourney(journeyId) {
-      const now = new Date().toISOString();
-      try {
-        await axios.put(`${BACKEND_URL}${JOURNEY_URL_PARAMETER}${journeyId}`, { id: journeyId, end: now });
-        this.setOpenJourney(null);
-      } catch (error) {
-        console.error("Erro ao parar a jornada:", error);
-      }
     },
     openTaskModal() {
       if (this.openJourney && this.openJourney.task_id) {
