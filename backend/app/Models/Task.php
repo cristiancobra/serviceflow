@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Invoice;
+use App\Models\Concerns\BelongsToAccount;
 
 class Task extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    use BelongsToAccount;
 
 	protected $table = 'tasks';
 	

@@ -17,10 +17,7 @@ class DepartmentController extends Controller
      */
     public function index(Request $request)
     {
-        $user = $request->user();
-        
-        $departments = Department::where('account_id', $user->account_id)
-            ->orderBy('order')
+        $departments = Department::orderBy('order')
             ->get();
 
         return DepartmentResource::collection($departments);
@@ -51,8 +48,6 @@ class DepartmentController extends Controller
             'order' => 'integer|min:0',
         ]);
 
-        $validated['account_id'] = $user->account_id;
-
         $department = Department::create($validated);
 
         return (new DepartmentResource($department))->response()->setStatusCode(201);
@@ -79,14 +74,7 @@ class DepartmentController extends Controller
     public function update(Request $request, Department $department)
     {
         $user = $request->user();
-        
-        // Verifica se o departamento pertence à conta do usuário
-        if ($department->account_id !== $user->account_id) {
-            return response()->json([
-                'message' => 'Acesso negado',
-            ], 403);
-        }
-        
+
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255',
             'slug' => [
@@ -119,15 +107,6 @@ class DepartmentController extends Controller
      */
     public function destroy(Request $request, Department $department)
     {
-        $user = $request->user();
-        
-        // Verifica se o departamento pertence à conta do usuário
-        if ($department->account_id !== $user->account_id) {
-            return response()->json([
-                'message' => 'Acesso negado',
-            ], 403);
-        }
-        
         // Verifica se há tarefas associadas
         if ($department->tasks()->count() > 0) {
             return response()->json([

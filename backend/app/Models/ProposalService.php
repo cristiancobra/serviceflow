@@ -5,11 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Concerns\BelongsToAccount;
 
 class ProposalService extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    use BelongsToAccount;
 
     protected $table = 'proposal_services';
 

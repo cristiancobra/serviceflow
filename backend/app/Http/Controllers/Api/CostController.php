@@ -17,8 +17,7 @@ class CostController extends Controller
      */
     public function index()
     {
-        $costs = Cost::where('account_id', auth()->user()->account_id)
-        ->orderBy('name', 'asc')
+        $costs = Cost::orderBy('name', 'asc')
         ->paginate(500);
 
     return CostResource::collection($costs);
@@ -34,7 +33,6 @@ class CostController extends Controller
     {
         try {
             $cost = new Cost;
-            $cost->account_id = auth()->user()->account_id;
             $cost->fill($request->all());
             $cost->save();
             

@@ -13,7 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::rename('proposal_items', 'proposal_services');
+        if (Schema::hasTable('proposal_items')) {
+            Schema::rename('proposal_items', 'proposal_services');
+        }
     }
     /**
      * Reverse the migrations.
@@ -22,6 +24,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::rename('proposal_services', 'proposal_items');
+        if (Schema::hasTable('proposal_services') && !Schema::hasTable('proposal_items')) {
+            Schema::rename('proposal_services', 'proposal_items');
+        }
     }
 };

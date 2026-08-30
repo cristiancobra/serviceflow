@@ -13,9 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('proposals', function (Blueprint $table) {
-            $table->renameColumn('profit_margin', 'total_profit');
-        });
+        if (Schema::hasColumn('proposals', 'profit_margin')) {
+            Schema::table('proposals', function (Blueprint $table) {
+                $table->renameColumn('profit_margin', 'total_profit');
+            });
+        }
     }
 
     /**
@@ -25,8 +27,10 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('proposals', function (Blueprint $table) {
-            $table->renameColumn('total_profit', 'profit_margin');
-        });
+        if (Schema::hasColumn('proposals', 'total_profit')) {
+            Schema::table('proposals', function (Blueprint $table) {
+                $table->renameColumn('total_profit', 'profit_margin');
+            });
+        }
     }
 };

@@ -18,7 +18,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        return UsersResource::collection(User::all());
+        $users = User::where('account_id', Auth::user()->account_id)->get();
+
+        return UsersResource::collection($users);
     }
 
     /**
@@ -50,6 +52,8 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        abort_unless($user->account_id === Auth::user()->account_id, 404);
+
         return UsersResource::make($user);
     }
 
@@ -103,6 +107,8 @@ class UserController extends Controller
      */
     public function updatePhoto(Request $request, User $user)
     {
+        abort_unless($user->account_id === Auth::user()->account_id, 404);
+
         $request->validate([
             'photo' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:3048', // Max 2MB
         ]);

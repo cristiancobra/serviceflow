@@ -10,10 +10,11 @@ use App\Models\Account;
 use App\Models\Invoice;
 use App\Models\ProposalCost;
 use App\Models\ProposalService;
+use App\Models\Concerns\BelongsToAccount;
 
 class Proposal extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, BelongsToAccount;
 
     protected $fillable = [
         'id',

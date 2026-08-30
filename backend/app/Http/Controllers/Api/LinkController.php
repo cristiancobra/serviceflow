@@ -23,7 +23,6 @@ class LinkController extends Controller
             'opportunity',
             'project'
         ])
-            ->where('account_id', auth()->user()->account_id)
             ->orderBy('created_at', 'desc')
             ->paginate(500);
 

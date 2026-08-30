@@ -17,8 +17,7 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        $services = Service::where('account_id', auth()->user()->account_id)
-            ->with('costs') // Carrega os custos relacionados ao serviço
+        $services = Service::with('costs') // Carrega os custos relacionados ao serviço
             ->orderBy('name', 'asc')
             ->paginate(500);
 

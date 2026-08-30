@@ -177,7 +177,6 @@ class TaskController extends Controller
             'opportunity.company',
             'department'
         ])
-            ->where('account_id', auth()->user()->account_id)
             ->orderBy('date_due', 'desc');
 
         if ($status) {
@@ -226,7 +225,6 @@ class TaskController extends Controller
             'opportunity.company',
             'department'
         ])
-            ->where('account_id', auth()->user()->account_id)
             ->whereNull('date_canceled')
             ->orderBy('date_due', 'desc');
 
@@ -360,7 +358,6 @@ class TaskController extends Controller
             'opportunity.company',
             'department'
         ])
-            ->where('account_id', auth()->user()->account_id)
             ->where(function ($query) {
                 // Inclui tarefas com oportunidades não canceladas
                 $query->whereHas('opportunity', function ($subQuery) {

@@ -10,10 +10,11 @@ use App\Models\Lead;
 use App\Models\Link;
 use App\Models\Project;
 use App\Models\Task;
+use App\Models\Concerns\BelongsToAccount;
 
 class Opportunity extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, BelongsToAccount;
 
     protected $fillable = [
         'account_id',

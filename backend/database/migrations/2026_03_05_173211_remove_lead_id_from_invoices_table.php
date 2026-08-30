@@ -15,21 +15,23 @@ return new class extends Migration
     public function up()
     {
         Schema::table('invoices', function (Blueprint $table) {
-            // Verifica se a foreign key existe antes de tentar remover
-            $foreignKeys = DB::select(
-                "SELECT CONSTRAINT_NAME 
-                FROM information_schema.TABLE_CONSTRAINTS 
-                WHERE TABLE_SCHEMA = ? 
-                AND TABLE_NAME = 'invoices' 
-                AND CONSTRAINT_TYPE = 'FOREIGN KEY' 
-                AND CONSTRAINT_NAME LIKE '%lead_id%'",
-                [env('DB_DATABASE', 'serviceflow')]
-            );
+            // Verifica se a foreign key existe antes de tentar remover (checagem específica do MySQL)
+            if (DB::connection()->getDriverName() === 'mysql') {
+                $foreignKeys = DB::select(
+                    "SELECT CONSTRAINT_NAME
+                    FROM information_schema.TABLE_CONSTRAINTS
+                    WHERE TABLE_SCHEMA = ?
+                    AND TABLE_NAME = 'invoices'
+                    AND CONSTRAINT_TYPE = 'FOREIGN KEY'
+                    AND CONSTRAINT_NAME LIKE '%lead_id%'",
+                    [env('DB_DATABASE', 'serviceflow')]
+                );
 
-            if (!empty($foreignKeys)) {
-                $table->dropForeign(['lead_id']);
+                if (!empty($foreignKeys)) {
+                    $table->dropForeign(['lead_id']);
+                }
             }
-            
+
             // Remove a coluna se existir
             if (Schema::hasColumn('invoices', 'lead_id')) {
                 $table->dropColumn('lead_id');
