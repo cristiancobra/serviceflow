@@ -250,9 +250,20 @@ export default {
     async fetchInvoices() {
       this.isLoading = true;
       try {
-        const response = await axios.get(`${BACKEND_URL}invoices?type=debit&per_page=500`);
-        const data = response.data?.data || response.data || [];
-        this.invoices = data.filter((i) => i.type === "debit");
+        let page = 1;
+        let lastPage = 1;
+        const all = [];
+
+        do {
+          const response = await axios.get(`${BACKEND_URL}invoices`, {
+            params: { type: "debit", per_page: 500, page },
+          });
+          all.push(...(response.data?.data || []));
+          lastPage = response.data?.meta?.last_page || 1;
+          page++;
+        } while (page <= lastPage);
+
+        this.invoices = all;
       } catch (e) {
         console.error("Erro ao carregar contas a pagar:", e);
       } finally {

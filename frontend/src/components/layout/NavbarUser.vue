@@ -82,6 +82,16 @@
                   <span class="text-white ps-2">RELATÓRIOS</span>
                 </li>
               </router-link>
+              <router-link to="/opportunities-hours-report">
+                <li
+                  class="nav-item"
+                  @mouseover="toggleActive('opportunities-hours-report')"
+                  :class="{ active: activeItem === 'opportunities-hours-report' }"
+                >
+                  <font-awesome-icon icon="fas fa-hourglass-half" />
+                  <span class="text-white ps-2">PREVISTO X REALIZADO</span>
+                </li>
+              </router-link>
               <router-link to="/proposals">
                 <li
                   class="nav-item"

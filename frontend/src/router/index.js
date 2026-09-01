@@ -48,6 +48,11 @@ const routes = [
     component: () => import('../views/dashboards/FinancialView.vue')
   },
   {
+    path: '/opportunities-hours-report',
+    name: 'opportunitiesHoursReport',
+    component: () => import('../views/reports/OpportunitiesHoursReportView.vue')
+  },
+  {
     path: '/invoices/:id',
     name: 'invoiceShow',
     component: () => import('@/views/invoices/InvoiceShow.vue')

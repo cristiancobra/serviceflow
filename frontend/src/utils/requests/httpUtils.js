@@ -60,6 +60,18 @@ export const getTransactionsTotals = async (year) => {
   }
 };
 
+// get opportunities hours report (predicted vs real) by year
+export const getOpportunitiesHoursReport = async (year) => {
+  const url = `${BACKEND_URL}opportunities/hours-report`;
+  try {
+    const response = await axios.get(url, { params: { year } });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching opportunities hours report:", error);
+    throw error;
+  }
+};
+
 // fetches all models to index page
 export const index = async (model, params = {}) => {
   validateModel(model);

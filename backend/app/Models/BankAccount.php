@@ -51,13 +51,24 @@ class BankAccount extends Model
     }
 
     /**
-     * Atualiza o saldo da conta baseado nas transações
+     * Saldo atual: initial_balance + créditos (entradas) - débitos (saídas).
+     * Calculado sob demanda (não há coluna persistida) para nunca ficar desatualizado.
+     */
+    public function getBalanceAttribute()
+    {
+        $credits = $this->transactions()->where('type', 'credit')->sum('amount');
+        $debits = $this->transactions()->where('type', 'debit')->sum('amount');
+
+        return round((float) $this->initial_balance + $credits - $debits, 2);
+    }
+
+    /**
+     * Mantido para compatibilidade com o endpoint de "atualizar saldo";
+     * o saldo já é sempre calculado ao vivo por getBalanceAttribute().
      */
     public function updateBalance()
     {
-        $balance = $this->transactions()->sum('amount');
-        $this->update(['balance' => $balance]);
-        return $balance;
+        return $this->balance;
     }
 
     /**

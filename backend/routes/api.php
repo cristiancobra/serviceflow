@@ -126,6 +126,9 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::get('opportunities/open', [OpportunityController::class, 'getOpenOpportunities'])
 		->name('opportunities.open');
 
+	Route::get('opportunities/hours-report', [OpportunityController::class, 'hoursReport'])
+		->name('opportunities.hoursReport');
+
 	Route::apiResource('opportunities', OpportunityController::class)->only([
 		'index',
 		'store',

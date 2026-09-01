@@ -33,6 +33,10 @@ class InvoiceController extends Controller
             'tasks',
         ])->orderBy('date_due', 'desc');
 
+        if ($request->filled('type')) {
+            $query->where('type', $request->query('type'));
+        }
+
         $filter = $request->query('filter');
 
         if ($filter === 'overdue_debit') {
@@ -56,7 +60,10 @@ class InvoiceController extends Controller
                   ->whereNotIn('status', [Invoice::STATUS_PAID, Invoice::STATUS_CANCELLED]);
         }
 
-        $invoices = $query->paginate(500);
+        $perPage = (int) $request->query('per_page', 500);
+        $perPage = $perPage > 0 ? min($perPage, 500) : 500;
+
+        $invoices = $query->paginate($perPage);
 
         return InvoicesResource::collection($invoices);
     }
@@ -505,21 +512,13 @@ class InvoiceController extends Controller
         ]);
 
         if ($remainingInvoicesCount > 0) {
-            // Calcula o novo valor por fatura restante
-            $newPricePerInvoice = round($remainingAfterChange / $remainingInvoicesCount, 2);
+            // Mesmo cálculo de divisão em parcelas usado em Proposal::redistributeInvoices,
+            // garantindo que a soma das faturas restantes bata exatamente com o valor disponível.
+            $installmentAmounts = Invoice::splitIntoInstallments($remainingAfterChange, $remainingInvoicesCount);
 
-            // Atualiza todas as faturas seguintes com o valor calculado
-            foreach ($remainingInvoices as $index => $invoice) {
-                $invoice->update(['price' => $newPricePerInvoice, 'balance' => $newPricePerInvoice]);
-            }
-
-            // Ajusta a última fatura para compensar diferenças de arredondamento
-            $totalCalculated = $sumBefore + $newPrice + ($newPricePerInvoice * $remainingInvoicesCount);
-            $difference = $totalPrice - $totalCalculated;
-            
-            if ($difference != 0 && $remainingInvoicesCount > 0) {
-                $lastInvoice = $remainingInvoices->last();
-                $lastInvoice->update(['price' => $newPricePerInvoice + $difference, 'balance' => $newPricePerInvoice + $difference]);
+            foreach ($remainingInvoices->values() as $index => $invoice) {
+                $amount = $installmentAmounts[$index];
+                $invoice->update(['price' => $amount, 'balance' => $amount]);
             }
         }
     }

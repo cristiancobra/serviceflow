@@ -199,16 +199,12 @@ class Proposal extends Model
         if ($remainingBalance > 0 && $newInvoicesNeeded > 0) {
             $lastDueDate = $paidInvoices->count() > 0 ? $paidInvoices->max('date_due') : $firstDueDate;
 
-            $pricePerNewInstallment = floor(($remainingBalance * 100) / $newInvoicesNeeded) / 100;
-            $remainder = $remainingBalance - ($pricePerNewInstallment * $newInvoicesNeeded);
+            $installmentAmounts = Invoice::splitIntoInstallments($remainingBalance, $newInvoicesNeeded);
 
-            for ($i = 1; $i <= $newInvoicesNeeded; $i++) {
+            foreach ($installmentAmounts as $index => $invoicePrice) {
+                $i = $index + 1;
                 $dueDate = date('Y-m-d', strtotime("+$i month", strtotime($lastDueDate)));
-                
-                $invoicePrice = ($i === $newInvoicesNeeded) 
-                    ? $pricePerNewInstallment + $remainder 
-                    : $pricePerNewInstallment;
-                
+
                 Invoice::create([
                     'proposal_id' => $this->id,
                     'user_id' => $existingUserId,

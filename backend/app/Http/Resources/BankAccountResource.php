@@ -24,6 +24,8 @@ class BankAccountResource extends JsonResource
             'agency' => $this->agency,
             'initial_balance' => $this->initial_balance,
             'initial_balance_formatted' => 'R$ ' . number_format($this->initial_balance, 2, ',', '.'),
+            'balance' => $this->balance,
+            'balance_formatted' => 'R$ ' . number_format($this->balance, 2, ',', '.'),
             'type' => $this->type,
             'type_label' => $this->type_label,
             'is_active' => $this->is_active,

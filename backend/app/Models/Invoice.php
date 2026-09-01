@@ -160,4 +160,27 @@ class Invoice extends Model
         $options = self::getStatusOptions();
         return $options[$this->status] ?? 'Desconhecido';
     }
+
+    /**
+     * Divide um valor total em $count parcelas de 2 casas decimais cuja soma bate
+     * exatamente com o valor original, jogando o resto do arredondamento na última parcela.
+     *
+     * Única fonte de verdade para esse cálculo — usada tanto na redistribuição de parcelas
+     * (Proposal::redistributeInvoices) quanto no ajuste manual de uma fatura já criada
+     * (InvoiceController::adjustInvoicePrices).
+     *
+     * @return float[] Lista com $count valores, na ordem em que devem ser aplicados às parcelas.
+     */
+    public static function splitIntoInstallments(float $totalAmount, int $count)
+    {
+        if ($count <= 0) {
+            return [];
+        }
+
+        $perInstallment = floor(($totalAmount * 100) / $count) / 100;
+        $amounts = array_fill(0, $count, $perInstallment);
+        $amounts[$count - 1] = round($totalAmount - ($perInstallment * ($count - 1)), 2);
+
+        return $amounts;
+    }
 }
