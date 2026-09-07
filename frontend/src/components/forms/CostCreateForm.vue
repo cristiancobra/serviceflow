@@ -69,22 +69,12 @@
                 >
                   Preço
                 </label>
-                <div class="relative">
-                  <span
-                    class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium"
-                  >
-                    R$
-                  </span>
-                  <input
-                    id="price"
-                    type="text"
-                    name="price"
-                    v-model="form.price"
-                    v-mask-decimal.br="2"
-                    placeholder="0,00"
-                    class="w-full pl-10 pr-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out hover:border-gray-400 text-right"
-                  />
-                </div>
+                <money-input
+                  name="price"
+                  v-model="form.price"
+                  show-currency-symbol
+                  class="w-full pr-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out hover:border-gray-400"
+                />
                 <div v-if="errors.price" class="mt-2">
                   <span class="text-sm text-red-600 font-medium">
                     * {{ errors.price[0] }}
@@ -114,6 +104,7 @@
 <script>
 import { submitFormCreate } from "@/utils/requests/httpUtils";
 import TextInput from "./inputs/text/TextInput.vue";
+import MoneyInput from "./inputs/money/MoneyInput.vue";
 
 export default {
   emits: ["new-cost-event"],
@@ -136,6 +127,7 @@ export default {
   },
   components: {
     TextInput,
+    MoneyInput,
   },
   methods: {
     submitFormCreate,
@@ -143,15 +135,7 @@ export default {
       this.isModalVisible = false;
     },
     async submitForm() {
-      // Criar uma cópia do formulário para envio
-      const formToSubmit = {
-        ...this.form,
-        price: this.form.price 
-          ? parseFloat(this.form.price.toString().replace(",", "."))
-          : null
-      };
-
-      const { data, error } = await this.submitFormCreate("costs", formToSubmit);
+      const { data, error } = await this.submitFormCreate("costs", this.form);
 
       if (data) {
         this.isModalVisible = false;

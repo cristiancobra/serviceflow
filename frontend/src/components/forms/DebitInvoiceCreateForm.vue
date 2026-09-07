@@ -110,16 +110,11 @@
             </label>
             <div class="flex items-center">
               <span class="text-gray-500 mr-2">R$</span>
-              <input
-                id="amount"
-                v-model.number="totalAmount"
-                @input="updateInstallments"
-                type="number"
-                step="0.01"
-                min="0"
+              <money-input
+                name="amount"
+                :model-value="totalAmount"
+                @update:model-value="(value) => { totalAmount = value; updateInstallments(); }"
                 class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                placeholder="0,00"
-                required
               />
             </div>
           </div>
@@ -165,14 +160,11 @@
                 </div>
                 <div class="flex items-center gap-2 sm:max-w-xs">
                   <span class="text-gray-500">R$</span>
-                  <input
-                    v-model.number="form.prices[index]"
-                    @input="adjustPrices(index)"
-                    type="number"
-                    step="0.01"
-                    min="0"
+                  <money-input
+                    :name="`price-${index}`"
+                    :model-value="form.prices[index]"
+                    @update:model-value="(value) => { form.prices[index] = value; adjustPrices(index); }"
                     class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                    required
                   />
                 </div>
               </div>
@@ -264,6 +256,7 @@ import LeadsSelectInput from "./selects/LeadsSelectInput.vue";
 import CompaniesSelectInput from "./selects/CompaniesSelectInput.vue";
 import CompanyCreateForm from "./CompanyCreateForm.vue";
 import LeadCreateForm from "./LeadCreateForm.vue";
+import MoneyInput from "./inputs/money/MoneyInput.vue";
 
 export default {
   name: "DebitInvoiceCreateForm",
@@ -273,6 +266,7 @@ export default {
     CompaniesSelectInput,
     CompanyCreateForm,
     LeadCreateForm,
+    MoneyInput,
   },
   props: {
     proposal: {

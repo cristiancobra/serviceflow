@@ -51,15 +51,11 @@
             </label>
             <div class="flex items-center">
               <span class="text-gray-500 mr-2">R$</span>
-              <input
-                id="amount"
-                v-model.number="totalAmount"
-                type="number"
-                step="0.01"
-                min="0"
+              <money-input
+                name="amount"
+                v-model="totalAmount"
+                disabled
                 class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors bg-gray-100"
-                placeholder="0,00"
-                readonly
               />
             </div>
           </div>
@@ -105,14 +101,11 @@
                 </div>
                 <div class="flex items-center gap-2 sm:max-w-xs">
                   <span class="text-gray-500">R$</span>
-                  <input
-                    v-model.number="form.prices[index]"
-                    @input="adjustPrices(index)"
-                    type="number"
-                    step="0.01"
-                    min="0"
+                  <money-input
+                    :name="`price-${index}`"
+                    :model-value="form.prices[index]"
+                    @update:model-value="(value) => { form.prices[index] = value; adjustPrices(index); }"
                     class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                    required
                   />
                 </div>
               </div>
@@ -189,11 +182,14 @@
 
 <script>
 import { submitFormCreate, index, get } from "@/utils/requests/httpUtils";
+import MoneyInput from "./inputs/money/MoneyInput.vue";
 
 export default {
   name: "OperationalCostInvoiceCreateForm",
   emits: ["new-invoice-event", "update:modelValue"],
-  components: {},
+  components: {
+    MoneyInput,
+  },
   props: {
     proposal: {
       type: Object,

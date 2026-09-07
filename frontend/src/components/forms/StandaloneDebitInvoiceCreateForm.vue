@@ -129,15 +129,11 @@
               </label>
               <div class="flex items-center gap-2">
                 <span class="text-gray-500 font-medium">R$</span>
-                <input
-                  v-model.number="totalAmount"
-                  @input="updatePrices"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  placeholder="0,00"
+                <money-input
+                  name="total_amount"
+                  :model-value="totalAmount"
+                  @update:model-value="(value) => { totalAmount = value; updatePrices(); }"
                   class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
-                  required
                 />
               </div>
             </div>
@@ -170,14 +166,11 @@
                 </span>
                 <div class="flex items-center gap-2 flex-1">
                   <span class="text-gray-500 text-sm">R$</span>
-                  <input
-                    v-model.number="form.prices[index]"
-                    @input="adjustPrices(index)"
-                    type="number"
-                    step="0.01"
-                    min="0"
+                  <money-input
+                    :name="`price-${index}`"
+                    :model-value="form.prices[index]"
+                    @update:model-value="(value) => { form.prices[index] = value; adjustPrices(index); }"
                     class="flex-1 px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-red-500 text-sm"
-                    required
                   />
                 </div>
               </div>
@@ -275,6 +268,7 @@ import CompaniesSelectInput from "./selects/CompaniesSelectInput.vue";
 import DepartmentsSelectInput from "./selects/DepartmentsSelectInput.vue";
 import { BACKEND_URL } from "@/config/apiConfig";
 import axios from "axios";
+import MoneyInput from "./inputs/money/MoneyInput.vue";
 
 export default {
   name: "StandaloneDebitInvoiceCreateForm",
@@ -283,6 +277,7 @@ export default {
     LeadsSelectInput,
     CompaniesSelectInput,
     DepartmentsSelectInput,
+    MoneyInput,
   },
   props: {
     modelValue: {

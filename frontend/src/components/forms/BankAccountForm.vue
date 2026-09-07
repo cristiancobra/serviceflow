@@ -81,13 +81,11 @@
         <!-- Saldo Inicial -->
         <div class="form-group">
           <label for="initial_balance" class="form-label">Saldo Inicial</label>
-          <input
-            id="initial_balance"
-            v-model.number="form.initial_balance"
-            type="number"
-            step="0.01"
+          <money-input
+            name="initial_balance"
+            v-model="form.initial_balance"
+            allow-negative
             class="form-input"
-            placeholder="0.00"
           />
           <span v-if="errors.initial_balance" class="error-message">{{ errors.initial_balance[0] }}</span>
         </div>
@@ -153,9 +151,13 @@
 
 <script>
 import { index, store, update, get } from "@/utils/requests/httpUtils";
+import MoneyInput from "./inputs/money/MoneyInput.vue";
 
 export default {
   name: "BankAccountForm",
+  components: {
+    MoneyInput,
+  },
   props: {
     bankAccount: {
       type: Object,

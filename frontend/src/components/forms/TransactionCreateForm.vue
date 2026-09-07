@@ -38,17 +38,13 @@
                   <label
                     for="price"
                     class="block text-sm font-semibold text-gray-900 mb-2"
-                    >Valor {{ form.amount }}</label
+                    >Valor</label
                   >
-                  <input
-                    type="number"
-                    id="price"
+                  <money-input
                     name="price"
                     v-model="form.amount"
-                    step="0.01"
-                    min="0"
                     placeholder="0,00"
-                    class="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ease-in-out hover:border-gray-400 text-right"
+                    class="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ease-in-out hover:border-gray-400"
                   />
                 </div>
               </div>
@@ -157,6 +153,7 @@ import DateInput from "./inputs/date/DateInput.vue";
 import TextAreaInput from "./inputs/textarea/TextAreaInput.vue";
 import TextValue from "../fields/text/TextValue.vue";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
+import MoneyInput from "./inputs/money/MoneyInput.vue";
 
 export default {
   name: "TransactionCreateForm",
@@ -166,6 +163,7 @@ export default {
     TextAreaInput,
     TextValue,
     UsersSelectInput,
+    MoneyInput,
   },
   props: {
     invoice: {

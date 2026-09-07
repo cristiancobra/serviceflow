@@ -12,23 +12,32 @@
         não informado
       </div>
     </div>
-    <div v-else class="">
-        <input class="input-money text-black" type="text" :name="name" 
-        v-model="editingValue" :placeholder="placeholder" @keydown.esc="cancelEditing" @blur="emitSave" @keydown.enter.prevent="emitSave" />
-    </div>
+    <money-input
+      v-else
+      :name="name"
+      :placeholder="placeholder"
+      v-model="editingValue"
+      @keydown.esc="cancelEditing"
+      @blur="emitSave"
+      @keydown.enter.prevent="emitSave"
+    />
 
   </div>
 </template>
 
 <script>
-import { convertBrToCurrency, convertCurrencyToBr, formatCurrencySymbol } from "@/utils/number/moneyUtils";
+import { formatCurrencySymbol } from "@/utils/number/moneyUtils";
+import MoneyInput from "@/components/forms/inputs/money/MoneyInput.vue";
 
 export default {
+  components: {
+    MoneyInput,
+  },
   data() {
     return {
       editing: false,
       localValue: this.modelValue,
-      editingValue: '',
+      editingValue: null,
     };
   },
   props: {
@@ -40,19 +49,15 @@ export default {
   },
   emits: ['update:modelValue', 'save'],
   methods: {
-    convertBrToCurrency,
-    convertCurrencyToBr,
     formatCurrencySymbol,
     startEditing() {
-      // Converte o valor para formato brasileiro antes de começar a editar
-      this.editingValue = this.convertCurrencyToBr(this.localValue);
+      this.editingValue = this.localValue;
       this.editing = true;
     },
     emitSave() {
-      const convertedValue = this.convertBrToCurrency(this.editingValue);
-      this.localValue = convertedValue;
-      this.$emit("update:modelValue", convertedValue);
-      this.$emit("save", convertedValue);
+      this.localValue = this.editingValue;
+      this.$emit("update:modelValue", this.editingValue);
+      this.$emit("save", this.editingValue);
       this.editing = false;
     },
     cancelEditing() {
@@ -77,11 +82,6 @@ export default {
 
 .price-editable:hover .edit-icon {
   display: inline;
-}
-
-.input-money {
-  text-align: right;
-  width: 100%;
 }
 
 .main-container {

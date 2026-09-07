@@ -93,12 +93,10 @@
                   </label>
                 </div>
                 <div class="col">
-                  <input
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    type="text"
+                  <money-input
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     name="labor_hourly_rate"
                     v-model="form.labor_hourly_rate"
-                    v-mask-decimal.br="2"
                   />
                 </div>
               </div>
@@ -125,12 +123,10 @@
                   <label class="labels" for="profit"> R$ </label>
                 </div>
                 <div class="price-column">
-                  <input
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    type="text"
+                  <money-input
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     name="profit"
                     v-model="form.profit"
-                    v-mask-decimal.br="2"
                   />
                 </div>
               </div>
@@ -139,12 +135,10 @@
                   <label class="labels" for="price"> Preço final </label>
                 </div>
                 <div class="price-column">
-                  <input
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md text-right bg-gray-100 cursor-not-allowed"
-                    type="text"
+                  <money-input
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
                     name="price"
                     v-model="form.price"
-                    v-mask-decimal.br="2"
                     disabled
                   />
                 </div>
@@ -207,6 +201,7 @@
 <script>
 import { index, submitFormCreate } from "@/utils/requests/httpUtils";
 import TextInput from "./inputs/text/TextInput.vue";
+import MoneyInput from "./inputs/money/MoneyInput.vue";
 
 export default {
   name: "ServiceCreateForm",
@@ -235,17 +230,14 @@ export default {
   },
   components: {
     TextInput,
+    MoneyInput,
   },
   methods: {
     index,
     submitFormCreate,
     calculateProfit() {
       let formattedLaborHours = this.form.hours + this.form.minutes / 60;
-      let laborHourlyRate = this.form.labor_hourly_rate;
-      if (typeof laborHourlyRate === "string") {
-        laborHourlyRate = laborHourlyRate.replace(",", ".");
-      }
-      let formattedLaborHourlyRate = parseFloat(laborHourlyRate);
+      let formattedLaborHourlyRate = this.form.labor_hourly_rate || 0;
       let operationalCost = formattedLaborHourlyRate * formattedLaborHours;
 
       // Calculate third party cost
@@ -262,31 +254,21 @@ export default {
       // this.calculatePrice();
     },
     calculatePrice() {
-      let laborHourlyRate = this.form.labor_hourly_rate;
-      if (typeof laborHourlyRate === "string") {
-        laborHourlyRate = laborHourlyRate.replace(",", ".");
-      }
+      let laborHourlyRate = this.form.labor_hourly_rate || 0;
       let operationalCost =
-        parseFloat(laborHourlyRate) *
-        (this.form.hours + this.form.minutes / 60);
+        laborHourlyRate * (this.form.hours + this.form.minutes / 60);
       operationalCost = parseFloat(operationalCost.toFixed(2));
 
       this.form.labor_hourly_total = operationalCost;
-
-      let profit = this.form.profit;
-      if (typeof profit === "string") {
-        profit = profit.replace(",", ".");
-      }
-      profit = parseFloat(profit);
 
       this.updateFinalPrice();
     },
     clearForm() {
       this.form = {
-        labor_hourly_rate: "",
+        labor_hourly_rate: 0,
         hours: 0,
         minutes: 0,
-        profit: "",
+        profit: 0,
         price: 0,
         labor_hourly_total: 0,
         labor_hours: 0,
@@ -314,15 +296,6 @@ export default {
       const formToSubmit = {
         ...this.form,
         labor_hours: this.form.hours * 3600 + this.form.minutes * 60,
-        labor_hourly_rate: parseFloat(
-          this.form.labor_hourly_rate.toString().replace(",", ".")
-        ),
-        profit: parseFloat(
-          this.form.profit.toString().replace(",", ".")
-        ),
-        price: parseFloat(
-          this.form.price.toString().replace(",", ".")
-        ),
         costs: this.costs
           .filter((cost) => cost.quantity > 0)
           .map((cost) => ({
@@ -364,36 +337,17 @@ export default {
       this.updateFinalPrice();
     },
     updateFinalPrice() {
-      let profit = this.form.profit;
-      if (typeof profit === "string") {
-        profit = profit.replace(",", ".");
-      }
-      profit = parseFloat(profit) || 0;
+      const profit = this.form.profit || 0;
 
-      const calculatedPrice = (
-        parseFloat(this.form.labor_hourly_total || 0) +
-        profit
-      ).toFixed(2);
-      
-      // Converter para formato brasileiro (string com vírgula)
-      this.form.price = calculatedPrice.replace(".", ",");
+      this.form.price = parseFloat(
+        (parseFloat(this.form.labor_hourly_total || 0) + profit).toFixed(2)
+      );
 
       this.updateProfitPercentage();
     },
     updateProfitPercentage() {
-      let profit = this.form.profit;
-      if (typeof profit !== "string") {
-        profit = profit.toString();
-      }
-      profit = profit.replace(",", ".");
-      profit = parseFloat(profit);
-
-      let price = this.form.price;
-      if (typeof price !== "string") {
-        price = price.toString();
-      }
-      price = price.replace(",", ".");
-      price = parseFloat(price);
+      const profit = this.form.profit || 0;
+      const price = this.form.price || 0;
 
       if (price > 0) {
         this.form.profit_percentage = ((profit / price) * 100).toFixed(2);
