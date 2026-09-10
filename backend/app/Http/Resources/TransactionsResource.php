@@ -34,7 +34,8 @@ class TransactionsResource extends JsonResource
             'bank_account' => $this->when($this->relationLoaded('bankAccount'), function () {
                 return [
                     'id' => $this->bankAccount->id,
-                    'name' => $this->bankAccount->name ?? 'N/A',
+                    'name' => $this->bankAccount->account_name ?? 'N/A',
+                    'account_name' => $this->bankAccount->account_name ?? 'N/A',
                 ];
             }),
         ];

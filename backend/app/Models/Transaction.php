@@ -13,6 +13,7 @@ class Transaction extends Model
     
     protected $fillable = [
         'invoice_id',
+        'credit_card_invoice_id',
         'bank_account_id',
         'amount',
         'transaction_date',
@@ -26,6 +27,11 @@ class Transaction extends Model
         return $this->belongsTo(Invoice::class);
     }
 
+    public function creditCardInvoice()
+    {
+        return $this->belongsTo(CreditCardInvoice::class);
+    }
+
     public function bankAccount()
     {
         return $this->belongsTo(BankAccount::class);
@@ -34,25 +40,18 @@ class Transaction extends Model
     // Events
     protected static function booted()
     {
-        // When a transaction is created
-        static::created(function ($transaction) {
+        $updateParents = function ($transaction) {
             if ($transaction->invoice_id) {
                 $transaction->invoice->updateTotalPaid();
             }
-        });
 
-        // When a transaction is updated
-        static::updated(function ($transaction) {
-            if ($transaction->invoice_id) {
-                $transaction->invoice->updateTotalPaid();
+            if ($transaction->credit_card_invoice_id) {
+                $transaction->creditCardInvoice->updateTotalPaid();
             }
-        });
+        };
 
-        // When a transaction is deleted
-        static::deleted(function ($transaction) {
-            if ($transaction->invoice_id) {
-                $transaction->invoice->updateTotalPaid();
-            }
-        });
+        static::created($updateParents);
+        static::updated($updateParents);
+        static::deleted($updateParents);
     }
 }

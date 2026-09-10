@@ -142,6 +142,16 @@
                   <span class="text-white ps-2">CONTAS BANCÁRIAS</span>
                 </li>
               </router-link>
+              <router-link to="/credit-cards">
+                <li
+                  class="nav-item"
+                  @mouseover="toggleActive('credit-cards')"
+                  :class="{ active: activeItem === 'credit-cards' }"
+                >
+                  <font-awesome-icon icon="fas fa-credit-card" />
+                  <span class="text-white ps-2">CARTÕES DE CRÉDITO</span>
+                </li>
+              </router-link>
               <router-link to="/services">
                 <li
                   class="nav-item"

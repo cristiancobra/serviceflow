@@ -23,6 +23,21 @@ const routes = [
     component: () => import('../views/bank-accounts/BankAccountShow.vue')
   },
   {
+    path: '/credit-cards',
+    name: 'credit-cards',
+    component: () => import('../views/credit-cards/CreditCardsIndex.vue')
+  },
+  {
+    path: '/credit-cards/:id',
+    name: 'credit-cards-show',
+    component: () => import('../views/credit-cards/CreditCardShow.vue')
+  },
+  {
+    path: '/credit-card-invoices/:id',
+    name: 'credit-card-invoices-show',
+    component: () => import('../views/credit-cards/CreditCardInvoiceShow.vue')
+  },
+  {
     path: '/companies',
     name: 'companiesIndex',
     component: () => import('../views/companies/CompaniesIndex.vue')

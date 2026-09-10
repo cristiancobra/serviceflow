@@ -7,6 +7,9 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BankAccountController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\CostController;
+use App\Http\Controllers\Api\CreditCardController;
+use App\Http\Controllers\Api\CreditCardChargeController;
+use App\Http\Controllers\Api\CreditCardInvoiceController;
 use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\JourneyController;
 use App\Http\Controllers\Api\LeadController;
@@ -71,6 +74,42 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	Route::apiResource('bank_accounts', BankAccountController::class)
 		->names('bank_accounts');
+
+	// CREDIT CARDS
+	Route::post('credit_cards/{credit_card}/toggle-active', [CreditCardController::class, 'toggleActive'])
+		->name('credit_cards.toggleActive');
+
+	Route::post('credit_cards/{id}/restore', [CreditCardController::class, 'restore'])
+		->name('credit_cards.restore');
+
+	Route::delete('credit_cards/{id}/force-delete', [CreditCardController::class, 'forceDelete'])
+		->name('credit_cards.forceDelete');
+
+	Route::apiResource('credit_cards', CreditCardController::class)
+		->names('credit_cards');
+
+	// CREDIT CARD CHARGES (compras/lançamentos no cartão)
+	Route::post('credit_card_charges', [CreditCardChargeController::class, 'store'])
+		->name('credit_card_charges.store');
+
+	Route::delete('credit_card_charges/{credit_card_charge}', [CreditCardChargeController::class, 'destroy'])
+		->name('credit_card_charges.destroy');
+
+	Route::delete('credit_card_charges/group/{installment_group_id}', [CreditCardChargeController::class, 'destroyGroup'])
+		->name('credit_card_charges.destroyGroup');
+
+	// CREDIT CARD INVOICES (faturas do cartão)
+	Route::post('credit_card_invoices/{credit_card_invoice}/close', [CreditCardInvoiceController::class, 'close'])
+		->name('credit_card_invoices.close');
+
+	Route::post('credit_card_invoices/{credit_card_invoice}/pay', [CreditCardInvoiceController::class, 'pay'])
+		->name('credit_card_invoices.pay');
+
+	Route::get('credit_card_invoices/{credit_card_invoice}', [CreditCardInvoiceController::class, 'show'])
+		->name('credit_card_invoices.show');
+
+	Route::get('credit_card_invoices', [CreditCardInvoiceController::class, 'index'])
+		->name('credit_card_invoices.index');
 
 	// COMPANIES
 	Route::apiResource('companies', CompanyController::class)
