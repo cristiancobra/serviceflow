@@ -24,7 +24,9 @@ class AccountResource extends JsonResource
             'address' => $this->address,
             'address_city' => $this->address_city,
             'cnpj' => $this->cnpj,
-            'inscricao_municipal' => $this->inscricao_municipal,            
+            'is_mei' => $this->is_mei,
+            'mei_annual_limit' => $this->mei_annual_limit,
+            'inscricao_municipal' => $this->inscricao_municipal,
         ];
     }
 }

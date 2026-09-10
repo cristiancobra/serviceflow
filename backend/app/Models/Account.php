@@ -21,6 +21,8 @@ protected $fillable = [
     'address',
     'address_city',
     'cnpj',
+    'is_mei',
+    'mei_annual_limit',
     'inscricao_municipal',
     'logo',
     'subscription_status',

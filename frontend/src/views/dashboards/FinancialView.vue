@@ -143,6 +143,126 @@
         </div>
       </div>
     </div>
+
+    <!-- Seção MEI -->
+    <div v-if="account.is_mei" class="bg-white rounded-lg shadow-md p-6 mt-10">
+      <h3
+        class="text-xl font-bold text-gray-800 mb-4 border-b-2 border-purple-500 pb-2"
+      >
+        MEI - Microempreendedor Individual ({{ selectedYear }})
+      </h3>
+
+      <div class="space-y-4">
+        <!-- Limite anual -->
+        <div
+          class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border-l-4 border-gray-400"
+        >
+          <span class="text-gray-700 font-semibold">Limite anual do MEI:</span>
+          <div class="w-64">
+            <money-field name="mei_limit" v-model="meiAnnualLimit" :readonly="true" />
+          </div>
+        </div>
+
+        <!-- Faturado no ano -->
+        <div
+          class="flex items-center justify-between p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500"
+        >
+          <span class="text-purple-700 font-semibold">Faturado no ano:</span>
+          <div class="w-64">
+            <money-field name="mei_revenue" v-model="meiRevenue" :readonly="true" />
+          </div>
+        </div>
+
+        <!-- Disponível para faturar / Excedente -->
+        <div
+          class="flex items-center justify-between p-4 rounded-lg border-l-4"
+          :class="
+            meiExceeded > 0
+              ? 'bg-red-50 border-red-500'
+              : 'bg-green-50 border-green-500'
+          "
+        >
+          <span
+            class="font-semibold"
+            :class="meiExceeded > 0 ? 'text-red-700' : 'text-green-700'"
+          >
+            {{ meiExceeded > 0 ? "Limite excedido em:" : "Ainda pode faturar:" }}
+          </span>
+          <div class="w-64">
+            <money-field
+              name="mei_available"
+              v-model="meiAvailableDisplay"
+              :readonly="true"
+            />
+          </div>
+        </div>
+
+        <!-- Barra de progresso do limite -->
+        <div class="p-4 bg-gray-50 rounded-lg">
+          <div class="flex justify-between text-sm text-gray-600 mb-1">
+            <span>Uso do limite anual</span>
+            <span>{{ meiUsagePercentage.toFixed(1) }}%</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-3">
+            <div
+              class="h-3 rounded-full transition-all"
+              :class="
+                meiExceeded > 0
+                  ? 'bg-red-500'
+                  : meiUsagePercentage >= 80
+                  ? 'bg-yellow-500'
+                  : 'bg-green-500'
+              "
+              :style="{ width: meiUsagePercentage + '%' }"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Apuração de lucro isento x tributável -->
+        <div class="pt-2">
+          <h4 class="text-md font-semibold text-gray-700 mb-3">
+            Apuração de lucro para o IRPF (presunção de 32% - prestação de
+            serviços)
+          </h4>
+          <div class="space-y-4">
+            <div
+              class="flex items-center justify-between p-4 bg-yellow-50 rounded-lg border-l-4 border-yellow-500"
+            >
+              <span class="text-yellow-700 font-semibold"
+                >Lucro tributável (32%):</span
+              >
+              <div class="w-64">
+                <money-field
+                  name="mei_taxable_profit"
+                  v-model="meiTaxableProfit"
+                  :readonly="true"
+                />
+              </div>
+            </div>
+            <div
+              class="flex items-center justify-between p-4 bg-teal-50 rounded-lg border-l-4 border-teal-500"
+            >
+              <span class="text-teal-700 font-semibold"
+                >Lucro isento (68%):</span
+              >
+              <div class="w-64">
+                <money-field
+                  name="mei_exempt_profit"
+                  v-model="meiExemptProfit"
+                  :readonly="true"
+                />
+              </div>
+            </div>
+          </div>
+          <p class="text-xs text-gray-500 mt-2">
+            Valores de referência para a Declaração de Ajuste Anual do IRPF,
+            considerando o percentual de presunção de lucro de 32% aplicável a
+            atividades de prestação de serviços (rendimento tributável x
+            rendimento isento e não tributável recebido de pessoa jurídica).
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -150,6 +270,7 @@
 import {
   getTotalProposals,
   getTransactionsTotals,
+  show,
 } from "../../utils/requests/httpUtils";
 import MoneyField from "../../components/fields/number/MoneyField.vue";
 import YearFilter from "../../components/filters/YearFilter.vue";
@@ -164,11 +285,42 @@ export default {
         totalExits: 0,
         balance: 0,
       },
+      account: {
+        is_mei: false,
+        mei_annual_limit: 0,
+      },
     };
   },
   components: {
     MoneyField,
     YearFilter,
+  },
+  computed: {
+    meiAnnualLimit() {
+      return this.account.mei_annual_limit || 0;
+    },
+    meiRevenue() {
+      return this.transactionsTotals.totalEntries || 0;
+    },
+    meiRemaining() {
+      return Math.max(this.meiAnnualLimit - this.meiRevenue, 0);
+    },
+    meiExceeded() {
+      return Math.max(this.meiRevenue - this.meiAnnualLimit, 0);
+    },
+    meiAvailableDisplay() {
+      return this.meiExceeded > 0 ? this.meiExceeded : this.meiRemaining;
+    },
+    meiUsagePercentage() {
+      if (!this.meiAnnualLimit) return 0;
+      return Math.min((this.meiRevenue / this.meiAnnualLimit) * 100, 100);
+    },
+    meiTaxableProfit() {
+      return this.meiRevenue * 0.32;
+    },
+    meiExemptProfit() {
+      return this.meiRevenue * 0.68;
+    },
   },
   methods: {
     async fetchTotalProposals() {
@@ -195,10 +347,22 @@ export default {
       this.selectedYear = year;
       this.fetchTransactionsTotals(year);
     },
+    async fetchAccount() {
+      try {
+        const accountId =
+          this.$store.state.userData?.account_id || this.$store.state.accountId;
+        if (accountId) {
+          this.account = await show("accounts", accountId);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar dados da conta:", error);
+      }
+    },
   },
   created() {
     this.fetchTotalProposals();
     this.fetchTransactionsTotals(this.selectedYear);
+    this.fetchAccount();
   },
 };
 </script>

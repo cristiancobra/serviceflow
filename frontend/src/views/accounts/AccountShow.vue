@@ -95,6 +95,26 @@
               @save="updateAccount('address_city', $event)"
             />
           </div>
+          <div class="mb-4 p-4 bg-gray-50 rounded-lg">
+            <label class="flex items-center gap-2 cursor-pointer mb-3">
+              <input
+                type="checkbox"
+                v-model="account.is_mei"
+                @change="updateAccount('is_mei', account.is_mei)"
+                class="w-4 h-4"
+              />
+              <span class="text-sm font-medium text-gray-700"
+                >Empresa enquadrada como MEI</span
+              >
+            </label>
+            <MoneyEditableField
+              v-if="account.is_mei"
+              name="mei_annual_limit"
+              v-model="account.mei_annual_limit"
+              label="Limite anual de faturamento do MEI:"
+              @save="updateAccount('mei_annual_limit', $event)"
+            />
+          </div>
         </div>
         <div class="space-y-6">
           <div class="flex justify-center items-center p-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
@@ -155,6 +175,7 @@ import { BACKEND_URL, ACCOUNT_URL, IMAGES_PATH } from "@/config/apiConfig";
 import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import axios from "axios";
 import TextEditableField from "@/components/fields/text/TextEditableField.vue";
+import MoneyEditableField from "@/components/fields/number/MoneyEditableField.vue";
 import DepartmentsManager from "@/components/lists/DepartmentsManager.vue";
 
 export default {
@@ -169,6 +190,8 @@ export default {
         phone: "",
         address: "",
         address_city: "",
+        is_mei: false,
+        mei_annual_limit: 0,
       },
       messageStatus: "",
       messageText: "",
@@ -178,6 +201,7 @@ export default {
   components: {
     AddMessage,
     TextEditableField,
+    MoneyEditableField,
     DepartmentsManager,
   },
   methods: {

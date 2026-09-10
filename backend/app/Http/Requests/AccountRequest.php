@@ -31,6 +31,8 @@ class AccountRequest extends FormRequest
             'address' => 'sometimes|string|max:255',
             'address_city' => 'sometimes|string|max:255',
             'cnpj' => 'nullable|numeric|digits:14',
+            'is_mei' => 'sometimes|boolean',
+            'mei_annual_limit' => 'sometimes|numeric|min:0',
             'inscricao_municipal' => 'sometimes|string|max:255',
             'owner_id' => 'sometimes|integer|exists:users,id',
             'logo' => 'image|max:2048',
