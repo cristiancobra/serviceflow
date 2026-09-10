@@ -35,6 +35,8 @@ class Invoice extends Model
         'type',
         'category',
         'observations',
+        'installment_number',
+        'installment_quantity',
     ];
 
     public function proposal()

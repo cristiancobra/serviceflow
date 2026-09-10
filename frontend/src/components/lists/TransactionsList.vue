@@ -170,7 +170,7 @@
                       :title="'Fatura #' + transaction.invoice.id"
                     >
                       <font-awesome-icon icon="fa-solid fa-receipt" class="text-sm" />
-                      {{ formatDateBr(transaction.invoice.date_due) }}
+                      {{ getInvoiceLabel(transaction.invoice) }}
                     </router-link>
                     <div v-else class="inline-flex items-center gap-1 text-amber-500 font-medium text-xs">
                       <font-awesome-icon icon="fa-solid fa-circle-dot" class="text-xs" />
@@ -355,6 +355,12 @@ export default {
   methods: {
     formatDateBr,
     
+    getInvoiceLabel(invoice) {
+      if (!invoice.installment_number) return 'Fatura #' + invoice.id;
+      if (invoice.installment_quantity === 1) return 'Parcela única';
+      return 'Fatura  ' + invoice.installment_number + ' de ' + invoice.installment_quantity;
+    },
+
     getClientName(opportunity, invoice) {
       if (opportunity) {
         if (opportunity.company?.business_name) return opportunity.company.business_name;

@@ -37,6 +37,8 @@ class InvoicesResource extends JsonResource
             'balance' => $this->balance,
             'status' => $this->status,
             'type' => $this->type,
+            'installment_number' => $this->installment_number,
+            'installment_quantity' => $this->installment_quantity,
             'category' => $this->category,
             'observations' => $this->observations,
             'description' => $this->description,

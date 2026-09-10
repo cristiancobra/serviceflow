@@ -195,6 +195,16 @@ class Proposal extends Model
             Invoice::whereIn('id', $unPaidInvoiceIds)->delete();
         }
 
+        // As faturas pagas mantidas ocupam os primeiros números da parcela (1..paidInvoicesCount),
+        // na ordem de vencimento — mesma ordem já usada para calcular $lastDueDate abaixo.
+        $paidInvoicesInOrder = $paidInvoices->sortBy('date_due')->values();
+        foreach ($paidInvoicesInOrder as $index => $paidInvoice) {
+            $paidInvoice->update([
+                'installment_number' => $index + 1,
+                'installment_quantity' => $newInstallmentQuantity,
+            ]);
+        }
+
         // CREATE new invoices for remaining balance
         if ($remainingBalance > 0 && $newInvoicesNeeded > 0) {
             $lastDueDate = $paidInvoices->count() > 0 ? $paidInvoices->max('date_due') : $firstDueDate;
@@ -214,6 +224,8 @@ class Proposal extends Model
                     'date_due' => $dueDate,
                     'status' => Invoice::STATUS_PENDING,
                     'type' => 'credit', // Faturas de recebimento (crédito)
+                    'installment_number' => $paidInvoicesCount + $i,
+                    'installment_quantity' => $newInstallmentQuantity,
                 ]);
             }
         }

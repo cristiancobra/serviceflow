@@ -96,8 +96,10 @@ class InvoiceController extends Controller
                     'type' => $validated['type'] ?? 'debit',
                     'category' => $validated['category'] ?? null,
                     'observations' => $validated['observations'] ?? null,
+                    'installment_number' => 1,
+                    'installment_quantity' => 1,
                 ];
-                
+
                 $invoice = Invoice::create($invoiceData);
                 return InvoicesResource::collection([$invoice]);
             }
@@ -116,6 +118,8 @@ class InvoiceController extends Controller
             $type = $validated['type'] ?? 'credit'; // Usa o tipo enviado ou default 'credit'
             unset($validated['prices'], $validated['date_due']);
         
+            $installmentQuantity = count($prices);
+
             $invoices = [];
             foreach ($prices as $index => $price) {
                 $invoiceData = array_merge($validated, [
@@ -123,6 +127,8 @@ class InvoiceController extends Controller
                     'balance' => $price,
                     'date_due' => date('Y-m-d', strtotime("+$index month", strtotime($dateDue))),
                     'type' => $type,
+                    'installment_number' => $index + 1,
+                    'installment_quantity' => $installmentQuantity,
                 ]);
                 $invoice = new Invoice;
                 $invoice->fill($invoiceData);
@@ -166,8 +172,10 @@ class InvoiceController extends Controller
                 'type' => 'debit',
                 'category' => $validated['category'] ?? 'operational',
                 'observations' => $validated['observations'] ?? null,
+                'installment_number' => 1,
+                'installment_quantity' => 1,
             ];
-            
+
             $invoice = Invoice::create($invoiceData);
 
             // Geração opcional de tarefa financeira
