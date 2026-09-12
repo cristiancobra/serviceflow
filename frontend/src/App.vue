@@ -4,13 +4,20 @@
     <div class="main">
       <router-view />
     </div>
-    <!-- Modal global de detalhes da tarefa -->
-    <task-detail-modal
-      :modelValue="showTaskModal"
-      @update:modelValue="updateTaskModalState"
-      :taskId="selectedTaskId"
-      @task-updated="handleTaskUpdated"
-    />
+    <!-- Overlay compartilhado dos modais globais (empilháveis lado a lado) -->
+    <div
+      v-show="openModals.length > 0"
+      class="fixed inset-0 z-50 flex items-center justify-center flex-wrap gap-4 p-4 overflow-y-auto bg-black/30 backdrop-blur-sm"
+    >
+      <component
+        v-for="modal in openModals"
+        :key="modal.id"
+        :is="modalRegistry[modal.component]"
+        v-bind="modal.props"
+        :compact="openModals.length > 1"
+        v-on="modalListeners(modal)"
+      />
+    </div>
   </div>
 </template>
 
@@ -18,25 +25,24 @@
 <script>
 import { mapActions, mapState, mapMutations } from 'vuex';
 import NavbarUser from "./components/layout/NavbarUser.vue";
-import TaskDetailModal from "@/components/modals/details/TaskDetailModal.vue";
+import modalRegistry from "@/components/modals/registry.js";
 
 export default {
   data() {
     return {
       showNavbar: null,
-      showTaskModal: false,
+      modalRegistry,
     };
   },
   components: {
     NavbarUser,
-    TaskDetailModal,
   },
   computed: {
-    ...mapState(['selectedTaskId']),
+    ...mapState(['openModals']),
   },
   methods: {
     ...mapActions(['checkAuthentication']),
-    ...mapMutations(['setSelectedTaskId', 'setUpdatedTask']),
+    ...mapMutations(['setUpdatedTask', 'closeModal']),
     async startAuthCheck() {
       this.checkAuthentication();
       setInterval(async () => {
@@ -46,21 +52,15 @@ export default {
     handleTaskUpdated(updatedTask) {
       this.setUpdatedTask(updatedTask);
     },
-    updateTaskModalState(isOpen) {
-      this.showTaskModal = isOpen;
-      if (!isOpen) {
-        this.setSelectedTaskId(null);
-      }
-    }
+    modalListeners(modal) {
+      return {
+        close: () => this.closeModal(modal.id),
+        'task-updated': this.handleTaskUpdated,
+        ...modal.listeners,
+      };
+    },
   },
   watch: {
-    selectedTaskId(newVal) {
-      if (newVal) {
-        this.showTaskModal = true;
-      } else {
-        this.showTaskModal = false;
-      }
-    },
     $route(to) {
       this.showNavbar = to.name !== 'login';
     }

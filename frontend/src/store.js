@@ -12,8 +12,8 @@ export default createStore({
     photo: null,
     messageStatus: null,
     messageText: null,
-    selectedTaskId: null,
     updatedTask: null,
+    openModals: [],
   },
   mutations: {
     clearMessage(state) {
@@ -36,11 +36,16 @@ export default createStore({
     setUserData(state, userData) {
       state.userData = userData;
     },
-    setSelectedTaskId(state, taskId) {
-      state.selectedTaskId = taskId;
-    },
     setUpdatedTask(state, task) {
       state.updatedTask = task;
+    },
+    openModal(state, { component, props = {}, listeners = {}, id } = {}) {
+      const modalId = id || component;
+      state.openModals = state.openModals.filter(modal => modal.id !== modalId);
+      state.openModals.push({ id: modalId, component, props, listeners });
+    },
+    closeModal(state, id) {
+      state.openModals = state.openModals.filter(modal => modal.id !== id);
     },
   },
   actions: {

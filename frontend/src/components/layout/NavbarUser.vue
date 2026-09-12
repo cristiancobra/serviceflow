@@ -197,16 +197,15 @@
             </li>
           </router-link>
 
-          <router-link to="/links">
-            <li
-              class="nav-item"
-              @mouseover="toggleActive('links')"
-              :class="{ active: activeItem === 'links' }"
-            >
-              <font-awesome-icon icon="fas fa-link" class="router-link-text" />
-              <span class="router-link-text"></span>
-            </li>
-          </router-link>
+          <li
+            class="nav-item"
+            @mouseover="toggleActive('links')"
+            @click="openModal({ component: 'LinksModal', id: 'links' })"
+            :class="{ active: activeItem === 'links' }"
+          >
+            <font-awesome-icon icon="fas fa-link" class="router-link-text" />
+            <span class="router-link-text"></span>
+          </li>
 
           <router-link to="/logout">
             <li
@@ -261,7 +260,7 @@ export default {
   },
   methods: {
     ...mapActions(["logout"]),
-    ...mapMutations(["setSelectedTaskId"]),
+    ...mapMutations(["openModal"]),
     async submitLogout() {
       await this.logout();
       this.toggleActive("logout");
@@ -280,7 +279,8 @@ export default {
     },
     openTaskModal() {
       if (this.openJourney && this.openJourney.task_id) {
-        this.setSelectedTaskId(this.openJourney.task_id);
+        const taskId = this.openJourney.task_id;
+        this.openModal({ component: "TaskDetailModal", props: { taskId }, id: `task-${taskId}` });
       }
     },
   },

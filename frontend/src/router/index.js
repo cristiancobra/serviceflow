@@ -98,11 +98,6 @@ const routes = [
     component: () => import('../views/leads/LeadShow.vue')
   },
   {
-    path: '/links',
-    name: 'linksIndex',
-    component: () => import('../views/links/LinksIndex.vue')
-  },
-  {
     path: '/login',
     name: 'login',
     component: () => import('../views/LoginView.vue')

@@ -6,16 +6,13 @@
         <h2>TAREFAS</h2>
       </div>
       <div class="section-action">
-        <button-new-form target="task" @open-modal="openTaskForm = true" />
+        <button-new-form target="task" @open-modal="openTaskCreateModal" />
 
         <button @click="createOrganizationTask"
           class="w-9 h-9 flex items-center justify-center rounded-full bg-success text-white hover:bg-green-700 transition shadow-md"
           title="Criar tarefa de organização (30min)">
           <font-awesome-icon icon="fa-solid fa-calendar-check" />
         </button>
-
-        <task-create-form v-model="openTaskForm" :opportunity="opportunity" :project="project"
-          @new-task-event="addTaskCreated" />
       </div>
     </div>
 
@@ -247,7 +244,6 @@ import CompanyAvatar from "@/components/common/CompanyAvatar.vue";
 import LeadAvatar from "@/components/common/LeadAvatar.vue";
 import UserAvatar from "@/components/common/UserAvatar.vue";
 import DateTimeEditableInput from "@/components/fields/datetime/DateTimeEditableInput.vue";
-import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 import SearchInput from "@/components/filters/SearchInput.vue";
 import OpportunitiesOpenSelectInput from "@/components/forms/selects/OpportunitiesOpenSelectInput.vue";
@@ -289,7 +285,6 @@ export default {
       formatedDate: "",
       formatedTime: "",
       localTasks: this.tasks,
-      openTaskForm: false,
       percentage: 0,
       searchTerm: "",
       totalTasks: 0,
@@ -327,7 +322,6 @@ export default {
     LeadsSelectInput,
     OpportunitiesOpenSelectInput,
     TaskStatusBadge,
-    TaskCreateForm,
     TextEditableField,
     SearchInput,
     UserAvatar,
@@ -341,10 +335,17 @@ export default {
     getDeadlineClass,
     getStatusIcon,
     trimName,
-    ...mapMutations(['setSelectedTaskId']),
+    ...mapMutations(['openModal']),
+    openTaskCreateModal() {
+      this.openModal({
+        component: 'TaskCreateForm',
+        props: { opportunity: this.opportunity, project: this.project },
+        id: 'task-create',
+        listeners: { 'new-task-event': this.addTaskCreated },
+      });
+    },
     addTaskCreated(newTask) {
       this.localTasks.unshift(newTask);
-      this.openTaskForm = false;
     },
     formatTaskDate(date) {
       // Trata o caso de sem data
@@ -617,7 +618,7 @@ export default {
       }
     },
     openTaskModal(taskId) {
-      this.setSelectedTaskId(taskId);
+      this.openModal({ component: 'TaskDetailModal', props: { taskId }, id: `task-${taskId}` });
     },
     handleTaskUpdated(updatedTask) {
       // Atualiza a tarefa na lista local

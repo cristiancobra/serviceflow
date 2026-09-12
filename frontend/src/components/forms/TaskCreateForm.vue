@@ -1,14 +1,15 @@
 <template>
-  <div>
-    <div v-show="modelValue" class="myModal">
-      <div class="bg-white rounded-lg shadow-lg mt-25">
+  <div
+    class="modal-panel bg-white rounded-2xl shadow-2xl w-full max-h-[90vh] overflow-y-auto"
+    :class="compact ? 'max-w-md' : 'max-w-2xl'"
+  >
         <div class="flex items-center justify-between p-4 border-b">
           <div class="flex items-center">
             <font-awesome-icon
               icon="fa-solid fa-tasks"
               class="text-primary text-xl mr-2"
             />
-            <h5 class="text-primary text-lg font-semibold">Nova tarefa</h5>
+            <h5 class="text-primary text-lg font-semibold">{{ cloneFrom ? 'Clonar tarefa' : 'Nova tarefa' }}</h5>
           </div>
           <button
             type="button"
@@ -54,7 +55,6 @@
                 v-model="form.description"
                 placeholder="Detalhamento da tarefa"
                 rows=5
-                @input="$emit('update:modelValue', $event.target.value)"
               ></textarea>
             </div>
             <div class="mb-4">
@@ -173,8 +173,6 @@
             criar
           </button>
         </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -194,7 +192,7 @@ import ErrorMessage from "../forms/messages/ErrorMessage.vue";
 
 export default {
   name: "TaskCreateForm",
-  emits: ["new-task-event", "update:modelValue"],
+  emits: ["new-task-event", "close"],
   components: {
     // AddMessage,
     DateInput,
@@ -208,10 +206,6 @@ export default {
     ErrorMessage,
   },
   props: {
-    modelValue: {
-      type: Boolean,
-      default: false,
-    },
     opportunity: {
       type: Object,
       default: null,
@@ -219,6 +213,14 @@ export default {
     project: {
       type: Object,
       default: null,
+    },
+    cloneFrom: {
+      type: Object,
+      default: null,
+    },
+    compact: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -272,7 +274,7 @@ export default {
       this.priority = "medium";
     },
     closeModal() {
-      this.$emit("update:modelValue", false);
+      this.$emit("close");
     },
     async submitForm() {
       const { data, error } = await this.submitFormCreate("tasks", this.form);
@@ -316,6 +318,21 @@ export default {
     },
   },
   mounted() {
+    // Preenche o formulário com os dados da tarefa clonada, exceto o prazo final
+    if (this.cloneFrom) {
+      this.form.name = this.cloneFrom.name;
+      this.form.description = this.cloneFrom.description;
+      this.form.company_id = this.cloneFrom.company_id;
+      this.form.department_id = this.cloneFrom.department_id;
+      this.form.contact_id = this.cloneFrom.contact_id;
+      this.form.user_id = this.cloneFrom.user_id;
+      this.form.priority = this.cloneFrom.priority;
+      this.form.status = this.cloneFrom.status;
+      this.form.date_start = this.cloneFrom.date_start;
+      this.form.opportunity_id = this.cloneFrom.opportunity_id;
+      this.form.project_id = this.cloneFrom.project_id;
+    }
+
     // Inicializar IDs se as props existirem
     if (this.opportunity) {
       this.form.opportunity_id = this.opportunity.id;
@@ -338,3 +355,18 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.modal-panel {
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+</style>

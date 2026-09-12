@@ -6,10 +6,9 @@
         <h1 class="">AGENDA</h1>
       </div>
       <div class="page-action">
-        <button type="button" class="btn btn-primary" @click="isCreateTaskModalVisible = true">
+        <button type="button" class="btn btn-primary" @click="openTaskCreateModal">
           <font-awesome-icon icon="fa-solid fa-plus" class="text-white" />
         </button>
-        <task-create-form v-model="isCreateTaskModalVisible" @new-task-event="addTaskCreated" />
       </div>
     </div>
     <tasks-list-section 
@@ -37,9 +36,8 @@ import {
   TASK_URL_PARAMETER,
   TASK_PRIORIZED_URL,
 } from "@/config/apiConfig";
-import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import TasksListSection from "@/components/lists/TasksListSection.vue";
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 
 export default {
   props: {
@@ -59,11 +57,9 @@ export default {
       totalTasks: 0,
       completedTasks: 0,
       newTaskId: null,
-      isCreateTaskModalVisible: false,
     };
   },
   components: {
-    TaskCreateForm,
     TasksListSection,
   },
   methods: {
@@ -75,8 +71,15 @@ export default {
     getDeadlineClass,
     getStatusIcon,
     trimName,
+    ...mapMutations(['openModal']),
+    openTaskCreateModal() {
+      this.openModal({
+        component: 'TaskCreateForm',
+        id: 'task-create',
+        listeners: { 'new-task-event': this.addTaskCreated },
+      });
+    },
     addTaskCreated(newTask) {
-      this.isCreateTaskModalVisible = false;
       this.localTasks.unshift(newTask);
       this.highlightNewTask(newTask.id);
     },

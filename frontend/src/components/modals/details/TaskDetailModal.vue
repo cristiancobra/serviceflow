@@ -1,7 +1,9 @@
 <template>
-  <div>
-    <div v-if="modelValue && task" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
-      <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto">
+  <div
+    v-if="task"
+    class="modal-panel bg-white rounded-2xl shadow-2xl w-full max-h-[90vh] overflow-y-auto"
+    :class="compact ? 'max-w-2xl' : 'max-w-5xl'"
+  >
         <!-- Header -->
         <div class="sticky top-0 bg-gradient-to-r from-blue-50 to-blue-25 border-b border-gray-200 px-8 py-6">
           <div class="flex justify-between items-start">
@@ -238,6 +240,16 @@
                 title="Adicionar jornada manualmente"
               />
 
+              <button
+                type="button"
+                class="px-4 py-2 bg-gray-500 text-white rounded-lg font-semibold hover:bg-gray-600 transition-colors"
+                @click="cloneTask"
+                title="Clonar tarefa"
+              >
+                <font-awesome-icon icon="fa-solid fa-copy" class="me-2" />
+                Clonar
+              </button>
+
                    <button
                 type="button"
                 class="px-4 py-2 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-colors"
@@ -289,12 +301,11 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
 </template>
 
 <script>
 import axios from "axios";
+import { mapMutations } from "vuex";
 import { formatDuration } from "@/utils/date/dateUtils";
 import { getDeadlineClass } from "@/utils/card/cardUtils";
 import { BACKEND_URL, TASK_URL_PARAMETER, JOURNEY_URL } from "@/config/apiConfig";
@@ -328,15 +339,16 @@ export default {
     OpportunitiesSelectInput,
   },
   props: {
-    modelValue: {
-      type: Boolean,
-      required: true,
-    },
     taskId: {
       type: Number,
-      default: null,
+      required: true,
+    },
+    compact: {
+      type: Boolean,
+      default: false,
     },
   },
+  emits: ["close", "task-updated"],
   computed: {
     canFinishTask() {
       if (!this.task) return false;
@@ -369,7 +381,20 @@ export default {
   methods: {
     formatDuration,
     getDeadlineClass,
-    
+    ...mapMutations(["openModal"]),
+
+    cloneTask() {
+      this.openModal({
+        component: "TaskCreateForm",
+        props: {
+          opportunity: this.task.opportunity || null,
+          project: this.task.project || null,
+          cloneFrom: this.task,
+        },
+        id: "task-create",
+      });
+    },
+
     async loadTask() {
       if (!this.taskId) return;
       
@@ -506,31 +531,23 @@ export default {
     },
 
     closeModal() {
-      this.$emit("update:modelValue", false);
+      this.$emit("close");
     },
   },
   watch: {
-    taskId(newVal) {
-      if (newVal) {
-        this.loadTask();
-      } else {
-        this.task = null;
-      }
+    taskId() {
+      this.loadTask();
     },
-    modelValue(newVal) {
-      if (newVal && this.taskId) {
-        this.loadTask();
-      } else if (!newVal) {
-        this.task = null;
-      }
-    },
+  },
+  mounted() {
+    this.loadTask();
   },
 };
 </script>
 
 <style scoped>
 /* Animação suave para o modal */
-.fixed {
+.modal-panel {
   animation: fadeIn 0.2s ease-in-out;
 }
 
@@ -541,13 +558,6 @@ export default {
   to {
     opacity: 1;
   }
-}
-
-/* Background com desfoque */
-.modal-backdrop {
-  background-color: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px); /* Safari */
 }
 
 /* Estilo para o div de visualização (não editando) */
