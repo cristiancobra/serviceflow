@@ -219,6 +219,7 @@ export const validateModel = (model) => {
     "invoices/credit",
     "projects",
     "proposals",
+    "recurring_expenses",
     "opportunities",
     "services",
     "tasks",
