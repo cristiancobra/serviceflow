@@ -20,12 +20,14 @@ class Invoice extends Model
     const STATUS_CANCELLED = 'cancelled';
 
     protected $fillable = [
+        'account_id',
         'proposal_id',
         'name',
         'user_id',
         'lead_id',
         'company_id',
         'department_id',
+        'recurring_expense_id',
         'date_due',
         'price',
         'total_paid',
@@ -74,6 +76,11 @@ class Invoice extends Model
     public function department()
     {
         return $this->belongsTo(Department::class);
+    }
+
+    public function recurringExpense()
+    {
+        return $this->belongsTo(RecurringExpense::class);
     }
 
     /**

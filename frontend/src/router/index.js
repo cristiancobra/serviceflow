@@ -83,6 +83,11 @@ const routes = [
     component: () => import('@/views/invoices/AccountsPayableIndex.vue')
   },
   {
+    path: '/recurring-expenses',
+    name: 'recurring-expenses',
+    component: () => import('@/views/recurring-expenses/RecurringExpensesIndex.vue')
+  },
+  {
     path: '/leads',
     name: 'leadsIndex',
     component: () => import('../views/leads/LeadsIndex.vue')

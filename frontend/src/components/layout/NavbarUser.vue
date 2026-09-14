@@ -152,6 +152,16 @@
                   <span class="text-white ps-2">CARTÕES DE CRÉDITO</span>
                 </li>
               </router-link>
+              <router-link to="/recurring-expenses">
+                <li
+                  class="nav-item"
+                  @mouseover="toggleActive('recurring-expenses')"
+                  :class="{ active: activeItem === 'recurring-expenses' }"
+                >
+                  <font-awesome-icon icon="fas fa-rotate" />
+                  <span class="text-white ps-2">DESPESAS RECORRENTES</span>
+                </li>
+              </router-link>
               <router-link to="/services">
                 <li
                   class="nav-item"

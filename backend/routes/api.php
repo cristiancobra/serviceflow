@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\LinkController;
 use App\Http\Controllers\Api\OpportunityController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\ProposalController;
+use App\Http\Controllers\Api\RecurringExpenseController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\Api\TransactionController;
@@ -131,6 +132,13 @@ Route::middleware('auth:sanctum')->group(function () {
 	
 	Route::apiResource('invoices', InvoiceController::class)
 		->names('invoices');
+
+	// RECURRING EXPENSES (despesas recorrentes)
+	Route::post('recurring_expenses/{recurring_expense}/toggle-active', [RecurringExpenseController::class, 'toggleActive'])
+		->name('recurring_expenses.toggleActive');
+
+	Route::apiResource('recurring_expenses', RecurringExpenseController::class)
+		->names('recurring_expenses');
 
 	// JOURNEYS
 	Route::get('/journeys/recent', [JourneyController::class, 'getRecentJourneys'])
