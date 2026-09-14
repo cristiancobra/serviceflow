@@ -101,6 +101,13 @@
         <div class="w-1/10 text-center">
           <div class="action-buttons">
             <button
+              @click="openInvoicesModal(recurringExpense)"
+              class="btn-action btn-view"
+              title="Ver faturas"
+            >
+              <font-awesome-icon icon="fa-solid fa-receipt" />
+            </button>
+            <button
               v-if="needsBackfill(recurringExpense)"
               @click="openBackfillModal(recurringExpense)"
               class="btn-action btn-backfill"
@@ -192,6 +199,68 @@
       </div>
     </div>
 
+    <!-- Modal de Faturas Relacionadas -->
+    <div v-if="showInvoicesModal" class="modal-overlay" @click="closeInvoicesModal">
+      <div class="modal-content" @click.stop>
+        <div class="modal-header">
+          <h2>Faturas de {{ recurringExpenseForInvoices?.name }}</h2>
+          <button @click="closeInvoicesModal" class="btn-close">
+            <font-awesome-icon icon="fa-solid fa-times" />
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div v-if="isLoadingInvoices" class="empty-state">
+            <p>Carregando faturas...</p>
+          </div>
+
+          <div v-else-if="invoicesForModal.length === 0" class="empty-state">
+            <font-awesome-icon icon="fa-solid fa-receipt" class="empty-icon" />
+            <p>Nenhuma fatura gerada ainda</p>
+          </div>
+
+          <div v-else class="invoices-table-wrapper">
+            <table class="invoices-table">
+              <thead>
+                <tr>
+                  <th>Vencimento</th>
+                  <th>Valor</th>
+                  <th>Pago</th>
+                  <th>Saldo</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="invoice in invoicesForModal" :key="invoice.id">
+                  <td>{{ formatDateBr(invoice.date_due) }}</td>
+                  <td>{{ formatCurrency(invoice.price) }}</td>
+                  <td>{{ formatCurrency(invoice.total_paid) }}</td>
+                  <td>{{ formatCurrency(invoice.balance) }}</td>
+                  <td>
+                    <span class="invoice-status" :class="`invoice-status-${invoice.status}`">
+                      {{ invoiceStatusLabel(invoice.status) }}
+                    </span>
+                  </td>
+                  <td>
+                    <router-link :to="{ name: 'invoiceShow', params: { id: invoice.id } }" class="btn-action btn-view" title="Abrir fatura">
+                      <font-awesome-icon icon="fa-solid fa-eye" />
+                    </router-link>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button @click="closeInvoicesModal" class="btn-secondary">
+            Fechar
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Modal de Confirmação de Exclusão -->
     <div v-if="showDeleteModal" class="modal-overlay" @click="closeDeleteModal">
       <div class="modal-content modal-small" @click.stop>
@@ -221,7 +290,8 @@
 </template>
 
 <script>
-import { index, destroy, post } from "@/utils/requests/httpUtils";
+import { index, destroy, post, show } from "@/utils/requests/httpUtils";
+import { formatDateBr } from "@/utils/date/dateUtils";
 import RecurringExpenseForm from "@/components/forms/RecurringExpenseForm.vue";
 
 export default {
@@ -239,11 +309,15 @@ export default {
       showModal: false,
       showDeleteModal: false,
       showBackfillModal: false,
+      showInvoicesModal: false,
       isEditing: false,
       isBackfilling: false,
+      isLoadingInvoices: false,
       selectedRecurringExpense: null,
       recurringExpenseToDelete: null,
       recurringExpenseToBackfill: null,
+      recurringExpenseForInvoices: null,
+      invoicesForModal: [],
       backfillEndDate: "",
       backfillError: "",
     };
@@ -347,6 +421,46 @@ export default {
         console.error("Erro ao alterar status:", error);
         this.$emit("error", { message: "Erro ao alterar status da despesa recorrente" });
       }
+    },
+
+    formatDateBr,
+
+    formatCurrency(value) {
+      return `R$ ${Number(value || 0).toFixed(2).replace(".", ",")}`;
+    },
+
+    invoiceStatusLabel(status) {
+      const labels = {
+        pending: "Pendente",
+        partial: "Parcial",
+        paid: "Pago",
+        overdue: "Vencido",
+        cancelled: "Cancelado",
+      };
+      return labels[status] || status;
+    },
+
+    async openInvoicesModal(recurringExpense) {
+      this.recurringExpenseForInvoices = recurringExpense;
+      this.showInvoicesModal = true;
+      this.isLoadingInvoices = true;
+      this.invoicesForModal = [];
+
+      try {
+        const data = await show("recurring_expenses", recurringExpense.id);
+        this.invoicesForModal = data.invoices || [];
+      } catch (error) {
+        console.error("Erro ao carregar faturas:", error);
+        this.$emit("error", { message: "Erro ao carregar faturas da despesa recorrente" });
+      } finally {
+        this.isLoadingInvoices = false;
+      }
+    },
+
+    closeInvoicesModal() {
+      this.showInvoicesModal = false;
+      this.recurringExpenseForInvoices = null;
+      this.invoicesForModal = [];
     },
 
     needsBackfill(recurringExpense) {
@@ -511,6 +625,72 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.btn-view {
+  background-color: #dbeafe;
+  color: #1e40af;
+  text-decoration: none;
+}
+
+.btn-view:hover {
+  background-color: #bfdbfe;
+}
+
+.invoices-table-wrapper {
+  overflow-x: auto;
+}
+
+.invoices-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.invoices-table th,
+.invoices-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 0.875rem;
+}
+
+.invoices-table th {
+  background-color: #f9fafb;
+  font-weight: 600;
+  color: #374151;
+}
+
+.invoice-status {
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.invoice-status-pending {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.invoice-status-partial {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.invoice-status-paid {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.invoice-status-overdue {
+  background-color: #fecaca;
+  color: #991b1b;
+}
+
+.invoice-status-cancelled {
+  background-color: #e5e7eb;
+  color: #374151;
 }
 
 .btn-backfill {

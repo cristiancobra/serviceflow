@@ -53,8 +53,13 @@ class RecurringExpenseController extends Controller
 
     public function show(RecurringExpense $recurringExpense)
     {
-        $recurringExpense->load(['user', 'department'])
-            ->loadCount('invoices');
+        $recurringExpense->load([
+            'user',
+            'department',
+            'invoices' => function ($query) {
+                $query->orderBy('date_due', 'desc');
+            },
+        ])->loadCount('invoices');
 
         return new RecurringExpenseResource($recurringExpense);
     }

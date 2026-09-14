@@ -38,6 +38,7 @@ class RecurringExpenseResource extends JsonResource
                 ];
             }),
             'invoices_count' => $this->when(isset($this->invoices_count), $this->invoices_count),
+            'invoices' => InvoicesResource::collection($this->whenLoaded('invoices')),
         ];
     }
 }
