@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use App\Models\Invoice;
 use App\Models\RecurringExpense;
 
 class GenerateRecurringExpenses extends Command
@@ -34,27 +33,8 @@ class GenerateRecurringExpenses extends Command
         $generated = 0;
 
         foreach (RecurringExpense::active()->get() as $recurringExpense) {
-            foreach ($recurringExpense->dueDatesInWindow($today, 30) as $dueDate) {
-                $invoice = Invoice::firstOrCreate(
-                    [
-                        'recurring_expense_id' => $recurringExpense->id,
-                        'date_due' => $dueDate->toDateString(),
-                    ],
-                    [
-                        'account_id' => $recurringExpense->account_id,
-                        'user_id' => $recurringExpense->user_id,
-                        'department_id' => $recurringExpense->department_id,
-                        'name' => $recurringExpense->name,
-                        'price' => $recurringExpense->amount,
-                        'balance' => $recurringExpense->amount,
-                        'type' => 'debit',
-                        'category' => $recurringExpense->category,
-                        'observations' => $recurringExpense->description,
-                        'status' => Invoice::STATUS_PENDING,
-                        'installment_number' => 1,
-                        'installment_quantity' => 1,
-                    ]
-                );
+            foreach ($recurringExpense->dueDatesBetween($today, $today->copy()->addDays(30)) as $dueDate) {
+                $invoice = $recurringExpense->generateInvoiceForDate($dueDate);
 
                 if ($invoice->wasRecentlyCreated) {
                     $generated++;

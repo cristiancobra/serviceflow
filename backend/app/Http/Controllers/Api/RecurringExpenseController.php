@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\RecurringExpenseRequest;
 use App\Http\Resources\RecurringExpenseResource;
 use App\Models\RecurringExpense;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class RecurringExpenseController extends Controller
@@ -83,5 +84,38 @@ class RecurringExpenseController extends Controller
         $recurringExpense->load(['user', 'department']);
 
         return new RecurringExpenseResource($recurringExpense);
+    }
+
+    /**
+     * Gera retroativamente as faturas desde o start_date da despesa recorrente até
+     * hoje (ou até $request->end_date, se informado). Idempotente: faturas já
+     * existentes para uma data de vencimento não são duplicadas.
+     */
+    public function backfill(Request $request, RecurringExpense $recurringExpense)
+    {
+        $validated = $request->validate([
+            'end_date' => 'nullable|date',
+        ]);
+
+        $endDate = isset($validated['end_date'])
+            ? Carbon::parse($validated['end_date'])
+            : Carbon::today();
+
+        $generated = 0;
+
+        foreach ($recurringExpense->dueDatesBetween($recurringExpense->start_date, $endDate) as $dueDate) {
+            $invoice = $recurringExpense->generateInvoiceForDate($dueDate);
+
+            if ($invoice->wasRecentlyCreated) {
+                $generated++;
+            }
+        }
+
+        return response()->json([
+            'message' => $generated > 0
+                ? "{$generated} fatura(s) gerada(s) com sucesso."
+                : 'Nenhuma fatura nova para gerar no período.',
+            'generated' => $generated,
+        ]);
     }
 }

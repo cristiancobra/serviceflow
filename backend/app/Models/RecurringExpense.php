@@ -76,30 +76,29 @@ class RecurringExpense extends Model
     }
 
     /**
-     * Datas de vencimento dentro da janela [$today, $today + $days] em que esta despesa
-     * recorrente deveria ter uma fatura gerada, respeitando start_date/end_date.
+     * Datas de vencimento dentro de [$rangeStart, $rangeEnd] em que esta despesa recorrente
+     * deveria ter uma fatura gerada, respeitando também start_date/end_date da despesa.
+     * Usado tanto pela geração diária (janela de 30 dias a partir de hoje) quanto pelo
+     * backfill retroativo (de start_date até hoje ou uma data informada).
      *
      * @return Carbon[]
      */
-    public function dueDatesInWindow(Carbon $today, int $days): array
+    public function dueDatesBetween(Carbon $rangeStart, Carbon $rangeEnd): array
     {
-        $windowEnd = $today->copy()->addDays($days);
-        $dates = [];
+        $start = $this->start_date->greaterThan($rangeStart) ? $this->start_date->copy() : $rangeStart->copy();
+        $end = ($this->end_date && $this->end_date->lessThan($rangeEnd)) ? $this->end_date->copy() : $rangeEnd->copy();
 
-        $cursor = $today->copy()->startOfMonth();
+        $dates = [];
+        $cursor = $start->copy()->startOfMonth();
 
         while (true) {
             $due = $this->dueDateFor($cursor);
 
-            if ($due->greaterThan($windowEnd)) {
+            if ($due->greaterThan($end)) {
                 break;
             }
 
-            if (
-                $due->greaterThanOrEqualTo($today)
-                && $due->greaterThanOrEqualTo($this->start_date)
-                && (!$this->end_date || $due->lessThanOrEqualTo($this->end_date))
-            ) {
+            if ($due->greaterThanOrEqualTo($start)) {
                 $dates[] = $due->copy();
             }
 
@@ -107,5 +106,34 @@ class RecurringExpense extends Model
         }
 
         return $dates;
+    }
+
+    /**
+     * Cria (ou recupera, se já existir) a fatura de débito referente a esta despesa
+     * recorrente para a data de vencimento informada. Idempotente: reexecutar para a
+     * mesma data nunca duplica.
+     */
+    public function generateInvoiceForDate(Carbon $dueDate): Invoice
+    {
+        return Invoice::firstOrCreate(
+            [
+                'recurring_expense_id' => $this->id,
+                'date_due' => $dueDate->toDateString(),
+            ],
+            [
+                'account_id' => $this->account_id,
+                'user_id' => $this->user_id,
+                'department_id' => $this->department_id,
+                'name' => $this->name,
+                'price' => $this->amount,
+                'balance' => $this->amount,
+                'type' => 'debit',
+                'category' => $this->category,
+                'observations' => $this->description,
+                'status' => Invoice::STATUS_PENDING,
+                'installment_number' => 1,
+                'installment_quantity' => 1,
+            ]
+        );
     }
 }

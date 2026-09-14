@@ -137,6 +137,9 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::post('recurring_expenses/{recurring_expense}/toggle-active', [RecurringExpenseController::class, 'toggleActive'])
 		->name('recurring_expenses.toggleActive');
 
+	Route::post('recurring_expenses/{recurring_expense}/backfill', [RecurringExpenseController::class, 'backfill'])
+		->name('recurring_expenses.backfill');
+
 	Route::apiResource('recurring_expenses', RecurringExpenseController::class)
 		->names('recurring_expenses');
 

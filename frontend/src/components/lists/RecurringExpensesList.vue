@@ -101,6 +101,14 @@
         <div class="w-1/10 text-center">
           <div class="action-buttons">
             <button
+              v-if="needsBackfill(recurringExpense)"
+              @click="openBackfillModal(recurringExpense)"
+              class="btn-action btn-backfill"
+              title="Gerar faturas retroativas"
+            >
+              <font-awesome-icon icon="fa-solid fa-history" />
+            </button>
+            <button
               @click="editRecurringExpense(recurringExpense)"
               class="btn-action btn-edit"
               title="Editar"
@@ -140,6 +148,47 @@
           @saved="handleSaved"
           @cancel="closeModal"
         />
+      </div>
+    </div>
+
+    <!-- Modal de Geração Retroativa (Backfill) -->
+    <div v-if="showBackfillModal" class="modal-overlay" @click="closeBackfillModal">
+      <div class="modal-content modal-small" @click.stop>
+        <div class="modal-header">
+          <h2>Gerar Faturas Retroativas</h2>
+          <button @click="closeBackfillModal" class="btn-close">
+            <font-awesome-icon icon="fa-solid fa-times" />
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <p>
+            Gerar as faturas de <strong>{{ recurringExpenseToBackfill?.name }}</strong>
+            desde <strong>{{ formatDate(recurringExpenseToBackfill?.start_date) }}</strong> até a data abaixo.
+          </p>
+
+          <div class="form-group" style="margin-top: 1rem;">
+            <label for="backfill-end-date" class="filter-label">Gerar até (opcional, padrão: mês atual)</label>
+            <input
+              id="backfill-end-date"
+              type="date"
+              v-model="backfillEndDate"
+              class="filter-select"
+              style="width: 100%;"
+            />
+          </div>
+
+          <p v-if="backfillError" class="error-message" style="margin-top: 0.75rem;">{{ backfillError }}</p>
+        </div>
+
+        <div class="modal-footer">
+          <button @click="closeBackfillModal" class="btn-secondary">
+            Cancelar
+          </button>
+          <button @click="submitBackfill" class="btn-primary" :disabled="isBackfilling">
+            {{ isBackfilling ? 'Gerando...' : 'Gerar Faturas' }}
+          </button>
+        </div>
       </div>
     </div>
 
@@ -189,9 +238,14 @@ export default {
       filteredRecurringExpenses: [],
       showModal: false,
       showDeleteModal: false,
+      showBackfillModal: false,
       isEditing: false,
+      isBackfilling: false,
       selectedRecurringExpense: null,
       recurringExpenseToDelete: null,
+      recurringExpenseToBackfill: null,
+      backfillEndDate: "",
+      backfillError: "",
     };
   },
   watch: {
@@ -292,6 +346,56 @@ export default {
       } catch (error) {
         console.error("Erro ao alterar status:", error);
         this.$emit("error", { message: "Erro ao alterar status da despesa recorrente" });
+      }
+    },
+
+    needsBackfill(recurringExpense) {
+      if ((recurringExpense.invoices_count || 0) > 0) return false;
+      if (!recurringExpense.start_date) return false;
+
+      const oneMonthAgo = new Date();
+      oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+      return new Date(recurringExpense.start_date) < oneMonthAgo;
+    },
+
+    formatDate(dateString) {
+      if (!dateString) return "";
+      const [year, month, day] = dateString.split("-");
+      return `${day}/${month}/${year}`;
+    },
+
+    openBackfillModal(recurringExpense) {
+      this.recurringExpenseToBackfill = recurringExpense;
+      this.backfillEndDate = "";
+      this.backfillError = "";
+      this.showBackfillModal = true;
+    },
+
+    closeBackfillModal() {
+      this.showBackfillModal = false;
+      this.recurringExpenseToBackfill = null;
+      this.backfillEndDate = "";
+      this.backfillError = "";
+    },
+
+    async submitBackfill() {
+      this.isBackfilling = true;
+      this.backfillError = "";
+
+      try {
+        const response = await post(
+          `recurring_expenses/${this.recurringExpenseToBackfill.id}/backfill`,
+          { end_date: this.backfillEndDate || null }
+        );
+        this.closeBackfillModal();
+        this.getRecurringExpenses();
+        this.$emit("success", { message: response?.message || "Faturas geradas com sucesso!" });
+      } catch (error) {
+        console.error("Erro ao gerar faturas retroativas:", error);
+        this.backfillError = error.response?.data?.message || "Erro ao gerar faturas retroativas";
+      } finally {
+        this.isBackfilling = false;
       }
     },
   },
@@ -407,6 +511,15 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.btn-backfill {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.btn-backfill:hover {
+  background-color: #bfdbfe;
 }
 
 .btn-edit {
