@@ -59,6 +59,7 @@ class RecurringExpenseController extends Controller
             'invoices' => function ($query) {
                 $query->orderBy('date_due', 'desc');
             },
+            'invoices.transactions',
         ])->loadCount('invoices');
 
         return new RecurringExpenseResource($recurringExpense);

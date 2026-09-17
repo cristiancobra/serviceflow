@@ -110,13 +110,12 @@
               {{ charge.amount_formatted }}
             </div>
             <div class="w-1/10 text-center" v-if="invoice.status === 'open'">
-              <button
-                @click="deleteCharge(charge)"
-                class="btn-action btn-delete"
+              <delete-icon-button
+                size="w-8 h-8"
                 title="Excluir"
-              >
-                <font-awesome-icon icon="fa-solid fa-trash" />
-              </button>
+                :confirm-message='`Excluir a compra "${charge.description}"?`'
+                @confirm="deleteCharge(charge)"
+              />
             </div>
           </div>
 
@@ -187,11 +186,13 @@
 <script>
 import { show, post, destroy } from "@/utils/requests/httpUtils";
 import CreditCardInvoicePaymentForm from "@/components/forms/CreditCardInvoicePaymentForm.vue";
+import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
 
 export default {
   name: "CreditCardInvoiceShow",
   components: {
     CreditCardInvoicePaymentForm,
+    DeleteIconButton,
   },
   data() {
     return {
@@ -246,9 +247,6 @@ export default {
     },
 
     async deleteCharge(charge) {
-      if (!confirm(`Excluir a compra "${charge.description}"?`)) {
-        return;
-      }
       try {
         await destroy("credit_card_charges", charge.id);
         this.getInvoice();

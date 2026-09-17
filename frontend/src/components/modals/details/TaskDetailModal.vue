@@ -168,7 +168,7 @@
                 :links="task.links || []"
                 :show-header="false"
                 :show-task-column="false"
-                @delete-link="confirmDeleteLink"
+                @delete-link="deleteLink"
                 @copy-link="copyLink"
               />
             </div>
@@ -489,12 +489,6 @@ export default {
         this.$emit('task-updated', this.task);
       } catch (error) {
         console.error("Erro ao deletar link:", error);
-      }
-    },
-
-    confirmDeleteLink(linkId) {
-      if (window.confirm("Tem certeza que deseja excluir este link?")) {
-        this.deleteLink(linkId);
       }
     },
 

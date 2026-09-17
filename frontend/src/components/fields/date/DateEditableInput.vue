@@ -14,9 +14,11 @@
       :name="name" 
       :label="label" 
       v-model="localValue"
-      :placeholder="placeholder" 
-      format="dd/MM/yyyy" 
+      :placeholder="placeholder"
+      format="dd/MM/yyyy"
       :enable-time-picker="false"
+      teleport
+      teleport-center
       @update:modelValue="handleDateChange"
     />
   </div>

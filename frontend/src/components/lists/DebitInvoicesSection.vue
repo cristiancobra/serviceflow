@@ -153,13 +153,12 @@
               <font-awesome-icon icon="fas fa-plus" class="text-sm" />
             </button>
 
-            <button
-              @click.prevent.stop="deleteInvoice(invoice.id)"
-              class="p-2 text-rose-600 hover:text-white hover:bg-rose-600 rounded-md transition-colors duration-200"
+            <delete-icon-button
               title="Excluir fatura"
-            >
-              <font-awesome-icon icon="fas fa-trash" class="text-sm" />
-            </button>
+              confirm-message="Tem certeza que deseja excluir esta fatura? Esta ação não pode ser desfeita."
+              @click.prevent.stop
+              @confirm="deleteInvoice(invoice.id)"
+            />
 
             <div class="w-6 h-6 flex items-center justify-center">
               <font-awesome-icon
@@ -218,16 +217,13 @@
                 readonly
               />
             </div>
-            <button
-              @click.stop="deleteTransaction(transaction.id, invoice.id)"
-              class="ml-2 p-2 text-rose-600 hover:text-white hover:bg-rose-600 rounded-md transition-colors duration-200"
+            <delete-icon-button
+              class="ml-2"
               title="Excluir transação"
-            >
-              <font-awesome-icon
-                icon="fas fa-trash"
-                class="text-sm"
-              />
-            </button>
+              confirm-message="Tem certeza que deseja excluir esta transação? Esta ação não pode ser desfeita."
+              @click.stop
+              @confirm="deleteTransaction(transaction.id, invoice.id)"
+            />
           </div>
         </div>
       </div>
@@ -292,6 +288,7 @@ import ButtonNewForm from "../buttons/ButtonNewForm.vue";
 import MoneyField from "../fields/number/MoneyField.vue";
 import TransactionCreateForm from "@/components/forms/TransactionCreateForm.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
+import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
 
 export default {
   props: {
@@ -315,6 +312,7 @@ export default {
     MoneyField,
     TransactionCreateForm,
     DateTimeEditableInput,
+    DeleteIconButton,
   },
   computed: {
     debitInvoices() {
@@ -433,11 +431,6 @@ export default {
       }
     },
     async deleteInvoice(invoiceId) {
-      // Confirmação antes de excluir
-      if (!confirm('Tem certeza que deseja excluir esta fatura? Esta ação não pode ser desfeita.')) {
-        return;
-      }
-
       try {
         await this.destroy("invoices", invoiceId);
         
@@ -455,10 +448,6 @@ export default {
       }
     },
     async deleteTransaction(transactionId, invoiceId) {
-      if (!confirm('Tem certeza que deseja excluir esta transação?')) {
-        return;
-      }
-
       await destroy("transactions", transactionId);
 
       // Remover transação localmente

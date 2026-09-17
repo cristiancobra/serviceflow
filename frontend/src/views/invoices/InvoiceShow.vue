@@ -219,7 +219,7 @@
       <div class="section-header">
         <div class="section-title">
           <font-awesome-icon icon="fas fa-coins" class="icon text-xl pe-3" />
-          <h2>{{ isDebit ? 'Pagamentos Feitos' : 'Pagamentos Recebidos' }}</h2>
+          <h2>{{ isDebit ? 'Pagamentos realizados' : 'Pagamentos Recebidos' }}</h2>
         </div>
         <div class="section-action">
           <button
@@ -237,49 +237,15 @@
         </div>
       </div>
 
-      <div
-        v-if="!invoice.transactions || invoice.transactions.length === 0"
-        class="w-full rounded-xl border border-dashed border-indigo-200 bg-gradient-to-r from-indigo-50 to-sky-50 py-8 text-center text-indigo-700 shadow-sm"
-      >
-        <p class="text-sm font-medium">{{ isDebit ? 'Nenhum pagamento feito' : 'Nenhum pagamento recebido' }}</p>
-      </div>
-
-      <div
-        v-else
-        class="mt-4 space-y-2 rounded-xl border border-gray-200 bg-white p-2 border-t-4 border-t-indigo-500 shadow-sm"
-      >
-        <div
-          v-for="transaction in invoice.transactions"
-          :key="transaction.id"
-          class="group flex items-center justify-between px-4 py-3 rounded-md bg-white even:bg-sky-50/40 hover:bg-sky-100/60 border-l-4 border-transparent hover:border-sky-400 transition-colors"
-        >
-          <div class="min-w-[160px]">
-            <div
-              class="inline-flex items-center gap-2 rounded-full bg-indigo-100 px-3 py-1"
-            >
-              <span class="h-2.5 w-2.5 rounded-full bg-sky-500"></span>
-              <date-editable-input
-                name="transaction_date"
-                :modelValue="transaction.transaction_date"
-                @save="
-                  updateTransaction('transaction_date', $event, transaction.id)
-                "
-                class-text="text-sm font-semibold text-indigo-700"
-              />
-            </div>
-          </div>
-          <div class="flex-1"></div>
-          <div
-            class="text-right inline-flex items-center rounded-md bg-emerald-50 px-2 py-1 ring-1 ring-emerald-200 text-emerald-700"
-          >
-            <money-editable-field
-              name="amount"
-              :modelValue="transaction.amount"
-              @save="updateTransaction('amount', $event, transaction.id)"
-            />
-          </div>
-        </div>
-      </div>
+      <transactions-list-section
+        :transactions="invoice.transactions"
+        :is-debit="isDebit"
+        @update-transaction="
+          (fieldName, transactionId, editedValue) =>
+            updateTransaction(fieldName, editedValue, transactionId)
+        "
+        @delete-transaction="deleteTransaction"
+      />
 
       <!-- Totais da fatura -->
       <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -362,7 +328,7 @@ import CompanyAvatar from "@/components/common/CompanyAvatar.vue";
 import CompaniesSelectEditableField from "@/components/fields/selects/CompaniesSelectEditableField.vue";
 import LeadAvatar from "@/components/common/LeadAvatar.vue";
 import LeadsSelectEditableField from "@/components/fields/selects/LeadsSelectEditableField.vue";
-import DateEditableInput from "../../components/fields/date/DateEditableInput.vue";
+import TransactionsListSection from "@/components/show/TransactionsListSection.vue";
 
 export default {
   data() {
@@ -384,7 +350,7 @@ export default {
     CompaniesSelectEditableField,
     LeadAvatar,
     LeadsSelectEditableField,
-    DateEditableInput,
+    TransactionsListSection,
   },
   computed: {
     invoiceTotal() {
@@ -520,6 +486,16 @@ export default {
       );
       if (index !== -1) {
         this.invoice.transactions[index] = updatedTransaction;
+      }
+    },
+    async deleteTransaction(transactionId) {
+      try {
+        this.errorMessage = null;
+        await this.destroy("transactions", transactionId);
+        await this.getInvoice();
+      } catch (error) {
+        this.errorMessage = "Erro ao excluir transação. Tente novamente.";
+        console.error("Erro ao excluir transação:", error);
       }
     },
   },

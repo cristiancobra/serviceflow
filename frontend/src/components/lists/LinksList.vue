@@ -47,12 +47,11 @@
         <span class="text-sm text-gray-600">{{ link.observations || '-' }}</span>
       </div>
       <div class="col-span-2 flex justify-center gap-2">
-        <button
-          class="button-circular delete"
-          @click="confirmDeleteLink(link.id)"
-        >
-          <font-awesome-icon icon="fa-solid fa-trash" class="" />
-        </button>
+        <delete-icon-button
+          title="Excluir link"
+          confirm-message="Tem certeza que deseja excluir este link?"
+          @confirm="deleteLink(link.id)"
+        />
         <button class="button-circular ms-2" @click="copyLink(link.url)">
           <font-awesome-icon icon="fa-solid fa-copy" class="" />
         </button>
@@ -65,12 +64,14 @@
 import { destroy } from "@/utils/requests/httpUtils";
 import LinkCreateForm from "@/components/forms/LinkCreateForm.vue";
 import ButtonNewForm from "@/components/buttons/ButtonNewForm.vue";
+import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
 
 export default {
   name: "LinksList",
   components: {
     LinkCreateForm,
     ButtonNewForm,
+    DeleteIconButton,
   },
   data() {
     return {
@@ -111,11 +112,6 @@ export default {
         this.localLinks = this.localLinks.filter((link) => link.id !== linkId);
       } catch (error) {
         console.error("Erro ao deletar o link:", error);
-      }
-    },
-    confirmDeleteLink(linkId) {
-      if (window.confirm("Tem certeza que deseja excluir este link?")) {
-        this.deleteLink(linkId);
       }
     },
     copyLink(url) {

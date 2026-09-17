@@ -178,16 +178,12 @@
                   readonly
                 />
               </div>
-              <button
-                @click.stop="deleteTransaction(transaction.id, invoice.id)"
-                class="ml-2 p-2 text-red-600 hover:text-white hover:bg-red-600 rounded-md transition-colors duration-200"
+              <delete-icon-button
+                class="ml-2"
                 title="Excluir transação"
-              >
-                <font-awesome-icon
-                  icon="fas fa-trash"
-                  class="text-sm"
-                />
-              </button>
+                confirm-message="Tem certeza que deseja excluir esta transação? Esta ação não pode ser desfeita."
+                @confirm="deleteTransaction(transaction.id, invoice.id)"
+              />
             </div>
           </div>
         </div>
@@ -263,6 +259,7 @@ import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue"
 import CreditInvoiceCreateForm from "@/components/forms/CreditInvoiceCreateForm.vue";
 import MoneyField from "../fields/number/MoneyField.vue";
 import TransactionCreateForm from "@/components/forms/TransactionCreateForm.vue";
+import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
 
 export default {
   props: {
@@ -284,6 +281,7 @@ export default {
     CreditInvoiceCreateForm,
     MoneyField,
     TransactionCreateForm,
+    DeleteIconButton,
   },
   watch: {
     "proposal.invoices": {

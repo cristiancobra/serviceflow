@@ -3,7 +3,7 @@
     <ErrorMessage v-if="isError" :formResponse="formResponse" />
     <SuccessMessage v-if="isSuccess" :formResponse="formResponse" />
 
-    <RecurringExpensesList
+    <recurring-expenses-list
       @error="handleError"
       @success="handleSuccess"
     />

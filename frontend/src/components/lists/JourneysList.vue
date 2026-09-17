@@ -95,13 +95,11 @@
           >
             <font-awesome-icon icon="fa-solid fa-hand" class="text-sm" />
           </button>
-          <button 
-            class="w-7 h-7 flex items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-700 transition"
-            @click="deleteItem(journey)"
+          <delete-icon-button
             title="Excluir jornada"
-          >
-            <font-awesome-icon icon="fa-solid fa-trash-alt" class="text-sm" />
-          </button>
+            confirm-message="Tem certeza que deseja excluir esta jornada?"
+            @confirm="deleteItem(journey)"
+          />
         </div>
       </div>
       <div class="mt-4">
@@ -122,6 +120,7 @@ import { mapMutations } from 'vuex';
 import DateEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import TimeEditableInput from "@/components/forms/inputs/time/TimeEditableInput.vue";
 import PaginateNav from "@/components/layout/PaginateNav.vue";
+import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
 
 export default {
   name: "JourneysList",
@@ -129,6 +128,7 @@ export default {
     DateEditableInput,
     PaginateNav,
     TimeEditableInput,
+    DeleteIconButton,
   },
   props: {
     journeys: {
@@ -208,29 +208,23 @@ export default {
       }
     },
     deleteItem(item) {
-      const confirmation = confirm(
-        "Tem certeza que deseja excluir esta jornada?"
-      );
-
-      if (confirmation) {
-        axios
-          .delete(`${BACKEND_URL}${JOURNEY_URL_PARAMETER}${item.id}`)
-          .then((response) => {
-            if (response.status === 200) {
-              // this.$emit("journey-deleted", journeyToDelete.id);
-              this.deleteItemList(item.id);
-              this.messageStatus = "deleted";
-              this.messageText = "Jornada excluída com sucesso!";
-              this.emitLastJourneyEnd();
-            } else {
-              alert("Falha ao excluir a jornada. Por favor, tente novamente.");
-            }
-          })
-          .catch((error) => {
-            console.error("Erro ao excluir a jornada:", error);
-            alert("Erro ao excluir a jornada. Por favor, tente novamente.");
-          });
-      }
+      axios
+        .delete(`${BACKEND_URL}${JOURNEY_URL_PARAMETER}${item.id}`)
+        .then((response) => {
+          if (response.status === 200) {
+            // this.$emit("journey-deleted", journeyToDelete.id);
+            this.deleteItemList(item.id);
+            this.messageStatus = "deleted";
+            this.messageText = "Jornada excluída com sucesso!";
+            this.emitLastJourneyEnd();
+          } else {
+            alert("Falha ao excluir a jornada. Por favor, tente novamente.");
+          }
+        })
+        .catch((error) => {
+          console.error("Erro ao excluir a jornada:", error);
+          alert("Erro ao excluir a jornada. Por favor, tente novamente.");
+        });
     },
     deleteItemList(itemId) {
       // Atualize a lista de jornadas após a exclusão

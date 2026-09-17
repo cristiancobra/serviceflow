@@ -64,13 +64,12 @@
                   </span>
               </div>
               <div :class="actionsColClass" class="flex justify-center gap-2">
-                  <button
-                      class="w-8 h-8 flex items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors shadow-sm"
-                      @click="$emit('delete-link', link.id)"
+                  <delete-icon-button
+                      size="w-8 h-8"
                       title="Excluir link"
-                  >
-                      <font-awesome-icon icon="fa-solid fa-trash-alt" class="text-sm" />
-                  </button>
+                      confirm-message="Tem certeza que deseja excluir este link?"
+                      @confirm="$emit('delete-link', link.id)"
+                  />
                   <button
                       class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors shadow-sm"
                       @click="$emit('copy-link', link.url)"
@@ -85,8 +84,13 @@
 </template>
 
 <script>
+import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
+
 export default {
   name: 'TaskLinksList',
+  components: {
+      DeleteIconButton,
+  },
   props: {
       links: {
           type: Array,

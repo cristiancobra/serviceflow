@@ -85,13 +85,12 @@
                           </span>
                       </div>
                       <div class="col-span-2 flex justify-center gap-2">
-                          <button
-                              class="w-8 h-8 flex items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors shadow-sm"
-                              @click="confirmDeleteLink(link.id)"
+                          <delete-icon-button
+                              size="w-8 h-8"
                               title="Excluir link"
-                          >
-                              <font-awesome-icon icon="fa-solid fa-trash-alt" class="text-sm" />
-                          </button>
+                              confirm-message="Tem certeza que deseja excluir este link?"
+                              @confirm="deleteLink(link.id)"
+                          />
                           <button
                               class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors shadow-sm"
                               @click="copyLink(link.url)"
@@ -108,7 +107,7 @@
           <task-links-list
               :links="linksWithTask"
               container-class="mt-6"
-              @delete-link="confirmDeleteLink"
+              @delete-link="deleteLink"
               @copy-link="copyLink"
           />
 
@@ -174,13 +173,12 @@
                           </span>
                       </div>
                       <div class="col-span-2 flex justify-center gap-2">
-                          <button
-                              class="w-8 h-8 flex items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors shadow-sm"
-                              @click="confirmDeleteLink(link.id)"
+                          <delete-icon-button
+                              size="w-8 h-8"
                               title="Excluir link"
-                          >
-                              <font-awesome-icon icon="fa-solid fa-trash-alt" class="text-sm" />
-                          </button>
+                              confirm-message="Tem certeza que deseja excluir este link?"
+                              @confirm="deleteLink(link.id)"
+                          />
                           <button
                               class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors shadow-sm"
                               @click="copyLink(link.url)"
@@ -255,13 +253,12 @@
                           </span>
                       </div>
                       <div class="col-span-2 flex justify-center gap-2">
-                          <button
-                              class="w-8 h-8 flex items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors shadow-sm"
-                              @click="confirmDeleteLink(link.id)"
+                          <delete-icon-button
+                              size="w-8 h-8"
                               title="Excluir link"
-                          >
-                              <font-awesome-icon icon="fa-solid fa-trash-alt" class="text-sm" />
-                          </button>
+                              confirm-message="Tem certeza que deseja excluir este link?"
+                              @confirm="deleteLink(link.id)"
+                          />
                           <button
                               class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors shadow-sm"
                               @click="copyLink(link.url)"
@@ -284,6 +281,7 @@ import SearchInput from "@/components/filters/SearchInput.vue";
 import ButtonNewForm from "@/components/buttons/ButtonNewForm.vue";
 import TaskLinksList from "@/components/lists/TaskLinksList.vue";
 import CloseButton from "@/components/buttons/CloseButton.vue";
+import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
 
 export default {
   name: "LinksModal",
@@ -293,6 +291,7 @@ export default {
       ButtonNewForm,
       TaskLinksList,
       CloseButton,
+      DeleteIconButton,
   },
   props: {
       compact: {
@@ -349,11 +348,6 @@ export default {
               this.links = this.links.filter((link) => link.id !== linkId);
           } catch (error) {
               console.error("Erro ao deletar o link:", error);
-          }
-      },
-      confirmDeleteLink(linkId) {
-          if (window.confirm("Tem certeza que deseja excluir este link?")) {
-              this.deleteLink(linkId);
           }
       },
       copyLink(url) {
