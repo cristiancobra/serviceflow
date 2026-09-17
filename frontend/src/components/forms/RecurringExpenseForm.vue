@@ -101,6 +101,43 @@
           <span v-if="errors.end_date" class="error-message">{{ errors.end_date[0] }}</span>
         </div>
 
+        <!-- Cliente (opcional) -->
+        <div class="form-group col-span-2">
+          <label class="form-label">Cliente (opcional)</label>
+          <div class="client-type-options">
+            <label class="client-type-option">
+              <input type="radio" v-model="clientType" value="none" />
+              <span>Sem cliente</span>
+            </label>
+            <label class="client-type-option">
+              <input type="radio" v-model="clientType" value="lead" />
+              <span>Pessoa</span>
+            </label>
+            <label class="client-type-option">
+              <input type="radio" v-model="clientType" value="company" />
+              <span>Empresa</span>
+            </label>
+          </div>
+          <LeadsSelectInput
+            v-if="clientType === 'lead'"
+            name="lead_id"
+            label="Cliente (Pessoa)"
+            v-model="form.lead_id"
+            fieldsToDisplay="name"
+            fieldNull="Selecione um cliente"
+          />
+          <CompaniesSelectInput
+            v-if="clientType === 'company'"
+            name="company_id"
+            label="Cliente (Empresa)"
+            v-model="form.company_id"
+            :fieldsToDisplay="['business_name', 'legal_name']"
+            fieldNull="Selecione uma empresa"
+          />
+          <span v-if="errors.lead_id" class="error-message">{{ errors.lead_id[0] }}</span>
+          <span v-if="errors.company_id" class="error-message">{{ errors.company_id[0] }}</span>
+        </div>
+
         <!-- Descrição -->
         <div class="form-group col-span-2">
           <label for="description" class="form-label">Descrição</label>
@@ -143,11 +180,15 @@
 <script>
 import { index, store, update } from "@/utils/requests/httpUtils";
 import MoneyInput from "./inputs/money/MoneyInput.vue";
+import LeadsSelectInput from "./selects/LeadsSelectInput.vue";
+import CompaniesSelectInput from "./selects/CompaniesSelectInput.vue";
 
 export default {
   name: "RecurringExpenseForm",
   components: {
     MoneyInput,
+    LeadsSelectInput,
+    CompaniesSelectInput,
   },
   props: {
     recurringExpense: {
@@ -163,6 +204,7 @@ export default {
     return {
       form: this.emptyForm(),
       departments: [],
+      clientType: "none",
       errors: {},
       isSubmitting: false,
     };
@@ -176,11 +218,17 @@ export default {
       },
       immediate: true,
     },
+    clientType(newType) {
+      if (newType !== "lead") this.form.lead_id = null;
+      if (newType !== "company") this.form.company_id = null;
+    },
   },
   methods: {
     emptyForm() {
       return {
         department_id: "",
+        lead_id: null,
+        company_id: null,
         name: "",
         description: "",
         category: "fixed",
@@ -212,6 +260,8 @@ export default {
     populateForm(recurringExpense) {
       this.form = {
         department_id: recurringExpense.department_id || "",
+        lead_id: recurringExpense.lead_id || null,
+        company_id: recurringExpense.company_id || null,
         name: recurringExpense.name || "",
         description: recurringExpense.description || "",
         category: recurringExpense.category || "fixed",
@@ -221,6 +271,12 @@ export default {
         start_date: recurringExpense.start_date || this.getToday(),
         end_date: recurringExpense.end_date || "",
       };
+
+      this.clientType = recurringExpense.lead_id
+        ? "lead"
+        : recurringExpense.company_id
+          ? "company"
+          : "none";
     },
 
     async submitForm() {
@@ -244,6 +300,7 @@ export default {
 
         this.$emit("saved", response);
         this.form = this.emptyForm();
+        this.clientType = "none";
       } catch (error) {
         console.error("Erro ao salvar despesa recorrente:", error);
 
@@ -261,6 +318,7 @@ export default {
 
     cancel() {
       this.form = this.emptyForm();
+      this.clientType = "none";
       this.errors = {};
       this.$emit("cancel");
     },
@@ -325,6 +383,25 @@ export default {
 textarea.form-input {
   resize: vertical;
   font-family: inherit;
+}
+
+.client-type-options {
+  display: flex;
+  gap: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.client-type-option {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.client-type-option input[type="radio"] {
+  cursor: pointer;
 }
 
 .form-checkbox {

@@ -13,7 +13,7 @@ class RecurringExpenseController extends Controller
 {
     public function index(Request $request)
     {
-        $query = RecurringExpense::with(['user', 'department'])
+        $query = RecurringExpense::with(['user', 'department', 'lead', 'company'])
             ->withCount('invoices');
 
         if ($request->has('is_active')) {
@@ -46,7 +46,7 @@ class RecurringExpenseController extends Controller
         }
 
         $recurringExpense = RecurringExpense::create($data);
-        $recurringExpense->load(['user', 'department']);
+        $recurringExpense->load(['user', 'department', 'lead', 'company']);
 
         return new RecurringExpenseResource($recurringExpense);
     }
@@ -56,6 +56,8 @@ class RecurringExpenseController extends Controller
         $recurringExpense->load([
             'user',
             'department',
+            'lead',
+            'company',
             'invoices' => function ($query) {
                 $query->orderBy('date_due', 'desc');
             },
@@ -70,7 +72,7 @@ class RecurringExpenseController extends Controller
         $data = $request->validated();
 
         $recurringExpense->update($data);
-        $recurringExpense->load(['user', 'department']);
+        $recurringExpense->load(['user', 'department', 'lead', 'company']);
 
         return new RecurringExpenseResource($recurringExpense);
     }

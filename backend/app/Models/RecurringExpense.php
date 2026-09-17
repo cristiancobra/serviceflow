@@ -19,6 +19,8 @@ class RecurringExpense extends Model
         'account_id',
         'user_id',
         'department_id',
+        'lead_id',
+        'company_id',
         'name',
         'description',
         'category',
@@ -44,6 +46,16 @@ class RecurringExpense extends Model
     public function department()
     {
         return $this->belongsTo(Department::class);
+    }
+
+    public function lead()
+    {
+        return $this->belongsTo(Lead::class);
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 
     public function invoices()
@@ -124,6 +136,8 @@ class RecurringExpense extends Model
                 'account_id' => $this->account_id,
                 'user_id' => $this->user_id,
                 'department_id' => $this->department_id,
+                'lead_id' => $this->lead_id,
+                'company_id' => $this->company_id,
                 'name' => $this->name,
                 'price' => $this->amount,
                 'balance' => $this->amount,

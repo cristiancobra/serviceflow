@@ -29,6 +29,8 @@ class RecurringExpenseRequest extends FormRequest
         return [
             'user_id' => 'nullable|exists:users,id',
             'department_id' => 'nullable|exists:departments,id',
+            'lead_id' => 'nullable|exists:leads,id',
+            'company_id' => 'nullable|exists:companies,id',
             'name' => "{$required}|string|max:255",
             'description' => 'nullable|string|max:1000',
             'category' => 'nullable|string|in:fixed,variable',
@@ -67,6 +69,8 @@ class RecurringExpenseRequest extends FormRequest
         return [
             'user_id' => 'usuário',
             'department_id' => 'departamento',
+            'lead_id' => 'pessoa',
+            'company_id' => 'empresa',
             'name' => 'nome',
             'description' => 'descrição',
             'category' => 'categoria',

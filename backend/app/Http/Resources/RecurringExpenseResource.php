@@ -13,6 +13,8 @@ class RecurringExpenseResource extends JsonResource
             'account_id' => $this->account_id,
             'user_id' => $this->user_id,
             'department_id' => $this->department_id,
+            'lead_id' => $this->lead_id,
+            'company_id' => $this->company_id,
             'name' => $this->name,
             'description' => $this->description,
             'category' => $this->category,
@@ -37,6 +39,8 @@ class RecurringExpenseResource extends JsonResource
                     'name' => $this->department->name,
                 ];
             }),
+            'lead' => new LeadResource($this->whenLoaded('lead')),
+            'company' => new CompaniesResource($this->whenLoaded('company')),
             'invoices_count' => $this->when(isset($this->invoices_count), $this->invoices_count),
             'invoices' => InvoicesResource::collection($this->whenLoaded('invoices')),
         ];
