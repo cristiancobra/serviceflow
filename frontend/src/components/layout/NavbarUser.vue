@@ -238,6 +238,7 @@
           >
             <font-awesome-icon icon="fas fa-play" class="flex-shrink-0 text-green-600" />
             <span class="truncate font-semibold text-primary">{{ taskDisplayName }}</span>
+            <journey-timer class="flex-shrink-0 text-sm text-primary/80" />
           </button>
         </div>
 
@@ -251,6 +252,7 @@
 <script>
 import { mapActions, mapState, mapMutations } from "vuex";
 import NavbarUserMenu from "./NavbarUserMenu.vue";
+import JourneyTimer from "@/components/journeys/JourneyTimer.vue";
 import logoServiceflow from '@/assets/logo-serviceflow-ROXO.png';
 
 export default {
@@ -267,6 +269,7 @@ export default {
   },
   components: {
     NavbarUserMenu,
+    JourneyTimer,
   },
   methods: {
     ...mapActions(["logout"]),

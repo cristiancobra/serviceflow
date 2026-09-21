@@ -56,9 +56,10 @@ class Journey extends Model
         }
     }
 
-    public static function getOpenJourney()
+    public static function getOpenJourney($userId)
     {
-        return self::whereNotNull('start')
+        return self::where('user_id', $userId)
+            ->whereNotNull('start')
             ->whereNull('end')
             ->with(['task', 'task.opportunity', 'task.project'])
             ->first();

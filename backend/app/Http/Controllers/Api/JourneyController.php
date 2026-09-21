@@ -7,6 +7,7 @@ use App\Http\Resources\JourneyResource;
 use App\Models\Journey;
 use Illuminate\Http\Request;
 use App\Http\Requests\JourneyStoreRequest;
+use App\Services\DateTimeConversionService;
 
 class JourneyController extends Controller
 {
@@ -211,11 +212,13 @@ class JourneyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function checkOpenJourney()
+    public function checkOpenJourney(Request $request)
     {
-        $openJourney = Journey::getOpenJourney();
+        $openJourney = Journey::getOpenJourney($request->user()->id);
 
         if ($openJourney) {
+            $timezone = $request->user()->timezone ?? 'America/Sao_Paulo';
+
             return response()->json([
                 'hasOpenJourneys' => true,
                 'openJourney' => [
@@ -223,7 +226,7 @@ class JourneyController extends Controller
                     'task_id' => $openJourney->task_id,
                     'name' => $openJourney->task->name,
                     'details' => $openJourney->details,
-                    'start' => $openJourney->start,
+                    'start' => DateTimeConversionService::convertFromUtc($openJourney->start, $timezone),
                     'duration' => $openJourney->duration,
                     'opportunity_id' => $openJourney->task->opportunity_id,
                     'project_id' => $openJourney->task->project_id,

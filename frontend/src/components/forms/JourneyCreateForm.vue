@@ -52,7 +52,7 @@
 <script>
 import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import { BACKEND_URL, JOURNEY_URL } from "@/config/apiConfig";
-import { mapMutations } from "vuex";
+import { mapActions } from "vuex";
 import axios from "axios";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
@@ -112,7 +112,7 @@ export default {
         this.isFirstStartChange = false;
       }
     },
-    ...mapMutations(["setOpenJourney"]),
+    ...mapActions(["checkOpenJourneys"]),
     setMessageStatus(status) {
       this.messageStatus = status;
 
@@ -147,7 +147,7 @@ export default {
             this.$emit("close");
             this.setMessageStatus("success");
             if (this.newJourney.end == null) {
-              this.setOpenJourney(this.newJourney.task);
+              this.checkOpenJourneys();
             }
           });
       } catch (error) {

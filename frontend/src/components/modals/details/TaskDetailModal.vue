@@ -122,8 +122,15 @@
               <div class="flex items-center gap-2 mb-2">
                 <font-awesome-icon icon="fa-solid fa-clock" class="text-primary" />
                 <label class="text-sm font-semibold text-gray-700">Duração</label>
+                <span v-if="isJourneyRunning" class="flex items-center gap-1 text-xs font-semibold text-green-600">
+                  <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                  AO VIVO
+                </span>
               </div>
-              <p class="text-2xl font-bold text-primary">{{ formatDuration(task.duration_time) }}</p>
+              <p class="text-2xl font-bold text-primary">
+                <journey-timer v-if="isJourneyRunning" :base-seconds="task.duration_time || 0" />
+                <template v-else>{{ formatDuration(task.duration_time) }}</template>
+              </p>
             </div>
           </div>
 
@@ -305,7 +312,7 @@
 
 <script>
 import axios from "axios";
-import { mapMutations } from "vuex";
+import { mapMutations, mapActions, mapState } from "vuex";
 import { formatDuration } from "@/utils/date/dateUtils";
 import { getDeadlineClass } from "@/utils/card/cardUtils";
 import { BACKEND_URL, TASK_URL_PARAMETER, JOURNEY_URL } from "@/config/apiConfig";
@@ -321,6 +328,7 @@ import AddJourneyButton from "@/components/buttons/AddJourneyButton.vue";
 import TaskLinksList from "@/components/lists/TaskLinksList.vue";
 import ButtonNewForm from "@/components/buttons/ButtonNewForm.vue";
 import OpportunitiesSelectInput from "@/components/forms/selects/OpportunitiesSelectInput.vue";
+import JourneyTimer from "@/components/journeys/JourneyTimer.vue";
 
 export default {
   name: "TaskDetailModal",
@@ -337,6 +345,7 @@ export default {
     TaskLinksList,
     ButtonNewForm,
     OpportunitiesSelectInput,
+    JourneyTimer,
   },
   props: {
     taskId: {
@@ -350,6 +359,10 @@ export default {
   },
   emits: ["close", "task-updated"],
   computed: {
+    ...mapState(["openJourney"]),
+    isJourneyRunning() {
+      return !!(this.task && this.openJourney && this.openJourney.task_id === this.task.id);
+    },
     canFinishTask() {
       if (!this.task) return false;
       const journeys = this.task.journeys || [];
@@ -382,6 +395,7 @@ export default {
     formatDuration,
     getDeadlineClass,
     ...mapMutations(["openModal"]),
+    ...mapActions(["checkOpenJourneys"]),
 
     cloneTask() {
       this.openModal({
@@ -444,8 +458,9 @@ export default {
         // Adiciona a nova jornada à lista
         if (!this.task.journeys) this.task.journeys = [];
         this.task.journeys.unshift(newJourney);
-        
+
         this.$emit('task-updated', this.task);
+        this.checkOpenJourneys();
       } catch (error) {
         console.error("Erro ao iniciar jornada:", error);
       }

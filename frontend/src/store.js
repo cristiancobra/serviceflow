@@ -4,9 +4,32 @@ import axios from 'axios';
 import { API_SANCTUM_URL, LOGIN_URL, LOGOUT_URL, BACKEND_URL, CHECK_TOKEN_URL, JOURNEY_CHECK_OPEN } from "@/config/apiConfig";
 import router from '@/router';
 
+// Único setInterval, ligado/desligado conforme openJourney muda (ver plugin journeyTickerPlugin).
+let journeyTickInterval = null;
+
+function journeyTickerPlugin(store) {
+  store.watch(
+    (state) => !!state.openJourney,
+    (hasOpenJourney) => {
+      if (hasOpenJourney && !journeyTickInterval) {
+        store.commit('setNow', Date.now());
+        journeyTickInterval = setInterval(() => {
+          store.commit('setNow', Date.now());
+        }, 1000);
+      } else if (!hasOpenJourney && journeyTickInterval) {
+        clearInterval(journeyTickInterval);
+        journeyTickInterval = null;
+      }
+    },
+    { immediate: true }
+  );
+}
+
 export default createStore({
+  plugins: [journeyTickerPlugin],
   state: {
     openJourney: false,
+    now: Date.now(),
     isAuthenticated: false,
     userData: null,
     photo: null,
@@ -32,6 +55,9 @@ export default createStore({
     },
     setOpenJourney(state, openJourney) {
       state.openJourney = openJourney;
+    },
+    setNow(state, now) {
+      state.now = now;
     },
     setUserData(state, userData) {
       state.userData = userData;
@@ -116,5 +142,11 @@ export default createStore({
   getters: {
     messageStatus: state => state.messageStatus,
     messageText: state => state.messageText,
+    openJourneyElapsedSeconds: (state) => {
+      if (!state.openJourney || !state.openJourney.start) return 0;
+      const startMs = new Date(state.openJourney.start).getTime();
+      if (Number.isNaN(startMs)) return 0;
+      return Math.max(0, Math.floor((state.now - startMs) / 1000));
+    },
   },
 });
