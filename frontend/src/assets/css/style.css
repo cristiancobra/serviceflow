@@ -5,6 +5,7 @@
 label {
   font-weight: 800;
   text-align: left;
+  color: var(--color-base-content);
 }
 
 .alert-text {

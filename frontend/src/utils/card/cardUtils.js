@@ -80,7 +80,7 @@ export function getDeadlineClass(dateDue, dateConclusion = null) {
         return "text-red-600";
     }
 
-    return "text-black";
+    return "text-base-content";
 }
 
 export function getPriorityClass(priority) {

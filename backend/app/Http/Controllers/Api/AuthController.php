@@ -12,7 +12,12 @@ class AuthController extends Controller
 
     public function checkToken(Request $request)
     {
-        return response()->json(['valid' => true]);
+        $themePreference = optional(Auth::user()->account)->theme_preference ?? 'auto';
+
+        return response()->json([
+            'valid' => true,
+            'theme_preference' => $themePreference,
+        ]);
     }
 
     public function login(Request $request)

@@ -6,9 +6,7 @@
                 <h1>OPORTUNIDADES</h1>
             </div>
             <div class="page-action">
-                <button-new-form target="opportunity" @open-modal="isCreateOpportunityModalVisible = true" />
-                <opportunity-create-form v-model="isCreateOpportunityModalVisible"
-                    @new-opportunity-event="addOpportunityCreated" />
+                <button-new-form target="opportunity" @open-modal="openCreateOpportunityModal" />
             </div>
         </div>
 
@@ -39,7 +37,7 @@
                 <div class="flex-1 min-w-0">
                     <router-link :to="{ name: 'opportunityShow', params: { id: opportunity.id } }">
                         <div class="title">
-                            <p class="text-black ps-2">
+                            <p class="text-base-content ps-2">
                                 {{ opportunity.name }}
                             </p>
                         </div>
@@ -60,6 +58,7 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import { index } from "@/utils/requests/httpUtils";
 import { getDeadlineClass } from "@/utils/card/cardUtils";
 import CompanyAvatar from "@/components/common/CompanyAvatar.vue";
@@ -67,7 +66,6 @@ import LeadAvatar from "@/components/common/LeadAvatar.vue";
 import UserAvatar from "@/components/common/UserAvatar.vue";
 import DateTimeEditableInput from "@/components/fields/datetime/DateTimeEditableInput.vue";
 import DateTimeValue from "@/components/fields/datetime/DateTimeValue.vue";
-import OpportunityCreateForm from "@/components/forms/OpportunityCreateForm.vue";
 import SearchInput from "@/components/filters/SearchInput.vue";
 import ButtonNewForm from "@/components/buttons/ButtonNewForm.vue";
 
@@ -78,7 +76,6 @@ export default {
         UserAvatar,
         DateTimeEditableInput,
         DateTimeValue,
-        OpportunityCreateForm,
         SearchInput,
         ButtonNewForm,
     },
@@ -87,7 +84,6 @@ export default {
             isActive: true,
             searchTerm: "",
             opportunities: [],
-            isCreateOpportunityModalVisible: false,
         };
     },
     computed: {
@@ -101,9 +97,17 @@ export default {
         }
     },
     methods: {
+        ...mapMutations(["openModal"]),
         getDeadlineClass,
+        openCreateOpportunityModal() {
+            this.openModal({
+                component: "OpportunityCreateForm",
+                listeners: {
+                    "new-opportunity-event": this.addOpportunityCreated,
+                },
+            });
+        },
         addOpportunityCreated(newOpportunity) {
-            this.isCreateOpportunityModalVisible = false;
             this.opportunities.unshift(newOpportunity);
         },
         async getOpportunities() {

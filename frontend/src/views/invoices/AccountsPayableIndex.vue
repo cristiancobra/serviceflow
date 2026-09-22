@@ -6,7 +6,7 @@
         <font-awesome-icon icon="fa-solid fa-file-invoice-dollar" class="page-icon text-red-600" />
         <h1>CONTAS A PAGAR</h1>
       </div>
-      <button @click="showCreateForm = true"
+      <button @click="openCreateInvoiceModal"
         class="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold text-sm">
         <font-awesome-icon icon="fa-solid fa-plus" />
         Nova Conta a Pagar
@@ -101,22 +101,18 @@
       <!-- Invoice List grouped by month -->
       <AccountsPayableList v-if="!isLoading" :invoices="filteredInvoices" />
     </section>
-
-    <!-- Create Form -->
-    <StandaloneDebitInvoiceCreateForm v-model="showCreateForm" @invoice-created="handleInvoiceCreated" />
   </div>
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import { BACKEND_URL } from "@/config/apiConfig";
 import axios from "axios";
-import StandaloneDebitInvoiceCreateForm from "@/components/forms/StandaloneDebitInvoiceCreateForm.vue";
 import AccountsPayableList from "@/components/lists/AccountsPayableList.vue";
 
 export default {
   name: "AccountsPayableIndex",
   components: {
-    StandaloneDebitInvoiceCreateForm,
     AccountsPayableList,
   },
   data() {
@@ -127,7 +123,6 @@ export default {
       activeFilter: "all",
       activeDepartment: null,
       searchTerm: "",
-      showCreateForm: false,
     };
   },
   computed: {
@@ -247,6 +242,15 @@ export default {
     },
   },
   methods: {
+    ...mapMutations(["openModal"]),
+    openCreateInvoiceModal() {
+      this.openModal({
+        component: "StandaloneDebitInvoiceCreateForm",
+        listeners: {
+          "invoice-created": this.handleInvoiceCreated,
+        },
+      });
+    },
     async fetchInvoices() {
       this.isLoading = true;
       try {

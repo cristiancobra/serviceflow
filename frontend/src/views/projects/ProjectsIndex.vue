@@ -6,11 +6,6 @@
       <div class="col-1 slot done">concluidos</div>
       <div class="col-1 slot doing">andamento</div>
       <div class="col-1 slot late">atrasados</div>
-      <div class="col-1 slot new" @click="toggle()">+</div>
-    </div>
-
-    <div v-bind:class="{ hidden: isActive }">
-      <ProjectCreateForm @new-project-event="addProjectCreated($event)" @toogle-project-form=toggle() />
     </div>
 
       <ProjectsList template="index"/>
@@ -21,30 +16,17 @@
 import { mapGetters } from 'vuex';
 import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import ProjectsList from "@/components/lists/ProjectsList.vue";
-import ProjectCreateForm from "@/components/forms/ProjectCreateForm.vue";
 
 export default {
   name: "ProjectsIndex",
   components: {
     AddMessage,
-    ProjectCreateForm,
     ProjectsList,
   },
   data() {
     return {
-      isActive: true,
       hasError: false,
       data: null,
-      newProject: {
-        id: null,
-        name: null,
-        description: null,
-        company_id: null,
-        contact_id: null,
-        user_id: null,
-        date_start: null,
-        date_due: null,
-      },
     };
   },
   computed: {

@@ -6,15 +6,9 @@
         <h2>LINKS</h2>
       </div>
       <div class="section-action">
-        <button-new-form 
-          target="link" 
-          @open-modal="isCreateLinkModalVisible = true" 
-        />
-        <link-create-form
-          v-model="isCreateLinkModalVisible"
-          @new-link-event="addLinkCreated"
-          :task-id="taskId"
-          :opportunity-id="opportunityId"
+        <button-new-form
+          target="link"
+          @open-modal="openCreateLinkModal"
         />
       </div>
     </div>
@@ -44,7 +38,7 @@
         <a class="link-url" :href="link.url" target="_blank">{{ link.url }}</a>
       </div>
       <div class="col-span-2">
-        <span class="text-sm text-gray-600">{{ link.observations || '-' }}</span>
+        <span class="text-sm text-base-content/70">{{ link.observations || '-' }}</span>
       </div>
       <div class="col-span-2 flex justify-center gap-2">
         <delete-icon-button
@@ -61,15 +55,14 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import { destroy } from "@/utils/requests/httpUtils";
-import LinkCreateForm from "@/components/forms/LinkCreateForm.vue";
 import ButtonNewForm from "@/components/buttons/ButtonNewForm.vue";
 import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
 
 export default {
   name: "LinksList",
   components: {
-    LinkCreateForm,
     ButtonNewForm,
     DeleteIconButton,
   },
@@ -78,7 +71,6 @@ export default {
       localLinks: this.links,
       searchTerm: "",
       newLinkId: null,
-      isCreateLinkModalVisible: false,
     };
   },
   props: {
@@ -102,6 +94,16 @@ export default {
     },
   },
   methods: {
+    ...mapMutations(["openModal"]),
+    openCreateLinkModal() {
+      this.openModal({
+        component: "LinkCreateForm",
+        props: { taskId: this.taskId, opportunityId: this.opportunityId },
+        listeners: {
+          "new-link-event": this.addLinkCreated,
+        },
+      });
+    },
     addLinkCreated(newLink) {
       this.localLinks.unshift(newLink);
       this.newLinkId = newLink.id;
@@ -129,12 +131,12 @@ export default {
 .link-name {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--primary-color);
+  color: var(--primary);
 }
 
 .link-url {
   font-size: 0.9rem;
   font-weight: 400;
-  color: var(--secondary-color);
+  color: color-mix(in oklab, var(--color-base-content) 70%, transparent);
 }
 </style>

@@ -1,27 +1,11 @@
 <template>
-  <div>
-    <button
-      type="button"
-      class="button button-new flex justify-center"
-      @click="openModal"
-    >
-      <font-awesome-icon icon="fa-solid fa-plus" class="" />
-    </button>
-
-    <div v-if="isModalVisible" class="myModal">
-      <div class="modal-content">
-        <div class="myModal-header">
-          <font-awesome-icon icon="fa-solid fa-tasks" class="myModal-icon" />
-          <h5 class="myModal-title" id="taskModalLabel">Novo serviço</h5>
-          <button
-            type="button"
-            class="myModal-button-close"
-            @click="closeModal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body">
-          <form @submit.prevent="submitForm">
+  <ModalCard
+    title="Novo Serviço"
+    icon="fa-solid fa-tasks"
+    :compact="compact"
+    @close="closeModal"
+  >
+          <form id="serviceCreateForm" @submit.prevent="submitForm">
             <div class="form-section">
               <div class="table-row">
                 <div class="column-100">
@@ -43,7 +27,7 @@
                 </div>
                 <div class="column-80">
                   <input
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="w-full px-3 py-2 border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     type="textarea"
                     id="observations"
                     v-model="form.observations"
@@ -64,7 +48,7 @@
                 </div>
                 <div class="col">
                   <input
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="w-full px-3 py-2 border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     type="number"
                     name="hours"
                     v-model="form.hours"
@@ -78,7 +62,7 @@
                 </div>
                 <div class="col">
                   <input
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="w-full px-3 py-2 border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     type="number"
                     name="minutes"
                     v-model="form.minutes"
@@ -94,7 +78,7 @@
                 </div>
                 <div class="col">
                   <money-input
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="w-full px-3 py-2 border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     name="labor_hourly_rate"
                     v-model="form.labor_hourly_rate"
                   />
@@ -112,7 +96,7 @@
                 </div>
                 <div class="price-column">
                   <input
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="w-full px-3 py-2 border border-base-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-blue-500"
                     type="text"
                     name="profit_percentage"
                     v-model="form.profit_percentage"
@@ -124,7 +108,7 @@
                 </div>
                 <div class="price-column">
                   <money-input
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="w-full px-3 py-2 border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     name="profit"
                     v-model="form.profit"
                   />
@@ -136,7 +120,7 @@
                 </div>
                 <div class="price-column">
                   <money-input
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
+                    class="w-full px-3 py-2 border border-base-300 rounded-md bg-base-300 cursor-not-allowed"
                     name="price"
                     v-model="form.price"
                     disabled
@@ -163,7 +147,7 @@
                     :id="cost.id"
                     v-model.number="cost.quantity"
                     placeholder="0"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="w-full px-3 py-2 border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     @input="updateTotalPrice(cost)"
                   />
                 </div>
@@ -181,31 +165,44 @@
               </div>
             </div>
 
-            <div class="table-row">
-              <button
-                type="button"
-                class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
-                @click="closeModal"
-              >
-                Fechar
-              </button>
-              <button type="submit" class="button button-new">Criar</button>
-            </div>
           </form>
-        </div>
-      </div>
-    </div>
-  </div>
+
+    <template #footer>
+      <button
+        type="button"
+        class="px-6 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg font-semibold hover:bg-base-200 transition-colors"
+        @click="closeModal"
+      >
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        form="serviceCreateForm"
+        class="px-6 py-2 bg-primary hover:opacity-90 text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
+      >
+        <font-awesome-icon icon="fa-solid fa-plus" />
+        Criar Serviço
+      </button>
+    </template>
+  </ModalCard>
 </template>
 
 <script>
 import { index, submitFormCreate } from "@/utils/requests/httpUtils";
 import TextInput from "./inputs/text/TextInput.vue";
 import MoneyInput from "./inputs/money/MoneyInput.vue";
+import ModalCard from "@/components/modals/ModalCard.vue";
 
 export default {
   name: "ServiceCreateForm",
-  emits: ["new-service-event"],
+  emits: ["new-service-event", "close"],
+  props: {
+    // Passado automaticamente pelo App.vue quando há mais de um modal aberto ao mesmo tempo
+    compact: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       allStatus: [],
@@ -223,7 +220,6 @@ export default {
         hours: 1,
         minutes: 0,
       },
-      isModalVisible: false,
       message: null,
       userInput: false,
     };
@@ -231,6 +227,7 @@ export default {
   components: {
     TextInput,
     MoneyInput,
+    ModalCard,
   },
   methods: {
     index,
@@ -278,7 +275,7 @@ export default {
       this.errors = null;
     },
     closeModal() {
-      this.isModalVisible = false;
+      this.$emit("close");
     },
     async getCosts() {
       this.costs = await this.index("costs");
@@ -312,7 +309,7 @@ export default {
       );
 
       if (data) {
-        this.isModalVisible = false;
+        this.$emit("close");
         this.$emit("new-service-event", data);
         this.clearForm();
       }
@@ -324,9 +321,6 @@ export default {
       this.userInput = true;
       this.calculateProfit();
       this.userInput = false;
-    },
-    openModal() {
-      this.isModalVisible = true;
     },
     updateTotalPrice(cost) {
       if (cost.quantity > 0) {
@@ -367,11 +361,6 @@ export default {
     },
   },
   watch: {
-    isModalVisible(newVal) {
-      if (newVal) {
-        this.getCosts();
-      }
-    },
     "form.labor_hourly_rate": "calculatePrice",
     "form.hours": "calculatePrice",
     "form.minutes": "calculatePrice",
@@ -382,6 +371,7 @@ export default {
     },
   },
   mounted() {
+    this.getCosts();
     document.addEventListener("keydown", this.handleKeydown);
   },
   beforeUnmount() {

@@ -225,15 +225,10 @@
           <button
             type="button"
             class="btn btn-primary"
-            @click="isCreateTransactionModalVisible = true"
+            @click="openTransactionModal"
           >
             <font-awesome-icon icon="fa-solid fa-plus" class="text-white" />
           </button>
-          <transaction-create-form
-            v-model="isCreateTransactionModalVisible"
-            :invoice="invoice"
-            @new-transaction-event="addTransactionCreated"
-          />
         </div>
       </div>
 
@@ -317,10 +312,10 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import { BACKEND_URL } from "@/config/apiConfig";
 import { destroy, show, updateField } from "@/utils/requests/httpUtils";
 import MoneyField from "../../components/fields/number/MoneyField.vue";
-import TransactionCreateForm from "../../components/forms/TransactionCreateForm.vue";
 import SelectStatusButton from "../../components/buttons/SelectStatusButton.vue";
 import DescriptionSection from "@/components/show/DescriptionSection.vue";
 import MoneyEditableField from "../../components/fields/number/MoneyEditableField.vue";
@@ -336,13 +331,11 @@ export default {
       invoice: [],
       invoiceId: "",
       isVisibleQuantity: false,
-      isCreateTransactionModalVisible: false,
       errorMessage: null,
     };
   },
   components: {
     MoneyField,
-    TransactionCreateForm,
     SelectStatusButton,
     DescriptionSection,
     MoneyEditableField,
@@ -370,9 +363,19 @@ export default {
     },
   },
   methods: {
+    ...mapMutations(["openModal"]),
     destroy,
     show,
     updateField,
+    openTransactionModal() {
+      this.openModal({
+        component: "TransactionCreateForm",
+        props: { invoice: this.invoice },
+        listeners: {
+          "new-transaction-event": this.addTransactionCreated,
+        },
+      });
+    },
     addTransactionCreated(newTransaction) {
       // Inicializa o array de transactions se não existir
       if (!this.invoice.transactions) {

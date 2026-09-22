@@ -26,6 +26,7 @@
 import { mapActions, mapState, mapMutations } from 'vuex';
 import NavbarUser from "./components/layout/NavbarUser.vue";
 import modalRegistry from "@/components/modals/registry.js";
+import { applyTheme, startThemeAutoRefresh } from "@/utils/theme/themeManager";
 
 export default {
   data() {
@@ -38,7 +39,7 @@ export default {
     NavbarUser,
   },
   computed: {
-    ...mapState(['openModals']),
+    ...mapState(['openModals', 'themePreference']),
   },
   methods: {
     ...mapActions(['checkAuthentication']),
@@ -63,11 +64,16 @@ export default {
   watch: {
     $route(to) {
       this.showNavbar = to.name !== 'login';
-    }
+    },
+    themePreference(preference) {
+      applyTheme(preference);
+    },
   },
   created() {
     this.showNavbar = this.$route.name !== 'login'; // Inicializa a condição da navbar
     this.startAuthCheck(); // Inicia a verificação periódica de autenticação
+    applyTheme(this.themePreference);
+    startThemeAutoRefresh(() => this.themePreference);
   },
 };
 </script>

@@ -6,7 +6,14 @@
         <h1>CUSTOS DE PRODUÇÃO</h1>
       </div>
       <div class="action-container">
-        <cost-create-form @new-cost-event="addCostCreated" />
+        <button
+          type="button"
+          class="px-6 py-2 bg-primary hover:opacity-90 text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
+          @click="openCreateCostModal"
+        >
+          <font-awesome-icon icon="fa-solid fa-plus" />
+          Novo Custo
+        </button>
       </div>
     </div>
 
@@ -22,8 +29,8 @@
       
       <div v-if="!costs.length" class="text-center py-12">
         <font-awesome-icon icon="fa-solid fa-inbox" class="text-gray-300 text-6xl mb-4" />
-        <h3 class="text-xl font-semibold text-gray-700 mb-2">Nenhum custo cadastrado</h3>
-        <p class="text-gray-500">Comece criando seu primeiro custo de produção</p>
+        <h3 class="text-xl font-semibold text-base-content mb-2">Nenhum custo cadastrado</h3>
+        <p class="text-base-content/60">Comece criando seu primeiro custo de produção</p>
       </div>
       
       <div v-else>
@@ -86,13 +93,10 @@
 <script>
 import { BACKEND_URL, COST_URL } from "@/config/apiConfig";
 import axios from "axios";
-import CostCreateForm from "../forms/CostCreateForm.vue";
+import { mapMutations } from "vuex";
 import { index } from "@/utils/requests/httpUtils";
 
 export default {
-  components: {
-    CostCreateForm,
-  },
   data() {
     return {
       isActive: true,
@@ -118,8 +122,16 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(["openModal"]),
+    openCreateCostModal() {
+      this.openModal({
+        component: "CostCreateForm",
+        listeners: {
+          "new-cost-event": this.addCostCreated,
+        },
+      });
+    },
     addCostCreated(newCost) {
-      this.toggle();
       this.costs.unshift(newCost);
     },
     async getCosts() {

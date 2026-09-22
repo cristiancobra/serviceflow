@@ -1,7 +1,7 @@
 <template>
   <div class="departments-manager">
     <div class="flex justify-between items-center mb-6">
-      <h3 class="text-xl font-bold text-gray-800">Departamentos</h3>
+      <h3 class="text-xl font-bold text-base-content">Departamentos</h3>
       <button
         @click="toggleAddForm"
         class="px-4 py-2 bg-primary hover:opacity-90 text-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md flex items-center gap-2"
@@ -236,7 +236,7 @@
         </div>
       </div>
 
-      <div v-if="departments.length === 0" class="text-center py-8 text-gray-500">
+      <div v-if="departments.length === 0" class="text-center py-8 text-base-content/50">
         Nenhum departamento cadastrado
       </div>
     </div>

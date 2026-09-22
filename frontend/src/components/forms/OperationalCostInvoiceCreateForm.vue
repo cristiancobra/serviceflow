@@ -1,36 +1,21 @@
 <template>
-  <div>
-    <!-- Modal -->
-    <div v-if="modelValue" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.25)">
-      <div class="bg-white rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-        <!-- Header -->
-        <div class="flex items-center justify-between p-6 border-b border-gray-200">
-          <div class="flex items-center gap-3">
-            <font-awesome-icon icon="fa-solid fa-briefcase" class="text-primary text-xl" />
-            <h2 class="text-xl font-semibold text-gray-900">Custo Operacional</h2>
-          </div>
-          <button 
-            @click="closeModal" 
-            class="text-gray-400 hover:text-gray-600 transition-colors"
-            aria-label="Fechar"
-          >
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-        </div>
-
+  <ModalCard
+    title="Custo Operacional"
+    icon="fa-solid fa-briefcase"
+    :compact="compact"
+    @close="closeModal"
+  >
         <!-- Form -->
-        <form @submit.prevent="submitForm" class="p-6 space-y-5">
+        <form id="operationalCostInvoiceCreateForm" @submit.prevent="submitForm" class="space-y-5">
           <!-- Funcionário/Freelancer -->
           <div>
-            <label for="employee" class="block text-sm font-semibold text-gray-700 mb-2">
+            <label for="employee" class="block text-sm font-semibold text-base-content mb-2">
               Funcionário / Prestador
             </label>
             <select
               id="employee"
               v-model="form.lead_id"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+              class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
               required
             >
               <option value="">Selecione um funcionário</option>
@@ -46,30 +31,30 @@
 
           <!-- Valor Total -->
           <div>
-            <label for="amount" class="block text-sm font-semibold text-gray-700 mb-2">
+            <label for="amount" class="block text-sm font-semibold text-base-content mb-2">
               Valor Total
             </label>
             <div class="flex items-center">
-              <span class="text-gray-500 mr-2">R$</span>
+              <span class="text-base-content/60 mr-2">R$</span>
               <money-input
                 name="amount"
                 v-model="totalAmount"
                 disabled
-                class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors bg-gray-100"
+                class="flex-1 px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors bg-base-300"
               />
             </div>
           </div>
 
           <!-- Quantidade de Parcelas -->
           <div>
-            <label for="installment_quantity" class="block text-sm font-semibold text-gray-700 mb-2">
+            <label for="installment_quantity" class="block text-sm font-semibold text-base-content mb-2">
               Quantidade de Parcelas
             </label>
             <select
               id="installment_quantity"
               v-model.number="installmentQuantity"
               @change="updateInstallments"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+              class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
               required
             >
               <option v-for="n in 24" :key="n" :value="n">{{ n }}x</option>
@@ -77,10 +62,10 @@
           </div>
 
           <!-- Lista de Parcelas -->
-          <div class="border-t border-gray-200 pt-4">
+          <div class="border-t border-base-300 pt-4">
             <div class="flex items-center space-x-2 mb-4">
               <div class="w-2 h-6 bg-blue-500 rounded-full"></div>
-              <h4 class="text-base font-bold text-gray-900 uppercase tracking-wide">
+              <h4 class="text-base font-bold text-base-content uppercase tracking-wide">
                 Parcelamento
               </h4>
             </div>
@@ -89,23 +74,23 @@
               <div 
                 v-for="(price, index) in form.prices" 
                 :key="index"
-                class="flex flex-col sm:flex-row gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200"
+                class="flex flex-col sm:flex-row gap-3 p-3 bg-base-200 rounded-lg border border-base-300"
               >
                 <div class="flex items-center flex-1">
                   <span class="inline-flex items-center justify-center w-7 h-7 bg-blue-100 text-blue-800 text-sm font-bold rounded-full mr-3">
                     {{ index + 1 }}
                   </span>
-                  <label class="text-sm font-semibold text-gray-700">
+                  <label class="text-sm font-semibold text-base-content">
                     Valor da Parcela {{ index + 1 }}
                   </label>
                 </div>
                 <div class="flex items-center gap-2 sm:max-w-xs">
-                  <span class="text-gray-500">R$</span>
+                  <span class="text-base-content/60">R$</span>
                   <money-input
                     :name="`price-${index}`"
                     :model-value="form.prices[index]"
                     @update:model-value="(value) => { form.prices[index] = value; adjustPrices(index); }"
-                    class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                    class="flex-1 px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                   />
                 </div>
               </div>
@@ -117,8 +102,8 @@
                   <label class="text-sm font-semibold text-blue-700">Total das Parcelas</label>
                 </div>
                 <div class="flex items-center gap-2 sm:max-w-xs">
-                  <span class="text-gray-700 font-bold">R$</span>
-                  <span class="text-lg font-bold text-gray-900">{{ totalPrices }}</span>
+                  <span class="text-base-content font-bold">R$</span>
+                  <span class="text-lg font-bold text-base-content">{{ totalPrices }}</span>
                 </div>
               </div>
             </div>
@@ -126,28 +111,28 @@
 
           <!-- Data de Vencimento da Primeira Parcela -->
           <div>
-            <label for="due_date" class="block text-sm font-semibold text-gray-700 mb-2">
+            <label for="due_date" class="block text-sm font-semibold text-base-content mb-2">
               Data de Vencimento da 1ª Parcela
             </label>
             <input
               id="due_date"
               v-model="form.date_due"
               type="date"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+              class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
               required
             />
           </div>
 
           <!-- Observações -->
           <div>
-            <label for="observations" class="block text-sm font-semibold text-gray-700 mb-2">
+            <label for="observations" class="block text-sm font-semibold text-base-content mb-2">
               Observações (opcional)
             </label>
             <textarea
               id="observations"
               v-model="form.observations"
               rows="3"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors resize-none"
+              class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors resize-none"
               placeholder="Custo operacional referente à proposta..."
             ></textarea>
           </div>
@@ -156,46 +141,48 @@
           <div v-if="errorMessage" class="p-3 bg-red-50 border border-red-200 rounded-lg">
             <p class="text-sm text-red-700">{{ errorMessage }}</p>
           </div>
-
-          <!-- Botões -->
-          <div class="flex gap-3 pt-4 border-t border-gray-200">
-            <button
-              type="button"
-              @click="closeModal"
-              class="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-lg transition-colors"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              :disabled="isSubmitting"
-              class="flex-1 px-4 py-2 bg-primary hover:bg-primary-dark disabled:bg-gray-400 text-white font-medium rounded-lg transition-colors"
-            >
-              {{ isSubmitting ? 'Criando...' : `Criar ${installmentQuantity} Fatura(s)` }}
-            </button>
-          </div>
         </form>
-      </div>
-    </div>
-  </div>
+
+    <template #footer>
+      <button
+        type="button"
+        class="px-6 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg font-semibold hover:bg-base-200 transition-colors"
+        @click="closeModal"
+      >
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        form="operationalCostInvoiceCreateForm"
+        :disabled="isSubmitting"
+        class="px-6 py-2 bg-primary hover:opacity-90 disabled:opacity-50 text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
+      >
+        <font-awesome-icon icon="fa-solid fa-plus" />
+        {{ isSubmitting ? 'Criando...' : `Criar ${installmentQuantity} Fatura(s)` }}
+      </button>
+    </template>
+  </ModalCard>
 </template>
 
 <script>
 import { submitFormCreate, index, get } from "@/utils/requests/httpUtils";
 import MoneyInput from "./inputs/money/MoneyInput.vue";
+import ModalCard from "@/components/modals/ModalCard.vue";
 
 export default {
   name: "OperationalCostInvoiceCreateForm",
-  emits: ["new-invoice-event", "update:modelValue"],
+  emits: ["new-invoice-event", "close"],
   components: {
     MoneyInput,
+    ModalCard,
   },
   props: {
     proposal: {
       type: Object,
       required: true,
     },
-    modelValue: {
+    // Passado automaticamente pelo App.vue quando há mais de um modal aberto ao mesmo tempo
+    compact: {
       type: Boolean,
       default: false,
     },
@@ -224,15 +211,9 @@ export default {
       return this.form.prices.reduce((acc, price) => acc + (isNaN(price) ? 0 : price), 0).toFixed(2);
     }
   },
-  watch: {
-    modelValue(newVal) {
-      if (newVal) {
-        this.openModal();
-      }
-    },
-  },
   async mounted() {
     await this.loadEmployees();
+    await this.initializeForm();
   },
   methods: {
     submitFormCreate,
@@ -310,9 +291,9 @@ export default {
 
       this.form.prices = prices;
     },
-    async openModal() {
+    async initializeForm() {
       this.errorMessage = "";
-      
+
       try {
         const response = await get(`proposals/${this.proposal.id}/operational-cost-balance`);
         this.operationalBalance = response;
@@ -321,17 +302,17 @@ export default {
         console.error("Erro ao buscar saldo operacional:", error);
         this.totalAmount = this.proposal?.total_operational_cost || 0;
       }
-      
+
       this.installmentQuantity = 1;
       this.form.prices = this.initializePrices();
       this.form.date_due = this.getDefaultDueDate();
-      
+
       if (this.employees.length > 0 && !this.form.lead_id) {
         this.form.lead_id = this.employees[0].id;
       }
     },
     closeModal() {
-      this.$emit("update:modelValue", false);
+      this.$emit("close");
       this.errorMessage = "";
     },
     async submitForm() {

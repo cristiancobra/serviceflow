@@ -7,14 +7,23 @@
                     Custos de produção
                 </h2>
                 </div>
-                <div class="section-actions flex items-center gap-4">
-                <cost-create-form @new-cost-event="addCostCreated" />
-                <proposal-cost-create-form @new-proposal-cost-event="addProposalCostCreated"
-                    :proposalId="proposal.id" />
-                <debit-invoice-create-form 
-                    :proposal="proposal"
-                    @invoice-created="onDebugInvoiceCreated"
-                />
+                <div class="section-actions flex items-center gap-2">
+                <button
+                    type="button"
+                    title="Novo Custo"
+                    class="flex items-center justify-center w-10 h-10 rounded-full bg-primary hover:opacity-90 text-white transition-all duration-200"
+                    @click="openCreateCostModal"
+                >
+                    <font-awesome-icon icon="fa-solid fa-plus" class="text-lg" />
+                </button>
+                <button
+                    type="button"
+                    title="Adicionar Custos"
+                    class="flex items-center justify-center w-10 h-10 rounded-full bg-primary hover:opacity-90 text-white transition-all duration-200"
+                    @click="openAddProposalCostsModal"
+                >
+                    <font-awesome-icon icon="fa-solid fa-coins" class="text-lg" />
+                </button>
             </div>
         </div>
         
@@ -55,12 +64,10 @@
 </template>
 
 <script>
-import CostCreateForm from "@/components/forms/CostCreateForm.vue";
+import { mapMutations } from "vuex";
 import MoneyField from "@/components/fields/number/MoneyField.vue";
 import MoneyEditableField from "@/components/fields/number/MoneyEditableField.vue";
 import IntegerEditableField from "@/components/fields/number/IntegerEditableField.vue";
-import ProposalCostCreateForm from "../forms/ProposalCostCreateForm.vue";
-import DebitInvoiceCreateForm from "../forms/DebitInvoiceCreateForm.vue";
 
 export default {
   props: {
@@ -76,14 +83,31 @@ export default {
     };
   },
   components: {
-    CostCreateForm,
     MoneyField,
     MoneyEditableField,
     IntegerEditableField,
-    ProposalCostCreateForm,
-    DebitInvoiceCreateForm,
   },
   methods: {
+    ...mapMutations(["openModal"]),
+    openCreateCostModal() {
+      this.openModal({
+        component: "CostCreateForm",
+        listeners: {
+          // O custo é criado no catálogo geral; precisa ser associado a esta
+          // proposta depois, em "Adicionar Custos" (não entra direto em localCosts).
+          "new-cost-event": () => {},
+        },
+      });
+    },
+    openAddProposalCostsModal() {
+      this.openModal({
+        component: "ProposalCostCreateForm",
+        props: { proposalId: this.proposal.id },
+        listeners: {
+          "new-proposal-cost-event": this.addProposalCostCreated,
+        },
+      });
+    },
     addProposalCostCreated({ proposalCosts, newTotalThirdPartyCost }) {
       proposalCosts.forEach((newCost) => {
         const index = this.localCosts.findIndex(
@@ -110,10 +134,6 @@ export default {
     },
     async emitUpdateProposalCost(fieldName, costId, editedValue) {
       this.$emit("update-proposal-cost", fieldName, costId, editedValue);
-    },
-    onDebugInvoiceCreated(invoice) {
-      // Emitir evento para o componente pai recarregar a proposta
-      this.$emit("invoice-created", invoice);
     },
   },
   watch: {

@@ -74,29 +74,29 @@
         :key="bankAccount.id"
         class="list-line"
       >
-        <div class="w-2/10 text-left text-black font-semibold">
+        <div class="w-2/10 text-left text-base-content font-semibold">
           {{ bankAccount.account_name }}
         </div>
-        
-        <div class="w-2/10 text-center text-black">
+
+        <div class="w-2/10 text-center text-base-content">
           {{ bankAccount.bank_name }}
         </div>
-        
-        <div class="w-1/10 text-center text-black">
+
+        <div class="w-1/10 text-center text-base-content">
           {{ bankAccount.agency || '-' }}
         </div>
-        
-        <div class="w-2/10 text-center text-black">
+
+        <div class="w-2/10 text-center text-base-content">
           {{ bankAccount.account_number }}
         </div>
-        
+
         <div class="w-1/10 text-center">
           <span class="type-badge">
             {{ bankAccount.type_label }}
           </span>
         </div>
-        
-        <div class="w-1/10 text-center text-black font-semibold">
+
+        <div class="w-1/10 text-center text-base-content font-semibold">
           {{ bankAccount.initial_balance_formatted }}
         </div>
         
@@ -368,7 +368,7 @@ export default {
 .filter-label {
   font-weight: 600;
   margin-bottom: 0.25rem;
-  color: #374151;
+  color: var(--color-base-content);
   font-size: 0.875rem;
 }
 
@@ -492,7 +492,7 @@ export default {
 .empty-state {
   text-align: center;
   padding: 3rem;
-  color: #6b7280;
+  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
 }
 
 .empty-icon {

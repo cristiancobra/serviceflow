@@ -24,6 +24,7 @@ protected $fillable = [
     'is_mei',
     'mei_annual_limit',
     'inscricao_municipal',
+    'theme_preference',
     'logo',
     'subscription_status',
     'expiration_date',

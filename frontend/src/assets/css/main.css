@@ -1,13 +1,28 @@
-@import './variables.css';
-@import './style.css';
-@import './cards.css';
-@import './forms.css';
-@import './lists.css';
-@import './login.css';
-@import './modal.css';
-@import './projects.css';
-@import './proposals.css';
-@import './show.css';
+/*
+ * Estes arquivos usam CSS "solto" (sem @layer), então, pelas regras de
+ * cascade layers do CSS, ficariam SEMPRE acima do Tailwind/DaisyUI abaixo,
+ * não importa a especificidade do seletor. Colocando-os numa layer "legacy"
+ * explícita, uma classe do Tailwind ou do DaisyUI (ex: bg-base-100) aplicada
+ * num elemento passa a conseguir sobrescrever esse CSS antigo quando
+ * necessário.
+ *
+ * A ordem abaixo é importante: "legacy" fica DEPOIS de "base" (para não ser
+ * apagado pelo reset/preflight do Tailwind, que zera padding/margin) e ANTES
+ * de "components"/"utilities" (para que classes do Tailwind/DaisyUI ainda
+ * consigam sobrescrever o CSS antigo quando aplicadas explicitamente).
+ */
+@layer theme, base, legacy, components, utilities;
+
+@import './variables.css' layer(legacy);
+@import './style.css' layer(legacy);
+@import './cards.css' layer(legacy);
+@import './forms.css' layer(legacy);
+@import './lists.css' layer(legacy);
+@import './login.css' layer(legacy);
+@import './modal.css' layer(legacy);
+@import './projects.css' layer(legacy);
+@import './proposals.css' layer(legacy);
+@import './show.css' layer(legacy);
 @import "tailwindcss";
 @plugin "daisyui";
 
@@ -36,6 +51,41 @@
   --color-warning-content: oklch(98% 0.022 95.277);
   --color-error: #fb2c36;
   --color-error-content: oklch(97% 0.014 343.198);
+  --radius-selector: 0.5rem;
+  --radius-field: 2rem;
+  --radius-box: 2rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 1;
+}
+
+@plugin "daisyui/theme" {
+  name: "service-dark";
+  default: false;
+  prefersdark: true;
+  color-scheme: "dark";
+  --color-base-100: oklch(22% 0.006 264);
+  --color-base-200: oklch(18% 0.006 264);
+  --color-base-300: oklch(14% 0.006 264);
+  --color-base-content: oklch(92% 0.004 264);
+  --color-primary: #B1388D;
+  --color-primary-content: #fff2fd;
+  --color-secondary: oklch(30% 0.02 258.338);
+  --color-secondary-content: oklch(92% 0.004 264);
+  --color-accent: oklch(60% 0.118 66.29);
+  --color-accent-content: oklch(96% 0.02 95.277);
+  --color-neutral: oklch(30% 0.02 261.692);
+  --color-neutral-content: oklch(92% 0.004 264);
+  --color-info: oklch(55% 0.12 215.221);
+  --color-info-content: oklch(96% 0.019 200.873);
+  --color-success: #2CB48D;
+  --color-success-content: oklch(96% 0.018 155.826);
+  --color-warning: oklch(60% 0.15 70.08);
+  --color-warning-content: oklch(96% 0.022 95.277);
+  --color-error: #fb2c36;
+  --color-error-content: oklch(96% 0.014 343.198);
   --radius-selector: 0.5rem;
   --radius-field: 2rem;
   --radius-box: 2rem;

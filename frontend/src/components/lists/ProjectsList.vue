@@ -12,7 +12,14 @@
         <h1>PROJETOS</h1>
       </div>
       <div class="page-action">
-        <ProjectCreateForm @new-project-event="addProjectCreated" />
+        <button
+          type="button"
+          class="px-6 py-2 bg-primary hover:opacity-90 text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
+          @click="openCreateProjectModal"
+        >
+          <font-awesome-icon icon="fa-solid fa-plus" />
+          Novo Projeto
+        </button>
       </div>
     </div>
 
@@ -53,7 +60,7 @@
         <router-link :to="{ name: 'projectShow', params: { id: project.id } }">
           <div class="row title">
             <div class="col">
-              <p class="text-black ps-2">
+              <p class="text-base-content ps-2">
                 {{ project.name }}
               </p>
             </div>
@@ -97,7 +104,7 @@ import {
 } from "@/config/apiConfig";
 import { index } from "@/utils/requests/httpUtils";
 import axios from "axios";
-import ProjectCreateForm from "../forms/ProjectCreateForm.vue";
+import { mapMutations } from "vuex";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import DateTimeValue from "../fields/datetime/DateTimeValue.vue";
 
@@ -106,7 +113,6 @@ export default {
   components: {
     DateTimeEditableInput,
     DateTimeValue,
-    ProjectCreateForm,
   },
   props: {
     columns: {
@@ -127,14 +133,22 @@ export default {
     };
   },
   methods: {
+    ...mapMutations(["openModal"]),
     formatDuration,
     getDeadlineClass,
     getStatusClass,
     getStatusColor,
     getPriorityClass,
     getStatusIcon,
+    openCreateProjectModal() {
+      this.openModal({
+        component: "ProjectCreateForm",
+        listeners: {
+          "new-project-event": this.addProjectCreated,
+        },
+      });
+    },
     addProjectCreated(newProject) {
-      // this.toggle();
       this.projects.unshift(newProject);
     },
     getCombinedClasses(status, priority) {

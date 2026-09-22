@@ -95,7 +95,20 @@
               @save="updateAccount('address_city', $event)"
             />
           </div>
-          <div class="mb-4 p-4 bg-gray-50 rounded-lg">
+          <div class="mb-4">
+            <label for="theme_preference" class="mb-2 text-sm font-heavy block">Tema</label>
+            <select
+              id="theme_preference"
+              v-model="account.theme_preference"
+              @change="updateAccount('theme_preference', account.theme_preference)"
+              class="w-full rounded-lg border border-gray-300 px-3 py-2 bg-base-100 text-base-content text-sm"
+            >
+              <option value="light">Diurno</option>
+              <option value="dark">Noturno</option>
+              <option value="auto">Automático (18h às 6h)</option>
+            </select>
+          </div>
+          <div class="mb-4 p-4 bg-base-200 rounded-lg">
             <label class="flex items-center gap-2 cursor-pointer mb-3">
               <input
                 type="checkbox"
@@ -103,7 +116,7 @@
                 @change="updateAccount('is_mei', account.is_mei)"
                 class="w-4 h-4"
               />
-              <span class="text-sm font-medium text-gray-700"
+              <span class="text-sm font-medium text-base-content"
                 >Empresa enquadrada como MEI</span
               >
             </label>
@@ -117,7 +130,7 @@
           </div>
         </div>
         <div class="space-y-6">
-          <div class="flex justify-center items-center p-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+          <div class="flex justify-center items-center p-6 bg-base-200 rounded-lg border-2 border-dashed border-base-300">
             <img 
               :src="urlImageLogo" 
               alt="Logo" 
@@ -126,13 +139,13 @@
           </div>
           <form @submit.prevent="submitFormLogo" class="space-y-4">
             <div class="flex flex-col">
-              <label for="logo" class="mb-2 text-sm font-medium text-gray-700">Logo:</label>
+              <label for="logo" class="mb-2 text-sm font-medium">Logo:</label>
               <input
                 type="file"
                 id="logo"
                 ref="logo"
                 @change="handleLogoUpload"
-                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                class="block w-full text-sm text-base-content/70 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-base-200 file:text-base-content hover:file:bg-base-300"
               />
             </div>
             <div class="flex justify-start">
@@ -145,7 +158,7 @@
             </div>
           </form>
           <div class="flex flex-col">
-            <label for="primary_color" class="mb-2 text-sm font-medium text-gray-700">Cor Principal</label>
+            <label for="primary_color" class="mb-2 text-sm font-medium">Cor Principal</label>
             <input
               type="color"
               name="primary_color"
@@ -177,6 +190,7 @@ import axios from "axios";
 import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 import MoneyEditableField from "@/components/fields/number/MoneyEditableField.vue";
 import DepartmentsManager from "@/components/lists/DepartmentsManager.vue";
+import { mapMutations } from "vuex";
 
 export default {
   data() {
@@ -192,6 +206,7 @@ export default {
         address_city: "",
         is_mei: false,
         mei_annual_limit: 0,
+        theme_preference: "auto",
       },
       messageStatus: "",
       messageText: "",
@@ -279,7 +294,12 @@ export default {
         fieldName,
         editedValue
       );
+
+      if (fieldName === "theme_preference") {
+        this.setThemePreference(this.account.theme_preference);
+      }
     },
+    ...mapMutations(["setThemePreference"]),
   },
   computed: {
     urlImageLogo() {

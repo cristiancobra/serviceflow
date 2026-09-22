@@ -6,7 +6,14 @@
         <h1>SERVIÇOS</h1>
       </div>
       <div class="action-container">
-        <service-create-form @new-service-event="addServiceCreated" />
+        <button
+          type="button"
+          class="px-6 py-2 bg-primary hover:opacity-90 text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
+          @click="openCreateServiceModal"
+        >
+          <font-awesome-icon icon="fa-solid fa-plus" />
+          Novo Serviço
+        </button>
       </div>
     </div>
     <div class="section-container">
@@ -40,7 +47,7 @@
       >
         <router-link
           :to="{ name: 'serviceShow', params: { id: service.id } }"
-          class="flex items-center w-full no-underline text-black hover:bg-gray-50 transition-colors py-2"
+          class="flex items-center w-full no-underline text-base-content hover:bg-gray-50 transition-colors py-2"
         >
           <div class="flex items-center justify-center text-xl w-12 text-primary">
             <font-awesome-icon icon="fa fa-tools" />
@@ -48,7 +55,7 @@
           <div class="flex items-start justify-start w-48 px-2">
             {{ service.name }}
           </div>
-          <div class="flex items-start justify-start flex-1 px-2 text-gray-600 text-sm">
+          <div class="flex items-start justify-start flex-1 px-2 text-base-content/70 text-sm">
             {{ service.observations || '-' }}
           </div>
           <div class="flex items-center justify-center w-24 px-2 text-sm">
@@ -80,17 +87,14 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import { BACKEND_URL, SERVICE_URL } from "@/config/apiConfig";
 import { formatCurrencySymbol } from "@/utils/number/moneyUtils";
 import axios from "axios";
-import ServiceCreateForm from "../forms/ServiceCreateForm.vue";
 import { index } from "@/utils/requests/httpUtils";
 
 export default {
   name: "ServicesList",
-  components: {
-    ServiceCreateForm,
-  },
   data() {
     return {
       isActive: true,
@@ -107,7 +111,16 @@ export default {
     };
   },
   methods: {
+    ...mapMutations(["openModal"]),
     formatCurrencySymbol,
+    openCreateServiceModal() {
+      this.openModal({
+        component: "ServiceCreateForm",
+        listeners: {
+          "new-service-event": this.addServiceCreated,
+        },
+      });
+    },
     addServiceCreated(newService) {
       this.toggle();
       this.services.unshift(newService);

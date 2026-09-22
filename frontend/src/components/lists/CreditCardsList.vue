@@ -55,27 +55,27 @@
         :key="creditCard.id"
         class="list-line"
       >
-        <div class="w-3/10 text-left text-black font-semibold">
+        <div class="w-3/10 text-left text-base-content font-semibold">
           {{ creditCard.name }}
         </div>
 
-        <div class="w-1/10 text-center text-black">
+        <div class="w-1/10 text-center text-base-content">
           {{ creditCard.brand || '-' }}
         </div>
 
-        <div class="w-1/10 text-center text-black">
+        <div class="w-1/10 text-center text-base-content">
           {{ creditCard.last_digits ? `**** ${creditCard.last_digits}` : '-' }}
         </div>
 
-        <div class="w-1/10 text-center text-black">
+        <div class="w-1/10 text-center text-base-content">
           dia {{ creditCard.closing_day }}
         </div>
 
-        <div class="w-1/10 text-center text-black">
+        <div class="w-1/10 text-center text-base-content">
           dia {{ creditCard.due_day }}
         </div>
 
-        <div class="w-2/10 text-center text-black font-semibold">
+        <div class="w-2/10 text-center text-base-content font-semibold">
           {{ creditCard.credit_limit_formatted }}
         </div>
 
@@ -324,7 +324,7 @@ export default {
 .filter-label {
   font-weight: 600;
   margin-bottom: 0.25rem;
-  color: #374151;
+  color: var(--color-base-content);
   font-size: 0.875rem;
 }
 
@@ -439,7 +439,7 @@ export default {
 .empty-state {
   text-align: center;
   padding: 3rem;
-  color: #6b7280;
+  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
 }
 
 .empty-icon {

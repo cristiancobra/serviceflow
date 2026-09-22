@@ -27,6 +27,7 @@ class AccountResource extends JsonResource
             'is_mei' => $this->is_mei,
             'mei_annual_limit' => $this->mei_annual_limit,
             'inscricao_municipal' => $this->inscricao_municipal,
+            'theme_preference' => $this->theme_preference,
         ];
     }
 }

@@ -1,103 +1,91 @@
 <template>
-  <div>
-    <button type="button" class="button button-new" @click="openModal">
-      <font-awesome-icon icon="fa-solid fa-plus" class="button-icon" />
-      <span class="button-text"> adicionar custo</span>
-    </button>
-
-    <div v-if="isModalVisible" class="myModal">
-      <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h2 class="modal-title" id="taskModalLabel">Adicionar custos</h2>
-            <button
-              type="button"
-              class="btn-close"
-              @click="closeModal"
-              aria-label="Close"
-            ></button>
+  <ModalCard
+    title="Adicionar Custos"
+    icon="fa-solid fa-coins"
+    size="lg"
+    :compact="compact"
+    @close="closeModal"
+  >
+    <form id="serviceCostCreateForm" @submit.prevent="submitForm">
+      <div v-if="costs.length === 0" class="table-row">
+        <p>Você ainda não possui custos cadastrados.</p>
+      </div>
+      <div v-else class="section-container">
+        <div class="table-row" v-for="cost in costs" :key="cost.id">
+          <div class="quantity-column">
+            <input
+              type="number"
+              min="0"
+              :id="cost.id"
+              v-model.number="cost.quantity"
+              placeholder="0"
+            />
           </div>
-          <div class="modal-body">
-            <form @submit.prevent="submitForm">
-              <div v-if="costs.length === 0" class="table-row">
-                <p>Você ainda não possui custos cadastrados.</p>
-              </div>
-              <div v-else class="section-container">
-                <div class="table-row" v-for="cost in costs" :key="cost.id">
-                  <div class="quantity-column">
-                    <input
-                      type="number"
-                      min="0"
-                      :id="cost.id"
-                      v-model.number="cost.quantity"
-                      placeholder="0"
-                    />
-                  </div>
-                  <div class="title-column">
-                    <label :for="cost.id">
-                      {{ cost.name }}
-                    </label>
-                  </div>
-                  <div class="price-column">R$ {{ cost.price }}</div>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                  @click="closeModal"
-                >
-                  Fechar
-                </button>
-                <button
-                  type="submit"
-                  class="button-new"
-                  data-bs-dismiss="modal"
-                >
-                  criar
-                </button>
-              </div>
-            </form>
+          <div class="title-column">
+            <label :for="cost.id">
+              {{ cost.name }}
+            </label>
           </div>
+          <div class="price-column">R$ {{ cost.price }}</div>
         </div>
       </div>
-    </div>
-  </div>
+    </form>
+
+    <template #footer>
+      <button
+        type="button"
+        class="px-6 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg font-semibold hover:bg-base-200 transition-colors"
+        @click="closeModal"
+      >
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        form="serviceCostCreateForm"
+        class="px-6 py-2 bg-primary hover:opacity-90 text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
+      >
+        <font-awesome-icon icon="fa-solid fa-plus" />
+        Adicionar
+      </button>
+    </template>
+  </ModalCard>
 </template>
 
 <script>
 import { index } from "@/utils/requests/httpUtils";
 import { submitFormUpdate } from "@/utils/requests/httpUtils";
+import ModalCard from "@/components/modals/ModalCard.vue";
 
 export default {
+  name: "ServiceCostCreateForm",
+  emits: ["new-service-cost-event", "close"],
   props: {
     serviceId: {
       type: Number,
       required: true,
     },
+    // Passado automaticamente pelo App.vue quando há mais de um modal aberto ao mesmo tempo
+    compact: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  components: {
+    ModalCard,
   },
   data() {
     return {
       costs: [],
       form: {
         user_id: null,
-        opportunity_id: this.opportunityId,
       },
-      isModalVisible: false,
-      modal: false,
-      services: [],
-      selectedServices: [],
     };
   },
   methods: {
     index,
     submitFormUpdate,
     closeModal() {
-      this.isModalVisible = false;
-    },
-    openModal() {
-      this.isModalVisible = true;
+      this.$emit("close");
     },
     async getCosts() {
       this.costs = await this.index("costs");
@@ -118,7 +106,7 @@ export default {
       );
 
       if (data) {
-        this.isModalVisible = false;
+        this.$emit("close");
         this.$emit("new-service-cost-event", { service: data });
       }
       if (error) {
@@ -131,37 +119,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.button-icon {
-  margin-right: 0.5rem;
-}
-
-.button-text {
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.quantity-column {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-basis: 5%;
-  text-align: right;
-  margin-right: 2rem;
-}
-
-.price-column {
-  display: flex;
-  align-items: center;
-  justify-content: right;
-  flex-basis: 15%;
-}
-
-.title-column {
-  display: flex;
-  align-items: left;
-  justify-content: left;
-  flex-basis: 70%;
-}
-</style>

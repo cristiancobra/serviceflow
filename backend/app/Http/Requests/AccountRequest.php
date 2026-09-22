@@ -34,6 +34,7 @@ class AccountRequest extends FormRequest
             'is_mei' => 'sometimes|boolean',
             'mei_annual_limit' => 'sometimes|numeric|min:0',
             'inscricao_municipal' => 'sometimes|string|max:255',
+            'theme_preference' => 'sometimes|in:light,dark,auto',
             'owner_id' => 'sometimes|integer|exists:users,id',
             'logo' => 'image|max:2048',
             'subscription_status' => 'sometimes|string|max:255',

@@ -13,23 +13,15 @@
       PENDENTE
     </div>
 
-    <div v-if="isModalVisible" class="myModal">
-      <div class="max-w-6xl mx-auto">
-        <div class="bg-white rounded-lg shadow-lg  mt-25">
-          <div class="flex items-center justify-between p-4 border-b">
-            <div class="flex items-center">
-              <font-awesome-icon icon="fa-solid fa-file-invoice" class="icon pr-3 primary" />
-              <h5 class="text-lg font-semibold text-black" id="taskModalLabel">Nova fatura</h5>
-            </div>
-            <button type="button" class="text-gray-400 hover:text-gray-600" @click="closeModal" aria-label="Close">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-              </svg>
-            </button>
-          </div>
-          <div class="p-6 space-y-6">
-            <form @submit.prevent="submitForm" class="space-y-6">
-              <div class="bg-gray-50 rounded-lg p-4">
+    <div v-if="isModalVisible" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.25)">
+      <ModalCard
+        title="Nova Fatura"
+        icon="fa-solid fa-file-invoice"
+        size="xl"
+        @close="closeModal"
+      >
+            <form id="creditInvoiceCreateForm" @submit.prevent="submitForm" class="space-y-6">
+              <div class="bg-base-200 rounded-lg p-4">
                 <TextAreaInput 
                   label="Observações:" 
                   name="observations" 
@@ -41,13 +33,13 @@
 
               <div class="flex flex-col lg:flex-row gap-6">
                 <div class="flex-1 space-y-2">
-                  <label for="proposal" class="block text-sm font-semibold text-gray-700">Proposta</label>
+                  <label for="proposal" class="block text-sm font-semibold text-base-content">Proposta</label>
                   <text-value v-model="localProposal.date" class="selected" />
                 </div>
                 <div class="flex-1 space-y-2">
-                  <label for="installment_quantity" class="block text-sm font-semibold text-gray-700">Quantidade de Parcelas</label>
-                  <div class="px-3 py-2 bg-gray-100 rounded-lg">
-                    <span class="text-lg font-bold text-gray-900">{{ proposal.installment_quantity }}</span>
+                  <label for="installment_quantity" class="block text-sm font-semibold text-base-content">Quantidade de Parcelas</label>
+                  <div class="px-3 py-2 bg-base-300 rounded-lg">
+                    <span class="text-lg font-bold text-base-content">{{ proposal.installment_quantity }}</span>
                   </div>
                 </div>
               </div>
@@ -68,10 +60,10 @@
                 </div>
               </div>
 
-              <div class="border-t border-gray-200 pt-6">
+              <div class="border-t border-base-300 pt-6">
                 <div class="flex items-center space-x-2 mb-4">
                   <div class="w-2 h-8 bg-blue-500 rounded-full"></div>
-                  <h4 class="text-lg font-bold text-gray-900 uppercase tracking-wide">
+                  <h4 class="text-lg font-bold text-base-content uppercase tracking-wide">
                     Parcelamento
                   </h4>
                 </div>
@@ -80,13 +72,13 @@
                   <div 
                     v-for="index in proposal.installment_quantity" 
                     :key="index"
-                    class="flex flex-col md:flex-row gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200"
+                    class="flex flex-col md:flex-row gap-4 p-4 bg-base-200 rounded-lg border border-base-300"
                   >
                     <div class="flex items-center flex-1">
                       <span class="inline-flex items-center justify-center w-8 h-8 bg-blue-100 text-blue-800 text-sm font-bold rounded-full mr-3">
                         {{ index }}
                       </span>
-                      <label :for="'price-' + index" class="text-sm font-semibold text-gray-700">
+                      <label :for="'price-' + index" class="text-sm font-semibold text-base-content">
                         Valor da Parcela {{ index }}
                       </label>
                     </div>
@@ -114,20 +106,31 @@
 
               <div v-if="errorMessage" class="mt-8">
                 <div>
-                  <p class="error text-black">
+                  <p class="error text-base-content">
                     {{ errorMessage }}
                   </p>
                 </div>
               </div>
-
-              <div class="flex justify-end gap-3 mt-6 pt-4 border-t">
-                <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600" @click="closeModal">Fechar</button>
-                <button type="submit" class="button-new">criar</button>
-              </div>
             </form>
-          </div>
-        </div>
-      </div>
+
+        <template #footer>
+          <button
+            type="button"
+            class="px-6 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg font-semibold hover:bg-base-200 transition-colors"
+            @click="closeModal"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            form="creditInvoiceCreateForm"
+            class="px-6 py-2 bg-primary hover:opacity-90 text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
+          >
+            <font-awesome-icon icon="fa-solid fa-plus" />
+            Criar Fatura
+          </button>
+        </template>
+      </ModalCard>
     </div>
   </div>
 </template>
@@ -141,6 +144,7 @@ import MoneyEditableField from "../fields/number/MoneyEditableField.vue";
 import TextAreaInput from "./inputs/textarea/TextAreaInput.vue";
 import TextValue from "../fields/text/TextValue.vue";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
+import ModalCard from "@/components/modals/ModalCard.vue";
 
 export default {
   name: "CreditInvoiceCreateForm",
@@ -153,6 +157,7 @@ export default {
     TextAreaInput,
     TextValue,
     UsersSelectInput,
+    ModalCard,
   },
   props: {
     proposal: {

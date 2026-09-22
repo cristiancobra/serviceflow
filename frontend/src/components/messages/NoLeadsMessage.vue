@@ -5,32 +5,32 @@
     <p class="bold">Você não tem nenhum contato!</p>
     <p class="message">Cadastre seu primeiro</p>
 
-    <div v-bind:class="{ hidden: isActive }">
-      <LeadCreateForm @new-lead-event="addLeadCreated($event)" />
-    </div>
+    <button type="button" @click="openCreateLeadModal">Novo Contato</button>
   </div>
 </template>
-  
+
   <script>
   import { BACKEND_URL, LEAD_URL } from "@/config/apiConfig";
-import LeadCreateForm from "@/components/forms/LeadCreateForm.vue";
+import { mapMutations } from "vuex";
 import axios from "axios";
 import caixaVaziaImage from '@/assets/caixa_vazia-PB.png';
 
 export default {
   name: "NoLeadsMessage",
-  components: {
-    LeadCreateForm,
-  },
   data() {
     return {
       caixaVaziaImage,
-      isActive: true,
     };
   },
   methods: {
-    toggle() {
-      this.isActive = !this.isActive;
+    ...mapMutations(["openModal"]),
+    openCreateLeadModal() {
+      this.openModal({
+        component: "LeadCreateForm",
+        listeners: {
+          "new-lead-event": this.addLeadCreated,
+        },
+      });
     },
     getLeads() {
       axios

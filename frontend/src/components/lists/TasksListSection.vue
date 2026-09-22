@@ -76,7 +76,7 @@
         <!-- Lista de tarefas agrupadas por mês -->
         <template v-for="monthGroup in groupedByMonth" :key="monthGroup.monthKey">
           <div class="flex items-center gap-2 mb-3 mt-4">
-            <span class="font-bold text-black text-sm uppercase tracking-wide whitespace-nowrap">
+            <span class="font-bold text-base-content text-sm uppercase tracking-wide whitespace-nowrap">
               {{ monthGroup.monthLabel }}
             </span>
             <div class="h-px flex-1 bg-gray-200"></div>
@@ -92,7 +92,7 @@
                     :class="getDeadlineClass(localTask.date_due ? localTask.date_due.split(' ')[0] : 'Sem Data', localTask.date_conclusion)">
                     {{ formatTaskDate(localTask.date_due) }}
                   </span>
-                  <span v-if="localTask.date_due" class="text-xs text-gray-500">
+                  <span v-if="localTask.date_due" class="text-xs text-base-content/70">
                     {{ formatTaskTime(localTask.date_due) }}
                   </span>
                 </div>
@@ -190,7 +190,7 @@
                       </button>
                     </div>
                     <p v-else @click="startEditOpportunity(localTask.id)"
-                      class="text-xs text-gray-400 hover:text-primary cursor-pointer"
+                      class="text-xs text-base-content/50 hover:text-primary cursor-pointer"
                       title="Clique para vincular a uma oportunidade">
                       ----
                     </p>

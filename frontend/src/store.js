@@ -32,6 +32,7 @@ export default createStore({
     now: Date.now(),
     isAuthenticated: false,
     userData: null,
+    themePreference: 'auto',
     photo: null,
     messageStatus: null,
     messageText: null,
@@ -62,6 +63,9 @@ export default createStore({
     setUserData(state, userData) {
       state.userData = userData;
     },
+    setThemePreference(state, themePreference) {
+      state.themePreference = themePreference;
+    },
     setUpdatedTask(state, task) {
       state.updatedTask = task;
     },
@@ -79,6 +83,9 @@ export default createStore({
       try {
         const response = await axios.get(`${BACKEND_URL}${CHECK_TOKEN_URL}`);
         commit('setAuthenticated', response.status === 200);
+        if (response.data?.theme_preference) {
+          commit('setThemePreference', response.data.theme_preference);
+        }
       } catch (error) {
         commit('setAuthenticated', false);
         console.error('Erro ao verificar autenticação:', error);

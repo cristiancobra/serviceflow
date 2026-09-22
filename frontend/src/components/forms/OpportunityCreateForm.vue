@@ -1,27 +1,15 @@
 <template>
-  <div>
-    <div v-if="modelValue" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.25)">
-      <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <!-- Header -->
-        <div class="sticky top-0 bg-gradient-to-r from-purple-50 to-purple-25 border-b border-gray-200 px-8 py-6 flex justify-between items-center">
-          <div>
-            <h3 class="text-2xl font-bold text-gray-800">Nova Oportunidade</h3>
-            <p class="text-gray-600 text-sm mt-1">Adicione uma nova oportunidade de negócio</p>
-          </div>
-          <button
-            type="button"
-            class="text-gray-400 hover:text-gray-600 transition-colors"
-            @click="closeModal"
-          >
-            <font-awesome-icon icon="fa-solid fa-xmark" class="text-2xl" />
-          </button>
-        </div>
+  <ModalCard
+    title="Nova Oportunidade"
+    subtitle="Adicione uma nova oportunidade de negócio"
+    icon="fa-solid fa-bullseye"
+    size="lg"
+    :compact="compact"
+    @close="closeModal"
+  >
+    <ErrorMessage v-if="formResponse" :formResponse="formResponse" />
 
-        <!-- Body -->
-        <div class="px-8 py-6">
-          <ErrorMessage v-if="formResponse" :formResponse="formResponse" />
-          
-          <form @submit.prevent="submitForm" class="space-y-6">
+    <form id="opportunityCreateForm" @submit.prevent="submitForm" class="space-y-6">
             <!-- Título -->
             <div>
               <TextInput
@@ -73,7 +61,7 @@
                   fieldNull="Não possui"
                   :disabled="!!currentLead"
                 />
-                <p v-if="currentLead" class="mt-1 text-sm text-gray-600">
+                <p v-if="currentLead" class="mt-1 text-sm text-base-content/70">
                   <font-awesome-icon icon="fas fa-info-circle" class="mr-1" />
                   Oportunidade vinculada a este contato
                 </p>
@@ -100,8 +88,8 @@
               </div>
               <div>
                 <div v-if="currentProject">
-                  <label class="block text-sm font-semibold text-gray-700 mb-2">Projeto</label>
-                  <div class="px-4 py-2 bg-gray-100 rounded-lg text-gray-800 font-medium">
+                  <label class="block text-sm font-semibold text-base-content mb-2">Projeto</label>
+                  <div class="px-4 py-2 bg-base-300 rounded-lg text-base-content font-medium">
                     {{ currentProject.name }}
                   </div>
                 </div>
@@ -137,73 +125,58 @@
                 />
               </div>
             </div>
-          </form>
-        </div>
+    </form>
 
-        <!-- Footer -->
-        <div class="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-8 py-4 flex justify-end gap-3">
-          <button
-            type="button"
-            class="px-6 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
-            @click="closeModal"
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            class="px-6 py-2 bg-gradient-to-r from-purple-600 to-purple-800 text-white rounded-lg font-semibold hover:shadow-lg transition-all hover:-translate-y-0.5"
-            @click="submitForm"
-          >
-            <font-awesome-icon icon="fa-solid fa-plus" class="me-2" />
-            Criar Oportunidade
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modais em sobreposição -->
-    <company-create-form 
-      v-model="isActiveFormCompany"
-      @new-company-event="addCompanyCreated" 
-    />
-    
-    <lead-create-form 
-      v-model="isActiveFormLead"
-      @new-lead-event="addLeadCreated" 
-    />
-  </div>
+    <template #footer>
+      <button
+        type="button"
+        class="px-6 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg font-semibold hover:bg-base-200 transition-colors"
+        @click="closeModal"
+      >
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        form="opportunityCreateForm"
+        class="px-6 py-2 bg-primary hover:opacity-90 text-white rounded-lg font-semibold transition-colors"
+      >
+        <font-awesome-icon icon="fa-solid fa-plus" class="me-2" />
+        Criar Oportunidade
+      </button>
+    </template>
+  </ModalCard>
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import { submitFormCreate } from "@/utils/requests/httpUtils";
 import CompaniesSelectInput from "@/components/forms/selects/CompaniesSelectInput.vue";
 import DateInput from "@/components/forms/inputs/date/DateInput.vue";
-import CompanyCreateForm from "@/components/forms/CompanyCreateForm.vue";
-import LeadCreateForm from "@/components/forms/LeadCreateForm.vue";
 import LeadsSelectInput from "@/components/forms/selects/LeadsSelectInput.vue";
 import ProjectsSelectInput from "@/components/forms/selects/ProjectsSelectInput.vue";
 import TextAreaInput from "./inputs/textarea/TextAreaInput.vue";
 import TextInput from "./inputs/text/TextInput.vue";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
 import ErrorMessage from "@/components/forms/messages/ErrorMessage.vue";
+import ModalCard from "@/components/modals/ModalCard.vue";
 
 export default {
   name: "OpportunityCreateForm",
   components: {
-    CompanyCreateForm,
     CompaniesSelectInput,
     DateInput,
-    LeadCreateForm,
     LeadsSelectInput,
     ProjectsSelectInput,
     TextAreaInput,
     TextInput,
     UsersSelectInput,
     ErrorMessage,
+    ModalCard,
   },
-  emits: ["new-opportunity-event", "update:modelValue"],
+  emits: ["new-opportunity-event", "close"],
   props: {
-    modelValue: {
+    // Passado automaticamente pelo App.vue quando há mais de um modal aberto ao mesmo tempo
+    compact: {
       type: Boolean,
       default: false,
     },
@@ -229,24 +202,9 @@ export default {
         date_due: null,
       },
       formResponse: null,
-      isActiveFormCompany: false,
-      isActiveFormLead: false,
     };
   },
   watch: {
-    modelValue: {
-      handler(isOpen) {
-        if (isOpen) {
-          // Quando o modal abrir, repreencher valores que podem ter sido limpos
-          if (this.currentProject) {
-            this.form.project_id = this.currentProject.id;
-          }
-          if (this.currentLead) {
-            this.form.lead_id = this.currentLead.id;
-          }
-        }
-      },
-    },
     currentProject: {
       handler(newProject) {
         if (newProject) {
@@ -265,11 +223,10 @@ export default {
     },
   },
   methods: {
+    ...mapMutations(["openModal"]),
     submitFormCreate,
     closeModal() {
-      this.$emit("update:modelValue", false);
-      this.formResponse = null;
-      this.clearForm();
+      this.$emit("close");
     },
     async submitForm() {
       const { data, error } = await this.submitFormCreate(
@@ -278,49 +235,37 @@ export default {
       );
 
       if (data) {
-        this.$emit("update:modelValue", false);
+        this.$emit("close");
         this.$emit("new-opportunity-event", data);
-        this.clearForm();
-        this.formResponse = null;
       }
       if (error) {
         this.formResponse = error.response?.data || { errors: { geral: ['Erro ao criar oportunidade'] } };
         console.error("Erro ao criar oportunidade:", error);
       }
     },
-    clearForm() {
-      this.form.name = null;
-      this.form.description = null;
-      this.form.company_id = null;
-      this.form.lead_id = null;
-      this.form.user_id = null;
-      this.form.project_id = null;
-      this.form.date_start = null;
-      this.form.date_due = null;
-      this.isActiveFormCompany = false;
-      this.isActiveFormLead = false;
-    },
     toggleCompany() {
-      this.isActiveFormCompany = !this.isActiveFormCompany;
-      if (this.isActiveFormCompany) {
-        this.isActiveFormLead = false;
-      }
+      this.openModal({
+        component: "CompanyCreateForm",
+        listeners: {
+          "new-company-event": this.addCompanyCreated,
+        },
+      });
     },
     toggleLead() {
-      this.isActiveFormLead = !this.isActiveFormLead;
-      if (this.isActiveFormLead) {
-        this.isActiveFormCompany = false;
-      }
+      this.openModal({
+        component: "LeadCreateForm",
+        listeners: {
+          "new-lead-event": this.addLeadCreated,
+        },
+      });
     },
     addCompanyCreated(newCompany) {
       this.form.company_id = newCompany.id;
-      this.isActiveFormCompany = false;
       // Recarregar a lista de empresas
       this.$refs.companiesSelect?.reload();
     },
     addLeadCreated(newLead) {
       this.form.lead_id = newLead.id;
-      this.isActiveFormLead = false;
       // Recarregar a lista de leads
       this.$refs.leadsSelect?.reload();
     },

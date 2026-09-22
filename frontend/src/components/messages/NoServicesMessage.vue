@@ -5,32 +5,32 @@
     <p class="bold">Você não tem nenhum serviço!</p>
     <p class="message">Cadastre um seviços para poder faturar</p>
 
-    <div v-bind:class="{ hidden: isActive }">
-      <ServiceCreateForm @new-service-event="addServiceCreated($event)" />
-    </div>
+    <button type="button" @click="openCreateServiceModal">Novo Serviço</button>
   </div>
 </template>
-  
+
   <script>
+import { mapMutations } from "vuex";
 import { BACKEND_URL, SERVICE_URL } from "@/config/apiConfig";
 import axios from "axios";
-import ServiceCreateForm from "@/components/forms/ServiceCreateForm.vue";
 import caixaVaziaImage from '@/assets/caixa_vazia-PB.png';
 
 export default {
   name: "NoServicesMessage",
-  components: {
-    ServiceCreateForm,
-  },
   data() {
     return {
       caixaVaziaImage,
-      isActive: true,
     };
   },
   methods: {
-    toggle() {
-      this.isActive = !this.isActive;
+    ...mapMutations(["openModal"]),
+    openCreateServiceModal() {
+      this.openModal({
+        component: "ServiceCreateForm",
+        listeners: {
+          "new-service-event": this.addServiceCreated,
+        },
+      });
     },
     getServices() {
       axios

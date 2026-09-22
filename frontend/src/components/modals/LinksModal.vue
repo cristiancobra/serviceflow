@@ -13,13 +13,7 @@
             <div class="flex items-center gap-2">
               <button-new-form
                   target="link"
-                  @open-modal="isCreateLinkModalVisible = true"
-              />
-              <link-create-form
-                  v-model="isCreateLinkModalVisible"
-                  @new-link-event="addLinkCreated"
-                  :task-id="0"
-                  :opportunity-id="0"
+                  @open-modal="openCreateLinkModal"
               />
               <close-button @click="closeModal" />
             </div>
@@ -275,8 +269,8 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import { index, destroy } from "@/utils/requests/httpUtils";
-import LinkCreateForm from "@/components/forms/LinkCreateForm.vue";
 import SearchInput from "@/components/filters/SearchInput.vue";
 import ButtonNewForm from "@/components/buttons/ButtonNewForm.vue";
 import TaskLinksList from "@/components/lists/TaskLinksList.vue";
@@ -286,7 +280,6 @@ import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
 export default {
   name: "LinksModal",
   components: {
-      LinkCreateForm,
       SearchInput,
       ButtonNewForm,
       TaskLinksList,
@@ -304,7 +297,6 @@ export default {
       return {
           searchTerm: "",
           links: [],
-          isCreateLinkModalVisible: false,
       };
   },
   computed: {
@@ -331,8 +323,17 @@ export default {
       }
   },
   methods: {
+      ...mapMutations(["openModal"]),
+      openCreateLinkModal() {
+          this.openModal({
+              component: "LinkCreateForm",
+              props: { taskId: 0, opportunityId: 0 },
+              listeners: {
+                  "new-link-event": this.addLinkCreated,
+              },
+          });
+      },
       addLinkCreated(newLink) {
-          this.isCreateLinkModalVisible = false;
           this.links.unshift(newLink);
       },
       async getLinks() {

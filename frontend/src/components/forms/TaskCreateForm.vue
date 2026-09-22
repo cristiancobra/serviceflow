@@ -1,43 +1,15 @@
 <template>
-  <div
-    class="modal-panel bg-white rounded-2xl shadow-2xl w-full max-h-[90vh] overflow-y-auto"
-    :class="compact ? 'max-w-md' : 'max-w-2xl'"
+  <ModalCard
+    :title="cloneFrom ? 'Clonar Tarefa' : 'Nova Tarefa'"
+    icon="fa-solid fa-tasks"
+    :compact="compact"
+    @close="closeModal"
   >
-        <div class="flex items-center justify-between p-4 border-b">
-          <div class="flex items-center">
-            <font-awesome-icon
-              icon="fa-solid fa-tasks"
-              class="text-primary text-xl mr-2"
-            />
-            <h5 class="text-primary text-lg font-semibold">{{ cloneFrom ? 'Clonar tarefa' : 'Nova tarefa' }}</h5>
-          </div>
-          <button
-            type="button"
-            class="text-gray-400 hover:text-gray-600"
-            @click="closeModal"
-            aria-label="Close"
-          >
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              ></path>
-            </svg>
-          </button>
-        </div>
-        <div class="p-4">
           <error-message v-if="formResponse" :formResponse="formResponse" />
           <form id="taskForm" @submit.prevent="submitForm">
             <div class="mb-4">
               <div class="form-control w-full">
-                <label class="text-black" :for="name"> Nome da tarefa </label>
+                <label class="text-base-content" :for="name"> Nome da tarefa </label>
                 <input
                   class="input input-bordered w-full"
                   type="text"
@@ -48,7 +20,7 @@
             </div>
 
             <div class="mb-4">
-              <label class="text-black" :for="description"> Detalhamento </label>
+              <label class="text-base-content" :for="description"> Detalhamento </label>
               <textarea
                 class="input input-bordered w-full"
                 name="description"
@@ -60,7 +32,7 @@
             <div class="mb-4">
             </div>
             <div class="mb-4">
-              <label class="text-black" for="department_id">Departamento</label>
+              <label class="text-base-content" for="department_id">Departamento</label>
               <DepartmentsSelectInput
                 v-model="form.department_id"
                 name="department_id"
@@ -74,7 +46,7 @@
                   <div v-if="opportunity">
                     <label
                       for="opportunity"
-                      class="block text-sm font-medium text-gray-700 mb-1"
+                      class="block text-sm font-medium text-base-content mb-1"
                       >Oportunidade</label
                     >
                     <input
@@ -103,7 +75,7 @@
                   <div v-if="project">
                     <label
                       for="project"
-                      class="block text-sm font-medium text-gray-700 mb-1"
+                      class="block text-sm font-medium text-base-content mb-1"
                       >Projeto</label
                     >
                     <input
@@ -166,14 +138,25 @@
               </div>
             </div>
           </form>
-        </div>
-        <div class="flex justify-end p-4 border-t bg-gray-50">
-          <button type="button" class="btn" @click="closeModal">Fechar</button>
-          <button type="submit" class="btn btn-primary" form="taskForm">
-            criar
-          </button>
-        </div>
-  </div>
+
+    <template #footer>
+      <button
+        type="button"
+        class="px-6 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg font-semibold hover:bg-base-200 transition-colors"
+        @click="closeModal"
+      >
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        form="taskForm"
+        class="px-6 py-2 bg-primary hover:opacity-90 text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
+      >
+        <font-awesome-icon icon="fa-solid fa-plus" />
+        {{ cloneFrom ? 'Clonar Tarefa' : 'Criar Tarefa' }}
+      </button>
+    </template>
+  </ModalCard>
 </template>
 
 <script>
@@ -189,6 +172,7 @@ import DepartmentsSelectInput from "./selects/DepartmentsSelectInput.vue";
 import TextValue from "../fields/text/TextValue.vue";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
 import ErrorMessage from "../forms/messages/ErrorMessage.vue";
+import ModalCard from "@/components/modals/ModalCard.vue";
 
 export default {
   name: "TaskCreateForm",
@@ -204,6 +188,7 @@ export default {
     TextValue,
     UsersSelectInput,
     ErrorMessage,
+    ModalCard,
   },
   props: {
     opportunity: {
@@ -355,18 +340,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.modal-panel {
-  animation: fadeIn 0.2s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-</style>

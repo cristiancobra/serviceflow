@@ -11,7 +11,7 @@
       </div>
 
       <div v-if="links.length === 0" class="p-4 text-center">
-          <p class="text-gray-500">Nenhum link de tarefa</p>
+          <p class="text-base-content/50">Nenhum link de tarefa</p>
       </div>
 
       <div v-else class="overflow-x-auto">
@@ -43,8 +43,8 @@
                   </a>
               </div>
               <div :class="urlColClass">
-                  <p 
-                      class="text-sm text-gray-600 truncate block" 
+                  <p
+                      class="text-sm text-base-content/70 truncate block"
                       :href="link.url" 
                       target="_blank"
                       :title="link.url"
@@ -53,7 +53,7 @@
               </p>
               </div>
               <div :class="observationsColClass">
-                  <span class="text-sm text-gray-600 truncate block" :title="link.observations">
+                  <span class="text-sm text-base-content/70 truncate block" :title="link.observations">
                       {{ link.observations || '-' }}
                   </span>
               </div>

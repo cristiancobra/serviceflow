@@ -30,6 +30,11 @@
     width: 60vw;
   }
 
+[data-theme="service-dark"] .myModal .modal-content {
+    background-color: var(--color-base-100);
+    color: var(--color-base-content);
+  }
+
   @media (max-width: 768px) {
     .myModal .modal-content {
         width: 90vw;

@@ -241,24 +241,17 @@
       </div>
     </div>
 
-    <transaction-create-form
-      v-if="showTransactionModal"
-      :modelValue="showTransactionModal"
-      :invoice="selectedInvoice"
-      @update:modelValue="showTransactionModal = $event"
-      @new-transaction-event="handleNewTransaction"
-    />
   </div>
 </template>
-  
+
   <script>
+import { mapMutations } from "vuex";
 import { updateField, destroy } from "@/utils/requests/httpUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import DateEditableInput from "../fields/date/DateEditableInput.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import CreditInvoiceCreateForm from "@/components/forms/CreditInvoiceCreateForm.vue";
 import MoneyField from "../fields/number/MoneyField.vue";
-import TransactionCreateForm from "@/components/forms/TransactionCreateForm.vue";
 import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
 
 export default {
@@ -271,8 +264,6 @@ export default {
   data() {
     return {
       localInvoices: [],
-      showTransactionModal: false,
-      selectedInvoice: null,
     };
   },
   components: {
@@ -280,7 +271,6 @@ export default {
     DateTimeEditableInput,
     CreditInvoiceCreateForm,
     MoneyField,
-    TransactionCreateForm,
     DeleteIconButton,
   },
   watch: {
@@ -311,6 +301,7 @@ export default {
     },
   },
   methods: {
+    ...mapMutations(["openModal"]),
     formatDateBr,
     addInvoiceCreated(newInvoices) {
       // Adiciona as novas faturas aos dados locais
@@ -324,8 +315,13 @@ export default {
       this.$emit("invoices-updated", this.localInvoices);
     },
     openTransactionModal(invoice) {
-      this.selectedInvoice = invoice;
-      this.showTransactionModal = true;
+      this.openModal({
+        component: "TransactionCreateForm",
+        props: { invoice },
+        listeners: {
+          "new-transaction-event": this.handleNewTransaction,
+        },
+      });
     },
     handleNewTransaction(newTransaction) {
       // Encontrar a invoice correspondente e adicionar a transação

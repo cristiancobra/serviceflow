@@ -3,15 +3,15 @@
     <label v-if="label" class="" :for="name">{{ label }}</label>
     <div v-if="!editing" @click="startEditing">
       <div v-if="modelValue" class="">
-        <p class="text-gray-900">
+        <p class="text-base-content">
         {{ modelValue }}
         </p>
       </div>
-      <div v-else class="text-gray-400">{{ emptyText }}</div>
+      <div v-else class="text-base-content/50">{{ emptyText }}</div>
     </div>
     <div v-else-if="editing">
       <input
-        class="text-black w-100 border border-primary-500 rounded-md px-3 py-2 focus:border-primary-600 focus:ring-2 focus:ring-primary-200 focus:outline-none"
+        class="bg-base-100 text-base-content w-100 border border-primary-500 rounded-md px-3 py-2 focus:border-primary-600 focus:ring-2 focus:ring-primary-200 focus:outline-none"
         type="text"
         :name="name"
         v-model="localValue"

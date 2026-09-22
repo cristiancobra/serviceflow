@@ -159,14 +159,9 @@
                 <font-awesome-icon :icon="showLinks ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'" class="text-xs text-gray-400" />
               </button>
               <div class="flex items-center gap-1">
-                <button-new-form 
-                  target="link" 
-                  @open-modal="showLinkForm = true" 
-                />
-                <link-create-form
-                  v-model="showLinkForm"
-                  :taskId="task.id"
-                  @new-link-event="addLinkCreated"
+                <button-new-form
+                  target="link"
+                  @open-modal="openCreateLinkModal"
                 />
               </div>
             </div>
@@ -322,7 +317,6 @@ import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 import JourneysListFromOpportunity from "@/components/lists/JourneysListFromOpportunity.vue";
 import CancellationReasonSelectInput from "@/components/forms/selects/CancellationReasonSelectInput.vue";
 import JourneyCreateForm from "@/components/forms/JourneyCreateForm.vue";
-import LinkCreateForm from "@/components/forms/LinkCreateForm.vue";
 import CloseButton from "@/components/buttons/CloseButton.vue";
 import AddJourneyButton from "@/components/buttons/AddJourneyButton.vue";
 import TaskLinksList from "@/components/lists/TaskLinksList.vue";
@@ -339,7 +333,6 @@ export default {
     JourneysListFromOpportunity,
     CancellationReasonSelectInput,
     JourneyCreateForm,
-    LinkCreateForm,
     CloseButton,
     AddJourneyButton,
     TaskLinksList,
@@ -385,7 +378,6 @@ export default {
       loading: false,
       showCancelArea: false,
       showJourneyForm: false,
-      showLinkForm: false,
       showLinks: false,
       showOpportunitySelect: false,
       selectedOpportunity: null,
@@ -490,10 +482,18 @@ export default {
       this.$emit('task-updated', this.task);
     },
 
+    openCreateLinkModal() {
+      this.openModal({
+        component: "LinkCreateForm",
+        props: { taskId: this.task.id },
+        listeners: {
+          "new-link-event": this.addLinkCreated,
+        },
+      });
+    },
     addLinkCreated(linkData) {
       if (!this.task.links) this.task.links = [];
       this.task.links.unshift(linkData);
-      this.showLinkForm = false;
       this.$emit('task-updated', this.task);
     },
 

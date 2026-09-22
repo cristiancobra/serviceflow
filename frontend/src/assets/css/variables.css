@@ -35,3 +35,9 @@
   --box-shadow-value: 0 0 16px 0 rgba(0, 0, 0, 0.16);
 
 }
+
+/* Modo noturno: sobrescreve o fundo branco usado pela maioria das telas (.page-container) */
+[data-theme="service-dark"] {
+  --background-light: var(--color-base-200);
+  --background-container-color: var(--color-base-100);
+}

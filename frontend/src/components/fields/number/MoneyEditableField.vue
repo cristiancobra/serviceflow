@@ -8,7 +8,7 @@
           {{ formatCurrencySymbol(localValue) }}
         </p>
       </div>
-      <div v-else>
+      <div v-else class="text-base-content/50">
         não informado
       </div>
     </div>
@@ -93,6 +93,11 @@ export default {
 .price-editable {
   cursor: pointer;
   color: var(--primary);
+}
+
+/* --primary tem contraste baixo demais no fundo escuro; usa a variante mais clara */
+[data-theme="service-dark"] .price-editable {
+  color: var(--primary-light);
 }
 
 .show-label {

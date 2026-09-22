@@ -6,11 +6,10 @@
         <h1>EMPRESAS</h1>
       </div>
       <div class="page-action">
-        <button type="button" class="btn-create" @click="isCreateCompanyModalVisible = true">
+        <button type="button" class="btn-create" @click="openCreateCompanyModal">
           <font-awesome-icon icon="fa-solid fa-plus" class="me-2" />
           Nova Empresa
         </button>
-        <company-create-form v-model="isCreateCompanyModalVisible" @new-company-event="addCompanyCreated" />
       </div>
     </div>
     <companies-list ref="companiesList" template="index" />
@@ -18,22 +17,24 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import CompaniesList from "@/components/lists/CompaniesList.vue";
-import CompanyCreateForm from "@/components/forms/CompanyCreateForm.vue";
 
 export default {
   components: {
     CompaniesList,
-    CompanyCreateForm,
-  },
-  data() {
-    return {
-      isCreateCompanyModalVisible: false,
-    };
   },
   methods: {
+    ...mapMutations(["openModal"]),
+    openCreateCompanyModal() {
+      this.openModal({
+        component: "CompanyCreateForm",
+        listeners: {
+          "new-company-event": this.addCompanyCreated,
+        },
+      });
+    },
     addCompanyCreated(newCompany) {
-      this.isCreateCompanyModalVisible = false;
       // Atualiza a lista através do componente filho
       this.$refs.companiesList?.addCompanyCreated(newCompany);
     },

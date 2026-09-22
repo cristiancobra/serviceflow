@@ -20,7 +20,7 @@
 
       <!-- Filtros de Tipo -->
       <div class="flex flex-wrap items-center gap-3 mb-3">
-        <span class="text-sm font-semibold text-gray-700">Filtrar por tipo:</span>
+        <span class="text-sm font-semibold text-base-content">Filtrar por tipo:</span>
         <button @click="setTypeFilter(null)" :class="{
           'bg-gray-800 text-white': typeFilter === null && overdueFilter === null,
           'bg-gray-200 text-gray-700 hover:bg-gray-300': !(typeFilter === null && overdueFilter === null),

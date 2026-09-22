@@ -298,12 +298,7 @@
           <font-awesome-icon icon="fas fa-money-bill-wave" class="text-green-500 mr-3" />
           FINANCEIRO
         </h2>
-        <button-new-form target="opportunity" @open-modal="isCreateOpportunityModalVisible = true" />
-        <opportunity-create-form 
-          v-model="isCreateOpportunityModalVisible"
-          :current-lead="lead"
-          @new-opportunity-event="addOpportunityCreated" 
-        />
+        <button-new-form target="opportunity" @open-modal="openCreateOpportunityModal" />
       </div>
       
       <!-- Opportunities List -->
@@ -484,7 +479,7 @@ import DateEditableInput from '@/components/fields/date/DateEditableInput.vue';
 import ErrorMessage from '@/components/forms/messages/ErrorMessage.vue';
 import AddMessage from '@/components/forms/messages/AddMessage.vue';
 import ButtonNewForm from '@/components/buttons/ButtonNewForm.vue';
-import OpportunityCreateForm from '@/components/forms/OpportunityCreateForm.vue';
+import { mapMutations } from 'vuex';
 
 export default {
   name: "LeadShow",
@@ -495,7 +490,6 @@ export default {
     ErrorMessage,
     AddMessage,
     ButtonNewForm,
-    OpportunityCreateForm,
   },
   data() {
     return {
@@ -506,7 +500,6 @@ export default {
       newPhoto: null,
       messageStatus: '',
       messageText: '',
-      isCreateOpportunityModalVisible: false,
       leadTypeOptions: [
         { value: 'client', label: 'Cliente' },
         { value: 'supplier', label: 'Fornecedor' },
@@ -600,7 +593,17 @@ export default {
     },
   },
   methods: {
+    ...mapMutations(["openModal"]),
     formatDateBr,
+    openCreateOpportunityModal() {
+      this.openModal({
+        component: "OpportunityCreateForm",
+        props: { currentLead: this.lead },
+        listeners: {
+          "new-opportunity-event": this.addOpportunityCreated,
+        },
+      });
+    },
     async getLead() {
       this.lead = await show('leads', this.leadId);
     },
@@ -732,7 +735,6 @@ export default {
       this.messageStatus = status;
     },
     addOpportunityCreated(newOpportunity) {
-      this.isCreateOpportunityModalVisible = false;
       // Adicionar a nova oportunidade à lista de oportunidades do lead
       if (!this.lead.opportunities) {
         this.lead.opportunities = [];

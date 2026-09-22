@@ -68,23 +68,23 @@
         :key="recurringExpense.id"
         class="list-line"
       >
-        <div class="w-3/10 text-left text-black font-semibold">
+        <div class="w-3/10 text-left text-base-content font-semibold">
           {{ recurringExpense.name }}
         </div>
 
-        <div class="w-1/10 text-center text-black">
+        <div class="w-1/10 text-center text-base-content">
           {{ recurringExpense.category === 'variable' ? 'Variável' : 'Fixa' }}
         </div>
 
-        <div class="w-2/10 text-center text-black font-semibold">
+        <div class="w-2/10 text-center text-base-content font-semibold">
           {{ recurringExpense.amount_formatted }}
         </div>
 
-        <div class="w-1/10 text-center text-black">
+        <div class="w-1/10 text-center text-base-content">
           dia {{ recurringExpense.due_day }}
         </div>
 
-        <div class="w-2/10 text-center text-black">
+        <div class="w-2/10 text-center text-base-content">
           {{ recurringExpense.invoices_count }}
         </div>
 
@@ -307,14 +307,6 @@
       </div>
     </div>
 
-    <transaction-create-form
-      v-if="showTransactionModal"
-      :modelValue="showTransactionModal"
-      :invoice="selectedInvoiceForTransaction"
-      @update:modelValue="showTransactionModal = $event"
-      @new-transaction-event="handleNewTransaction"
-    />
-
     <!-- Modal de Confirmação de Exclusão -->
     <div v-if="showDeleteModal" class="modal-overlay" @click="closeDeleteModal">
       <div class="modal-content modal-small" @click.stop>
@@ -344,13 +336,13 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import { index, destroy, post, show, updateField } from "@/utils/requests/httpUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import RecurringExpenseForm from "@/components/forms/RecurringExpenseForm.vue";
 import DateEditableInput from "@/components/fields/date/DateEditableInput.vue";
 import MoneyEditableField from "@/components/fields/number/MoneyEditableField.vue";
 import TransactionsListSection from "@/components/show/TransactionsListSection.vue";
-import TransactionCreateForm from "@/components/forms/TransactionCreateForm.vue";
 
 export default {
   name: "RecurringExpensesList",
@@ -359,7 +351,6 @@ export default {
     DateEditableInput,
     MoneyEditableField,
     TransactionsListSection,
-    TransactionCreateForm,
   },
   data() {
     return {
@@ -381,8 +372,6 @@ export default {
       recurringExpenseForInvoices: null,
       invoicesForModal: [],
       expandedInvoiceIds: [],
-      showTransactionModal: false,
-      selectedInvoiceForTransaction: null,
       backfillEndDate: "",
       backfillError: "",
     };
@@ -393,6 +382,7 @@ export default {
     },
   },
   methods: {
+    ...mapMutations(["openModal"]),
     async getRecurringExpenses() {
       try {
         const response = await index("recurring_expenses");
@@ -590,8 +580,13 @@ export default {
     },
 
     openTransactionModal(invoice) {
-      this.selectedInvoiceForTransaction = invoice;
-      this.showTransactionModal = true;
+      this.openModal({
+        component: "TransactionCreateForm",
+        props: { invoice },
+        listeners: {
+          "new-transaction-event": this.handleNewTransaction,
+        },
+      });
     },
 
     handleNewTransaction(newTransaction) {
@@ -689,7 +684,7 @@ export default {
 .filter-label {
   font-weight: 600;
   margin-bottom: 0.25rem;
-  color: #374151;
+  color: var(--color-base-content);
   font-size: 0.875rem;
 }
 
@@ -883,7 +878,7 @@ export default {
 .empty-state {
   text-align: center;
   padding: 3rem;
-  color: #6b7280;
+  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
 }
 
 .empty-icon {

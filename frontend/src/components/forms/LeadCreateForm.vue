@@ -1,124 +1,107 @@
 <template>
-  <div>
-    <div v-if="modelValue" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.25)">
-      <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <!-- Header -->
-        <div class="sticky top-0 bg-gradient-to-r from-blue-50 to-blue-25 border-b border-gray-200 px-8 py-6 flex justify-between items-center">
-          <div>
-            <h3 class="text-2xl font-bold text-gray-800">Novo Contato</h3>
-            <p class="text-gray-600 text-sm mt-1">Adicione um novo contato ao sistema</p>
-          </div>
-          <button
-            type="button"
-            class="text-gray-400 hover:text-gray-600 transition-colors"
-            @click="closeModal"
-          >
-            <font-awesome-icon icon="fa-solid fa-xmark" class="text-2xl" />
-          </button>
+  <ModalCard
+    title="Novo Contato"
+    subtitle="Adicione um novo contato ao sistema"
+    icon="fa-solid fa-user-plus"
+    :compact="compact"
+    @close="closeModal"
+  >
+    <ErrorMessage v-if="formResponse" :formResponse="formResponse" />
+
+    <form id="leadCreateForm" @submit.prevent="submitForm" class="space-y-6">
+      <!-- Nome -->
+      <div>
+        <TextInput
+          label="Nome"
+          type="text"
+          name="name"
+          v-model="form.name"
+          placeholder="Nome completo do contato"
+        />
+      </div>
+
+      <!-- Email e Telefone -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <TextInput
+            label="Email"
+            type="email"
+            name="email"
+            v-model="form.email"
+            placeholder="email@exemplo.com"
+            @blur="validateEmail"
+          />
+          <small v-if="errors.email" class="text-red-600 text-sm block mt-2">
+            <font-awesome-icon icon="fa-solid fa-circle-exclamation" class="me-1" />
+            {{ errors.email }}
+          </small>
         </div>
-
-        <!-- Body -->
-        <div class="px-8 py-6">
-          <ErrorMessage v-if="formResponse" :formResponse="formResponse" />
-          
-          <form @submit.prevent="submitForm" class="space-y-6">
-            <!-- Nome -->
-            <div>
-              <TextInput
-                label="Nome"
-                type="text"
-                name="name"
-                v-model="form.name"
-                placeholder="Nome completo do contato"
-              />
-            </div>
-
-            <!-- Email e Telefone -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <TextInput
-                  label="Email"
-                  type="email"
-                  name="email"
-                  v-model="form.email"
-                  placeholder="email@exemplo.com"
-                  @blur="validateEmail"
-                />
-                <small v-if="errors.email" class="text-red-600 text-sm block mt-2">
-                  <font-awesome-icon icon="fa-solid fa-circle-exclamation" class="me-1" />
-                  {{ errors.email }}
-                </small>
-              </div>
-              <div>
-                <TextInput
-                  label="Telefone Celular"
-                  type="text"
-                  name="cel_phone"
-                  v-model="form.cel_phone"
-                  placeholder="(11) 99999-9999"
-                  @blur="validatePhone"
-                />
-                <small v-if="errors.cel_phone" class="text-red-600 text-sm block mt-2">
-                  <font-awesome-icon icon="fa-solid fa-circle-exclamation" class="me-1" />
-                  {{ errors.cel_phone }}
-                </small>
-              </div>
-            </div>
-
-            <!-- Observações -->
-            <div>
-              <TextAreaInput
-                label="Observações"
-                name="comments"
-                v-model="form.comments"
-                placeholder="Informações adicionais sobre o contato"
-                :rows="3"
-              />
-            </div>
-
-            <!-- Usuário e Empresa -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <UsersSelectInput
-                  label="Adicionado por"
-                  v-model="form.user_id"
-                  fieldsToDisplay="name"
-                  autoSelect="true"
-                />
-              </div>
-              <div>
-                <CompaniesSelectInput
-                  label="Empresa"
-                  v-model="form.company_id"
-                  :fieldsToDisplay="['business_name', 'legal_name']"
-                  fieldNull="Nenhuma"
-                />
-              </div>
-            </div>
-          </form>
-        </div>
-
-        <!-- Footer -->
-        <div class="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-8 py-4 flex justify-end gap-3">
-          <button
-            type="button"
-            class="px-6 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
-            @click="closeModal"
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            class="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg font-semibold hover:shadow-lg transition-all hover:-translate-y-0.5"
-            @click="submitForm"
-          >
-            <font-awesome-icon icon="fa-solid fa-plus" class="me-2" />
-            Criar Contato
-          </button>
+        <div>
+          <TextInput
+            label="Telefone Celular"
+            type="text"
+            name="cel_phone"
+            v-model="form.cel_phone"
+            placeholder="(11) 99999-9999"
+            @blur="validatePhone"
+          />
+          <small v-if="errors.cel_phone" class="text-red-600 text-sm block mt-2">
+            <font-awesome-icon icon="fa-solid fa-circle-exclamation" class="me-1" />
+            {{ errors.cel_phone }}
+          </small>
         </div>
       </div>
-    </div>
-  </div>
+
+      <!-- Observações -->
+      <div>
+        <TextAreaInput
+          label="Observações"
+          name="comments"
+          v-model="form.comments"
+          placeholder="Informações adicionais sobre o contato"
+          :rows="3"
+        />
+      </div>
+
+      <!-- Usuário e Empresa -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <UsersSelectInput
+            label="Adicionado por"
+            v-model="form.user_id"
+            fieldsToDisplay="name"
+            autoSelect="true"
+          />
+        </div>
+        <div>
+          <CompaniesSelectInput
+            label="Empresa"
+            v-model="form.company_id"
+            :fieldsToDisplay="['business_name', 'legal_name']"
+            fieldNull="Nenhuma"
+          />
+        </div>
+      </div>
+    </form>
+
+    <template #footer>
+      <button
+        type="button"
+        class="px-6 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg font-semibold hover:bg-base-200 transition-colors"
+        @click="closeModal"
+      >
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        form="leadCreateForm"
+        class="px-6 py-2 bg-primary hover:opacity-90 text-white rounded-lg font-semibold transition-colors"
+      >
+        <font-awesome-icon icon="fa-solid fa-plus" class="me-2" />
+        Criar Contato
+      </button>
+    </template>
+  </ModalCard>
 </template>
 
 <script>
@@ -128,6 +111,7 @@ import TextAreaInput from "./inputs/textarea/TextAreaInput.vue";
 import CompaniesSelectInput from "./selects/CompaniesSelectInput.vue";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
 import ErrorMessage from "@/components/forms/messages/ErrorMessage.vue";
+import ModalCard from "@/components/modals/ModalCard.vue";
 
 export default {
   name: "LeadCreateForm",
@@ -137,10 +121,12 @@ export default {
     CompaniesSelectInput,
     UsersSelectInput,
     ErrorMessage,
+    ModalCard,
   },
-  emits: ["new-lead-event", "update:modelValue"],
+  emits: ["new-lead-event", "close"],
   props: {
-    modelValue: {
+    // Passado automaticamente pelo App.vue quando há mais de um modal aberto ao mesmo tempo
+    compact: {
       type: Boolean,
       default: false,
     },
@@ -165,7 +151,7 @@ export default {
   methods: {
     submitFormCreate,
     closeModal() {
-      this.$emit("update:modelValue", false);
+      this.$emit("close");
       this.formResponse = null;
       this.clearErrors();
     },
@@ -176,7 +162,7 @@ export default {
       );
 
       if (data) {
-        this.$emit("update:modelValue", false);
+        this.$emit("close");
         this.$emit("new-lead-event", data);
         this.clearForm();
         this.formResponse = null;

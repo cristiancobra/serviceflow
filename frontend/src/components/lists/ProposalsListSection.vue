@@ -9,12 +9,7 @@
         <h2 class="text-xl font-extrabold text-left mt-1">PROPOSTAS</h2>
       </div>
       <div class="flex-[2] flex justify-center">
-        <button-new-form target="proposal" @open-modal="openProposalForm = true" />
-        <proposal-create-form
-          v-model="openProposalForm"
-          @new-proposal-event="addProposalCreated"
-          :opportunityId="opportunityId"
-        />
+        <button-new-form target="proposal" @open-modal="openCreateProposalModal" />
       </div>
     </div>
 
@@ -33,42 +28,42 @@
         class="flex w-full no-underline text-inherit"
         :to="{ name: 'proposalShow', params: { id: proposal.id } }"
       >
-        <div class="text-black flex flex-[2] items-center justify-start mr-4">
+        <div class="text-base-content flex flex-[2] items-center justify-start mr-4">
           {{ formatDateBr(proposal.date) }}
         </div>
         <div class="flex flex-[6] items-center justify-start flex-row m-0">
           <p
-            class="text-black text-left text-sm font-medium p-0 m-0"
+            class="text-base-content text-left text-sm font-medium p-0 m-0"
             v-if="!proposal.opportunity"
           >
             sem oportunidade associada
           </p>
           <p
-            class="text-black text-sm font-semibold"
+            class="text-base-content text-sm font-semibold"
             v-else-if="proposal.opportunity?.company?.business_name"
           >
             {{ proposal.opportunity.company.business_name }}
           </p>
           <p
-            class="text-black text-sm font-semibold"
+            class="text-base-content text-sm font-semibold"
             v-else-if="proposal.opportunity?.company?.legal_name"
           >
             {{ proposal.opportunity.company.legal_name }}
           </p>
           <p
-            class="text-black text-sm font-semibold"
+            class="text-base-content text-sm font-semibold"
             v-else-if="proposal.opportunity?.lead?.name"
           >
             {{ proposal.opportunity.lead.name }}
           </p>
-          <p class="text-black text-left text-sm font-medium p-0 m-0" v-else>
+          <p class="text-base-content text-left text-sm font-medium p-0 m-0" v-else>
             sem associação
           </p>
         </div>
         <div class="flex flex-[6] items-center justify-start flex-row m-0">
           <p
             v-html="getShortDescription(proposal)"
-            class="text-black text-left text-sm font-medium p-0 m-0 ps-2"
+            class="text-base-content text-left text-sm font-medium p-0 m-0 ps-2"
           ></p>
         </div>
         <div class="justify-end text-right text-base font-normal">
@@ -80,18 +75,17 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import { updateField } from "@/utils/requests/httpUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import { getDeadlineClass } from "@/utils/card/cardUtils";
 import ButtonNewForm from "../buttons/ButtonNewForm.vue";
 import MoneyField from "../fields/number/MoneyField.vue";
-import ProposalCreateForm from "../forms/ProposalCreateForm.vue";
 import SelectStatusButton from "../buttons/SelectStatusButton.vue";
 
 export default {
   components: {
     ButtonNewForm,
-    ProposalCreateForm,
     MoneyField,
     SelectStatusButton,
   },
@@ -108,7 +102,6 @@ export default {
   },
   data() {
     return {
-      openProposalForm: false,
       localProposals: [...this.proposals],
       searchTerm: '',
     };
@@ -122,10 +115,19 @@ export default {
     },
   },
   methods: {
+    ...mapMutations(["openModal"]),
+    openCreateProposalModal() {
+      this.openModal({
+        component: "ProposalCreateForm",
+        props: { opportunityId: this.opportunityId },
+        listeners: {
+          "new-proposal-event": this.addProposalCreated,
+        },
+      });
+    },
     formatDateBr,
     getDeadlineClass,
     addProposalCreated(newProposal) {
-      this.openProposalForm = false;
       this.localProposals.push(newProposal);
       this.$emit('proposal-added', newProposal);
     },

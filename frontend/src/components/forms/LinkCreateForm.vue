@@ -1,84 +1,64 @@
 <template>
-  <div>
+  <ModalCard
+    title="Novo Link"
+    icon="fa-solid fa-link"
+    :compact="compact"
+    @close="closeModal"
+  >
     <AddMessage :messageStatus="messageStatus" :messageText="messageText"
     @update:messageStatus="messageStatus = $event" />
 
-    <div v-if="modelValue" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
-      <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <!-- Header -->
-        <div class="sticky top-0 bg-gradient-to-r from-blue-50 to-blue-25 border-b border-gray-200 px-8 py-6">
-          <div class="flex justify-between items-center">
-            <div class="flex items-center gap-3">
-              <font-awesome-icon icon="fa-solid fa-link" class="text-2xl text-primary" />
-              <h3 class="text-2xl font-bold text-gray-800">Novo Link</h3>
-            </div>
-            <button 
-              type="button" 
-              class="text-gray-400 hover:text-gray-600 transition-colors"
-              @click="closeModal" 
-              aria-label="Close"
-            >
-              <font-awesome-icon icon="fa-solid fa-times" class="text-2xl" />
-            </button>
-          </div>
-        </div>
-
-        <!-- Body -->
-        <div class="px-8 py-6">
-          <form @submit.prevent="submitForm">
-            <!-- Título -->
-            <div class="mb-6">
-              <TextInput 
-                label="Título" 
-                name="title" 
-                v-model="form.title" 
-                placeholder="Título do link" 
-              />
-            </div>
-
-            <!-- URL -->
-            <div class="mb-6">
-              <TextInput 
-                label="URL" 
-                name="url" 
-                v-model="form.url" 
-                placeholder="https://exemplo.com" 
-              />
-            </div>
-
-            <!-- Observações -->
-            <div class="mb-6">
-              <TextAreaInput 
-                label="Observações" 
-                name="observations" 
-                v-model="form.observations" 
-                placeholder="Observações opcionais" 
-                :rows="3" 
-              />
-            </div>
-
-            <!-- Footer com Ações -->
-            <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
-              <button 
-                type="button" 
-                class="px-6 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
-                @click="closeModal"
-              >
-                Fechar
-              </button>
-              <button 
-                type="submit" 
-                class="px-6 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors"
-              >
-                <font-awesome-icon icon="fa-solid fa-plus" class="me-2" />
-                Criar Link
-              </button>
-            </div>
-          </form>
-        </div>
+    <form id="linkCreateForm" @submit.prevent="submitForm">
+      <!-- Título -->
+      <div class="mb-6">
+        <TextInput
+          label="Título"
+          name="title"
+          v-model="form.title"
+          placeholder="Título do link"
+        />
       </div>
-    </div>
-  </div>
+
+      <!-- URL -->
+      <div class="mb-6">
+        <TextInput
+          label="URL"
+          name="url"
+          v-model="form.url"
+          placeholder="https://exemplo.com"
+        />
+      </div>
+
+      <!-- Observações -->
+      <div class="mb-6">
+        <TextAreaInput
+          label="Observações"
+          name="observations"
+          v-model="form.observations"
+          placeholder="Observações opcionais"
+          :rows="3"
+        />
+      </div>
+    </form>
+
+    <template #footer>
+      <button
+        type="button"
+        class="px-6 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg font-semibold hover:bg-base-200 transition-colors"
+        @click="closeModal"
+      >
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        form="linkCreateForm"
+        class="px-6 py-2 bg-primary hover:opacity-90 text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
+      >
+        <font-awesome-icon icon="fa-solid fa-plus" />
+        Criar Link
+      </button>
+    </template>
+  </ModalCard>
 </template>
 
 <script>
@@ -86,17 +66,20 @@ import { submitFormCreate } from "@/utils/requests/httpUtils";
 import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import TextInput from "./inputs/text/TextInput.vue";
 import TextAreaInput from "./inputs/textarea/TextAreaInput.vue";
+import ModalCard from "@/components/modals/ModalCard.vue";
 
 export default {
   name: "LinkCreateForm",
-  emits: ["new-link-event", "update:modelValue"],
+  emits: ["new-link-event", "close"],
   components: {
     AddMessage,
     TextInput,
     TextAreaInput,
+    ModalCard,
   },
   props: {
-    modelValue: {
+    // Passado automaticamente pelo App.vue quando há mais de um modal aberto ao mesmo tempo
+    compact: {
       type: Boolean,
       default: false,
     },
@@ -138,7 +121,7 @@ export default {
       this.form.task_id = this.taskId;
     },
     closeModal() {
-      this.$emit("update:modelValue", false);
+      this.$emit("close");
       this.clearForm();
       this.messageStatus = "";
       this.messageText = "";
@@ -177,7 +160,7 @@ export default {
       if (data) {
         this.messageStatus = "success";
         this.messageText = "Link criado com sucesso!";
-        this.$emit("update:modelValue", false);
+        this.$emit("close");
         this.clearForm();
         this.$emit("new-link-event", data);
       }

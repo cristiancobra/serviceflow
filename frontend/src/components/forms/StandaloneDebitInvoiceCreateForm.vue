@@ -1,42 +1,23 @@
 <template>
-  <div>
-    <!-- Modal -->
-    <div
-      v-if="modelValue"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style="background-color: rgba(0, 0, 0, 0.25)"
-    >
-      <div class="bg-white rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-        <!-- Header -->
-        <div class="flex items-center justify-between p-6 border-b border-gray-200">
-          <div class="flex items-center gap-3">
-            <font-awesome-icon icon="fa-solid fa-file-invoice-dollar" class="text-red-600 text-xl" />
-            <h2 class="text-xl font-semibold text-gray-900">Nova Conta a Pagar</h2>
-          </div>
-          <button
-            @click="closeModal"
-            class="text-gray-400 hover:text-gray-600 transition-colors"
-            aria-label="Fechar"
-          >
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
+  <ModalCard
+    title="Nova Conta a Pagar"
+    icon="fa-solid fa-file-invoice-dollar"
+    :compact="compact"
+    @close="closeModal"
+  >
         <!-- Form -->
-        <form @submit.prevent="submitForm" class="p-6 space-y-5">
+        <form id="standaloneDebitInvoiceCreateForm" @submit.prevent="submitForm" class="space-y-5">
 
           <!-- Nome da conta -->
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-1">
+            <label class="block text-sm font-semibold text-base-content mb-1">
               Nome da Conta <span class="text-red-500">*</span>
             </label>
             <input
               v-model="form.name"
               type="text"
               placeholder="Ex: Internet, Aluguel, Fornecedor X..."
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
+              class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
               required
             />
           </div>
@@ -44,10 +25,10 @@
           <!-- Categoria e Forma de Pagamento -->
           <div class="flex flex-col sm:flex-row gap-4">
             <div class="flex-1">
-              <label class="block text-sm font-semibold text-gray-700 mb-1">Categoria</label>
+              <label class="block text-sm font-semibold text-base-content mb-1">Categoria</label>
               <select
                 v-model="form.category"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
+                class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
               >
                 <option value="fixed_cost">Custo Fixo</option>
                 <option value="recurring">Recorrente</option>
@@ -57,10 +38,10 @@
               </select>
             </div>
             <div class="flex-1">
-              <label class="block text-sm font-semibold text-gray-700 mb-1">Forma de Pagamento</label>
+              <label class="block text-sm font-semibold text-base-content mb-1">Forma de Pagamento</label>
               <select
                 v-model="form.payment_method"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
+                class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
                 @change="handlePaymentMethodChange"
               >
                 <option value="pix">Pix</option>
@@ -75,9 +56,9 @@
 
           <!-- Departamento (Centro de Custo) -->
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-1">
+            <label class="block text-sm font-semibold text-base-content mb-1">
               Departamento
-              <span class="text-gray-400 font-normal text-xs ml-1">(centro de custo)</span>
+              <span class="text-base-content/50 font-normal text-xs ml-1">(centro de custo)</span>
             </label>
             <DepartmentsSelectInput
               name="department_id"
@@ -88,19 +69,19 @@
 
           <!-- Tipo de Fornecedor -->
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Fornecedor (opcional)</label>
+            <label class="block text-sm font-semibold text-base-content mb-2">Fornecedor (opcional)</label>
             <div class="flex gap-4 mb-3">
               <label class="flex items-center gap-2 cursor-pointer">
                 <input type="radio" v-model="supplierType" value="none" class="mr-1" />
-                <span class="text-gray-700 text-sm">Sem fornecedor</span>
+                <span class="text-base-content text-sm">Sem fornecedor</span>
               </label>
               <label class="flex items-center gap-2 cursor-pointer">
                 <input type="radio" v-model="supplierType" value="lead" class="mr-1" />
-                <span class="text-gray-700 text-sm">Pessoa</span>
+                <span class="text-base-content text-sm">Pessoa</span>
               </label>
               <label class="flex items-center gap-2 cursor-pointer">
                 <input type="radio" v-model="supplierType" value="company" class="mr-1" />
-                <span class="text-gray-700 text-sm">Empresa</span>
+                <span class="text-base-content text-sm">Empresa</span>
               </label>
             </div>
             <LeadsSelectInput
@@ -124,25 +105,25 @@
           <!-- Valor e Parcelas -->
           <div class="flex flex-col sm:flex-row gap-4">
             <div class="flex-1">
-              <label class="block text-sm font-semibold text-gray-700 mb-1">
+              <label class="block text-sm font-semibold text-base-content mb-1">
                 Valor Total <span class="text-red-500">*</span>
               </label>
               <div class="flex items-center gap-2">
-                <span class="text-gray-500 font-medium">R$</span>
+                <span class="text-base-content/60 font-medium">R$</span>
                 <money-input
                   name="total_amount"
                   :model-value="totalAmount"
                   @update:model-value="(value) => { totalAmount = value; updatePrices(); }"
-                  class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
+                  class="flex-1 px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
                 />
               </div>
             </div>
             <div class="flex-1">
-              <label class="block text-sm font-semibold text-gray-700 mb-1">Parcelas</label>
+              <label class="block text-sm font-semibold text-base-content mb-1">Parcelas</label>
               <select
                 v-model.number="installmentQuantity"
                 @change="initializePrices"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
+                class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
               >
                 <option v-for="n in 24" :key="n" :value="n">{{ n }}x</option>
               </select>
@@ -150,32 +131,32 @@
           </div>
 
           <!-- Parcelamento detalhado -->
-          <div v-if="installmentQuantity > 1" class="border-t border-gray-200 pt-4">
+          <div v-if="installmentQuantity > 1" class="border-t border-base-300 pt-4">
             <div class="flex items-center gap-2 mb-3">
               <div class="w-2 h-5 bg-red-500 rounded-full"></div>
-              <h4 class="text-sm font-bold text-gray-800 uppercase tracking-wide">Parcelamento</h4>
+              <h4 class="text-sm font-bold text-base-content uppercase tracking-wide">Parcelamento</h4>
             </div>
             <div class="space-y-2">
               <div
                 v-for="(price, index) in form.prices"
                 :key="index"
-                class="flex items-center gap-3 p-2 bg-gray-50 rounded-lg border border-gray-200"
+                class="flex items-center gap-3 p-2 bg-base-200 rounded-lg border border-base-300"
               >
                 <span class="inline-flex items-center justify-center w-6 h-6 bg-red-100 text-red-800 text-xs font-bold rounded-full flex-shrink-0">
                   {{ index + 1 }}
                 </span>
                 <div class="flex items-center gap-2 flex-1">
-                  <span class="text-gray-500 text-sm">R$</span>
+                  <span class="text-base-content/60 text-sm">R$</span>
                   <money-input
                     :name="`price-${index}`"
                     :model-value="form.prices[index]"
                     @update:model-value="(value) => { form.prices[index] = value; adjustPrices(index); }"
-                    class="flex-1 px-2 py-1 border border-gray-300 rounded focus:ring-1 focus:ring-red-500 text-sm"
+                    class="flex-1 px-2 py-1 border border-base-300 rounded focus:ring-1 focus:ring-red-500 text-sm"
                   />
                 </div>
               </div>
               <div class="flex justify-between text-sm pt-1 px-1">
-                <span class="text-gray-500">Total das parcelas:</span>
+                <span class="text-base-content/60">Total das parcelas:</span>
                 <span :class="Math.abs(totalPrices - totalAmount) > 0.01 ? 'text-red-600 font-bold' : 'text-green-600 font-semibold'">
                   R$ {{ parseFloat(totalPrices).toFixed(2) }}
                 </span>
@@ -185,45 +166,45 @@
 
           <!-- Data de Vencimento -->
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-1">
+            <label class="block text-sm font-semibold text-base-content mb-1">
               {{ installmentQuantity > 1 ? 'Data da 1ª Parcela' : 'Data de Vencimento' }}
               <span class="text-red-500">*</span>
             </label>
             <input
               v-model="form.date_due"
               type="date"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
+              class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
               required
             />
           </div>
 
           <!-- Observações -->
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Observações</label>
+            <label class="block text-sm font-semibold text-base-content mb-1">Observações</label>
             <textarea
               v-model="form.observations"
               rows="3"
               placeholder="Detalhes adicionais..."
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors resize-none"
+              class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors resize-none"
             ></textarea>
           </div>
 
           <!-- Gerar Tarefa Financeira -->
-          <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+          <div class="border border-base-300 rounded-lg p-4 bg-base-200">
             <label class="flex items-center gap-3 cursor-pointer">
               <input
                 type="checkbox"
                 v-model="form.generate_task"
-                class="w-4 h-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
+                class="w-4 h-4 rounded border-base-300 text-green-600 focus:ring-green-500"
               />
               <div>
-                <span class="text-sm font-semibold text-gray-800">Gerar tarefa financeira</span>
-                <p class="text-xs text-gray-500 mt-0.5">Cria uma tarefa "Pagar: {{ form.name || '...' }}" para o departamento selecionado</p>
+                <span class="text-sm font-semibold text-base-content">Gerar tarefa financeira</span>
+                <p class="text-xs text-base-content/60 mt-0.5">Cria uma tarefa "Pagar: {{ form.name || '...' }}" para o departamento selecionado</p>
               </div>
             </label>
 
             <div v-if="form.generate_task" class="mt-3">
-              <label class="block text-sm font-semibold text-gray-700 mb-1">Departamento Responsável</label>
+              <label class="block text-sm font-semibold text-base-content mb-1">Departamento Responsável</label>
               <DepartmentsSelectInput
                 name="task_department_id"
                 v-model="form.task_department_id"
@@ -237,28 +218,27 @@
             <p class="text-red-700 text-sm">{{ errorMessage }}</p>
           </div>
 
-          <!-- Actions -->
-          <div class="flex justify-end gap-3 pt-2 border-t border-gray-200">
-            <button
-              type="button"
-              @click="closeModal"
-              class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              :disabled="isSubmitting"
-              class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium text-sm disabled:opacity-50 flex items-center gap-2"
-            >
-              <font-awesome-icon v-if="isSubmitting" icon="fa-solid fa-spinner" class="animate-spin" />
-              {{ isSubmitting ? 'Salvando...' : 'Salvar' }}
-            </button>
-          </div>
         </form>
-      </div>
-    </div>
-  </div>
+
+    <template #footer>
+      <button
+        type="button"
+        class="px-6 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg font-semibold hover:bg-base-200 transition-colors"
+        @click="closeModal"
+      >
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        form="standaloneDebitInvoiceCreateForm"
+        :disabled="isSubmitting"
+        class="px-6 py-2 bg-primary hover:opacity-90 disabled:opacity-50 text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
+      >
+        <font-awesome-icon :icon="isSubmitting ? 'fa-solid fa-spinner' : 'fa-solid fa-plus'" :class="{ 'animate-spin': isSubmitting }" />
+        {{ isSubmitting ? 'Salvando...' : 'Criar Conta a Pagar' }}
+      </button>
+    </template>
+  </ModalCard>
 </template>
 
 <script>
@@ -269,18 +249,21 @@ import DepartmentsSelectInput from "./selects/DepartmentsSelectInput.vue";
 import { BACKEND_URL } from "@/config/apiConfig";
 import axios from "axios";
 import MoneyInput from "./inputs/money/MoneyInput.vue";
+import ModalCard from "@/components/modals/ModalCard.vue";
 
 export default {
   name: "StandaloneDebitInvoiceCreateForm",
-  emits: ["invoice-created", "update:modelValue"],
+  emits: ["invoice-created", "close"],
   components: {
     LeadsSelectInput,
     CompaniesSelectInput,
     DepartmentsSelectInput,
     MoneyInput,
+    ModalCard,
   },
   props: {
-    modelValue: {
+    // Passado automaticamente pelo App.vue quando há mais de um modal aberto ao mesmo tempo
+    compact: {
       type: Boolean,
       default: false,
     },
@@ -315,12 +298,6 @@ export default {
     },
   },
   watch: {
-    modelValue(newVal) {
-      if (newVal) {
-        this.resetForm();
-        this.loadFinanceiroDepartment();
-      }
-    },
     supplierType(newType) {
       if (newType !== "lead") this.form.lead_id = null;
       if (newType !== "company") this.form.company_id = null;
@@ -385,28 +362,8 @@ export default {
         // silently fail - user can select manually
       }
     },
-    resetForm() {
-      this.totalAmount = 0;
-      this.installmentQuantity = 1;
-      this.supplierType = "none";
-      this.errorMessage = "";
-      this.form = {
-        name: "",
-        category: "fixed_cost",
-        payment_method: "pix",
-        department_id: null,
-        lead_id: null,
-        company_id: null,
-        prices: [],
-        date_due: this.getTodayDate(),
-        observations: "",
-        type: "debit",
-        generate_task: true,
-        task_department_id: this.financeiroDepartmentId,
-      };
-    },
     closeModal() {
-      this.$emit("update:modelValue", false);
+      this.$emit("close");
     },
     async submitForm() {
       if (!this.form.name?.trim()) {
@@ -453,6 +410,9 @@ export default {
         this.isSubmitting = false;
       }
     },
+  },
+  mounted() {
+    this.loadFinanceiroDepartment();
   },
 };
 </script>

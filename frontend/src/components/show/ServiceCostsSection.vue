@@ -5,12 +5,23 @@
         <font-awesome-icon icon="fas fa-coins" class="icon" />
         <h2>Custos de propdução</h2>
       </div>
-      <div class="action-container">
-        <cost-create-form @new-cost-event="addCostCreated" />
-        <service-cost-create-form
-          @new-service-cost-event="addServiceCostCreated"
-          :serviceId="service.id"
-        />
+      <div class="action-container flex items-center gap-2">
+        <button
+          type="button"
+          title="Novo Custo"
+          class="flex items-center justify-center w-10 h-10 rounded-full bg-primary hover:opacity-90 text-white transition-all duration-200"
+          @click="openCreateCostModal"
+        >
+          <font-awesome-icon icon="fa-solid fa-plus" class="text-lg" />
+        </button>
+        <button
+          type="button"
+          title="Adicionar Custos"
+          class="flex items-center justify-center w-10 h-10 rounded-full bg-primary hover:opacity-90 text-white transition-all duration-200"
+          @click="openAddServiceCostsModal"
+        >
+          <font-awesome-icon icon="fa-solid fa-coins" class="text-lg" />
+        </button>
       </div>
     </div>
     <div
@@ -61,11 +72,10 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import { destroyRelationship } from "@/utils/requests/httpUtils";
-import CostCreateForm from "@/components/forms/CostCreateForm.vue";
 import IntegerEditableField from "@/components/fields/number/IntegerEditableField.vue";
 import MoneyField from "@/components/fields/number/MoneyField.vue";
-import ServiceCostCreateForm from "../forms/ServiceCostCreateForm.vue";
 
 export default {
   props: {
@@ -81,13 +91,31 @@ export default {
     };
   },
   components: {
-    CostCreateForm,
     MoneyField,
-    ServiceCostCreateForm,
     IntegerEditableField,
   },
   methods: {
+    ...mapMutations(["openModal"]),
     destroyRelationship,
+    openCreateCostModal() {
+      this.openModal({
+        component: "CostCreateForm",
+        listeners: {
+          // O custo é criado no catálogo geral; precisa ser associado a este
+          // serviço depois, em "Adicionar Custos" (não entra direto em localCosts).
+          "new-cost-event": () => {},
+        },
+      });
+    },
+    openAddServiceCostsModal() {
+      this.openModal({
+        component: "ServiceCostCreateForm",
+        props: { serviceId: this.service.id },
+        listeners: {
+          "new-service-cost-event": this.addServiceCostCreated,
+        },
+      });
+    },
     addServiceCostCreated({ service }) {
         console.log("addServiceCostCreated", service);
         service.costs.forEach((newCost) => {

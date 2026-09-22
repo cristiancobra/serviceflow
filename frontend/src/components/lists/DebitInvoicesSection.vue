@@ -9,17 +9,17 @@
         <h2>Faturas de Débito</h2>
       </div>
       <div class="action-container flex gap-2">
-        <button-new-form 
+        <button-new-form
           target="debit-invoice"
           title="Nova fatura de débito"
-          @open-modal="showDebitModal = true"
+          @open-modal="openDebitInvoiceModal"
         />
-        <button-new-form 
+        <button-new-form
           v-if="canCreateOperationalCostInvoice"
           target="operational-cost-invoice"
           extra-icon="fa-solid fa-briefcase"
           title="Gerar fatura de custo operacional"
-          @open-modal="showOperationalModal = true"
+          @open-modal="openOperationalCostInvoiceModal"
         />
         <div 
           v-else-if="proposal?.total_operational_cost > 0"
@@ -258,35 +258,15 @@
       </div>
     </div>
 
-    <debit-invoice-create-form
-      v-model="showDebitModal"
-      @invoice-created="addInvoiceCreated"
-      :proposal="proposal"
-    />
-    <operational-cost-invoice-create-form
-      v-model="showOperationalModal"
-      @new-invoice-event="addInvoiceCreated"
-      :proposal="proposal"
-    />
-
-    <transaction-create-form
-      v-if="showTransactionModal"
-      :modelValue="showTransactionModal"
-      :invoice="selectedInvoice"
-      @update:modelValue="showTransactionModal = $event"
-      @new-transaction-event="handleNewTransaction"
-    />
   </div>
 </template>
-  
+
   <script>
+import { mapMutations } from "vuex";
 import { updateField, destroy } from "@/utils/requests/httpUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
-import DebitInvoiceCreateForm from "@/components/forms/DebitInvoiceCreateForm.vue";
-import OperationalCostInvoiceCreateForm from "@/components/forms/OperationalCostInvoiceCreateForm.vue";
 import ButtonNewForm from "../buttons/ButtonNewForm.vue";
 import MoneyField from "../fields/number/MoneyField.vue";
-import TransactionCreateForm from "@/components/forms/TransactionCreateForm.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
 
@@ -297,20 +277,9 @@ export default {
       required: false,
     },
   },
-  data() {
-    return {
-      showTransactionModal: false,
-      selectedInvoice: null,
-      showDebitModal: false,
-      showOperationalModal: false,
-    };
-  },
   components: {
-    DebitInvoiceCreateForm,
-    OperationalCostInvoiceCreateForm,
     ButtonNewForm,
     MoneyField,
-    TransactionCreateForm,
     DateTimeEditableInput,
     DeleteIconButton,
   },
@@ -364,9 +333,28 @@ export default {
     },
   },
   methods: {
+    ...mapMutations(["openModal"]),
     formatDateBr,
     updateField,
     destroy,
+    openDebitInvoiceModal() {
+      this.openModal({
+        component: "DebitInvoiceCreateForm",
+        props: { proposal: this.proposal },
+        listeners: {
+          "invoice-created": this.addInvoiceCreated,
+        },
+      });
+    },
+    openOperationalCostInvoiceModal() {
+      this.openModal({
+        component: "OperationalCostInvoiceCreateForm",
+        props: { proposal: this.proposal },
+        listeners: {
+          "new-invoice-event": this.addInvoiceCreated,
+        },
+      });
+    },
     addInvoiceCreated() {
       // Emite evento para o pai recarregar a proposta
       this.$emit("reload-proposal");
@@ -388,8 +376,13 @@ export default {
       return invoice.price - this.getInvoiceTotalPaid(invoice);
     },
     openTransactionModal(invoice) {
-      this.selectedInvoice = invoice;
-      this.showTransactionModal = true;
+      this.openModal({
+        component: "TransactionCreateForm",
+        props: { invoice },
+        listeners: {
+          "new-transaction-event": this.handleNewTransaction,
+        },
+      });
     },
     handleNewTransaction(newTransaction) {
       // Encontrar a invoice correspondente e adicionar a transação
