@@ -15,6 +15,7 @@ import StandaloneDebitInvoiceCreateForm from "@/components/forms/StandaloneDebit
 import ProposalCreateForm from "@/components/forms/ProposalCreateForm.vue";
 import ServiceCreateForm from "@/components/forms/ServiceCreateForm.vue";
 import LinkCreateForm from "@/components/forms/LinkCreateForm.vue";
+import RecurringExpenseInvoicesModal from "@/components/modals/RecurringExpenseInvoicesModal.vue";
 
 // Registro central dos modais que podem ser abertos via store (openModal mutation).
 // Para adicionar um novo modal empilhável, basta importar o componente e listá-lo aqui.
@@ -36,4 +37,5 @@ export default {
   ProposalCreateForm,
   ServiceCreateForm,
   LinkCreateForm,
+  RecurringExpenseInvoicesModal,
 };

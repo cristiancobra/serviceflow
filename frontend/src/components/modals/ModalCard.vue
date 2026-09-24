@@ -1,7 +1,7 @@
 <template>
   <div
     class="modal-card bg-base-100 rounded-2xl shadow-2xl w-full max-h-[90vh] overflow-y-auto"
-    :class="compact ? 'max-w-md' : sizeClass"
+    :class="compact ? compactSize : sizeClass"
   >
     <div class="modal-card-header">
       <div class="modal-card-header-title">
@@ -56,6 +56,12 @@ export default {
     compact: {
       type: Boolean,
       default: false,
+    },
+    // Largura usada quando compact é true. Modais com conteúdo mais largo (tabelas, listas)
+    // podem passar algo maior que o padrão max-w-md.
+    compactSize: {
+      type: String,
+      default: "max-w-md",
     },
   },
   emits: ["close"],

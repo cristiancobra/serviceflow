@@ -199,114 +199,6 @@
       </div>
     </div>
 
-    <!-- Modal de Faturas Relacionadas -->
-    <div v-if="showInvoicesModal" class="modal-overlay" @click="closeInvoicesModal">
-      <div class="modal-content modal-large" @click.stop>
-        <div class="modal-header">
-          <h2>Faturas de {{ recurringExpenseForInvoices?.name }}</h2>
-          <button @click="closeInvoicesModal" class="btn-close">
-            <font-awesome-icon icon="fa-solid fa-times" />
-          </button>
-        </div>
-
-        <div class="modal-body">
-          <div v-if="isLoadingInvoices" class="empty-state">
-            <p>Carregando faturas...</p>
-          </div>
-
-          <div v-else-if="invoicesForModal.length === 0" class="empty-state">
-            <font-awesome-icon icon="fa-solid fa-receipt" class="empty-icon" />
-            <p>Nenhuma fatura gerada ainda</p>
-          </div>
-
-          <div v-else class="invoices-table-wrapper">
-            <table class="invoices-table">
-              <thead>
-                <tr>
-                  <th>Vencimento</th>
-                  <th>Valor</th>
-                  <th>Pago</th>
-                  <th>Saldo</th>
-                  <th>Status</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <template v-for="invoice in invoicesForModal" :key="invoice.id">
-                  <tr>
-                    <td>
-                      <date-editable-input
-                        name="date_due"
-                        :modelValue="invoice.date_due"
-                        @save="updateModalInvoice('date_due', invoice.id, $event)"
-                        class-text="text-sm font-semibold"
-                      />
-                    </td>
-                    <td>
-                      <money-editable-field
-                        name="price"
-                        :modelValue="invoice.price"
-                        @save="updateModalInvoice('price', invoice.id, $event)"
-                      />
-                    </td>
-                    <td>{{ formatCurrency(invoice.total_paid) }}</td>
-                    <td>{{ formatCurrency(invoice.balance) }}</td>
-                    <td>
-                      <span class="invoice-status" :class="`invoice-status-${invoice.status}`">
-                        {{ invoiceStatusLabel(invoice.status) }}
-                      </span>
-                    </td>
-                    <td>
-                      <div class="action-buttons">
-                        <button
-                          v-if="invoice.transactions && invoice.transactions.length > 0"
-                          @click="toggleInvoiceTransactions(invoice.id)"
-                          class="btn-action btn-view"
-                          title="Ver transações"
-                        >
-                          <font-awesome-icon icon="fa-solid fa-coins" />
-                        </button>
-                        <button
-                          v-if="invoice.balance > 0"
-                          @click="openTransactionModal(invoice)"
-                          class="btn-action btn-add-payment"
-                          title="Adicionar Pagamento"
-                        >
-                          <font-awesome-icon icon="fa-solid fa-plus" />
-                        </button>
-                        <router-link :to="{ name: 'invoiceShow', params: { id: invoice.id } }" class="btn-action btn-view" title="Abrir fatura">
-                          <font-awesome-icon icon="fa-solid fa-eye" />
-                        </router-link>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr v-if="isInvoiceExpanded(invoice.id)">
-                    <td colspan="6" class="transactions-cell">
-                      <transactions-list-section
-                        :transactions="invoice.transactions"
-                        :is-debit="true"
-                        @update-transaction="
-                          (fieldName, transactionId, editedValue) =>
-                            updateModalTransaction(fieldName, transactionId, editedValue, invoice.id)
-                        "
-                        @delete-transaction="(transactionId) => deleteModalTransaction(transactionId, invoice.id)"
-                      />
-                    </td>
-                  </tr>
-                </template>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button @click="closeInvoicesModal" class="btn-secondary">
-            Fechar
-          </button>
-        </div>
-      </div>
-    </div>
-
     <!-- Modal de Confirmação de Exclusão -->
     <div v-if="showDeleteModal" class="modal-overlay" @click="closeDeleteModal">
       <div class="modal-content modal-small" @click.stop>
@@ -337,20 +229,14 @@
 
 <script>
 import { mapMutations } from "vuex";
-import { index, destroy, post, show, updateField } from "@/utils/requests/httpUtils";
+import { index, destroy, post } from "@/utils/requests/httpUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import RecurringExpenseForm from "@/components/forms/RecurringExpenseForm.vue";
-import DateEditableInput from "@/components/fields/date/DateEditableInput.vue";
-import MoneyEditableField from "@/components/fields/number/MoneyEditableField.vue";
-import TransactionsListSection from "@/components/show/TransactionsListSection.vue";
 
 export default {
   name: "RecurringExpensesList",
   components: {
     RecurringExpenseForm,
-    DateEditableInput,
-    MoneyEditableField,
-    TransactionsListSection,
   },
   data() {
     return {
@@ -362,16 +248,11 @@ export default {
       showModal: false,
       showDeleteModal: false,
       showBackfillModal: false,
-      showInvoicesModal: false,
       isEditing: false,
       isBackfilling: false,
-      isLoadingInvoices: false,
       selectedRecurringExpense: null,
       recurringExpenseToDelete: null,
       recurringExpenseToBackfill: null,
-      recurringExpenseForInvoices: null,
-      invoicesForModal: [],
-      expandedInvoiceIds: [],
       backfillEndDate: "",
       backfillError: "",
     };
@@ -480,129 +361,11 @@ export default {
 
     formatDateBr,
 
-    formatCurrency(value) {
-      return `R$ ${Number(value || 0).toFixed(2).replace(".", ",")}`;
-    },
-
-    invoiceStatusLabel(status) {
-      const labels = {
-        pending: "Pendente",
-        partial: "Parcial",
-        paid: "Pago",
-        overdue: "Vencido",
-        cancelled: "Cancelado",
-      };
-      return labels[status] || status;
-    },
-
-    async openInvoicesModal(recurringExpense) {
-      this.recurringExpenseForInvoices = recurringExpense;
-      this.showInvoicesModal = true;
-      this.isLoadingInvoices = true;
-      this.invoicesForModal = [];
-      this.expandedInvoiceIds = [];
-
-      try {
-        const data = await show("recurring_expenses", recurringExpense.id);
-        this.invoicesForModal = data.invoices || [];
-      } catch (error) {
-        console.error("Erro ao carregar faturas:", error);
-        this.$emit("error", { message: "Erro ao carregar faturas da despesa recorrente" });
-      } finally {
-        this.isLoadingInvoices = false;
-      }
-    },
-
-    closeInvoicesModal() {
-      this.showInvoicesModal = false;
-      this.recurringExpenseForInvoices = null;
-      this.invoicesForModal = [];
-      this.expandedInvoiceIds = [];
-    },
-
-    async updateModalInvoice(fieldName, invoiceId, editedValue) {
-      try {
-        const updatedInvoice = await updateField("invoices", invoiceId, fieldName, editedValue);
-        const index = this.invoicesForModal.findIndex((invoice) => invoice.id === invoiceId);
-        if (index !== -1) {
-          this.invoicesForModal[index] = updatedInvoice;
-        }
-      } catch (error) {
-        console.error("Erro ao atualizar fatura:", error);
-        this.$emit("error", { message: "Erro ao atualizar fatura" });
-      }
-    },
-
-    toggleInvoiceTransactions(invoiceId) {
-      const index = this.expandedInvoiceIds.indexOf(invoiceId);
-      if (index !== -1) {
-        this.expandedInvoiceIds.splice(index, 1);
-      } else {
-        this.expandedInvoiceIds.push(invoiceId);
-      }
-    },
-
-    isInvoiceExpanded(invoiceId) {
-      return this.expandedInvoiceIds.includes(invoiceId);
-    },
-
-    async updateModalTransaction(fieldName, transactionId, editedValue, invoiceId) {
-      try {
-        const updatedTransaction = await updateField("transactions", transactionId, fieldName, editedValue);
-        const invoice = this.invoicesForModal.find((inv) => inv.id === invoiceId);
-        if (invoice && invoice.transactions) {
-          const index = invoice.transactions.findIndex((t) => t.id === transactionId);
-          if (index !== -1) {
-            invoice.transactions[index] = updatedTransaction;
-          }
-          invoice.total_paid = invoice.transactions.reduce((sum, t) => sum + Number(t.amount || 0), 0);
-          invoice.balance = invoice.price - invoice.total_paid;
-        }
-      } catch (error) {
-        console.error("Erro ao atualizar transação:", error);
-        this.$emit("error", { message: "Erro ao atualizar transação" });
-      }
-    },
-
-    async deleteModalTransaction(transactionId, invoiceId) {
-      try {
-        await destroy("transactions", transactionId);
-        const invoice = this.invoicesForModal.find((inv) => inv.id === invoiceId);
-        if (invoice && invoice.transactions) {
-          invoice.transactions = invoice.transactions.filter((t) => t.id !== transactionId);
-          invoice.total_paid = invoice.transactions.reduce((sum, t) => sum + Number(t.amount || 0), 0);
-          invoice.balance = invoice.price - invoice.total_paid;
-        }
-      } catch (error) {
-        console.error("Erro ao excluir transação:", error);
-        this.$emit("error", { message: "Erro ao excluir transação" });
-      }
-    },
-
-    openTransactionModal(invoice) {
+    openInvoicesModal(recurringExpense) {
       this.openModal({
-        component: "TransactionCreateForm",
-        props: { invoice },
-        listeners: {
-          "new-transaction-event": this.handleNewTransaction,
-        },
+        component: "RecurringExpenseInvoicesModal",
+        props: { recurringExpense },
       });
-    },
-
-    handleNewTransaction(newTransaction) {
-      const invoice = this.invoicesForModal.find((inv) => inv.id === newTransaction.invoice_id);
-      if (invoice) {
-        if (!invoice.transactions) {
-          invoice.transactions = [];
-        }
-        invoice.transactions.push(newTransaction);
-        invoice.total_paid = invoice.transactions.reduce((sum, t) => sum + Number(t.amount || 0), 0);
-        invoice.balance = invoice.price - invoice.total_paid;
-
-        if (!this.expandedInvoiceIds.includes(invoice.id)) {
-          this.expandedInvoiceIds.push(invoice.id);
-        }
-      }
     },
 
     needsBackfill(recurringExpense) {
@@ -779,66 +542,6 @@ export default {
   background-color: #bfdbfe;
 }
 
-.invoices-table-wrapper {
-  overflow-x: auto;
-}
-
-.invoices-table .action-buttons {
-  justify-content: flex-end;
-}
-
-.invoices-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.invoices-table th,
-.invoices-table td {
-  padding: 0.75rem;
-  text-align: left;
-  border-bottom: 1px solid #e5e7eb;
-  font-size: 0.875rem;
-}
-
-.invoices-table th {
-  background-color: #f9fafb;
-  font-weight: 600;
-  color: #374151;
-}
-
-.invoice-status {
-  padding: 0.2rem 0.6rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.invoice-status-pending {
-  background-color: #fef3c7;
-  color: #92400e;
-}
-
-.invoice-status-partial {
-  background-color: #dbeafe;
-  color: #1e40af;
-}
-
-.invoice-status-paid {
-  background-color: #dcfce7;
-  color: #166534;
-}
-
-.invoice-status-overdue {
-  background-color: #fecaca;
-  color: #991b1b;
-}
-
-.invoice-status-cancelled {
-  background-color: #e5e7eb;
-  color: #374151;
-}
-
 .btn-backfill {
   background-color: #dbeafe;
   color: #1e40af;
@@ -846,15 +549,6 @@ export default {
 
 .btn-backfill:hover {
   background-color: #bfdbfe;
-}
-
-.btn-add-payment {
-  background-color: #dcfce7;
-  color: #166534;
-}
-
-.btn-add-payment:hover {
-  background-color: #bbf7d0;
 }
 
 .btn-edit {
@@ -916,11 +610,6 @@ export default {
 
 .modal-small {
   max-width: 500px;
-}
-
-.modal-large {
-  max-width: 1000px;
-  max-height: 98vh;
 }
 
 .modal-header {
