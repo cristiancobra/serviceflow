@@ -39,6 +39,15 @@ class CreditCardCharge extends Model
         return $this->belongsTo(CreditCardInvoice::class);
     }
 
+    /**
+     * Transaction que gerou esta compra ao pagar uma invoice com o método
+     * "cartão de crédito". Nula para compras lançadas diretamente no cartão.
+     */
+    public function transaction()
+    {
+        return $this->hasOne(Transaction::class);
+    }
+
     protected static function booted()
     {
         static::created(function ($charge) {

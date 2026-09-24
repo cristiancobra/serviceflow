@@ -64,6 +64,9 @@ class CreditCardChargeController extends Controller
 
         $creditCardCharge->delete();
 
+        // Se essa compra veio do pagamento de uma invoice no cartão, desfaz o pagamento também
+        $creditCardCharge->transaction?->delete();
+
         return response()->json([
             'message' => 'Compra excluída com sucesso.'
         ]);

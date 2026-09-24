@@ -42,7 +42,28 @@
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <div>
+                <div v-if="form.method === 'credit_card'">
+                  <label
+                    for="credit_card_id"
+                    class="block text-sm font-semibold text-base-content mb-2"
+                    >Cartão de Crédito</label
+                  >
+                  <select
+                    id="credit_card_id"
+                    v-model="form.credit_card_id"
+                    class="w-full px-3 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ease-in-out hover:border-gray-400"
+                  >
+                    <option
+                      v-for="card in creditCards"
+                      :key="card.id"
+                      :value="card.id"
+                      class="text-base-content"
+                    >
+                      {{ card.name }} - final {{ card.last_digits }}
+                    </option>
+                  </select>
+                </div>
+                <div v-else>
                   <label
                     for="bank_account_id"
                     class="block text-sm font-semibold text-base-content mb-2"
@@ -179,6 +200,7 @@ export default {
       form: {
         invoice_id: this.invoice?.id || null,
         bank_account_id: null,
+        credit_card_id: null,
         amount: this.invoice?.balance || 0,
         transaction_date: null,
         type: this.invoice?.type === 'debit' ? 'debit' : 'credit',
@@ -187,6 +209,7 @@ export default {
       },
       errorMessage: null,
       bankAccounts: [],
+      creditCards: [],
     };
   },
   computed: {
@@ -214,6 +237,16 @@ export default {
       deep: true,
       immediate: true,
     },
+    "form.method"(newMethod) {
+      if (newMethod === "credit_card") {
+        this.form.bank_account_id = null;
+        if (this.creditCards.length > 0 && !this.form.credit_card_id) {
+          this.form.credit_card_id = this.creditCards[0].id;
+        }
+      } else if (this.bankAccounts.length > 0 && !this.form.bank_account_id) {
+        this.form.bank_account_id = this.bankAccounts[0].id;
+      }
+    },
   },
   methods: {
     submitFormCreate,
@@ -222,12 +255,23 @@ export default {
       try {
         this.bankAccounts = await this.index("bank_accounts");
         // Seleciona automaticamente a primeira conta se não houver uma já selecionada
-        if (this.bankAccounts.length > 0 && !this.form.bank_account_id) {
+        if (this.bankAccounts.length > 0 && !this.form.bank_account_id && this.form.method !== "credit_card") {
           this.form.bank_account_id = this.bankAccounts[0].id;
         }
       } catch (error) {
         console.error("Erro ao carregar contas bancárias:", error);
         this.bankAccounts = [];
+      }
+    },
+    async getCreditCards() {
+      try {
+        this.creditCards = await this.index("credit_cards", { is_active: 1 });
+        if (this.creditCards.length > 0 && !this.form.credit_card_id && this.form.method === "credit_card") {
+          this.form.credit_card_id = this.creditCards[0].id;
+        }
+      } catch (error) {
+        console.error("Erro ao carregar cartões de crédito:", error);
+        this.creditCards = [];
       }
     },
     closeModal() {
@@ -261,6 +305,7 @@ export default {
   },
   mounted() {
     this.getBankAccounts();
+    this.getCreditCards();
   },
 };
 </script>

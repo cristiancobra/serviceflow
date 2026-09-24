@@ -31,6 +31,9 @@ class TransactionRequest extends FormRequest
             'transaction_date' => 'sometimes|required|date',
             'type' => 'sometimes|required|string|in:credit,debit',
             'method' => 'sometimes|required|string|in:cash,bank_transfer,pix,credit_card,debit_card,check',
+            // Cartão usado para lançar a compra quando method = credit_card (não é
+            // persistido na transaction, só usado para criar o CreditCardCharge).
+            'credit_card_id' => 'nullable|required_if:method,credit_card|exists:credit_cards,id',
         ];
     }
 
@@ -71,6 +74,8 @@ class TransactionRequest extends FormRequest
             'type.in' => 'O tipo de transação deve ser crédito ou débito.',
             'method.required' => 'O método de pagamento é obrigatório.',
             'method.in' => 'O método de pagamento selecionado é inválido.',
+            'credit_card_id.required_if' => 'Selecione o cartão de crédito utilizado.',
+            'credit_card_id.exists' => 'O cartão selecionado não existe.',
         ];
     }
 }

@@ -14,6 +14,7 @@ class Transaction extends Model
     protected $fillable = [
         'invoice_id',
         'credit_card_invoice_id',
+        'credit_card_charge_id',
         'bank_account_id',
         'amount',
         'transaction_date',
@@ -30,6 +31,18 @@ class Transaction extends Model
     public function creditCardInvoice()
     {
         return $this->belongsTo(CreditCardInvoice::class);
+    }
+
+    /**
+     * Compra lançada no cartão de crédito quando este pagamento (de uma invoice
+     * qualquer) foi feito com o método "cartão de crédito". Não confundir com
+     * creditCardInvoice(): aqui a transaction paga uma invoice normal e a compra
+     * no cartão é só um efeito colateral; lá a transaction paga a própria fatura
+     * do cartão.
+     */
+    public function creditCardCharge()
+    {
+        return $this->belongsTo(CreditCardCharge::class);
     }
 
     public function bankAccount()
