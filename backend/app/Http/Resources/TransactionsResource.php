@@ -31,7 +31,7 @@ class TransactionsResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'invoice' => new InvoicesResource($this->whenLoaded('invoice')),
-            'bank_account' => $this->when($this->relationLoaded('bankAccount'), function () {
+            'bank_account' => $this->when($this->relationLoaded('bankAccount') && $this->bankAccount, function () {
                 return [
                     'id' => $this->bankAccount->id,
                     'name' => $this->bankAccount->account_name ?? 'N/A',
