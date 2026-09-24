@@ -193,6 +193,37 @@ export default {
       return this.expandedInvoiceIds.includes(invoiceId);
     },
 
+    // Espelha Invoice::calculateStatus() do backend, para os casos em que a
+    // resposta da API não devolve a fatura atualizada (ex: exclusão de transação).
+    recalcInvoiceStatus(invoice) {
+      if (invoice.status === "cancelled") return;
+
+      const totalPaid = Number(invoice.total_paid || 0);
+      const price = Number(invoice.price || 0);
+
+      if (price > 0 && totalPaid >= price) {
+        invoice.status = "paid";
+        return;
+      }
+
+      if (invoice.date_due && new Date() > new Date(`${invoice.date_due}T00:00:00`)) {
+        invoice.status = "overdue";
+        return;
+      }
+
+      invoice.status = totalPaid > 0 ? "partial" : "pending";
+    },
+
+    applyInvoiceUpdate(invoice, updatedInvoice) {
+      if (!updatedInvoice) {
+        this.recalcInvoiceStatus(invoice);
+        return;
+      }
+      invoice.total_paid = updatedInvoice.total_paid;
+      invoice.balance = updatedInvoice.balance;
+      invoice.status = updatedInvoice.status;
+    },
+
     async updateModalTransaction(fieldName, transactionId, editedValue, invoiceId) {
       try {
         const updatedTransaction = await updateField("transactions", transactionId, fieldName, editedValue);
@@ -202,8 +233,7 @@ export default {
           if (index !== -1) {
             invoice.transactions[index] = updatedTransaction;
           }
-          invoice.total_paid = invoice.transactions.reduce((sum, t) => sum + Number(t.amount || 0), 0);
-          invoice.balance = invoice.price - invoice.total_paid;
+          this.applyInvoiceUpdate(invoice, updatedTransaction.invoice);
         }
       } catch (error) {
         console.error("Erro ao atualizar transação:", error);
@@ -218,6 +248,7 @@ export default {
           invoice.transactions = invoice.transactions.filter((t) => t.id !== transactionId);
           invoice.total_paid = invoice.transactions.reduce((sum, t) => sum + Number(t.amount || 0), 0);
           invoice.balance = invoice.price - invoice.total_paid;
+          this.recalcInvoiceStatus(invoice);
         }
       } catch (error) {
         console.error("Erro ao excluir transação:", error);
@@ -241,8 +272,7 @@ export default {
           invoice.transactions = [];
         }
         invoice.transactions.push(newTransaction);
-        invoice.total_paid = invoice.transactions.reduce((sum, t) => sum + Number(t.amount || 0), 0);
-        invoice.balance = invoice.price - invoice.total_paid;
+        this.applyInvoiceUpdate(invoice, newTransaction.invoice);
 
         if (!this.expandedInvoiceIds.includes(invoice.id)) {
           this.expandedInvoiceIds.push(invoice.id);

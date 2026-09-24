@@ -35,7 +35,9 @@ class InvoicesResource extends JsonResource
             'price' => $this->price,
             'total_paid' => $this->total_paid,
             'balance' => $this->balance,
-            'status' => $this->status,
+            // Calculado em tempo real (não confia na coluna 'status', que só é
+            // persistida quando algo dispara updateStatus() explicitamente).
+            'status' => $this->calculateStatus(),
             'type' => $this->type,
             'installment_number' => $this->installment_number,
             'installment_quantity' => $this->installment_quantity,

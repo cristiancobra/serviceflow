@@ -116,17 +116,27 @@ class Invoice extends Model
      */
     public function calculateStatus()
     {
+        // Cancelada é um estado definido manualmente, não recalculado por pagamento/data
+        if ($this->status === self::STATUS_CANCELLED) {
+            return self::STATUS_CANCELLED;
+        }
+
         $totalPaid = $this->total_paid ?? 0;
         $price = $this->price ?? 0;
 
         // Se está totalmente pago
-        if ($totalPaid >= $price) {
+        if ($price > 0 && $totalPaid >= $price) {
             return self::STATUS_PAID;
         }
 
-        // Se está vencida e não tem pagamento
+        // Se está vencida (tem ou não pagamento parcial)
         if (now()->greaterThan($this->date_due)) {
             return self::STATUS_OVERDUE;
+        }
+
+        // Pagamento parcial dentro do prazo
+        if ($totalPaid > 0) {
+            return self::STATUS_PARTIAL;
         }
 
         // Caso padrão: pendente
