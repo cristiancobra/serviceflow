@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\ProposalController;
 use App\Http\Controllers\Api\RecurringExpenseController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\TaskController;
+use App\Http\Controllers\Api\PaymentBatchController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\UploadController;
 use App\Http\Controllers\Api\UserController;
@@ -268,4 +269,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	Route::apiResource('transactions', TransactionController::class)
 		->names('transactions');
+
+	Route::apiResource('payment_batches', PaymentBatchController::class)
+		->only(['store', 'show', 'destroy'])
+		->names('payment_batches');
 });

@@ -27,7 +27,8 @@ class TransactionController extends Controller
             'invoice.proposal.opportunity.lead',
             'invoice.company',
             'invoice.lead',
-            'bankAccount'
+            'bankAccount',
+            'paymentBatch'
         ])
             ->orderBy('transaction_date', 'desc')
             ->paginate(500);

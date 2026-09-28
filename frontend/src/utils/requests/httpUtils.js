@@ -221,6 +221,7 @@ export const validateModel = (model) => {
     "proposals",
     "recurring_expenses",
     "opportunities",
+    "payment_batches",
     "services",
     "tasks",
     "transactions",

@@ -99,8 +99,32 @@
       </div>
 
       <!-- Invoice List grouped by month -->
-      <AccountsPayableList v-if="!isLoading" :invoices="filteredInvoices" />
+      <AccountsPayableList
+        v-if="!isLoading"
+        :invoices="filteredInvoices"
+        :selected-ids="selectedIds"
+        @toggle-select="toggleSelect" />
     </section>
+
+    <!-- Barra de pagamento em lote -->
+    <div v-if="selectedInvoices.length > 0"
+      class="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-4 px-5 py-3 rounded-xl shadow-2xl bg-gray-900 text-white">
+      <span class="text-sm">
+        <strong>{{ selectedInvoices.length }}</strong>
+        {{ selectedInvoices.length === 1 ? 'conta selecionada' : 'contas selecionadas' }}
+        • <strong>{{ formatCurrency(selectedTotal) }}</strong>
+      </span>
+      <button @click="selectedIds = []"
+        class="px-3 py-1.5 rounded-lg text-sm font-semibold text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">
+        Limpar
+      </button>
+      <button @click="openBatchPaymentModal" :disabled="selectedInvoices.length < 2"
+        :title="selectedInvoices.length < 2 ? 'Selecione pelo menos duas contas' : ''"
+        class="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-semibold bg-red-600 hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+        <font-awesome-icon icon="fa-solid fa-layer-group" />
+        Pagar em lote
+      </button>
+    </div>
   </div>
 </template>
 
@@ -123,9 +147,17 @@ export default {
       activeFilter: "all",
       activeDepartment: null,
       searchTerm: "",
+      // Invoices marcadas para pagar juntas em uma única movimentação
+      selectedIds: [],
     };
   },
   computed: {
+    selectedInvoices() {
+      return this.invoices.filter((i) => this.selectedIds.includes(i.id));
+    },
+    selectedTotal() {
+      return this.selectedInvoices.reduce((s, i) => s + (Number(i.balance) || 0), 0);
+    },
     filterOptions() {
       return [
         {
@@ -250,6 +282,27 @@ export default {
           "invoice-created": this.handleInvoiceCreated,
         },
       });
+    },
+    toggleSelect(invoice) {
+      const index = this.selectedIds.indexOf(invoice.id);
+      if (index === -1) {
+        this.selectedIds.push(invoice.id);
+      } else {
+        this.selectedIds.splice(index, 1);
+      }
+    },
+    openBatchPaymentModal() {
+      this.openModal({
+        component: "BatchPaymentForm",
+        props: { invoices: this.selectedInvoices },
+        listeners: {
+          "batch-paid": this.handleBatchPaid,
+        },
+      });
+    },
+    handleBatchPaid() {
+      this.selectedIds = [];
+      this.fetchInvoices();
     },
     async fetchInvoices() {
       this.isLoading = true;

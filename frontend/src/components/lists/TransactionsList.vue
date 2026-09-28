@@ -57,7 +57,7 @@
           <div class="flex items-center gap-3 bg-white pe-6 pb-1 pt-10">
             <span class="font-bold text-primary text-lg whitespace-nowrap">{{ monthGroup.monthLabel }}</span>
             <span class="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-              {{ monthGroup.transactions.length }} {{ monthGroup.transactions.length === 1 ? 'movimentação' : 'movimentações' }}
+              {{ monthGroup.rows.filter(r => !r.batchId).length }} {{ monthGroup.rows.filter(r => !r.batchId).length === 1 ? 'movimentação' : 'movimentações' }}
             </span>
           </div>
           
@@ -112,15 +112,81 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-100">
+                <template v-for="row in monthGroup.rows" :key="row.key">
+                <!-- Pagamento em lote: uma linha só, como no extrato -->
                 <tr
-                  v-for="transaction in monthGroup.transactions"
-                  :key="transaction.id"
+                  v-if="row.batch"
+                  class="hover:bg-gray-50 transition-colors cursor-pointer"
+                  @click="toggleBatch(row.batch.id)"
+                >
+                  <td class="w-[8%] px-3 py-3 text-center">
+                    <span class="inline-block bg-primary-content text-black px-3 py-1 rounded-md text-xs font-semibold">
+                      {{ formatDateBr(row.batch.transaction_date) }}
+                    </span>
+                  </td>
+                  <td colspan="3" class="px-3 py-3 text-left max-w-0">
+                    <div class="flex items-center gap-2 min-w-0">
+                      <font-awesome-icon icon="fa-solid fa-layer-group" class="text-gray-400 text-sm flex-shrink-0" />
+                      <span class="text-sm font-semibold text-gray-900 truncate" :title="row.batch.description || 'Pagamento em lote'">
+                        {{ row.batch.description || 'Pagamento em lote' }}
+                      </span>
+                    </div>
+                  </td>
+                  <td colspan="2" class="px-3 py-3 text-left">
+                    <span class="inline-flex items-center gap-1 text-emerald-600 font-semibold text-sm">
+                      <font-awesome-icon
+                        :icon="expandedBatches.includes(row.batch.id) ? 'fa-solid fa-chevron-down' : 'fa-solid fa-chevron-right'"
+                        class="text-xs"
+                      />
+                      {{ row.batch.children.length }} {{ row.batch.children.length === 1 ? 'fatura' : 'faturas' }}
+                    </span>
+                  </td>
+                  <td class="w-[14%] px-3 py-3 text-left max-w-0">
+                    <div class="flex items-center gap-2 min-w-0">
+                      <font-awesome-icon icon="fa-solid fa-university" class="text-gray-400 text-sm flex-shrink-0" />
+                      <span class="text-sm font-medium text-gray-900 truncate">
+                        {{ row.batch.bank_account?.name || row.batch.bank_account?.bank_name || '-' }}
+                      </span>
+                    </div>
+                  </td>
+                  <td class="w-[9%] px-3 py-3 text-right">
+                    <span class="text-sm font-bold" :class="row.batch.type === 'credit' ? 'text-green-600' : 'text-red-600'">
+                      {{ formatCurrency(row.batch.amount) }}
+                    </span>
+                  </td>
+                  <td class="w-[5%] px-3 py-3 text-center">
+                    <button
+                      type="button"
+                      class="text-gray-400 hover:text-red-600 transition-colors"
+                      title="Estornar o pagamento em lote inteiro"
+                      @click.stop="destroyBatch(row.batch)"
+                    >
+                      <font-awesome-icon icon="fa-solid fa-rotate-left" />
+                    </button>
+                  </td>
+                  <td class="w-[4%] px-3 py-3 text-center">
+                    <span
+                      :class="row.batch.type === 'credit' ? 'bg-green-100' : 'bg-red-100'"
+                      class="w-7 h-7 flex items-center justify-center rounded-full mx-auto"
+                    >
+                      <font-awesome-icon
+                        :icon="row.batch.type === 'credit' ? 'fa-solid fa-arrow-up' : 'fa-solid fa-arrow-down'"
+                        :class="row.batch.type === 'credit' ? 'text-green-600' : 'text-red-600'"
+                        class="text-xs"
+                      />
+                    </span>
+                  </td>
+                </tr>
+                <tr
+                  v-else-if="!row.batchId || expandedBatches.includes(row.batchId)"
                   class="hover:bg-gray-50 transition-colors"
+                  :class="{ 'bg-gray-50/70': row.batchId }"
                 >
                   <!-- Data -->
                   <td class="w-[8%] px-3 py-3 text-center">
-                    <span class="inline-block bg-primary-content text-black px-3 py-1 rounded-md text-xs font-semibold">
-                      {{ formatDateBr(transaction.transaction_date) }}
+                    <font-awesome-icon v-if="row.batchId" icon="fa-solid fa-turn-up" class="rotate-90 text-gray-300 text-xs mr-1" />
+                    <span v-else class="inline-block bg-primary-content text-black px-3 py-1 rounded-md text-xs font-semibold">
+                      {{ formatDateBr(row.transaction.transaction_date) }}
                     </span>
                   </td>
                   
@@ -128,8 +194,8 @@
                   <td class="w-[20%] px-3 py-3 text-left max-w-0">
                     <div class="flex items-center gap-2 min-w-0">
                       <font-awesome-icon icon="fa-solid fa-building" class="text-gray-400 text-sm flex-shrink-0" />
-                      <span class="text-sm font-medium text-gray-900 truncate" :title="getClientName(transaction.invoice?.proposal?.opportunity, transaction.invoice) || '-'">
-                        {{ getClientName(transaction.invoice?.proposal?.opportunity, transaction.invoice) || '-' }}
+                      <span class="text-sm font-medium text-gray-900 truncate" :title="getClientName(row.transaction.invoice?.proposal?.opportunity, row.transaction.invoice) || '-'">
+                        {{ getClientName(row.transaction.invoice?.proposal?.opportunity, row.transaction.invoice) || '-' }}
                       </span>
                     </div>
                   </td>
@@ -137,13 +203,13 @@
                   <!-- Oportunidade -->
                   <td class="w-[16%] px-3 py-3 text-left max-w-0">
                     <router-link
-                      v-if="transaction.invoice?.proposal?.opportunity?.name"
-                      :to="{ name: 'opportunityShow', params: { id: transaction.invoice.proposal.opportunity.id } }"
+                      v-if="row.transaction.invoice?.proposal?.opportunity?.name"
+                      :to="{ name: 'opportunityShow', params: { id: row.transaction.invoice.proposal.opportunity.id } }"
                       class="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors min-w-0"
-                      :title="transaction.invoice.proposal.opportunity.name.trim()"
+                      :title="row.transaction.invoice.proposal.opportunity.name.trim()"
                     >
                       <font-awesome-icon icon="fa-solid fa-bullseye" class="text-xs flex-shrink-0" />
-                      <span class="truncate block">{{ transaction.invoice.proposal.opportunity.name.trim() }}</span>
+                      <span class="truncate block">{{ row.transaction.invoice.proposal.opportunity.name.trim() }}</span>
                     </router-link>
                     <span v-else class="text-gray-400 text-sm italic">-</span>
                   </td>
@@ -151,10 +217,10 @@
                   <!-- Proposta -->
                   <td class="w-[6%] px-3 py-3 text-center">
                     <router-link
-                      v-if="transaction.invoice?.proposal"
-                      :to="{ name: 'proposalShow', params: { id: transaction.invoice.proposal.id } }"
+                      v-if="row.transaction.invoice?.proposal"
+                      :to="{ name: 'proposalShow', params: { id: row.transaction.invoice.proposal.id } }"
                       class="inline-flex items-center justify-center text-indigo-600 hover:text-indigo-800 transition-all hover:scale-110"
-                      :title="'Proposta ' + transaction.invoice.proposal.id"
+                      :title="'Proposta ' + row.transaction.invoice.proposal.id"
                     >
                       <font-awesome-icon icon="fa-solid fa-magnifying-glass" />
                     </router-link>
@@ -164,13 +230,13 @@
                   <!-- Fatura -->
                   <td class="w-[10%] px-3 py-3 text-left">
                     <router-link
-                      v-if="transaction.invoice"
-                      :to="{ name: 'invoiceShow', params: { id: transaction.invoice.id } }"
+                      v-if="row.transaction.invoice"
+                      :to="{ name: 'invoiceShow', params: { id: row.transaction.invoice.id } }"
                       class="inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-800 font-semibold text-sm transition-colors"
-                      :title="'Fatura #' + transaction.invoice.id"
+                      :title="'Fatura #' + row.transaction.invoice.id"
                     >
                       <font-awesome-icon icon="fa-solid fa-receipt" class="text-sm" />
-                      {{ getInvoiceLabel(transaction.invoice) }}
+                      {{ getInvoiceLabel(row.transaction.invoice) }}
                     </router-link>
                     <div v-else class="inline-flex items-center gap-1 text-amber-500 font-medium text-xs">
                       <font-awesome-icon icon="fa-solid fa-circle-dot" class="text-xs" />
@@ -180,8 +246,8 @@
                   
                   <!-- Data Vencimento -->
                   <td class="w-[8%] px-3 py-3 text-center">
-                    <span v-if="transaction.invoice?.date_due" class="text-sm font-medium text-gray-900">
-                      {{ formatDateBr(transaction.invoice.date_due) }}
+                    <span v-if="row.transaction.invoice?.date_due" class="text-sm font-medium text-gray-900">
+                      {{ formatDateBr(row.transaction.invoice.date_due) }}
                     </span>
                     <span v-else class="text-gray-400 text-sm italic">-</span>
                   </td>
@@ -190,16 +256,16 @@
                   <td class="w-[14%] px-3 py-3 text-left max-w-0">
                     <div class="flex items-center gap-2 min-w-0">
                       <font-awesome-icon icon="fa-solid fa-university" class="text-gray-400 text-sm flex-shrink-0" />
-                      <span class="text-sm font-medium text-gray-900 truncate" :title="transaction.bank_account?.name || transaction.bank_account?.bank_name || '-'">
-                        {{ transaction.bank_account?.name || transaction.bank_account?.bank_name || '-' }}
+                      <span class="text-sm font-medium text-gray-900 truncate" :title="row.transaction.bank_account?.name || row.transaction.bank_account?.bank_name || '-'">
+                        {{ row.transaction.bank_account?.name || row.transaction.bank_account?.bank_name || '-' }}
                       </span>
                     </div>
                   </td>
                   
                   <!-- Valor -->
                   <td class="w-[9%] px-3 py-3 text-right">
-                    <span class="text-sm font-bold" :class="transaction.type === 'credit' ? 'text-green-600' : 'text-red-600'">
-                      <money-field name="amount" v-model="transaction.amount" :readonly="true" />
+                    <span class="text-sm font-bold" :class="row.transaction.type === 'credit' ? 'text-green-600' : 'text-red-600'">
+                      <money-field name="amount" v-model="row.transaction.amount" :readonly="true" />
                     </span>
                   </td>
                   
@@ -207,10 +273,10 @@
                   <td class="w-[5%] px-3 py-3 text-center">
                     <span 
                       class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border transition-shadow"
-                      :class="getStatusClass(transaction.status)"
+                      :class="getStatusClass(row.transaction.status)"
                     >
-                      <font-awesome-icon :icon="getStatusIcon(transaction.status)" class="text-xs" />
-                      {{ getStatusLabel(transaction.status) }}
+                      <font-awesome-icon :icon="getStatusIcon(row.transaction.status)" class="text-xs" />
+                      {{ getStatusLabel(row.transaction.status) }}
                     </span>
                   </td>
                   
@@ -218,22 +284,23 @@
                   <td class="w-[4%] px-3 py-3 text-center">
                     <span
                       :class="{
-                        'bg-green-100': transaction.type === 'credit',
-                        'bg-red-100': transaction.type === 'debit',
+                        'bg-green-100': row.transaction.type === 'credit',
+                        'bg-red-100': row.transaction.type === 'debit',
                       }"
                       class="w-7 h-7 flex items-center justify-center rounded-full mx-auto"
                     >
                       <font-awesome-icon
-                        :icon="transaction.type === 'credit' ? 'fa-solid fa-arrow-up' : 'fa-solid fa-arrow-down'"
+                        :icon="row.transaction.type === 'credit' ? 'fa-solid fa-arrow-up' : 'fa-solid fa-arrow-down'"
                         :class="{
-                          'text-green-600': transaction.type === 'credit',
-                          'text-red-600': transaction.type === 'debit',
+                          'text-green-600': row.transaction.type === 'credit',
+                          'text-red-600': row.transaction.type === 'debit',
                         }"
                         class="text-xs"
                       />
                     </span>
                   </td>
                 </tr>
+                </template>
               </tbody>
             </table>
           </div>
@@ -251,7 +318,7 @@
 </template>
 
 <script>
-import { index } from "@/utils/requests/httpUtils";
+import { index, destroy } from "@/utils/requests/httpUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import MoneyField from "../fields/number/MoneyField.vue";
 
@@ -272,6 +339,8 @@ export default {
       selectedBankAccount: "",
       transactions: [],
       filteredTransactions: [],
+      // Lotes de pagamento abertos para mostrar as faturas que quitaram
+      expandedBatches: [],
       bankAccounts: [],
     };
   },
@@ -326,11 +395,39 @@ export default {
           groups[monthKey] = {
             monthKey,
             monthLabel: monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1),
-            transactions: []
+            rows: [],
+            batches: {},
           };
         }
-        
-        groups[monthKey].transactions.push(transaction);
+
+        const group = groups[monthKey];
+        const batchId = transaction.payment_batch_id;
+
+        // Transactions do mesmo lote viram uma linha só (o total que saiu do
+        // banco), seguida das faturas que ela quitou, mostradas ao expandir.
+        if (batchId) {
+          if (!group.batches[batchId]) {
+            group.batches[batchId] = {
+              id: batchId,
+              transaction_date: transaction.transaction_date,
+              type: transaction.type,
+              bank_account: transaction.bank_account,
+              amount: transaction.payment_batch?.amount,
+              description: transaction.payment_batch?.description,
+              children: [],
+            };
+            group.rows.push({ key: `batch-${batchId}`, batch: group.batches[batchId] });
+          }
+          group.batches[batchId].children.push(transaction);
+          const lastChildIndex = group.rows.map(r => r.batchId).lastIndexOf(batchId);
+          const insertAt = lastChildIndex === -1
+            ? group.rows.findIndex(r => r.key === `batch-${batchId}`) + 1
+            : lastChildIndex + 1;
+          group.rows.splice(insertAt, 0, { key: `tx-${transaction.id}`, batchId, transaction });
+          return;
+        }
+
+        group.rows.push({ key: `tx-${transaction.id}`, transaction });
       });
       
       return Object.values(groups).sort((a, b) => {
@@ -354,6 +451,32 @@ export default {
   },
   methods: {
     formatDateBr,
+
+    formatCurrency(value) {
+      return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value || 0);
+    },
+
+    toggleBatch(batchId) {
+      const index = this.expandedBatches.indexOf(batchId);
+      if (index === -1) {
+        this.expandedBatches.push(batchId);
+      } else {
+        this.expandedBatches.splice(index, 1);
+      }
+    },
+
+    async destroyBatch(batch) {
+      const message = `Estornar o pagamento em lote de ${this.formatCurrency(batch.amount)}? `
+        + `As ${batch.children.length} faturas voltarão a ficar em aberto.`;
+      if (!confirm(message)) return;
+
+      try {
+        await destroy("payment_batches", batch.id);
+        await this.getTransactions();
+      } catch (error) {
+        console.error("Erro ao estornar pagamento em lote:", error);
+      }
+    },
     
     getInvoiceLabel(invoice) {
       if (!invoice.installment_number) return 'Fatura #' + invoice.id;

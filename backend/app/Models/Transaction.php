@@ -15,6 +15,7 @@ class Transaction extends Model
         'invoice_id',
         'credit_card_invoice_id',
         'credit_card_charge_id',
+        'payment_batch_id',
         'bank_account_id',
         'amount',
         'transaction_date',
@@ -50,6 +51,15 @@ class Transaction extends Model
         return $this->belongsTo(BankAccount::class);
     }
 
+    /**
+     * Lote ao qual esta transaction pertence quando várias invoices foram pagas
+     * em uma única movimentação bancária. Nulo para pagamentos individuais.
+     */
+    public function paymentBatch()
+    {
+        return $this->belongsTo(PaymentBatch::class);
+    }
+
     // Events
     protected static function booted()
     {
@@ -60,6 +70,10 @@ class Transaction extends Model
 
             if ($transaction->credit_card_invoice_id) {
                 $transaction->creditCardInvoice->updateTotalPaid();
+            }
+
+            if ($transaction->payment_batch_id && $transaction->paymentBatch) {
+                $transaction->paymentBatch->updateAmount();
             }
         };
 

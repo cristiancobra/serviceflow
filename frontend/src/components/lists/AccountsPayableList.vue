@@ -25,67 +25,81 @@
 
       <!-- Invoice cards -->
       <div class="space-y-1">
-        <router-link
+        <div
           v-for="invoice in monthGroup.invoices"
           :key="invoice.id"
-          :to="{ name: 'invoiceShow', params: { id: invoice.id } }"
-          class="flex items-center justify-between px-4 py-1 bg-white rounded-lg border border-gray-200 hover:border-red-300 hover:shadow-sm transition-all duration-200 no-underline"
-          :class="{
-            'border-l-4 border-l-orange-400': invoice.status === 'overdue',
-            'border-l-4 border-l-green-400': invoice.status === 'paid',
-            'border-l-4 border-l-gray-300': invoice.status === 'cancelled',
-          }">
-          <!-- Icon + Name -->
-          <div class="flex items-center gap-3 min-w-0 flex-1">
-            <div class="flex items-center justify-center w-6 h-6 rounded-full flex-shrink-0"
-              :class="getIconBg(invoice)">
-              <font-awesome-icon :icon="getCategoryIcon(invoice.category)" class="text-white text-xs" />
+          class="flex items-center gap-2">
+          <!-- Seleção para pagamento em lote -->
+          <input
+            v-if="isPayable(invoice)"
+            type="checkbox"
+            class="checkbox checkbox-sm checkbox-error flex-shrink-0"
+            :checked="selectedIds.includes(invoice.id)"
+            :title="'Selecionar para pagar em lote'"
+            @change="$emit('toggle-select', invoice)" />
+          <span v-else class="w-5 flex-shrink-0"></span>
+
+          <router-link
+            :to="{ name: 'invoiceShow', params: { id: invoice.id } }"
+            class="flex flex-1 min-w-0 items-center justify-between px-4 py-1 bg-white rounded-lg border border-gray-200 hover:border-red-300 hover:shadow-sm transition-all duration-200 no-underline"
+            :class="{
+              'border-l-4 border-l-orange-400': invoice.status === 'overdue',
+              'border-l-4 border-l-green-400': invoice.status === 'paid',
+              'border-l-4 border-l-gray-300': invoice.status === 'cancelled',
+              'ring-2 ring-red-300': selectedIds.includes(invoice.id),
+            }">
+            <!-- Icon + Name -->
+            <div class="flex items-center gap-3 min-w-0 flex-1">
+              <div class="flex items-center justify-center w-6 h-6 rounded-full flex-shrink-0"
+                :class="getIconBg(invoice)">
+                <font-awesome-icon :icon="getCategoryIcon(invoice.category)" class="text-white text-xs" />
+              </div>
+              <p class="font-semibold text-gray-900 text-sm truncate min-w-0">
+                {{ invoice.name || ('Fatura #' + invoice.id) }}
+              </p>
+              <p class="text-xs text-gray-500 truncate min-w-0">
+                {{ getSupplierName(invoice) }}
+                <span v-if="invoice.proposal" class="ml-1 text-indigo-500">• Proposta #{{ invoice.proposal.id }}</span>
+              </p>
+              <!-- Department badge -->
+              <span v-if="invoice.department"
+                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap flex-shrink-0"
+                :style="{ backgroundColor: invoice.department.color + '20', color: invoice.department.color }">
+                <font-awesome-icon :icon="invoice.department.icon" class="text-xs" />
+                {{ invoice.department.name }}
+              </span>
             </div>
-            <p class="font-semibold text-gray-900 text-sm truncate min-w-0">
-              {{ invoice.name || ('Fatura #' + invoice.id) }}
-            </p>
-            <p class="text-xs text-gray-500 truncate min-w-0">
-              {{ getSupplierName(invoice) }}
-              <span v-if="invoice.proposal" class="ml-1 text-indigo-500">• Proposta #{{ invoice.proposal.id }}</span>
-            </p>
-            <!-- Department badge -->
-            <span v-if="invoice.department"
-              class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap flex-shrink-0"
-              :style="{ backgroundColor: invoice.department.color + '20', color: invoice.department.color }">
-              <font-awesome-icon :icon="invoice.department.icon" class="text-xs" />
-              {{ invoice.department.name }}
-            </span>
-          </div>
 
-          <!-- Task badge -->
-          <div v-if="invoice.tasks && invoice.tasks.length > 0" class="mx-3 flex-shrink-0">
-            <span
-              class="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
-              <font-awesome-icon icon="fa-solid fa-check-circle" class="text-xs" />
-              Tarefa
-            </span>
-          </div>
+            <!-- Task badge -->
+            <div v-if="invoice.tasks && invoice.tasks.length > 0" class="mx-3 flex-shrink-0">
+              <span
+                class="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
+                <font-awesome-icon icon="fa-solid fa-check-circle" class="text-xs" />
+                Tarefa
+              </span>
+            </div>
 
-          <!-- Date + Status -->
-          <div class="flex items-center gap-2 flex-shrink-0 ml-3">
-            <span class="text-xs text-gray-500 whitespace-nowrap">
-              {{ formatDateBr(invoice.date_due) }}
-            </span>
-            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap"
-              :class="getStatusClass(invoice.status)">
-              {{ getStatusLabel(invoice.status) }}
-            </span>
-          </div>
+            <!-- Date + Status -->
+            <div class="flex items-center gap-2 flex-shrink-0 ml-3">
+              <span class="text-xs text-gray-500 whitespace-nowrap">
+                {{ formatDateBr(invoice.date_due) }}
+              </span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap"
+                :class="getStatusClass(invoice.status)">
+                {{ getStatusLabel(invoice.status) }}
+              </span>
+            </div>
 
-          <!-- Amount -->
-          <div class="flex items-center justify-end gap-2 ml-4 flex-shrink-0 min-w-[90px]">
-            <span v-if="invoice.balance > 0" class="text-xs text-red-500 whitespace-nowrap">
-              Saldo: {{ formatCurrency(invoice.balance) }}
-            </span>
-            <span v-else class="text-xs text-green-600 font-medium">Pago</span>
-            <span class="font-bold text-gray-900 text-sm whitespace-nowrap">{{ formatCurrency(invoice.price) }}</span>
-          </div>
-        </router-link>
+            <!-- Amount -->
+            <div class="flex items-center justify-end gap-2 ml-4 flex-shrink-0 min-w-[90px]">
+              <span v-if="invoice.balance > 0" class="text-xs text-red-500 whitespace-nowrap">
+                Saldo: {{ formatCurrency(invoice.balance) }}
+              </span>
+              <span v-else class="text-xs text-green-600 font-medium">Pago</span>
+              <span class="font-bold text-gray-900 text-sm whitespace-nowrap">{{ formatCurrency(invoice.price) }}</span>
+            </div>
+          </router-link>
+        </div>
       </div>
     </div>
   </div>
@@ -102,7 +116,13 @@ export default {
       required: true,
       default: () => [],
     },
+    // Ids das invoices marcadas para pagamento em lote
+    selectedIds: {
+      type: Array,
+      default: () => [],
+    },
   },
+  emits: ["toggle-select"],
   computed: {
     groupedInvoices() {
       const groups = {};
@@ -133,6 +153,9 @@ export default {
   },
   methods: {
     formatDateBr,
+    isPayable(invoice) {
+      return Number(invoice.balance) > 0 && !["paid", "cancelled"].includes(invoice.status);
+    },
     formatCurrency(value) {
       return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value || 0);
     },

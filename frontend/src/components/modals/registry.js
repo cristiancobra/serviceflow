@@ -11,6 +11,7 @@ import ProposalCostCreateForm from "@/components/forms/ProposalCostCreateForm.vu
 import DebitInvoiceCreateForm from "@/components/forms/DebitInvoiceCreateForm.vue";
 import OperationalCostInvoiceCreateForm from "@/components/forms/OperationalCostInvoiceCreateForm.vue";
 import TransactionCreateForm from "@/components/forms/TransactionCreateForm.vue";
+import BatchPaymentForm from "@/components/forms/BatchPaymentForm.vue";
 import StandaloneDebitInvoiceCreateForm from "@/components/forms/StandaloneDebitInvoiceCreateForm.vue";
 import ProposalCreateForm from "@/components/forms/ProposalCreateForm.vue";
 import ServiceCreateForm from "@/components/forms/ServiceCreateForm.vue";
@@ -34,6 +35,7 @@ export default {
   DebitInvoiceCreateForm,
   OperationalCostInvoiceCreateForm,
   TransactionCreateForm,
+  BatchPaymentForm,
   StandaloneDebitInvoiceCreateForm,
   ProposalCreateForm,
   ServiceCreateForm,
