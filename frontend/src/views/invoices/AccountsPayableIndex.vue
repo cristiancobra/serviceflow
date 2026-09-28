@@ -14,8 +14,8 @@
     </div>
 
     <!-- Summary Cards -->
-    <section class="section-container">
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <section class="px-8 mt-4 mb-6">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="rounded-xl border border-red-200 bg-red-50 p-4 shadow-sm">
           <div class="text-xs font-semibold text-red-700 uppercase tracking-wide">Total Pendente</div>
           <div class="mt-1 text-xl font-bold text-red-800">
@@ -48,7 +48,7 @@
     </section>
 
     <!-- Filters -->
-    <section class="section-container">
+    <section class="px-8 mb-6">
       <div class="flex flex-wrap gap-2 mb-3">
         <button v-for="f in filterOptions" :key="f.value" @click="setFilter(f.value)" :class="[
           'px-4 py-2 rounded-lg text-sm font-semibold transition-colors',
@@ -83,8 +83,8 @@
     </section>
 
     <!-- Search -->
-    <section class="section-container">
-      <div class="relative mb-4">
+    <section class="px-8 mb-6">
+      <div class="relative">
         <font-awesome-icon icon="fa-solid fa-search"
           class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
         <input v-model="searchTerm" type="text" placeholder="Buscar por nome, fornecedor..."
@@ -93,7 +93,7 @@
     </section>
 
     <!-- Loading -->
-    <section class="section-container">
+    <section class="px-8 mb-20">
       <div v-if="isLoading" class="flex items-center justify-center py-16">
         <font-awesome-icon icon="fa-solid fa-spinner" class="animate-spin text-3xl text-red-500" />
       </div>
