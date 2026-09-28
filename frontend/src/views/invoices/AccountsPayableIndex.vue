@@ -103,7 +103,9 @@
         v-if="!isLoading"
         :invoices="filteredInvoices"
         :selected-ids="selectedIds"
-        @toggle-select="toggleSelect" />
+        @toggle-select="toggleSelect"
+        @invoice-updated="replaceInvoice"
+        @invoice-deleted="removeInvoice" />
     </section>
 
     <!-- Barra de pagamento em lote -->
@@ -299,6 +301,14 @@ export default {
           "batch-paid": this.handleBatchPaid,
         },
       });
+    },
+    replaceInvoice(updated) {
+      const index = this.invoices.findIndex((inv) => inv.id === updated.id);
+      if (index !== -1) this.invoices.splice(index, 1, updated);
+    },
+    removeInvoice(id) {
+      this.invoices = this.invoices.filter((inv) => inv.id !== id);
+      this.selectedIds = this.selectedIds.filter((selectedId) => selectedId !== id);
     },
     handleBatchPaid() {
       this.selectedIds = [];

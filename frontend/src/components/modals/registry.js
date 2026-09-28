@@ -1,4 +1,5 @@
 import TaskDetailModal from "@/components/modals/details/TaskDetailModal.vue";
+import InvoiceDetailModal from "@/components/modals/details/InvoiceDetailModal.vue";
 import LinksModal from "@/components/modals/LinksModal.vue";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import CompanyCreateForm from "@/components/forms/CompanyCreateForm.vue";
@@ -23,6 +24,7 @@ import TaskJourneysModal from "@/components/modals/TaskJourneysModal.vue";
 // Para adicionar um novo modal empilhável, basta importar o componente e listá-lo aqui.
 export default {
   TaskDetailModal,
+  InvoiceDetailModal,
   LinksModal,
   TaskCreateForm,
   CompanyCreateForm,

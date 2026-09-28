@@ -69,9 +69,10 @@
         :key="invoice.id"
         class="bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200"
       >
-        <router-link
-          :to="{ name: 'invoiceShow', params: { id: invoice.id } }"
-          class="flex items-center justify-between p-2 text-gray-800 hover:text-red-600 transition-colors duration-200 no-underline"
+        <div
+          role="button"
+          class="flex items-center justify-between p-2 text-gray-800 hover:text-red-600 transition-colors duration-200 cursor-pointer"
+          @click="openInvoiceModal(invoice)"
         >
           <!-- Tipo e Fornecedor -->
           <div class="flex items-center gap-4">
@@ -167,7 +168,7 @@
               />
             </div>
           </div>
-        </router-link>
+        </div>
 
         <!-- Pagamentos Realizados -->
         <div
@@ -337,6 +338,17 @@ export default {
     formatDateBr,
     updateField,
     destroy,
+    openInvoiceModal(invoice) {
+      this.openModal({
+        component: "InvoiceDetailModal",
+        props: { invoiceId: invoice.id },
+        listeners: {
+          "invoice-updated": () => this.$emit("reload-proposal"),
+          "invoice-deleted": () => this.$emit("reload-proposal"),
+        },
+        id: `invoice-${invoice.id}`,
+      });
+    },
     openDebitInvoiceModal() {
       this.openModal({
         component: "DebitInvoiceCreateForm",

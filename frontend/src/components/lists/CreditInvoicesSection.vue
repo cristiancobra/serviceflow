@@ -118,16 +118,17 @@
                 <font-awesome-icon icon="fas fa-plus" class="text-sm" />
               </button>
 
-              <router-link
-                :to="{ name: 'invoiceShow', params: { id: invoice.id } }"
+              <button
+                type="button"
                 class="w-6 h-6 flex items-center justify-center hover:bg-gray-100 rounded transition-colors"
                 title="Ver detalhes da fatura"
+                @click.prevent.stop="openInvoiceModal(invoice)"
               >
                 <font-awesome-icon
                   icon="fa-solid fa-chevron-right"
                   class="text-gray-400 hover:text-blue-600 text-sm"
                 />
-              </router-link>
+              </button>
             </div>
           </div>
 
@@ -313,6 +314,17 @@ export default {
 
       // Emite evento para o componente pai atualizar a proposta original
       this.$emit("invoices-updated", this.localInvoices);
+    },
+    openInvoiceModal(invoice) {
+      this.openModal({
+        component: "InvoiceDetailModal",
+        props: { invoiceId: invoice.id },
+        listeners: {
+          "invoice-updated": () => this.$emit("reload-proposal"),
+          "invoice-deleted": () => this.$emit("reload-proposal"),
+        },
+        id: `invoice-${invoice.id}`,
+      });
     },
     openTransactionModal(invoice) {
       this.openModal({

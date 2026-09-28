@@ -71,9 +71,9 @@
                   >
                     <font-awesome-icon icon="fa-solid fa-plus" />
                   </button>
-                  <router-link :to="{ name: 'invoiceShow', params: { id: invoice.id } }" class="btn-action btn-view" title="Abrir fatura">
+                  <button @click="openInvoiceModal(invoice)" class="btn-action btn-view" title="Abrir fatura">
                     <font-awesome-icon icon="fa-solid fa-eye" />
-                  </router-link>
+                  </button>
                 </div>
               </td>
             </tr>
@@ -141,6 +141,17 @@ export default {
   methods: {
     ...mapMutations(["openModal"]),
 
+    openInvoiceModal(invoice) {
+      this.openModal({
+        component: "InvoiceDetailModal",
+        props: { invoiceId: invoice.id },
+        listeners: {
+          "invoice-updated": this.loadInvoices,
+          "invoice-deleted": this.loadInvoices,
+        },
+        id: `invoice-${invoice.id}`,
+      });
+    },
     async loadInvoices() {
       this.isLoadingInvoices = true;
       try {

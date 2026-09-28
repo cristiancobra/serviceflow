@@ -226,15 +226,16 @@
                   
                   <!-- Fatura -->
                   <td class="w-[10%] px-3 py-1 text-left">
-                    <router-link
+                    <button
                       v-if="row.transaction.invoice"
-                      :to="{ name: 'invoiceShow', params: { id: row.transaction.invoice.id } }"
+                      type="button"
                       class="inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-800 font-semibold text-sm transition-colors"
                       :title="'Fatura #' + row.transaction.invoice.id"
+                      @click="openInvoiceModal(row.transaction.invoice)"
                     >
                       <font-awesome-icon icon="fa-solid fa-receipt" class="text-sm" />
                       {{ getInvoiceLabel(row.transaction.invoice) }}
-                    </router-link>
+                    </button>
                     <div v-else class="inline-flex items-center gap-1 text-amber-500 font-medium text-xs">
                       <font-awesome-icon icon="fa-solid fa-circle-dot" class="text-xs" />
                       Avulsa
@@ -315,6 +316,7 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import { index, destroy } from "@/utils/requests/httpUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import MoneyField from "../fields/number/MoneyField.vue";
@@ -447,7 +449,20 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(["openModal"]),
     formatDateBr,
+
+    openInvoiceModal(invoice) {
+      this.openModal({
+        component: "InvoiceDetailModal",
+        props: { invoiceId: invoice.id },
+        listeners: {
+          "invoice-updated": this.getTransactions,
+          "invoice-deleted": this.getTransactions,
+        },
+        id: `invoice-${invoice.id}`,
+      });
+    },
 
     formatCurrency(value) {
       return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value || 0);

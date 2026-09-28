@@ -39,9 +39,10 @@
             @change="$emit('toggle-select', invoice)" />
           <span v-else class="w-5 flex-shrink-0"></span>
 
-          <router-link
-            :to="{ name: 'invoiceShow', params: { id: invoice.id } }"
-            class="flex flex-1 min-w-0 items-center justify-between px-4 py-1 bg-white rounded-lg border border-gray-200 hover:border-red-300 hover:shadow-sm transition-all duration-200 no-underline"
+          <div
+            role="button"
+            class="flex flex-1 min-w-0 items-center justify-between px-4 py-1 bg-white rounded-lg border border-gray-200 hover:border-red-300 hover:shadow-sm transition-all duration-200 cursor-pointer"
+            @click="openInvoiceModal(invoice)"
             :class="{
               'border-l-4 border-l-orange-400': invoice.status === 'overdue',
               'border-l-4 border-l-green-400': invoice.status === 'paid',
@@ -98,7 +99,7 @@
               <span v-else class="text-xs text-green-600 font-medium">Pago</span>
               <span class="font-bold text-gray-900 text-sm whitespace-nowrap">{{ formatCurrency(invoice.price) }}</span>
             </div>
-          </router-link>
+          </div>
         </div>
       </div>
     </div>
@@ -106,6 +107,7 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import { formatDateBr } from "@/utils/date/dateUtils";
 
 export default {
@@ -122,7 +124,7 @@ export default {
       default: () => [],
     },
   },
-  emits: ["toggle-select"],
+  emits: ["toggle-select", "invoice-updated", "invoice-deleted"],
   computed: {
     groupedInvoices() {
       const groups = {};
@@ -152,7 +154,19 @@ export default {
     },
   },
   methods: {
+    ...mapMutations(["openModal"]),
     formatDateBr,
+    openInvoiceModal(invoice) {
+      this.openModal({
+        component: "InvoiceDetailModal",
+        props: { invoiceId: invoice.id },
+        listeners: {
+          "invoice-updated": (updated) => this.$emit("invoice-updated", updated),
+          "invoice-deleted": (id) => this.$emit("invoice-deleted", id),
+        },
+        id: `invoice-${invoice.id}`,
+      });
+    },
     isPayable(invoice) {
       return Number(invoice.balance) > 0 && !["paid", "cancelled"].includes(invoice.status);
     },
