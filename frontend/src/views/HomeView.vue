@@ -15,6 +15,7 @@
       :tasks="localTasks" 
       :showOpportunityColumn="true" 
       sortOrder="asc" 
+      :hide-closed-tasks="true"
     />
   </div>
 </template>

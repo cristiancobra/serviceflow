@@ -82,12 +82,13 @@
             <div class="h-px flex-1 bg-gray-200"></div>
           </div>
           <template v-for="(dayTasks, dayKey) in monthGroup.tasksByDay" :key="dayKey">
-            <div v-for="localTask in dayTasks" :key="localTask.id">
+            <div v-for="localTask in dayTasks" :key="localTask.id"
+              :style="fadingTasks[localTask.id] ? fadeOutStyle : null">
               <div :id="'task-' + localTask.id" class="list-line items-center pt-1 pb-1"
-                :style="{ display: 'grid', gap: '0 1.5rem', gridTemplateColumns: showOpportunityColumn ? '70px 90px 1fr 64px 200px 50px 140px 28px' : '70px 90px 1fr 50px 140px 28px' }">
+                :style="{ display: 'grid', gap: '0 1.5rem', gridTemplateColumns: showOpportunityColumn ? '150px 90px 1fr 64px 200px 50px 140px 28px' : '150px 90px 1fr 50px 140px 28px' }">
 
                 <!-- Coluna do Dia e Horário -->
-                <div class="flex flex-col items-start justify-center">
+                <div class="flex items-baseline gap-2 whitespace-nowrap">
                   <span class="text-sm font-semibold"
                     :class="getDeadlineClass(localTask.date_due ? localTask.date_due.split(' ')[0] : 'Sem Data', localTask.date_conclusion)">
                     {{ formatTaskDate(localTask.date_due) }}
@@ -106,7 +107,7 @@
                 </div>
 
                 <!-- Coluna do nome da tarefa -->
-                <div class="flex items-center justify-start font-semibold min-w-0 overflow-hidden"
+                <div class="flex items-center justify-start font-semibold text-[15px] min-w-0 overflow-hidden"
                   :class="getDeadlineClass(localTask.date_due ? localTask.date_due.split(' ')[0] : 'Sem Data', localTask.date_conclusion)">
                   <text-editable-field name="name" v-model="localTask.name" placeholder="descrição detalhada da tarefa"
                     @save="updateTask('name', $event, localTask.id)" />
@@ -253,6 +254,10 @@ import DepartmentBadge from "@/components/badges/DepartmentBadge.vue";
 import TaskStatusBadge from "@/components/badges/TaskStatusBadge.vue";
 import { mapState, mapMutations } from "vuex";
 
+// Tarefa concluída/cancelada fica visível (já em verde) por um instante e depois some aos poucos
+const FADE_OUT_DELAY_MS = 1000;
+const FADE_OUT_DURATION_MS = 2500;
+
 export default {
   name: "TasksList",
   emits: ['filter-change', 'department-filter-change'],
@@ -278,6 +283,11 @@ export default {
       default: 'asc', // 'asc' = mais antiga primeiro, 'desc' = mais recente primeiro
       validator: (value) => ['asc', 'desc'].includes(value),
     },
+    // Remove da lista (com fade) as tarefas concluídas/canceladas, para listas que só exibem tarefas abertas
+    hideClosedTasks: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -301,6 +311,7 @@ export default {
       isDropdownOpen: false, // Estado do dropdown
       isDepartmentDropdownOpen: false, // Estado do dropdown de departamento
       activeDepartment: null, // Departamento ativo (null = todos)
+      fadingTasks: {}, // id da tarefa => timeout de remoção (tarefas saindo da lista)
       departments: [], // Lista de departamentos
       filterOptions: [
         { value: null, label: 'Todas as situações', class: 'hover:bg-primary hover:text-white text-primary', title: 'Todas as tarefas' },
@@ -439,7 +450,38 @@ export default {
       const index = this.localTasks.findIndex(
         (localTask) => localTask.id === localTaskId
       );
+      if (index === -1) return;
       this.localTasks.splice(index, 1, updatedTask);
+      this.fadeOutIfLeavingList(updatedTask);
+    },
+    // Tarefa concluída/cancelada não pertence mais a listas de tarefas abertas
+    // (Home ou filtros Fazer/Fazendo/Aguardando)
+    isLeavingList(task) {
+      const isClosed = this.isValidDate(task.date_conclusion) || !!task.date_canceled;
+      if (!isClosed) return false;
+      return this.hideClosedTasks || ['to-do', 'doing', 'wait'].includes(this.activeFilter);
+    },
+    fadeOutIfLeavingList(task) {
+      const leaving = this.isLeavingList(task);
+
+      if (!leaving) {
+        // Tarefa reaberta durante o fade: cancela a remoção
+        if (this.fadingTasks[task.id]) {
+          clearTimeout(this.fadingTasks[task.id]);
+          delete this.fadingTasks[task.id];
+        }
+        return;
+      }
+
+      if (this.fadingTasks[task.id]) return;
+
+      this.fadingTasks[task.id] = setTimeout(() => {
+        delete this.fadingTasks[task.id];
+        const index = this.localTasks.findIndex(t => t.id === task.id);
+        if (index !== -1) {
+          this.localTasks.splice(index, 1);
+        }
+      }, FADE_OUT_DELAY_MS + FADE_OUT_DURATION_MS);
     },
     startEditOpportunity(taskId) {
       this.editingOpportunity[taskId] = true;
@@ -621,18 +663,10 @@ export default {
       this.openModal({ component: 'TaskDetailModal', props: { taskId }, id: `task-${taskId}` });
     },
     handleTaskUpdated(updatedTask) {
-      // Atualiza a tarefa na lista local
-      const index = this.localTasks.findIndex(task => task.id === updatedTask.id);
-      if (index !== -1) {
-        this.localTasks.splice(index, 1, updatedTask);
-      }
+      this.updateTasksList(updatedTask, updatedTask.id);
     },
     handleDepartmentUpdated(updatedTask) {
-      // Atualiza a tarefa na lista local quando o departamento é alterado
-      const index = this.localTasks.findIndex(task => task.id === updatedTask.id);
-      if (index !== -1) {
-        this.localTasks.splice(index, 1, updatedTask);
-      }
+      this.updateTasksList(updatedTask, updatedTask.id);
     },
     async handleFilterClick(status) {
       this.activeFilter = status;
@@ -744,6 +778,12 @@ export default {
     imagesPath() {
       return IMAGES_PATH;
     },
+    fadeOutStyle() {
+      return {
+        opacity: 0,
+        transition: `opacity ${FADE_OUT_DURATION_MS}ms ease-in ${FADE_OUT_DELAY_MS}ms`,
+      };
+    },
     urlImagePhoto() {
       return `${IMAGES_PATH}${this.userData.photo}`;
     },
@@ -852,6 +892,7 @@ export default {
   beforeUnmount() {
     // Remove listener ao destruir o componente
     document.removeEventListener('click', this.handleClickOutside);
+    Object.values(this.fadingTasks).forEach(clearTimeout);
   },
   watch: {
     tasks: {
@@ -862,10 +903,7 @@ export default {
     },
     updatedTask(task) {
       if (!task) return;
-      const idx = this.localTasks.findIndex(t => t.id === task.id);
-      if (idx !== -1) {
-        this.localTasks.splice(idx, 1, task);
-      }
+      this.updateTasksList(task, task.id);
     },
   },
 };
