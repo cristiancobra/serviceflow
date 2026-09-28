@@ -1,5 +1,5 @@
 <template>
-  <div v-if="dataLoaded" class="row">
+  <div v-if="dataLoaded && (links.prev || links.next)" class="row">
     <div class="col-12 pagination-row">
       <nav class="pagination-nav" aria-label="Pagination navigation">
         <ul class="pagination">
@@ -89,21 +89,16 @@ export default {
       }
     },
   },
-  mounted() {
-    if (this.paginationData && this.paginationData.links) {
-      this.links = this.paginationData.links;
-    }
-  },
+
   watch: {
     paginationData: {
       handler(newVal) {
         if (newVal && newVal.links) {
-
           this.links = newVal.links;
-
           this.dataLoaded = true;
         }
       },
+      immediate: true,
     },
   },
 };

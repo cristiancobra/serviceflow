@@ -1,308 +1,202 @@
 <template>
-  <div
-    v-if="task"
-    class="modal-panel bg-white rounded-2xl shadow-2xl w-full max-h-[90vh] overflow-y-auto"
-    :class="compact ? 'max-w-2xl' : 'max-w-5xl'"
-  >
-        <!-- Header -->
-        <div class="sticky top-0 bg-gradient-to-r from-blue-50 to-blue-25 border-b border-gray-200 px-8 py-6">
-          <div class="flex justify-between items-start">
-            <div class="flex-1">
-              <div class="flex items-center gap-4 mb-2">
-                <!-- Status Icon -->
-                <font-awesome-icon 
-                  v-if="task.date_canceled" 
-                  icon="fas fa-times-circle"
-                  class="text-3xl text-red-500" 
-                  title="Tarefa cancelada" 
-                />
-                <font-awesome-icon 
-                  v-else 
-                  icon="fas fa-check-circle" 
-                  class="text-3xl" 
-                  :class="isValidDate(task.date_conclusion) ? 'text-success' : 'text-gray-400'"
-                />
-                
-                <div class="text-2xl font-bold text-gray-800 flex-1">
-                  <text-editable-field 
-                    name="name" 
-                    v-model="task.name" 
-                    placeholder="descrição detalhada da tarefa"
-                    @save="updateTask('name', $event)" 
-                  />
-                </div>
-              </div>
-              
-              <!-- Oportunidade/Projeto -->
-              <div v-if="task.opportunity" class="flex items-center gap-2 text-sm mt-2">
-                <font-awesome-icon icon="fa-solid fa-bullseye" class="text-primary" />
-                <router-link 
-                  :to="{ name: 'opportunityShow', params: { id: task.opportunity.id } }"
-                  class="text-primary hover:underline font-medium"
-                >
-                  {{ task.opportunity.name }}
-                </router-link>
-              </div>
-              
-              <div v-else-if="task.project" class="flex items-center gap-2 text-sm mt-2">
-                <font-awesome-icon icon="fa-solid fa-folder-open" class="text-primary" />
-                <router-link 
-                  :to="{ name: 'projectShow', params: { id: task.project.id } }"
-                  class="text-primary hover:underline font-medium"
-                >
-                  {{ task.project.name }}
-                </router-link>
-              </div>
+  <div v-if="task" class="modal-panel bg-white rounded-2xl shadow-2xl w-full max-h-[90vh] overflow-y-auto"
+    :class="compact ? 'max-w-2xl' : 'max-w-5xl'">
+    <!-- Header -->
+    <div class="sticky top-0 bg-gradient-to-r from-blue-50 to-blue-25 border-b border-gray-200 px-8 py-6">
+      <div class="flex justify-between items-start">
+        <div class="flex-1">
+          <div class="flex items-center gap-4 mb-2">
+            <!-- Status Icon -->
+            <font-awesome-icon v-if="task.date_canceled" icon="fas fa-times-circle" class="text-3xl text-red-500"
+              title="Tarefa cancelada" />
+            <font-awesome-icon v-else icon="fas fa-check-circle" class="text-3xl"
+              :class="isValidDate(task.date_conclusion) ? 'text-success' : 'text-gray-400'" />
 
-              <div v-else class="flex items-center gap-2 text-sm mt-2">
-                <template v-if="!showOpportunitySelect">
-                  <font-awesome-icon icon="fa-solid fa-bullseye" class="text-gray-400" />
-                  <button
-                    type="button"
-                    class="text-gray-400 hover:text-primary font-medium transition-colors"
-                    @click="showOpportunitySelect = true"
-                  >
-                    Adicionar oportunidade
-                  </button>
-                </template>
-                <template v-else>
-                  <opportunities-select-input
-                    name="opportunity_id"
-                    label="Oportunidade"
-                    fieldToDisplay="name"
-                    fieldNull="Nenhuma"
-                    v-model="selectedOpportunity"
-                    @update:modelValue="onOpportunitySelected"
-                  />
-                  <button
-                    type="button"
-                    class="text-gray-400 hover:text-red-500 ml-1 transition-colors"
-                    title="Cancelar"
-                    @click="showOpportunitySelect = false"
-                  >
-                    <font-awesome-icon icon="fa-solid fa-times" />
-                  </button>
-                </template>
-              </div>
+            <div class="text-2xl font-bold text-gray-800 flex-1">
+              <text-editable-field name="name" v-model="task.name" placeholder="descrição detalhada da tarefa"
+                @save="updateTask('name', $event)" />
             </div>
-            
-            <close-button @click="closeModal" />
+          </div>
+
+          <!-- Oportunidade/Projeto -->
+          <div v-if="task.opportunity" class="flex items-center gap-2 text-sm mt-2">
+            <font-awesome-icon icon="fa-solid fa-bullseye" class="text-primary" />
+            <router-link :to="{ name: 'opportunityShow', params: { id: task.opportunity.id } }"
+              class="text-primary hover:underline font-medium">
+              {{ task.opportunity.name }}
+            </router-link>
+          </div>
+
+          <div v-else-if="task.project" class="flex items-center gap-2 text-sm mt-2">
+            <font-awesome-icon icon="fa-solid fa-folder-open" class="text-primary" />
+            <router-link :to="{ name: 'projectShow', params: { id: task.project.id } }"
+              class="text-primary hover:underline font-medium">
+              {{ task.project.name }}
+            </router-link>
+          </div>
+
+          <div v-else class="flex items-center gap-2 text-sm mt-2">
+            <template v-if="!showOpportunitySelect">
+              <font-awesome-icon icon="fa-solid fa-bullseye" class="text-gray-400" />
+              <button type="button" class="text-gray-400 hover:text-primary font-medium transition-colors"
+                @click="showOpportunitySelect = true">
+                Adicionar oportunidade
+              </button>
+            </template>
+            <template v-else>
+              <opportunities-select-input name="opportunity_id" label="Oportunidade" fieldToDisplay="name"
+                fieldNull="Nenhuma" v-model="selectedOpportunity" @update:modelValue="onOpportunitySelected" />
+              <button type="button" class="text-gray-400 hover:text-red-500 ml-1 transition-colors" title="Cancelar"
+                @click="showOpportunitySelect = false">
+                <font-awesome-icon icon="fa-solid fa-times" />
+              </button>
+            </template>
           </div>
         </div>
 
-        <!-- Body -->
-        <div class="px-8 py-6">
-          <!-- Datas e Duração -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div class="bg-gray-50 rounded-lg p-4">
-              <div class="flex items-center gap-2 mb-2">
-                <font-awesome-icon icon="fa-solid fa-exclamation-circle" class="text-error" />
-                <label class="text-sm font-semibold text-gray-700">Data de Vencimento</label>
-              </div>
-              <date-time-editable-input 
-                v-model="task.date_due"
-                :classText="getDeadlineClass(task.date_due)"
-                @save="updateTask('date_due', $event)"
-              />
-            </div>
+        <close-button @click="closeModal" />
+      </div>
+    </div>
 
-            <div class="bg-gray-50 rounded-lg p-4">
-              <div class="flex items-center gap-2 mb-2">
-                <font-awesome-icon icon="fa-solid fa-check-circle" class="text-success" />
-                <label class="text-sm font-semibold text-gray-700">Data de Conclusão</label>
-              </div>
-              <date-time-editable-input 
-                name="date_conclusion" 
-                v-model="task.date_conclusion"
-                @save="updateTask('date_conclusion', $event)"
-              />
-            </div>
-
-            <div class="bg-primary-50 rounded-lg p-4">
-              <div class="flex items-center gap-2 mb-2">
-                <font-awesome-icon icon="fa-solid fa-clock" class="text-primary" />
-                <label class="text-sm font-semibold text-gray-700">Duração</label>
-                <span v-if="isJourneyRunning" class="flex items-center gap-1 text-xs font-semibold text-green-600">
-                  <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                  AO VIVO
-                </span>
-              </div>
-              <p class="text-2xl font-bold text-primary">
-                <journey-timer v-if="isJourneyRunning" :base-seconds="task.duration_time || 0" />
-                <template v-else>{{ formatDuration(task.duration_time) }}</template>
-              </p>
-            </div>
+    <!-- Body -->
+    <div class="px-8 py-6">
+      <!-- Datas e Duração -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div class="bg-gray-50 rounded-lg p-4">
+          <div class="flex items-center gap-2 mb-2">
+            <font-awesome-icon icon="fa-solid fa-exclamation-circle" class="text-error" />
+            <label class="text-sm font-semibold text-gray-700">Data de Vencimento</label>
           </div>
-
-          <!-- Descrição -->
-          <div class="mb-6 bg-gray-50 rounded-lg p-4">
-            <text-area-editable-input 
-              name="description"
-              label="Descrição"
-              v-model="task.description"
-              placeholder="Adicione uma descrição detalhada da tarefa"
-              @save="updateTask('description', $event)"
-            />
-          </div>
-
-          <!-- Links -->
-          <div class="mb-6">
-            <div class="flex items-center justify-between gap-2 mb-2">
-              <button
-                type="button"
-                class="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-primary transition-colors"
-                @click="showLinks = !showLinks"
-              >
-                <font-awesome-icon icon="fa-solid fa-link" class="text-primary" />
-                Links
-                <span v-if="task.links && task.links.length" class="text-gray-400 font-normal">({{ task.links.length }})</span>
-                <font-awesome-icon :icon="showLinks ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'" class="text-xs text-gray-400" />
-              </button>
-              <div class="flex items-center gap-1">
-                <button-new-form
-                  target="link"
-                  @open-modal="openCreateLinkModal"
-                />
-              </div>
-            </div>
-            <div v-if="showLinks">
-              <task-links-list 
-                :links="task.links || []"
-                :show-header="false"
-                :show-task-column="false"
-                @delete-link="deleteLink"
-                @copy-link="copyLink"
-              />
-            </div>
-          </div>
-
-          <!-- Jornadas -->
-          <div v-if="task.journeys && task.journeys.length > 0" class="mb-6">
-            <div class="flex items-center justify-between mb-4">
-              <h4 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                <font-awesome-icon icon="fa-solid fa-clock" class="text-primary" />
-                Jornadas
-                <span class="text-sm font-normal text-gray-500">({{ task.journeys.length }})</span>
-              </h4>
-            </div>
-            <journeys-list-from-opportunity 
-              :journeys="task.journeys" 
-              :taskId="task.id"
-              @update-task-duration="refreshTask"
-            />
-          </div>
-
-          <!-- Formulário de Nova Jornada -->
-          <div v-if="showJourneyForm" class="mb-6">
-            <journey-create-form 
-              :taskId="task.id"
-              @new-journey-event="addJourneyCreated"
-              @close="showJourneyForm = false"
-            />
-          </div>
-
-          <!-- Área de Cancelamento -->
-          <div v-if="showCancelArea" class="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
-            <h4 class="text-lg font-bold text-red-700 mb-4">Cancelar Tarefa</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <date-time-editable-input 
-                name="date_canceled" 
-                v-model="task.date_canceled"
-                label="Data de Cancelamento"
-                @save="updateTask('date_canceled', $event)"
-              />
-              <cancellation-reason-select-input 
-                name="cancellation_reason" 
-                v-model="task.cancellation_reason"
-                :disabled="!task.date_canceled" 
-                @update:modelValue="updateTask('cancellation_reason', $event)"
-              />
-            </div>
-          </div>
+          <date-time-editable-input v-model="task.date_due" :classText="getDeadlineClass(task.date_due)"
+            @save="updateTask('date_due', $event)" />
         </div>
 
-        <!-- Footer com Ações -->
-        <div class="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-8 py-4">
-          <div class="flex justify-between items-center">
-            <!-- Ações Rápidas -->
-            <div class="flex gap-3">
-              <button
-                type="button"
-                class="px-4 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-purple-600 transition-colors"
-                @click="quickStartJourney"
-                title="Iniciar jornada agora"
-              >
-                <font-awesome-icon icon="fa-solid fa-bolt" class="me-2" />
-                Iniciar Jornada
-              </button>
-
-              <add-journey-button
-                :is-open="showJourneyForm"
-                @click="toggleJourneyForm"
-                title="Adicionar jornada manualmente"
-              />
-
-              <button
-                type="button"
-                class="px-4 py-2 bg-gray-500 text-white rounded-lg font-semibold hover:bg-gray-600 transition-colors"
-                @click="cloneTask"
-                title="Clonar tarefa"
-              >
-                <font-awesome-icon icon="fa-solid fa-copy" class="me-2" />
-                Clonar
-              </button>
-
-                   <button
-                type="button"
-                class="px-4 py-2 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-colors"
-                @click="toggleCancelArea"
-                :title="showCancelArea ? 'Ocultar cancelamento' : 'Cancelar tarefa'"
-              >
-                <font-awesome-icon icon="fa-solid fa-times-circle" class="me-2" />
-                {{ showCancelArea ? 'Ocultar' : 'Cancelar' }}
-              </button>
-            </div>
-
-
-            <!-- Botões Finalizar + Fechar -->
-            <div class="flex gap-2">
-              <div
-                v-if="!task.date_conclusion"
-                class="relative group"
-              >
-                <button
-                  type="button"
-                  :disabled="!canFinishTask"
-                  class="px-4 py-2 text-white rounded-lg font-semibold transition-colors"
-                  :class="canFinishTask
-                    ? 'bg-success hover:bg-green-700 cursor-pointer'
-                    : 'bg-gray-300 cursor-not-allowed opacity-60'"
-                  @click="finishTask"
-                  title="Finalizar tarefa"
-                >
-                  <font-awesome-icon icon="fa-solid fa-check" class="me-2" />
-                  Finalizar
-                </button>
-                <div
-                  v-if="!canFinishTask"
-                  class="absolute bottom-full right-0 mb-2 w-64 bg-gray-800 text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50"
-                >
-                  {{ canFinishTaskMessage }}
-                  <div class="absolute top-full right-4 border-4 border-transparent border-t-gray-800"></div>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                class="px-6 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
-                @click="closeModal"
-              >
-                Fechar
-              </button>
-            </div>
+        <div class="bg-gray-50 rounded-lg p-4">
+          <div class="flex items-center gap-2 mb-2">
+            <font-awesome-icon icon="fa-solid fa-check-circle" class="text-success" />
+            <label class="text-sm font-semibold text-gray-700">Data de Conclusão</label>
           </div>
+          <date-time-editable-input name="date_conclusion" v-model="task.date_conclusion"
+            @save="updateTask('date_conclusion', $event)" />
+        </div>
+
+        <div class="bg-primary-50 rounded-lg p-4">
+          <div class="flex items-center gap-2 mb-2">
+            <font-awesome-icon icon="fa-solid fa-clock" class="text-primary" />
+            <label class="text-sm font-semibold text-gray-700">Duração</label>
+            <span v-if="isJourneyRunning" class="flex items-center gap-1 text-xs font-semibold text-green-600">
+              <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+              AO VIVO
+            </span>
+          </div>
+          <p class="text-2xl font-bold text-primary">
+            <journey-timer v-if="isJourneyRunning" :base-seconds="task.duration_time || 0" />
+            <template v-else>{{ formatDuration(task.duration_time) }}</template>
+          </p>
         </div>
       </div>
+
+      <!-- Descrição -->
+      <div class="mb-6 bg-gray-50 rounded-lg p-4">
+        <text-area-editable-input name="description" label="Descrição" v-model="task.description"
+          placeholder="Adicione uma descrição detalhada da tarefa" @save="updateTask('description', $event)" />
+      </div>
+
+      <!-- Formulário de Nova Jornada -->
+      <div v-if="showJourneyForm" class="mb-6">
+        <journey-create-form :taskId="task.id" @new-journey-event="addJourneyCreated"
+          @close="showJourneyForm = false" />
+      </div>
+
+      <!-- Área de Cancelamento -->
+      <div v-if="showCancelArea" class="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
+        <h4 class="text-lg font-bold text-red-700 mb-4">Cancelar Tarefa</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <date-time-editable-input name="date_canceled" v-model="task.date_canceled" label="Data de Cancelamento"
+            @save="updateTask('date_canceled', $event)" />
+          <cancellation-reason-select-input name="cancellation_reason" v-model="task.cancellation_reason"
+            :disabled="!task.date_canceled" @update:modelValue="updateTask('cancellation_reason', $event)" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer com Ações -->
+    <div class="sticky bottom-0 bg-gray-50 border-t border-gray-200 py-4" :class="compact ? 'px-4' : 'px-8'">
+      <div class="flex justify-between items-center gap-2">
+        <!-- Ações Rápidas -->
+        <div class="flex" :class="compact ? 'gap-2' : 'gap-3'">
+          <button type="button"
+            class="px-4 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-purple-600 transition-colors"
+            @click="isJourneyRunning ? stopJourney() : quickStartJourney()"
+            :title="isJourneyRunning ? 'Parar jornada' : 'Iniciar jornada agora'">
+            <font-awesome-icon :icon="isJourneyRunning ? 'fa-solid fa-stop' : 'fa-solid fa-bolt'"
+              :class="{ 'me-2': !compact }" />
+            <span v-if="!compact">{{ isJourneyRunning ? 'Parar' : 'Iniciar' }}</span>
+          </button>
+
+          <button type="button"
+            class="px-4 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-purple-600 transition-colors"
+            @click="openJourneysModal" title="Ver jornadas da tarefa">
+            <font-awesome-icon icon="fa-solid fa-clock" :class="{ 'me-2': !compact }" />
+            <span v-if="!compact">Jornadas</span>
+            <span v-if="task.journeys && task.journeys.length" :class="{ 'ms-1': compact }">({{ task.journeys.length
+              }})</span>
+          </button>
+
+          <add-journey-button :is-open="showJourneyForm" :icon-only="compact" @click="toggleJourneyForm"
+            title="Adicionar jornada manualmente" />
+
+          <button type="button"
+            class="px-4 py-2 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors"
+            @click="openLinksModal" title="Ver links da tarefa">
+            <font-awesome-icon icon="fa-solid fa-link" :class="{ 'me-2': !compact }" />
+            <span v-if="!compact">Links</span>
+            <span v-if="task.links && task.links.length" :class="{ 'ms-1': compact }">({{ task.links.length }})</span>
+          </button>
+
+          <button type="button"
+            class="px-4 py-2 bg-gray-500 text-white rounded-lg font-semibold hover:bg-gray-600 transition-colors"
+            @click="cloneTask" title="Clonar tarefa">
+            <font-awesome-icon icon="fa-solid fa-copy" :class="{ 'me-2': !compact }" />
+            <span v-if="!compact">Clonar</span>
+          </button>
+
+          <button type="button"
+            class="px-4 py-2 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-colors"
+            @click="toggleCancelArea" :title="showCancelArea ? 'Ocultar cancelamento' : 'Cancelar tarefa'">
+            <font-awesome-icon icon="fa-solid fa-times-circle" :class="{ 'me-2': !compact }" />
+            <span v-if="!compact">{{ showCancelArea ? 'Ocultar' : 'Cancelar' }}</span>
+          </button>
+        </div>
+
+
+        <!-- Botões Finalizar + Fechar -->
+        <div class="flex gap-2">
+          <div v-if="!task.date_conclusion" class="relative group">
+            <button type="button" :disabled="!canFinishTask"
+              class="px-4 py-2 text-white rounded-lg font-semibold transition-colors" :class="canFinishTask
+                ? 'bg-success hover:bg-green-700 cursor-pointer'
+                : 'bg-gray-300 cursor-not-allowed opacity-60'" @click="finishTask" title="Finalizar tarefa">
+              <font-awesome-icon icon="fa-solid fa-check" :class="{ 'me-2': !compact }" />
+              <span v-if="!compact">Finalizar</span>
+            </button>
+            <div v-if="!canFinishTask"
+              class="absolute bottom-full right-0 mb-2 w-64 bg-gray-800 text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+              {{ canFinishTaskMessage }}
+              <div class="absolute top-full right-4 border-4 border-transparent border-t-gray-800"></div>
+            </div>
+          </div>
+
+          <button type="button"
+            class="py-2 text-gray-700 bg-white border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+            :class="compact ? 'px-4' : 'px-6'" @click="closeModal" title="Fechar">
+            <font-awesome-icon v-if="compact" icon="fa-solid fa-times" />
+            <template v-else>Fechar</template>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -310,17 +204,14 @@ import axios from "axios";
 import { mapMutations, mapActions, mapState } from "vuex";
 import { formatDuration } from "@/utils/date/dateUtils";
 import { getDeadlineClass } from "@/utils/card/cardUtils";
-import { BACKEND_URL, TASK_URL_PARAMETER, JOURNEY_URL } from "@/config/apiConfig";
+import { BACKEND_URL, TASK_URL_PARAMETER, JOURNEY_URL_PARAMETER } from "@/config/apiConfig";
 import DateTimeEditableInput from "@/components/fields/datetime/DateTimeEditableInput.vue";
 import TextAreaEditableInput from "@/components/forms/inputs/textarea/TextAreaEditableInput.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField.vue";
-import JourneysListFromOpportunity from "@/components/lists/JourneysListFromOpportunity.vue";
 import CancellationReasonSelectInput from "@/components/forms/selects/CancellationReasonSelectInput.vue";
 import JourneyCreateForm from "@/components/forms/JourneyCreateForm.vue";
 import CloseButton from "@/components/buttons/CloseButton.vue";
 import AddJourneyButton from "@/components/buttons/AddJourneyButton.vue";
-import TaskLinksList from "@/components/lists/TaskLinksList.vue";
-import ButtonNewForm from "@/components/buttons/ButtonNewForm.vue";
 import OpportunitiesSelectInput from "@/components/forms/selects/OpportunitiesSelectInput.vue";
 import JourneyTimer from "@/components/journeys/JourneyTimer.vue";
 
@@ -330,13 +221,10 @@ export default {
     DateTimeEditableInput,
     TextAreaEditableInput,
     TextEditableField,
-    JourneysListFromOpportunity,
     CancellationReasonSelectInput,
     JourneyCreateForm,
     CloseButton,
     AddJourneyButton,
-    TaskLinksList,
-    ButtonNewForm,
     OpportunitiesSelectInput,
     JourneyTimer,
   },
@@ -378,7 +266,6 @@ export default {
       loading: false,
       showCancelArea: false,
       showJourneyForm: false,
-      showLinks: false,
       showOpportunitySelect: false,
       selectedOpportunity: null,
     };
@@ -403,12 +290,12 @@ export default {
 
     async loadTask() {
       if (!this.taskId) return;
-      
+
       this.loading = true;
       try {
         const response = await axios.get(`${BACKEND_URL}${TASK_URL_PARAMETER}${this.taskId}`);
         this.task = response.data.data;
-        
+
         // Se tarefa já está cancelada, mostra a área de cancelamento
         if (this.task.date_canceled) {
           this.showCancelArea = true;
@@ -446,7 +333,7 @@ export default {
 
         const response = await axios.post(`${BACKEND_URL}journeys`, quickForm);
         const newJourney = response.data.data;
-        
+
         // Adiciona a nova jornada à lista
         if (!this.task.journeys) this.task.journeys = [];
         this.task.journeys.unshift(newJourney);
@@ -455,6 +342,21 @@ export default {
         this.checkOpenJourneys();
       } catch (error) {
         console.error("Erro ao iniciar jornada:", error);
+      }
+    },
+
+    async stopJourney() {
+      const journeyId = this.openJourney?.id;
+      if (!journeyId) return;
+      try {
+        await axios.put(`${BACKEND_URL}${JOURNEY_URL_PARAMETER}${journeyId}`, {
+          id: journeyId,
+          end: new Date().toISOString(),
+        });
+        this.$store.commit("setOpenJourney", null);
+        await this.refreshTask();
+      } catch (error) {
+        console.error("Erro ao parar jornada:", error);
       }
     },
 
@@ -482,37 +384,31 @@ export default {
       this.$emit('task-updated', this.task);
     },
 
-    openCreateLinkModal() {
+    openJourneysModal() {
       this.openModal({
-        component: "LinkCreateForm",
-        props: { taskId: this.task.id },
-        listeners: {
-          "new-link-event": this.addLinkCreated,
+        component: "TaskJourneysModal",
+        props: { taskId: this.task.id, taskName: this.task.name },
+        id: `task-journeys-${this.task.id}`,
+      });
+    },
+
+    openLinksModal() {
+      this.openModal({
+        component: "LinksModal",
+        props: {
+          taskId: this.task.id,
+          taskName: this.task.name,
+          opportunityId: this.task.opportunity?.id || null,
         },
+        listeners: {
+          "links-changed": this.onLinksChanged,
+        },
+        id: `task-links-${this.task.id}`,
       });
     },
-    addLinkCreated(linkData) {
-      if (!this.task.links) this.task.links = [];
-      this.task.links.unshift(linkData);
+    onLinksChanged(links) {
+      this.task.links = [...links];
       this.$emit('task-updated', this.task);
-    },
-
-    async deleteLink(linkId) {
-      try {
-        await axios.delete(`${BACKEND_URL}links/${linkId}`);
-        this.task.links = this.task.links.filter(link => link.id !== linkId);
-        this.$emit('task-updated', this.task);
-      } catch (error) {
-        console.error("Erro ao deletar link:", error);
-      }
-    },
-
-    copyLink(url) {
-      navigator.clipboard.writeText(url).then(() => {
-        alert("Link copiado para a área de transferência!");
-      }).catch(err => {
-        console.error("Erro ao copiar link:", err);
-      });
     },
 
     async refreshTask() {
@@ -564,6 +460,7 @@ export default {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -571,20 +468,23 @@ export default {
 
 /* Estilo para o div de visualização (não editando) */
 :deep(.w-full.border-none.p-1) {
-  color: #6b7280; /* text-gray-500 - placeholder */
+  color: #6b7280;
+  /* text-gray-500 - placeholder */
   font-style: italic;
   min-height: 80px;
 }
 
 /* Quando tem conteúdo no div de visualização */
 :deep(.w-full.border-none.p-1:not(:empty)) {
-  color: #374151; /* text-gray-700 - texto normal */
+  color: #374151;
+  /* text-gray-700 - texto normal */
   font-style: normal;
 }
 
 /* Estilo para o textarea quando está editando */
 :deep(textarea) {
-  color: #1f2937 !important; /* text-gray-800 - texto digitado visível */
+  color: #1f2937 !important;
+  /* text-gray-800 - texto digitado visível */
   background-color: white !important;
 }
 

@@ -11,12 +11,12 @@
       </div>
 
       <div v-if="links.length === 0" class="p-4 text-center">
-          <p class="text-base-content/50">Nenhum link de tarefa</p>
+          <p class="text-base-content/50">{{ emptyMessage }}</p>
       </div>
 
       <div v-else class="overflow-x-auto">
           <!-- Header da tabela -->
-          <div class="grid gap-4 px-4 py-3 bg-gray-100 border-b border-gray-200 font-semibold text-sm text-gray-700" :class="gridClass">
+          <div class="grid gap-4 px-4 py-2 bg-gray-100 border-b border-gray-200 font-semibold text-sm text-gray-700" :class="gridClass">
               <div :class="titleColClass">Título</div>
               <div :class="urlColClass">URL</div>
               <div :class="observationsColClass">Observações</div>
@@ -28,13 +28,12 @@
           <div 
               v-for="link in links" 
               :key="link.id"
-              class="grid gap-4 px-4 py-1 border-b border-gray-200 hover:bg-gray-50 transition-colors items-center"
+              class="grid gap-4 px-4 py-0.5 border-b border-gray-200 hover:bg-gray-50 transition-colors items-center"
               :class="gridClass"
           >
               <div :class="titleColClass" class="flex items-center">
-                  <font-awesome-icon icon="fa-solid fa-link" class="text-blue-500 mr-2" />
                   <a 
-                      class="text-blue-600 font-semibold hover:underline truncate" 
+                      class="text-sm text-blue-600 font-semibold hover:underline truncate" 
                       :href="link.url" 
                       target="_blank"
                       :title="link.title"
@@ -58,24 +57,25 @@
                   </span>
               </div>
               <div v-if="showTaskColumn" :class="taskColClass">
-                  <span v-if="link.task" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 truncate">
+                  <span v-if="link.task" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 truncate">
                       <font-awesome-icon icon="fa-solid fa-tasks" class="mr-1" />
                       {{ link.task.name }}
                   </span>
               </div>
               <div :class="actionsColClass" class="flex justify-center gap-2">
                   <delete-icon-button
-                      size="w-8 h-8"
+                      size="w-5 h-5"
+                      icon-size="text-[10px]"
                       title="Excluir link"
                       confirm-message="Tem certeza que deseja excluir este link?"
                       @confirm="$emit('delete-link', link.id)"
                   />
                   <button
-                      class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors shadow-sm"
+                      class="w-5 h-5 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors shadow-sm"
                       @click="$emit('copy-link', link.url)"
                       title="Copiar link"
                   >
-                      <font-awesome-icon icon="fa-solid fa-copy" class="text-sm" />
+                      <font-awesome-icon icon="fa-solid fa-copy" class="text-[10px]" />
                   </button>
               </div>
           </div>
@@ -108,6 +108,10 @@ export default {
       containerClass: {
           type: String,
           default: ''
+      },
+      emptyMessage: {
+          type: String,
+          default: 'Nenhum link de tarefa'
       }
   },
   computed: {

@@ -62,6 +62,8 @@ class Journey extends Model
             ->whereNotNull('start')
             ->whereNull('end')
             ->with(['task', 'task.opportunity', 'task.project'])
+            ->orderByDesc('start')
+            ->orderByDesc('id')
             ->first();
     }
 }

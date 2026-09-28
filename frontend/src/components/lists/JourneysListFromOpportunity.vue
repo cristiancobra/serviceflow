@@ -71,16 +71,13 @@
           />
         </div>
         <div class="flex items-center mr-5 ml-auto gap-2">
-          <button
+          <journey-toggle-button
             v-if="!journey.end"
-            class="w-8 h-8 pt-1 flex items-center justify-center rounded-full text-white bg-blue-500 hover:bg-blue-700 transition duration-200 ease-in-out shadow-md hover:shadow-lg"
-            @click="stopJourney(journey.id)"
-            title="Parar jornada"
-          >
-            <span class="">
-              <font-awesome-icon icon="fa-solid fa-hand" />
-            </span>
-          </button>
+            running
+            size="w-8 h-8"
+            icon-size=""
+            @stop="stopJourney(journey.id)"
+          />
           <delete-icon-button
             size="w-8 h-8"
             title="Excluir jornada"
@@ -110,6 +107,7 @@ import TimeEditableInput from "@/components/forms/inputs/time/TimeEditableInput.
 import PaginateNav from "@/components/layout/PaginateNav.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
+import JourneyToggleButton from "@/components/buttons/JourneyToggleButton.vue";
 
 export default {
   name: "JourneysList",
@@ -119,6 +117,7 @@ export default {
     PaginateNav,
     TimeEditableInput,
     DeleteIconButton,
+    JourneyToggleButton,
   },
   props: {
     journeys: {

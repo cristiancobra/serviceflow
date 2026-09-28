@@ -5,8 +5,8 @@
     @click="$emit('click')"
     :title="title"
   >
-    <font-awesome-icon :icon="isOpen ? 'fa-solid fa-minus' : 'fa-solid fa-plus'" class="me-2" />
-    {{ isOpen ? 'Fechar' : 'Adicionar Jornada' }}
+    <font-awesome-icon :icon="isOpen ? 'fa-solid fa-minus' : 'fa-solid fa-plus'" :class="{ 'me-2': !iconOnly }" />
+    <span v-if="!iconOnly">{{ isOpen ? 'Fechar' : 'Adicionar Jornada' }}</span>
   </button>
 </template>
 
@@ -17,6 +17,11 @@ defineProps({
     default: 'Adicionar jornada',
   },
   isOpen: {
+    type: Boolean,
+    default: false,
+  },
+  // Exibe apenas o ícone (ex: modal compacto, quando há outro modal aberto ao lado)
+  iconOnly: {
     type: Boolean,
     default: false,
   },

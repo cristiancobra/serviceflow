@@ -1,29 +1,57 @@
 <template>
-  <div
-    class="modal-panel bg-white rounded-2xl shadow-2xl w-full max-h-[90vh] overflow-y-auto"
-    :class="compact ? 'max-w-2xl' : 'max-w-6xl'"
+  <ModalCard
+    title="LINKS"
+    :subtitle="taskName"
+    icon="fa-solid fa-link"
+    size="xl"
+    :compact="compact"
+    compact-size="max-w-3xl"
+    @close="closeModal"
   >
-        <!-- Header -->
-        <div class="sticky top-0 bg-gradient-to-r from-blue-50 to-blue-25 border-b border-gray-200 px-8 py-6 z-10">
-          <div class="flex justify-between items-start">
-            <div class="flex items-center gap-3">
-              <font-awesome-icon icon="fa-solid fa-link" class="text-3xl text-primary" />
-              <h1 class="text-2xl font-bold text-gray-800">LINKS</h1>
-            </div>
-            <div class="flex items-center gap-2">
+          <div class="flex justify-end mb-4">
               <button-new-form
                   target="link"
                   @open-modal="openCreateLinkModal"
               />
-              <close-button @click="closeModal" />
-            </div>
           </div>
-        </div>
 
-        <!-- Body -->
-        <div class="px-8 py-6">
+          <!-- LINKS DA TAREFA (quando aberto a partir de uma tarefa) -->
+          <section v-if="taskId" class="mb-6">
+              <div class="section-header">
+                  <div class="section-title">
+                      <font-awesome-icon icon="fa-solid fa-check-circle" class="icon" />
+                      <h2>LINKS DESTA TAREFA</h2>
+                  </div>
+              </div>
+              <task-links-list
+                  :links="linksOfCurrentTask"
+                  :show-header="false"
+                  :show-task-column="false"
+                  @delete-link="deleteLink"
+                  @copy-link="copyLink"
+              />
+          </section>
+
+          <!-- LINKS DA OPORTUNIDADE DA TAREFA -->
+          <section v-if="opportunityId" class="mb-6">
+              <div class="section-header">
+                  <div class="section-title">
+                      <font-awesome-icon icon="fa-solid fa-bullseye" class="icon" />
+                      <h2>LINKS DESTA OPORTUNIDADE</h2>
+                  </div>
+              </div>
+              <task-links-list
+                  :links="linksOfCurrentOpportunity"
+                  empty-message="Nenhum link desta oportunidade"
+                  :show-header="false"
+                  :show-task-column="false"
+                  @delete-link="deleteLink"
+                  @copy-link="copyLink"
+              />
+          </section>
+
           <!-- LINKS SEM TAREFAS -->
-          <section class="section-container">
+          <section class="mb-6">
               <div class="section-header">
                   <div class="section-title">
                       <font-awesome-icon icon="fa-solid fa-link" class="icon" />
@@ -39,7 +67,7 @@
 
               <div v-else class="overflow-x-auto">
                   <!-- Header da tabela -->
-                  <div class="grid grid-cols-12 gap-4 px-4 py-3 bg-gray-100 border-b border-gray-200 font-semibold text-sm text-gray-700">
+                  <div class="grid grid-cols-12 gap-4 px-4 py-2 bg-gray-100 border-b border-gray-200 font-semibold text-sm text-gray-700">
                       <div class="col-span-3">Título</div>
                       <div class="col-span-3">URL</div>
                       <div class="col-span-4">Observações</div>
@@ -50,12 +78,11 @@
                   <div
                       v-for="link in linksWithoutTask"
                       :key="link.id"
-                      class="grid grid-cols-12 gap-4 px-4 py-3 border-b border-gray-200 hover:bg-gray-50 transition-colors items-center"
+                      class="grid grid-cols-12 gap-4 px-4 py-0.5 border-b border-gray-200 hover:bg-gray-50 transition-colors items-center"
                   >
                       <div class="col-span-3 flex items-center">
-                          <font-awesome-icon icon="fa-solid fa-link" class="text-blue-500 mr-2" />
                           <a
-                              class="text-blue-600 font-semibold hover:underline truncate"
+                              class="text-sm text-blue-600 font-semibold hover:underline truncate"
                               :href="link.url"
                               target="_blank"
                               :title="link.title"
@@ -80,17 +107,18 @@
                       </div>
                       <div class="col-span-2 flex justify-center gap-2">
                           <delete-icon-button
-                              size="w-8 h-8"
+                              size="w-5 h-5"
+                              icon-size="text-[10px]"
                               title="Excluir link"
                               confirm-message="Tem certeza que deseja excluir este link?"
                               @confirm="deleteLink(link.id)"
                           />
                           <button
-                              class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors shadow-sm"
+                              class="w-5 h-5 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors shadow-sm"
                               @click="copyLink(link.url)"
                               title="Copiar link"
                           >
-                              <font-awesome-icon icon="fa-solid fa-copy" class="text-sm" />
+                              <font-awesome-icon icon="fa-solid fa-copy" class="text-[10px]" />
                           </button>
                       </div>
                   </div>
@@ -99,14 +127,14 @@
 
           <!-- LINKS DE TAREFAS -->
           <task-links-list
-              :links="linksWithTask"
-              container-class="mt-6"
+              :links="linksOfOtherTasks"
+              container-class="mb-6"
               @delete-link="deleteLink"
               @copy-link="copyLink"
           />
 
           <!-- LINKS DE OPORTUNIDADES -->
-          <section class="section-container mt-6">
+          <section class="mb-6">
               <div class="section-header">
                   <div class="section-title">
                       <font-awesome-icon icon="fa-solid fa-bullseye" class="icon" />
@@ -114,13 +142,13 @@
                   </div>
               </div>
 
-              <div v-if="linksWithOpportunity.length === 0" class="p-4 text-center">
+              <div v-if="linksOfOtherOpportunities.length === 0" class="p-4 text-center">
                   <p class="text-gray-500">Nenhum link de oportunidade</p>
               </div>
 
               <div v-else class="overflow-x-auto">
                   <!-- Header da tabela -->
-                  <div class="grid grid-cols-12 gap-4 px-4 py-3 bg-gray-100 border-b border-gray-200 font-semibold text-sm text-gray-700">
+                  <div class="grid grid-cols-12 gap-4 px-4 py-2 bg-gray-100 border-b border-gray-200 font-semibold text-sm text-gray-700">
                       <div class="col-span-3">Título</div>
                       <div class="col-span-2">URL</div>
                       <div class="col-span-3">Observações</div>
@@ -130,14 +158,13 @@
 
                   <!-- Linhas da tabela -->
                   <div
-                      v-for="link in linksWithOpportunity"
+                      v-for="link in linksOfOtherOpportunities"
                       :key="link.id"
-                      class="grid grid-cols-12 gap-4 px-4 py-3 border-b border-gray-200 hover:bg-gray-50 transition-colors items-center"
+                      class="grid grid-cols-12 gap-4 px-4 py-0.5 border-b border-gray-200 hover:bg-gray-50 transition-colors items-center"
                   >
                       <div class="col-span-3 flex items-center">
-                          <font-awesome-icon icon="fa-solid fa-link" class="text-blue-500 mr-2" />
                           <a
-                              class="text-blue-600 font-semibold hover:underline truncate"
+                              class="text-sm text-blue-600 font-semibold hover:underline truncate"
                               :href="link.url"
                               target="_blank"
                               :title="link.title"
@@ -161,24 +188,25 @@
                           </span>
                       </div>
                       <div class="col-span-2">
-                          <span v-if="link.opportunity" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 truncate">
+                          <span v-if="link.opportunity" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 truncate">
                               <font-awesome-icon icon="fa-solid fa-bullseye" class="mr-1" />
                               {{ link.opportunity.name }}
                           </span>
                       </div>
                       <div class="col-span-2 flex justify-center gap-2">
                           <delete-icon-button
-                              size="w-8 h-8"
+                              size="w-5 h-5"
+                              icon-size="text-[10px]"
                               title="Excluir link"
                               confirm-message="Tem certeza que deseja excluir este link?"
                               @confirm="deleteLink(link.id)"
                           />
                           <button
-                              class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors shadow-sm"
+                              class="w-5 h-5 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors shadow-sm"
                               @click="copyLink(link.url)"
                               title="Copiar link"
                           >
-                              <font-awesome-icon icon="fa-solid fa-copy" class="text-sm" />
+                              <font-awesome-icon icon="fa-solid fa-copy" class="text-[10px]" />
                           </button>
                       </div>
                   </div>
@@ -186,7 +214,7 @@
           </section>
 
           <!-- LINKS DE PROJETOS -->
-          <section class="section-container mt-6">
+          <section class="mb-6">
               <div class="section-header">
                   <div class="section-title">
                       <font-awesome-icon icon="fa-solid fa-project-diagram" class="icon" />
@@ -200,7 +228,7 @@
 
               <div v-else class="overflow-x-auto">
                   <!-- Header da tabela -->
-                  <div class="grid grid-cols-12 gap-4 px-4 py-3 bg-gray-100 border-b border-gray-200 font-semibold text-sm text-gray-700">
+                  <div class="grid grid-cols-12 gap-4 px-4 py-2 bg-gray-100 border-b border-gray-200 font-semibold text-sm text-gray-700">
                       <div class="col-span-3">Título</div>
                       <div class="col-span-2">URL</div>
                       <div class="col-span-3">Observações</div>
@@ -212,12 +240,11 @@
                   <div
                       v-for="link in linksWithProject"
                       :key="link.id"
-                      class="grid grid-cols-12 gap-4 px-4 py-3 border-b border-gray-200 hover:bg-gray-50 transition-colors items-center"
+                      class="grid grid-cols-12 gap-4 px-4 py-0.5 border-b border-gray-200 hover:bg-gray-50 transition-colors items-center"
                   >
                       <div class="col-span-3 flex items-center">
-                          <font-awesome-icon icon="fa-solid fa-link" class="text-blue-500 mr-2" />
                           <a
-                              class="text-blue-600 font-semibold hover:underline truncate"
+                              class="text-sm text-blue-600 font-semibold hover:underline truncate"
                               :href="link.url"
                               target="_blank"
                               :title="link.title"
@@ -241,31 +268,31 @@
                           </span>
                       </div>
                       <div class="col-span-2">
-                          <span v-if="link.project" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 truncate">
+                          <span v-if="link.project" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 truncate">
                               <font-awesome-icon icon="fa-solid fa-project-diagram" class="mr-1" />
                               {{ link.project.name }}
                           </span>
                       </div>
                       <div class="col-span-2 flex justify-center gap-2">
                           <delete-icon-button
-                              size="w-8 h-8"
+                              size="w-5 h-5"
+                              icon-size="text-[10px]"
                               title="Excluir link"
                               confirm-message="Tem certeza que deseja excluir este link?"
                               @confirm="deleteLink(link.id)"
                           />
                           <button
-                              class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors shadow-sm"
+                              class="w-5 h-5 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors shadow-sm"
                               @click="copyLink(link.url)"
                               title="Copiar link"
                           >
-                              <font-awesome-icon icon="fa-solid fa-copy" class="text-sm" />
+                              <font-awesome-icon icon="fa-solid fa-copy" class="text-[10px]" />
                           </button>
                       </div>
                   </div>
               </div>
           </section>
-        </div>
-      </div>
+  </ModalCard>
 </template>
 
 <script>
@@ -274,7 +301,7 @@ import { index, destroy } from "@/utils/requests/httpUtils";
 import SearchInput from "@/components/filters/SearchInput.vue";
 import ButtonNewForm from "@/components/buttons/ButtonNewForm.vue";
 import TaskLinksList from "@/components/lists/TaskLinksList.vue";
-import CloseButton from "@/components/buttons/CloseButton.vue";
+import ModalCard from "@/components/modals/ModalCard.vue";
 import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
 
 export default {
@@ -283,16 +310,30 @@ export default {
       SearchInput,
       ButtonNewForm,
       TaskLinksList,
-      CloseButton,
+      ModalCard,
       DeleteIconButton,
   },
   props: {
+      // Opcional: quando informado, os links desta tarefa aparecem primeiro e novos links já saem vinculados a ela
+      taskId: {
+          type: [Number, String],
+          default: null,
+      },
+      taskName: {
+          type: String,
+          default: "",
+      },
+      // Opcional: oportunidade da tarefa, cujos links aparecem logo abaixo dos links da tarefa
+      opportunityId: {
+          type: [Number, String],
+          default: null,
+      },
       compact: {
           type: Boolean,
           default: false,
       },
   },
-  emits: ["close"],
+  emits: ["close", "links-changed"],
   data() {
       return {
           searchTerm: "",
@@ -315,8 +356,20 @@ export default {
       linksWithTask() {
           return this.filteredLinks.filter(link => link.task_id);
       },
+      linksOfCurrentTask() {
+          return this.linksWithTask.filter(link => this.isCurrentTask(link));
+      },
+      linksOfOtherTasks() {
+          return this.linksWithTask.filter(link => !this.isCurrentTask(link));
+      },
       linksWithOpportunity() {
           return this.filteredLinks.filter(link => link.opportunity_id && !link.task_id && !link.project_id);
+      },
+      linksOfCurrentOpportunity() {
+          return this.linksWithOpportunity.filter(link => this.isCurrentOpportunity(link));
+      },
+      linksOfOtherOpportunities() {
+          return this.linksWithOpportunity.filter(link => !this.isCurrentOpportunity(link));
       },
       linksWithProject() {
           return this.filteredLinks.filter(link => link.project_id && !link.task_id && !link.opportunity_id);
@@ -327,14 +380,26 @@ export default {
       openCreateLinkModal() {
           this.openModal({
               component: "LinkCreateForm",
-              props: { taskId: 0, opportunityId: 0 },
+              props: { taskId: this.taskId || 0, opportunityId: 0 },
               listeners: {
                   "new-link-event": this.addLinkCreated,
               },
           });
       },
+      isCurrentTask(link) {
+          return !!this.taskId && Number(link.task_id) === Number(this.taskId);
+      },
+      isCurrentOpportunity(link) {
+          return !!this.opportunityId && Number(link.opportunity_id) === Number(this.opportunityId);
+      },
+      emitLinksChanged() {
+          if (this.taskId) {
+              this.$emit("links-changed", this.links.filter(link => this.isCurrentTask(link)));
+          }
+      },
       addLinkCreated(newLink) {
           this.links.unshift(newLink);
+          this.emitLinksChanged();
       },
       async getLinks() {
           try {
@@ -347,6 +412,7 @@ export default {
           try {
               await destroy("links", linkId);
               this.links = this.links.filter((link) => link.id !== linkId);
+              this.emitLinksChanged();
           } catch (error) {
               console.error("Erro ao deletar o link:", error);
           }
@@ -367,18 +433,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.modal-panel {
-  animation: fadeIn 0.2s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-</style>
