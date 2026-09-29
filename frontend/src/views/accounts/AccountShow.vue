@@ -70,6 +70,15 @@
           </div>
           <div class="mb-4">
             <TextEditableField
+              name="pix_key"
+              v-model="account.pix_key"
+              placeholder="CNPJ, e-mail, +55DDDNUMERO ou chave aleatória"
+              label="Chave Pix (QR Code das faturas):"
+              @save="updateAccount('pix_key', $event)"
+            />
+          </div>
+          <div class="mb-4">
+            <TextEditableField
               name="phone"
               v-model="account.phone"
               placeholder="telefone da empresa"
@@ -199,6 +208,7 @@ export default {
         cnpj: "",
         email: "",
         inscricao_municipal: "",
+        pix_key: "",
         logo: null,
         name: "",
         phone: "",

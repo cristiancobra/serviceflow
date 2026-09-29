@@ -120,6 +120,16 @@
             placeholder="(00) 00000-0000"
           />
         </div>
+        <div class="flex items-center text-gray-700">
+          <font-awesome-icon icon="fab fa-pix" class="text-primary mr-3 w-5" />
+          <span class="font-bold mr-2">Chave Pix:</span>
+          <text-editable-field
+            name="pix_key"
+            :modelValue="company.pix_key"
+            @save="(value) => updateCompany('pix_key', value)"
+            placeholder="CNPJ, e-mail, +55DDDNUMERO ou aleatória"
+          />
+        </div>
       </div>
     </div>
 

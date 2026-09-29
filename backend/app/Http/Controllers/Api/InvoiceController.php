@@ -3,17 +3,23 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\ConvertsImagesToBase64;
 use App\Http\Requests\InvoiceRequest;
+use App\Models\Account;
 use App\Models\Invoice;
 use App\Models\Proposal;
 use App\Models\Task;
 use App\Http\Resources\InvoicesResource;
+use App\Services\PixService;
+use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Log;
 
 class InvoiceController extends Controller
 {
+    use ConvertsImagesToBase64;
+
     /**
      * Display a listing of the resource.
      *
@@ -298,6 +304,90 @@ class InvoiceController extends Controller
         return response()->json([
             'message' => 'Fatura não encontrada',
         ], 404);
+    }
+
+    /**
+     * Pix copia e cola + QR Code para o cliente pagar o saldo em aberto da fatura.
+     */
+    public function pix(Invoice $invoice)
+    {
+        try {
+            return response()->json(['data' => PixService::forInvoice($invoice)]);
+        } catch (\DomainException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
+    }
+
+    /**
+     * Pix único somando várias faturas do mesmo recebedor (pagamento em lote).
+     * Recebe os mesmos items do payment_batch: [{invoice_id, amount}].
+     */
+    public function pixBatch(Request $request)
+    {
+        $validated = $request->validate([
+            'items' => 'required|array|min:1',
+            'items.*.invoice_id' => 'required|distinct|exists:invoices,id',
+            'items.*.amount' => 'required|numeric|gt:0',
+        ]);
+
+        $invoices = Invoice::with(['company', 'lead'])
+            ->whereIn('id', array_column($validated['items'], 'invoice_id'))
+            ->get()
+            ->keyBy('id');
+
+        $items = array_map(fn ($item) => [
+            'invoice' => $invoices[$item['invoice_id']],
+            'amount' => $item['amount'],
+        ], $validated['items']);
+
+        try {
+            return response()->json(['data' => PixService::forInvoices($items)]);
+        } catch (\DomainException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
+    }
+
+    /**
+     * PDF da fatura para enviar ao cliente, com o QR Code Pix quando houver saldo a receber.
+     */
+    public function exportPdf(Invoice $invoice)
+    {
+        $isVisibleQuantity = filter_var(request()->query('isVisibleQuantity', false), FILTER_VALIDATE_BOOLEAN);
+
+        $invoice->load(['company', 'lead', 'proposal.proposalServices']);
+        $account = Account::find($invoice->account_id);
+
+        try {
+            $pix = PixService::forInvoice($invoice);
+        } catch (\DomainException $e) {
+            $pix = null;
+        }
+
+        $customerName = $invoice->company->business_name
+            ?? $invoice->company->legal_name
+            ?? $invoice->lead->name
+            ?? null;
+
+        $formatter = new \IntlDateFormatter('pt_BR', \IntlDateFormatter::FULL, \IntlDateFormatter::NONE);
+
+        $html = view('invoices.invoice', [
+            'invoice' => $invoice,
+            'account' => $account,
+            'pix' => $pix,
+            'customerName' => $customerName,
+            'isVisibleQuantity' => $isVisibleQuantity,
+            'logo' => $this->userImageToBase64($account->logo ?? null),
+            'emailIcon' => $this->systemImageToBase64('img/proposals/email-icon.png'),
+            'whatsappIcon' => $this->systemImageToBase64('img/proposals/whatsapp-icon.png'),
+            'today' => $formatter->format(new \DateTime),
+            'dateDue' => (new \DateTime($invoice->date_due))->format('d/m/Y'),
+        ])->render();
+
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4');
+        $dompdf->render();
+        $dompdf->stream("fatura-{$invoice->id}.pdf", ["Attachment" => true]);
     }
 
 

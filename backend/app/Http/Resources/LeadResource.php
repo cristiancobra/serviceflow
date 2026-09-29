@@ -23,6 +23,7 @@ class LeadResource extends JsonResource
             'photo' => $this->photo,
             'email' => $this->email,
             'cel_phone' => $this->cel_phone,
+            'pix_key' => $this->pix_key,
             'linkedin' => $this->linkedin,
             'facebook' => $this->facebook,
             'instagram' => $this->instagram,

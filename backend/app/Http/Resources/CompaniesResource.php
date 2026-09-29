@@ -21,6 +21,7 @@ class CompaniesResource extends JsonResource
             'legal_name' => $this->legal_name,
             'contact_person' => $this->contact_person,
             'cnpj' => $this->cnpj,
+            'pix_key' => $this->pix_key,
             'whatsapp' => $this->whatsapp,
             'facebook' => $this->facebook,
             'linkedin' => $this->linkedin,

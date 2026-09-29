@@ -55,7 +55,7 @@ import {
   faUniversity, faUser, faUserCircle, faUserPlus, faUserTie, faUsers,
   faWallet, faX, faXmark
 } from '@fortawesome/free-solid-svg-icons'
-import { faFacebook, faInstagram, faLinkedin } from '@fortawesome/free-brands-svg-icons'
+import { faFacebook, faInstagram, faLinkedin, faPix } from '@fortawesome/free-brands-svg-icons'
 
 /* add icons to the library */
 library.add(
@@ -84,7 +84,7 @@ library.add(
   faTriangleExclamation, faTruck, faTurnUp,
   faUniversity, faUser, faUserCircle, faUserPlus, faUserTie, faUsers,
   faWallet, faX, faXmark,
-  faFacebook, faInstagram, faLinkedin
+  faFacebook, faInstagram, faLinkedin, faPix
 )
 
 // paginate

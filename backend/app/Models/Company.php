@@ -22,6 +22,7 @@ class Company extends Model
         'photo',
         'legal_name',
         'cnpj',
+        'pix_key',
         'email',
         'phone',
         'cel_phone',

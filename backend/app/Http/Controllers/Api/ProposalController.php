@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\ConvertsImagesToBase64;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Log;
@@ -17,6 +18,8 @@ use Dompdf\Dompdf;
 
 class ProposalController extends Controller
 {
+    use ConvertsImagesToBase64;
+
 
     /**
      * Display a listing of the resource.
@@ -601,36 +604,6 @@ class ProposalController extends Controller
             'total' => $totalValue,
             'acceptedProposalsCount' => $acceptedProposalsCount
         ]);
-    }
-
-    /**
-     * convert image to base64 from users data
-     *
-     * @return \Illuminate\Http\Response
-     */
-    private function userImageToBase64($imagePath)
-    {
-        $imageCompletePath = public_path('storage/' . $imagePath);
-        $type = pathinfo($imageCompletePath, PATHINFO_EXTENSION);
-        $data = file_get_contents($imageCompletePath);
-        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-
-        return $base64;
-    }
-
-    /**
-     * convert image to base64
-     *
-     * @return \Illuminate\Http\Response
-     */
-    private function systemImageToBase64($imagePath)
-    {
-        $imageCompletePath = public_path($imagePath);
-        $type = pathinfo($imageCompletePath, PATHINFO_EXTENSION);
-        $data = file_get_contents($imageCompletePath);
-        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-
-        return $base64;
     }
 
     /**

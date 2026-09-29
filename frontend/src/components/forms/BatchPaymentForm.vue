@@ -90,6 +90,17 @@
         />
       </div>
 
+      <!-- Um Pix com o total: só gerado quando todas as faturas são do mesmo recebedor -->
+      <PixPaymentCard
+        v-if="form.method === 'pix'"
+        class="mb-6"
+        title="Pagar via Pix"
+        :pix="pix"
+        :loading="pixLoading"
+        :error="pixError"
+        is-payable
+      />
+
       <div v-if="errorMessages.length" class="mb-6">
         <p v-for="(message, i) in errorMessages" :key="i" class="error text-red-500 text-sm">
           {{ message }}
@@ -128,6 +139,7 @@ import { index } from "@/utils/requests/httpUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import MoneyInput from "./inputs/money/MoneyInput.vue";
 import ModalCard from "@/components/modals/ModalCard.vue";
+import PixPaymentCard from "@/components/common/PixPaymentCard.vue";
 
 /**
  * Paga várias invoices com uma única movimentação bancária (ex: um PIX que
@@ -140,6 +152,7 @@ export default {
   components: {
     MoneyInput,
     ModalCard,
+    PixPaymentCard,
   },
   props: {
     invoices: {
@@ -167,6 +180,11 @@ export default {
       bankAccounts: [],
       errorMessages: [],
       isSubmitting: false,
+      pix: null,
+      pixError: null,
+      pixLoading: false,
+      pixTimer: null,
+      pixRequestId: 0,
       selectClass:
         "w-full px-3 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg shadow-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200 ease-in-out hover:border-gray-400",
     };
@@ -202,6 +220,39 @@ export default {
         this.bankAccounts = [];
       }
     },
+    // Espera o usuário parar de digitar os valores antes de regerar o QR
+    schedulePix() {
+      clearTimeout(this.pixTimer);
+      this.pix = null;
+      this.pixError = null;
+      if (this.form.method !== "pix") return;
+
+      this.pixLoading = true;
+      this.pixTimer = setTimeout(this.getPix, 500);
+    },
+    async getPix() {
+      const requestId = ++this.pixRequestId;
+      const items = this.items
+        .filter((item) => Number(item.amount) > 0)
+        .map((item) => ({ invoice_id: item.invoice.id, amount: Number(item.amount) }));
+
+      if (items.length === 0) {
+        this.pixError = "Informe o valor a pagar das faturas.";
+        this.pixLoading = false;
+        return;
+      }
+
+      try {
+        const response = await axios.post(`${BACKEND_URL}invoices/pix-batch`, { items });
+        if (requestId === this.pixRequestId) this.pix = response.data.data;
+      } catch (error) {
+        if (requestId === this.pixRequestId) {
+          this.pixError = error.response?.data?.message || "Não foi possível gerar o QR Code Pix.";
+        }
+      } finally {
+        if (requestId === this.pixRequestId) this.pixLoading = false;
+      }
+    },
     async submitForm() {
       this.errorMessages = [];
 
@@ -233,8 +284,19 @@ export default {
       }
     },
   },
+  watch: {
+    items: {
+      handler: "schedulePix",
+      deep: true,
+    },
+    "form.method": "schedulePix",
+  },
   mounted() {
     this.getBankAccounts();
+    this.schedulePix();
+  },
+  beforeUnmount() {
+    clearTimeout(this.pixTimer);
   },
 };
 </script>

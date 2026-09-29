@@ -22,6 +22,7 @@ class Lead extends Model
         'photo',
         'email',
         'cel_phone',
+        'pix_key',
         'linkedin',
         'facebook',
         'instagram',

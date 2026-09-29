@@ -19,6 +19,7 @@ class CompanyUpdateRequest extends FormRequest
             'cnpj' => 'nullable|numeric|digits:14',
             'email' => 'email|nullable',
             'cel_phone' => 'nullable|numeric|digits:10',
+            'pix_key' => 'nullable|string|max:77',
             'linkedin' => 'nullable',
             'facebook' => 'nullable',
             'instagram' => 'nullable',

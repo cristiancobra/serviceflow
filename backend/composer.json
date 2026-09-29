@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2.0",
+        "chillerlan/php-qrcode": "^6.0",
         "doctrine/dbal": "^3.6",
         "dompdf/dompdf": "^2.0",
         "ezyang/htmlpurifier": "^4.17",

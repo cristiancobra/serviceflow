@@ -33,6 +33,7 @@ class LeadUpdateRequest extends FormRequest
             'name' => 'sometimes|string|max:255',
             'email' => 'nullable|email|unique:leads,email,'.$leadId.'|max:255',
             'cel_phone' => 'nullable|regex:/^\(?[0-9]{2}\)?[\s9]?[0-9]{4}-?[0-9]{4}$/',
+            'pix_key' => 'nullable|string|max:77',
             'linkedin' => 'nullable|url',
             'facebook' => 'nullable|url',
             'instagram' => 'nullable|url',

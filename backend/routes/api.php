@@ -131,6 +131,15 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::post('invoices/credit', [InvoiceController::class, 'storeCredit'])
 		->name('invoices.storeCredit');
 	
+	Route::post('invoices/pix-batch', [InvoiceController::class, 'pixBatch'])
+		->name('invoices.pixBatch');
+
+	Route::get('invoices/{invoice}/pix', [InvoiceController::class, 'pix'])
+		->name('invoices.pix');
+
+	Route::get('invoices/{invoice}/pdf', [InvoiceController::class, 'exportPdf'])
+		->name('invoices.exportPdf');
+
 	Route::apiResource('invoices', InvoiceController::class)
 		->names('invoices');
 

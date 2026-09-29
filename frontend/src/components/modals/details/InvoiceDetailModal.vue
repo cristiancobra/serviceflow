@@ -249,6 +249,46 @@
           </div>
         </div>
       </div>
+
+      <!-- Pix do saldo em aberto: a receber usa a chave da conta, a pagar usa a do fornecedor -->
+      <pix-payment-card
+        v-if="canChargePix"
+        class="mt-6"
+        :title="isDebit ? 'Pagar via Pix' : 'Cobrar via Pix'"
+        :pix="pix"
+        :loading="pixLoading"
+        :error="pixError"
+        :is-payable="isDebit"
+      >
+        <template #error-action>
+          <template v-if="isDebit">
+            <router-link
+              v-if="invoice.company_id"
+              :to="{ name: 'companyShow', params: { id: invoice.company_id } }"
+              class="text-primary hover:underline font-medium ml-1"
+              @click="$emit('close')"
+            >
+              Abrir empresa fornecedora
+            </router-link>
+            <button
+              v-else-if="invoice.lead_id"
+              type="button"
+              class="text-primary hover:underline font-medium ml-1"
+              @click="openLeadModal(invoice.lead_id)"
+            >
+              Abrir fornecedor
+            </button>
+          </template>
+          <router-link
+            v-else-if="accountId"
+            :to="{ name: 'accountShow', params: { id: accountId } }"
+            class="text-primary hover:underline font-medium ml-1"
+            @click="$emit('close')"
+          >
+            Ir para Configurações
+          </router-link>
+        </template>
+      </pix-payment-card>
     </template>
 
     <template v-if="invoice" #footer>
@@ -275,6 +315,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import { mapMutations } from "vuex";
 import { BACKEND_URL } from "@/config/apiConfig";
 import { destroy, show, updateField } from "@/utils/requests/httpUtils";
@@ -289,6 +330,7 @@ import CompaniesSelectEditableField from "@/components/fields/selects/CompaniesS
 import LeadAvatar from "@/components/common/LeadAvatar.vue";
 import LeadsSelectEditableField from "@/components/fields/selects/LeadsSelectEditableField.vue";
 import TransactionsListSection from "@/components/show/TransactionsListSection.vue";
+import PixPaymentCard from "@/components/common/PixPaymentCard.vue";
 
 const CATEGORY_LABELS = {
   fixed_cost: "Custo Fixo",
@@ -311,6 +353,7 @@ export default {
     LeadAvatar,
     LeadsSelectEditableField,
     TransactionsListSection,
+    PixPaymentCard,
   },
   props: {
     invoiceId: {
@@ -331,6 +374,9 @@ export default {
       invoice: null,
       isVisibleQuantity: false,
       errorMessage: null,
+      pix: null,
+      pixError: null,
+      pixLoading: false,
     };
   },
   computed: {
@@ -349,6 +395,16 @@ export default {
     isDebit() {
       return this.invoice?.type === "debit";
     },
+    canChargePix() {
+      return (
+        this.invoice &&
+        this.invoice.status !== "cancelled" &&
+        Number(this.invoice.price ?? 0) - Number(this.invoice.total_paid ?? 0) > 0
+      );
+    },
+    accountId() {
+      return this.$store.state.accountId ?? null;
+    },
   },
   methods: {
     ...mapMutations(["openModal"]),
@@ -358,6 +414,23 @@ export default {
     },
     async getInvoice() {
       this.invoice = await show("invoices", this.invoiceId);
+      this.getPix();
+    },
+    // O valor do QR é o saldo em aberto, então é regerado sempre que a fatura recarrega
+    async getPix() {
+      this.pix = null;
+      this.pixError = null;
+      if (!this.canChargePix) return;
+
+      this.pixLoading = true;
+      try {
+        const response = await axios.get(`${BACKEND_URL}invoices/${this.invoice.id}/pix`);
+        this.pix = response.data.data;
+      } catch (error) {
+        this.pixError = error.response?.data?.message || "Não foi possível gerar o QR Code Pix.";
+      } finally {
+        this.pixLoading = false;
+      }
     },
     // Recarrega a fatura (status/saldo são calculados no backend) e avisa quem abriu o modal
     async refreshInvoice() {
@@ -405,6 +478,15 @@ export default {
         listeners: {
           "new-transaction-event": this.refreshInvoice,
         },
+      });
+    },
+    openLeadModal(leadId) {
+      // Ao salvar a chave Pix no fornecedor, o QR desta fatura já é regerado
+      this.openModal({
+        component: "LeadDetailModal",
+        props: { leadId },
+        listeners: { "lead-updated": this.refreshInvoice },
+        id: `lead-${leadId}`,
       });
     },
     openTaskModal(taskId) {
