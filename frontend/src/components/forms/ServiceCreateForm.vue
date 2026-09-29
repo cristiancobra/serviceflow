@@ -27,7 +27,7 @@
                 </div>
                 <div class="column-80">
                   <input
-                    class="w-full px-3 py-2 border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="w-full px-3 py-2 border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                     type="textarea"
                     id="observations"
                     v-model="form.observations"
@@ -43,12 +43,12 @@
                 <div class="column-25">
                   <label class="labels" for="hours">Tempo de trabalho</label>
                 </div>
-                <div class="col">
+                <div class="flex-1">
                   <label class="labels">horas</label>
                 </div>
-                <div class="col">
+                <div class="flex-1">
                   <input
-                    class="w-full px-3 py-2 border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="w-full px-3 py-2 border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                     type="number"
                     name="hours"
                     v-model="form.hours"
@@ -57,12 +57,12 @@
                     max="23"
                   />
                 </div>
-                <div class="col">
+                <div class="flex-1">
                   <label class="labels">minutos</label>
                 </div>
-                <div class="col">
+                <div class="flex-1">
                   <input
-                    class="w-full px-3 py-2 border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="w-full px-3 py-2 border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                     type="number"
                     name="minutes"
                     v-model="form.minutes"
@@ -76,9 +76,9 @@
                     Valor da hora
                   </label>
                 </div>
-                <div class="col">
+                <div class="flex-1">
                   <money-input
-                    class="w-full px-3 py-2 border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="w-full px-3 py-2 border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                     name="labor_hourly_rate"
                     v-model="form.labor_hourly_rate"
                   />
@@ -96,7 +96,7 @@
                 </div>
                 <div class="price-column">
                   <input
-                    class="w-full px-3 py-2 border border-base-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="w-full px-3 py-2 border border-base-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary"
                     type="text"
                     name="profit_percentage"
                     v-model="form.profit_percentage"
@@ -108,7 +108,7 @@
                 </div>
                 <div class="price-column">
                   <money-input
-                    class="w-full px-3 py-2 border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="w-full px-3 py-2 border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                     name="profit"
                     v-model="form.profit"
                   />
@@ -147,7 +147,7 @@
                     :id="cost.id"
                     v-model.number="cost.quantity"
                     placeholder="0"
-                    class="w-full px-3 py-2 border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="w-full px-3 py-2 border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                     @input="updateTotalPrice(cost)"
                   />
                 </div>
@@ -400,7 +400,7 @@ export default {
 
 .price-active {
   font-weight: bold;
-  color: var(--primary);
+  color: var(--color-primary);
 }
 
 .title-column {

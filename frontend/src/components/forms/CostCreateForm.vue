@@ -15,7 +15,7 @@
           placeholder="Nome do custo"
         />
         <div v-if="errors.name" class="mt-2">
-          <span class="text-sm text-red-600 font-medium">
+          <span class="text-sm text-error font-medium">
             * {{ errors.name[0] }}
           </span>
         </div>
@@ -53,7 +53,7 @@
           class="w-full pr-3 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg shadow-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out"
         />
         <div v-if="errors.price" class="mt-2">
-          <span class="text-sm text-red-600 font-medium">
+          <span class="text-sm text-error font-medium">
             * {{ errors.price[0] }}
           </span>
         </div>

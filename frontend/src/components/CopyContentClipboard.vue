@@ -40,7 +40,7 @@ export default {
 }
 .copy-button {
   font-size: 19px;
-  color: var(--purple);
+  color: var(--color-primary);
   display: flex;
   position: absolute;
   right: 0;
@@ -48,7 +48,7 @@ export default {
   justify-content: center; /* Centraliza horizontalmente */
   width: 35px;
   height: 35px;
-  background-color: #f1f1f1;
+  background-color: var(--color-base-200);
   border-radius: 50%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Reduz a intensidade do sombreamento */
   transition: font-size 0.3s ease-in-out, box-shadow 0.3s ease-in-out;

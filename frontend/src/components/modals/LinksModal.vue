@@ -62,12 +62,12 @@
               <search-input v-model="searchTerm" placeholder="Digite para buscar links" />
 
               <div v-if="linksWithoutTask.length === 0" class="p-4 text-center">
-                  <p class="text-gray-500">Nenhum link geral</p>
+                  <p class="text-base-content/60">Nenhum link geral</p>
               </div>
 
               <div v-else class="overflow-x-auto">
                   <!-- Header da tabela -->
-                  <div class="grid grid-cols-12 gap-4 px-4 py-2 bg-gray-100 border-b border-gray-200 font-semibold text-sm text-gray-700">
+                  <div class="grid grid-cols-12 gap-4 px-4 py-2 bg-base-200 border-b border-base-300 font-semibold text-sm text-base-content/80">
                       <div class="col-span-3">Título</div>
                       <div class="col-span-3">URL</div>
                       <div class="col-span-4">Observações</div>
@@ -78,11 +78,11 @@
                   <div
                       v-for="link in linksWithoutTask"
                       :key="link.id"
-                      class="grid grid-cols-12 gap-4 px-4 py-0.5 border-b border-gray-200 hover:bg-gray-50 transition-colors items-center"
+                      class="grid grid-cols-12 gap-4 px-4 py-0.5 border-b border-base-300 hover:bg-base-200 transition-colors items-center"
                   >
                       <div class="col-span-3 flex items-center">
                           <a
-                              class="text-sm text-blue-600 font-semibold hover:underline truncate"
+                              class="text-sm text-info font-semibold hover:underline truncate"
                               :href="link.url"
                               target="_blank"
                               :title="link.title"
@@ -92,7 +92,7 @@
                       </div>
                       <div class="col-span-3">
                           <a
-                              class="text-sm text-gray-600 hover:underline truncate block"
+                              class="text-sm text-base-content/70 hover:underline truncate block"
                               :href="link.url"
                               target="_blank"
                               :title="link.url"
@@ -101,7 +101,7 @@
                           </a>
                       </div>
                       <div class="col-span-4">
-                          <span class="text-sm text-gray-600 truncate block" :title="link.observations">
+                          <span class="text-sm text-base-content/70 truncate block" :title="link.observations">
                               {{ link.observations || '-' }}
                           </span>
                       </div>
@@ -114,7 +114,7 @@
                               @confirm="deleteLink(link.id)"
                           />
                           <button
-                              class="w-5 h-5 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors shadow-sm"
+                              class="w-5 h-5 flex items-center justify-center rounded-full bg-info text-white hover:bg-info transition-colors shadow-sm"
                               @click="copyLink(link.url)"
                               title="Copiar link"
                           >
@@ -143,12 +143,12 @@
               </div>
 
               <div v-if="linksOfOtherOpportunities.length === 0" class="p-4 text-center">
-                  <p class="text-gray-500">Nenhum link de oportunidade</p>
+                  <p class="text-base-content/60">Nenhum link de oportunidade</p>
               </div>
 
               <div v-else class="overflow-x-auto">
                   <!-- Header da tabela -->
-                  <div class="grid grid-cols-12 gap-4 px-4 py-2 bg-gray-100 border-b border-gray-200 font-semibold text-sm text-gray-700">
+                  <div class="grid grid-cols-12 gap-4 px-4 py-2 bg-base-200 border-b border-base-300 font-semibold text-sm text-base-content/80">
                       <div class="col-span-3">Título</div>
                       <div class="col-span-2">URL</div>
                       <div class="col-span-3">Observações</div>
@@ -160,11 +160,11 @@
                   <div
                       v-for="link in linksOfOtherOpportunities"
                       :key="link.id"
-                      class="grid grid-cols-12 gap-4 px-4 py-0.5 border-b border-gray-200 hover:bg-gray-50 transition-colors items-center"
+                      class="grid grid-cols-12 gap-4 px-4 py-0.5 border-b border-base-300 hover:bg-base-200 transition-colors items-center"
                   >
                       <div class="col-span-3 flex items-center">
                           <a
-                              class="text-sm text-blue-600 font-semibold hover:underline truncate"
+                              class="text-sm text-info font-semibold hover:underline truncate"
                               :href="link.url"
                               target="_blank"
                               :title="link.title"
@@ -174,7 +174,7 @@
                       </div>
                       <div class="col-span-2">
                           <a
-                              class="text-sm text-gray-600 hover:underline truncate block"
+                              class="text-sm text-base-content/70 hover:underline truncate block"
                               :href="link.url"
                               target="_blank"
                               :title="link.url"
@@ -183,12 +183,12 @@
                           </a>
                       </div>
                       <div class="col-span-3">
-                          <span class="text-sm text-gray-600 truncate block" :title="link.observations">
+                          <span class="text-sm text-base-content/70 truncate block" :title="link.observations">
                               {{ link.observations || '-' }}
                           </span>
                       </div>
                       <div class="col-span-2">
-                          <span v-if="link.opportunity" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 truncate">
+                          <span v-if="link.opportunity" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-success/10 text-success truncate">
                               <font-awesome-icon icon="fa-solid fa-bullseye" class="mr-1" />
                               {{ link.opportunity.name }}
                           </span>
@@ -202,7 +202,7 @@
                               @confirm="deleteLink(link.id)"
                           />
                           <button
-                              class="w-5 h-5 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors shadow-sm"
+                              class="w-5 h-5 flex items-center justify-center rounded-full bg-info text-white hover:bg-info transition-colors shadow-sm"
                               @click="copyLink(link.url)"
                               title="Copiar link"
                           >
@@ -223,12 +223,12 @@
               </div>
 
               <div v-if="linksWithProject.length === 0" class="p-4 text-center">
-                  <p class="text-gray-500">Nenhum link de projeto</p>
+                  <p class="text-base-content/60">Nenhum link de projeto</p>
               </div>
 
               <div v-else class="overflow-x-auto">
                   <!-- Header da tabela -->
-                  <div class="grid grid-cols-12 gap-4 px-4 py-2 bg-gray-100 border-b border-gray-200 font-semibold text-sm text-gray-700">
+                  <div class="grid grid-cols-12 gap-4 px-4 py-2 bg-base-200 border-b border-base-300 font-semibold text-sm text-base-content/80">
                       <div class="col-span-3">Título</div>
                       <div class="col-span-2">URL</div>
                       <div class="col-span-3">Observações</div>
@@ -240,11 +240,11 @@
                   <div
                       v-for="link in linksWithProject"
                       :key="link.id"
-                      class="grid grid-cols-12 gap-4 px-4 py-0.5 border-b border-gray-200 hover:bg-gray-50 transition-colors items-center"
+                      class="grid grid-cols-12 gap-4 px-4 py-0.5 border-b border-base-300 hover:bg-base-200 transition-colors items-center"
                   >
                       <div class="col-span-3 flex items-center">
                           <a
-                              class="text-sm text-blue-600 font-semibold hover:underline truncate"
+                              class="text-sm text-info font-semibold hover:underline truncate"
                               :href="link.url"
                               target="_blank"
                               :title="link.title"
@@ -254,7 +254,7 @@
                       </div>
                       <div class="col-span-2">
                           <a
-                              class="text-sm text-gray-600 hover:underline truncate block"
+                              class="text-sm text-base-content/70 hover:underline truncate block"
                               :href="link.url"
                               target="_blank"
                               :title="link.url"
@@ -263,12 +263,12 @@
                           </a>
                       </div>
                       <div class="col-span-3">
-                          <span class="text-sm text-gray-600 truncate block" :title="link.observations">
+                          <span class="text-sm text-base-content/70 truncate block" :title="link.observations">
                               {{ link.observations || '-' }}
                           </span>
                       </div>
                       <div class="col-span-2">
-                          <span v-if="link.project" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 truncate">
+                          <span v-if="link.project" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-info/10 text-info truncate">
                               <font-awesome-icon icon="fa-solid fa-project-diagram" class="mr-1" />
                               {{ link.project.name }}
                           </span>
@@ -282,7 +282,7 @@
                               @confirm="deleteLink(link.id)"
                           />
                           <button
-                              class="w-5 h-5 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors shadow-sm"
+                              class="w-5 h-5 flex items-center justify-center rounded-full bg-info text-white hover:bg-info transition-colors shadow-sm"
                               @click="copyLink(link.url)"
                               title="Copiar link"
                           >

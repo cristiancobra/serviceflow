@@ -39,7 +39,7 @@
                     min="1"
                     max="99"
                     step="1"
-                    class="w-full px-3 py-2 text-base-content border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    class="w-full px-3 py-2 text-base-content border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   />
                 </div>
               </div>
@@ -84,7 +84,7 @@
                   </label>
                   <input
                     type="number"
-                    class="w-full px-3 py-2 text-base-content border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    class="w-full px-3 py-2 text-base-content border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                     v-model="form.validity_days"
                     name="duration"
                     placeholder="validade da proposta em dias"
@@ -100,7 +100,7 @@
                   <select
                     id="discount_type"
                     v-model="discountType"
-                    class="w-full px-3 py-2 text-base-content border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    class="w-full px-3 py-2 text-base-content border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   >
                     <option value="percentage">Percentual (%)</option>
                     <option value="value">Valor (R$)</option>
@@ -118,14 +118,14 @@
                     :min="0"
                     :max="100"
                     step="0.01"
-                    class="w-full px-3 py-2 text-base-content border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    class="w-full px-3 py-2 text-base-content border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="0"
                   />
                   <money-input
                     v-else
                     name="discount"
                     v-model="discountInput"
-                    class="w-full px-3 py-2 text-base-content border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    class="w-full px-3 py-2 text-base-content border border-base-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   />
                 </div>
               </div>
@@ -136,7 +136,7 @@
               <div v-else class="bg-base-200 rounded-lg border border-base-300 p-4 mb-6">
                 <div class="mb-4">
                   <div class="flex items-center mb-2">
-                    <font-awesome-icon icon="fa-solid fa-tools" class="text-blue-600 mr-2" />
+                    <font-awesome-icon icon="fa-solid fa-tools" class="text-info mr-2" />
                     <h2 class="text-lg font-medium text-base-content">Serviços</h2>
                   </div>
                 </div>
@@ -153,7 +153,7 @@
                         :id="service.id"
                         v-model.number="service.quantity"
                         placeholder="0"
-                        class="w-full px-2 py-1 border border-base-300 rounded text-right text-base-content focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        class="w-full px-2 py-1 border border-base-300 rounded text-right text-base-content focus:outline-none focus:ring-1 focus:ring-primary"
                       />
                     </div>
                     <div class="flex-1">
@@ -179,7 +179,7 @@
               <div v-else class="bg-base-200 rounded-lg border border-base-300 p-4 mb-6">
                 <div class="mb-4">
                   <div class="flex items-center mb-2">
-                    <font-awesome-icon icon="fa-solid fa-tools" class="text-orange-600 mr-2" />
+                    <font-awesome-icon icon="fa-solid fa-tools" class="text-warning mr-2" />
                     <h2 class="text-lg font-medium text-base-content">Custos de produção</h2>
                   </div>
                 </div>
@@ -192,7 +192,7 @@
                         :id="cost.id"
                         v-model.number="cost.quantity"
                         placeholder="0"
-                        class="w-full px-2 py-1 border border-base-300 rounded text-right text-base-content focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        class="w-full px-2 py-1 border border-base-300 rounded text-right text-base-content focus:outline-none focus:ring-1 focus:ring-primary"
                       />
                     </div>
                     <div class="flex-1">
@@ -214,18 +214,18 @@
               </div>
               
               <!-- Resumo de Valores -->
-              <div class="bg-blue-50 rounded-lg border border-blue-200 p-4 mb-6">
+              <div class="bg-info/10 rounded-lg border border-info/30 p-4 mb-6">
                 <h3 class="text-lg font-semibold text-base-content mb-3">Resumo</h3>
                 <div class="space-y-2">
                   <div class="flex justify-between text-base-content">
                     <span>Subtotal:</span>
                     <span class="font-medium">{{ formatCurrency(subtotal) }}</span>
                   </div>
-                  <div v-if="totalDiscount > 0" class="flex justify-between text-orange-600">
+                  <div v-if="totalDiscount > 0" class="flex justify-between text-warning">
                     <span>Desconto:</span>
                     <span class="font-medium">- {{ formatCurrency(totalDiscount) }}</span>
                   </div>
-                  <div class="flex justify-between text-lg font-bold text-base-content pt-2 border-t border-blue-200">
+                  <div class="flex justify-between text-lg font-bold text-base-content pt-2 border-t border-info/30">
                     <span>Total:</span>
                     <span>{{ formatCurrency(total) }}</span>
                   </div>

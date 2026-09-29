@@ -8,7 +8,7 @@
     compact-size="max-w-3xl"
     @close="$emit('close')"
   >
-    <div v-if="!lead" class="p-5 text-center text-gray-500">
+    <div v-if="!lead" class="p-5 text-center text-base-content/60">
       Carregando contato...
     </div>
 
@@ -18,7 +18,7 @@
       <div
         v-if="message"
         class="flex items-center justify-between gap-4 rounded-lg p-3 mb-6 text-sm font-medium"
-        :class="message.status === 'success' ? 'bg-green-50 text-green-800 border border-green-300' : 'bg-red-50 text-red-800 border border-red-300'"
+        :class="message.status === 'success' ? 'bg-success/10 text-success border border-success/30' : 'bg-error/10 text-error border border-error/30'"
       >
         <span>
           <font-awesome-icon
@@ -42,7 +42,7 @@
             @click="$refs.photo.click()"
           >
             <img v-if="lead.photo" class="photo" :src="urlImagePhoto" alt="Foto do contato" />
-            <font-awesome-icon v-else icon="fas fa-user" class="text-4xl text-gray-400" />
+            <font-awesome-icon v-else icon="fas fa-user" class="text-4xl text-base-content/50" />
             <span class="photo-overlay">
               <font-awesome-icon icon="fa-solid fa-camera" />
             </span>
@@ -51,7 +51,7 @@
         </div>
 
         <div class="flex-1 min-w-0">
-          <div class="text-2xl font-bold text-gray-800">
+          <div class="text-2xl font-bold text-base-content">
             <text-editable-field
               name="name"
               :modelValue="lead.name"
@@ -59,7 +59,7 @@
               placeholder="Nome do contato..."
             />
           </div>
-          <div class="text-gray-600">
+          <div class="text-base-content/70">
             <text-editable-field
               name="comments"
               :modelValue="lead.comments"
@@ -67,7 +67,7 @@
               placeholder="Comentários..."
             />
           </div>
-          <div class="flex items-center gap-2 text-sm text-gray-700 mt-2">
+          <div class="flex items-center gap-2 text-sm text-base-content/80 mt-2">
             <font-awesome-icon icon="fas fa-tag" class="text-cyan-500" />
             <span class="font-semibold">Tipo:</span>
             <select-editable-input
@@ -85,7 +85,7 @@
       <div v-for="section in fieldSections" :key="section.title" class="lead-section">
         <h3 class="lead-section-title">{{ section.title }}</h3>
         <div class="grid grid-cols-1 gap-3" :class="compact ? '' : 'md:grid-cols-2'">
-          <div v-for="field in section.fields" :key="field.name" class="flex items-center gap-2 text-sm text-gray-700 min-w-0">
+          <div v-for="field in section.fields" :key="field.name" class="flex items-center gap-2 text-sm text-base-content/80 min-w-0">
             <font-awesome-icon :icon="field.icon" class="text-primary w-4 flex-shrink-0" />
             <span class="font-semibold whitespace-nowrap">{{ field.label }}:</span>
             <date-editable-input
@@ -109,7 +109,7 @@
       <div class="lead-section">
         <div class="flex items-center justify-between mb-3">
           <h3 class="lead-section-title !mb-0">
-            <font-awesome-icon icon="fas fa-money-bill-wave" class="text-green-500 me-2" />
+            <font-awesome-icon icon="fas fa-money-bill-wave" class="text-success me-2" />
             Financeiro
           </h3>
           <button type="button" class="btn btn-primary btn-sm" title="Nova oportunidade" @click="openCreateOpportunityModal">
@@ -121,7 +121,7 @@
           <div
             v-for="opportunity in lead.opportunities"
             :key="opportunity.id"
-            class="border border-gray-200 rounded-lg p-4 bg-gray-50"
+            class="border border-base-300 rounded-lg p-4 bg-base-200"
           >
             <div class="flex items-center justify-between gap-2">
               <router-link
@@ -132,17 +132,17 @@
                 <font-awesome-icon icon="fas fa-bullseye" />
                 <span class="truncate">{{ opportunity.name || `#${opportunity.id}` }}</span>
               </router-link>
-              <span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap">
+              <span class="bg-info/10 text-info px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap">
                 {{ opportunity.proposals?.length || 0 }} proposta{{ (opportunity.proposals?.length || 0) !== 1 ? "s" : "" }}
               </span>
             </div>
-            <p v-if="opportunity.description" class="text-sm text-gray-600 mt-1">{{ opportunity.description }}</p>
+            <p v-if="opportunity.description" class="text-sm text-base-content/70 mt-1">{{ opportunity.description }}</p>
 
             <div v-if="opportunity.proposals && opportunity.proposals.length > 0" class="space-y-2 mt-3">
               <div
                 v-for="proposal in opportunity.proposals"
                 :key="proposal.id"
-                class="bg-white border border-gray-200 rounded-lg px-3 py-2"
+                class="bg-base-100 border border-base-300 rounded-lg px-3 py-2"
               >
                 <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
                   <router-link
@@ -155,51 +155,51 @@
                   <span :class="getStatusClass(proposal.status)" class="px-2 py-0.5 rounded-full text-xs font-medium border">
                     {{ translateStatus(proposal.status) }}
                   </span>
-                  <span class="text-gray-500">{{ formatDateBr(proposal.date) }}</span>
+                  <span class="text-base-content/60">{{ formatDateBr(proposal.date) }}</span>
                   <span class="ms-auto flex gap-3">
-                    <span>Valor: <b class="text-blue-600">{{ formatCurrency(proposal.total_price) }}</b></span>
-                    <span>Pago: <b class="text-green-600">{{ formatCurrency(proposal.total_paid) }}</b></span>
+                    <span>Valor: <b class="text-info">{{ formatCurrency(proposal.total_price) }}</b></span>
+                    <span>Pago: <b class="text-success">{{ formatCurrency(proposal.total_paid) }}</b></span>
                     <span>
                       Saldo:
-                      <b :class="calculateBalance(proposal) === 0 ? 'text-green-600' : 'text-orange-600'">
+                      <b :class="calculateBalance(proposal) === 0 ? 'text-success' : 'text-warning'">
                         {{ formatCurrency(calculateBalance(proposal)) }}
                       </b>
                     </span>
                   </span>
                 </div>
-                <p v-if="proposal.description" class="mt-1 text-xs text-gray-600">
+                <p v-if="proposal.description" class="mt-1 text-xs text-base-content/70">
                   {{ getShortDescription(proposal.description) }}
                 </p>
               </div>
             </div>
-            <p v-else class="text-gray-500 text-sm mt-2">Nenhuma proposta criada para esta oportunidade ainda</p>
+            <p v-else class="text-base-content/60 text-sm mt-2">Nenhuma proposta criada para esta oportunidade ainda</p>
           </div>
         </div>
 
         <div v-else class="text-center py-6">
-          <font-awesome-icon icon="fas fa-bullseye" class="text-gray-300 text-3xl mb-2" />
-          <p class="text-gray-500">Nenhuma oportunidade encontrada para este contato</p>
+          <font-awesome-icon icon="fas fa-bullseye" class="text-base-content/30 text-3xl mb-2" />
+          <p class="text-base-content/60">Nenhuma oportunidade encontrada para este contato</p>
         </div>
 
         <!-- Resumo financeiro -->
         <div v-if="totalProposalsCount > 0" class="mt-4 grid grid-cols-2 gap-3" :class="compact ? '' : 'md:grid-cols-4'">
-          <div class="bg-blue-50 rounded-lg p-3 text-center">
-            <div class="text-xl font-bold text-blue-600">{{ acceptedProposalsCount }}</div>
-            <div class="text-xs text-blue-700 font-medium">Propostas Aceitas</div>
+          <div class="bg-info/10 rounded-lg p-3 text-center">
+            <div class="text-xl font-bold text-info">{{ acceptedProposalsCount }}</div>
+            <div class="text-xs text-info font-medium">Propostas Aceitas</div>
           </div>
-          <div class="bg-orange-50 rounded-lg p-3 text-center">
-            <div class="text-xl font-bold text-orange-600">{{ pendingProposalsCount }}</div>
-            <div class="text-xs text-orange-700 font-medium">Propostas Pendentes</div>
+          <div class="bg-warning/10 rounded-lg p-3 text-center">
+            <div class="text-xl font-bold text-warning">{{ pendingProposalsCount }}</div>
+            <div class="text-xs text-warning font-medium">Propostas Pendentes</div>
           </div>
-          <div class="bg-green-50 rounded-lg p-3 text-center">
-            <div class="text-xl font-bold text-green-600">{{ formatCurrency(totalProposalsValue) }}</div>
-            <div class="text-xs text-green-700 font-medium">Valor Total</div>
+          <div class="bg-success/10 rounded-lg p-3 text-center">
+            <div class="text-xl font-bold text-success">{{ formatCurrency(totalProposalsValue) }}</div>
+            <div class="text-xs text-success font-medium">Valor Total</div>
           </div>
-          <div class="rounded-lg p-3 text-center" :class="totalBalance === 0 ? 'bg-gray-50' : 'bg-red-50'">
-            <div class="text-xl font-bold" :class="totalBalance === 0 ? 'text-gray-600' : 'text-red-600'">
+          <div class="rounded-lg p-3 text-center" :class="totalBalance === 0 ? 'bg-base-200' : 'bg-error/10'">
+            <div class="text-xl font-bold" :class="totalBalance === 0 ? 'text-base-content/70' : 'text-error'">
               {{ formatCurrency(totalBalance) }}
             </div>
-            <div class="text-xs font-medium" :class="totalBalance === 0 ? 'text-gray-700' : 'text-red-700'">Saldo Total</div>
+            <div class="text-xs font-medium" :class="totalBalance === 0 ? 'text-base-content/80' : 'text-error'">Saldo Total</div>
           </div>
         </div>
       </div>
@@ -290,11 +290,11 @@ const STATUS_TRANSLATIONS = {
 };
 
 const STATUS_CLASSES = {
-  draft: "bg-yellow-50 text-yellow-700 border-yellow-200",
-  submitted: "bg-blue-50 text-blue-700 border-blue-200",
-  accepted: "bg-green-100 text-green-800 border-green-300",
-  rejected: "bg-red-50 text-red-700 border-red-200",
-  canceled: "bg-gray-50 text-gray-700 border-gray-200",
+  draft: "bg-warning/10 text-warning border-warning/30",
+  submitted: "bg-info/10 text-info border-info/30",
+  accepted: "bg-success/10 text-success border-success/30",
+  rejected: "bg-error/10 text-error border-error/30",
+  canceled: "bg-base-200 text-base-content/80 border-base-300",
 };
 
 const MAX_PHOTO_SIZE = 2 * 1024 * 1024;
@@ -441,7 +441,7 @@ export default {
       return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(parseFloat(value) || 0);
     },
     getStatusClass(status) {
-      return STATUS_CLASSES[status] || "bg-gray-100 text-gray-800 border-gray-300";
+      return STATUS_CLASSES[status] || "bg-base-200 text-base-content border-base-300";
     },
     translateStatus(status) {
       return STATUS_TRANSLATIONS[status] || status;
@@ -481,7 +481,7 @@ export default {
 .lead-section-title {
   font-size: 1rem;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--color-base-content);
   margin-bottom: 0.75rem;
 }
 
@@ -489,10 +489,10 @@ export default {
   position: relative;
   width: 96px;
   height: 96px;
-  border: 2px solid var(--primary);
+  border: 2px solid var(--color-primary);
   border-radius: 50%;
   overflow: hidden;
-  background-color: #f9fafb;
+  background-color: var(--color-base-200);
   display: flex;
   align-items: center;
   justify-content: center;

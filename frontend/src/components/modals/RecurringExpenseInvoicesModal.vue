@@ -311,14 +311,14 @@ export default {
 .invoices-table td {
   padding: 0.75rem;
   text-align: left;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--color-base-300);
   font-size: 0.875rem;
 }
 
 .invoices-table th {
-  background-color: #f9fafb;
+  background-color: var(--color-base-200);
   font-weight: 600;
-  color: #374151;
+  color: color-mix(in oklab, var(--color-base-content) 80%, transparent);
 }
 
 .invoices-table .action-buttons {
@@ -345,22 +345,22 @@ export default {
 }
 
 .btn-view {
-  background-color: #dbeafe;
-  color: #1e40af;
+  background-color: color-mix(in oklab, var(--color-info) 15%, var(--color-base-100));
+  color: var(--color-info);
   text-decoration: none;
 }
 
 .btn-view:hover {
-  background-color: #bfdbfe;
+  background-color: color-mix(in oklab, var(--color-info) 15%, var(--color-base-100));
 }
 
 .btn-add-payment {
-  background-color: #dcfce7;
-  color: #166534;
+  background-color: color-mix(in oklab, var(--color-success) 15%, var(--color-base-100));
+  color: var(--color-success);
 }
 
 .btn-add-payment:hover {
-  background-color: #bbf7d0;
+  background-color: color-mix(in oklab, var(--color-success) 15%, var(--color-base-100));
 }
 
 .invoice-status {
@@ -372,28 +372,28 @@ export default {
 }
 
 .invoice-status-pending {
-  background-color: #fef3c7;
-  color: #92400e;
+  background-color: color-mix(in oklab, var(--color-warning) 15%, var(--color-base-100));
+  color: var(--color-warning);
 }
 
 .invoice-status-partial {
-  background-color: #dbeafe;
-  color: #1e40af;
+  background-color: color-mix(in oklab, var(--color-info) 15%, var(--color-base-100));
+  color: var(--color-info);
 }
 
 .invoice-status-paid {
-  background-color: #dcfce7;
-  color: #166534;
+  background-color: color-mix(in oklab, var(--color-success) 15%, var(--color-base-100));
+  color: var(--color-success);
 }
 
 .invoice-status-overdue {
-  background-color: #fecaca;
-  color: #991b1b;
+  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
+  color: var(--color-error);
 }
 
 .invoice-status-cancelled {
-  background-color: #e5e7eb;
-  color: #374151;
+  background-color: var(--color-base-300);
+  color: color-mix(in oklab, var(--color-base-content) 80%, transparent);
 }
 
 .empty-state {
@@ -419,11 +419,11 @@ export default {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  background-color: #f3f4f6;
-  color: #374151;
+  background-color: var(--color-base-200);
+  color: color-mix(in oklab, var(--color-base-content) 80%, transparent);
 }
 
 .btn-secondary:hover {
-  background-color: #e5e7eb;
+  background-color: var(--color-base-300);
 }
 </style>

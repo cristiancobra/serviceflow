@@ -6,7 +6,7 @@
     </div>
     
     <!-- Cabeçalho das colunas -->
-    <div class="flex w-full text-xs text-gray-600 font-semibold pb-2 pt-2 border-b border-gray-300 bg-gray-100">
+    <div class="flex w-full text-xs text-base-content/70 font-semibold pb-2 pt-2 border-b border-base-300 bg-base-200">
       <div class="w-[24%] ps-2 text-center">Serviço</div>
       <div class="w-[7%] text-center">Qtd</div>
       <div class="w-[9%] text-center">Horas</div>
@@ -19,58 +19,58 @@
       <div class="w-[13%] text-center">Preço final</div>
     </div>
 
-    <div class="flex w-full py-2 border-b border-gray-100 hover:bg-gray-50 text-sm" v-for="service in proposalServices" v-bind:key="service.id">
+    <div class="flex w-full py-2 border-b border-base-200 hover:bg-base-200 text-sm" v-for="service in proposalServices" v-bind:key="service.id">
       <router-link
         class="no-link w-[24%] flex items-center ps-2 gap-2"
         :to="{ name: 'serviceShow', params: { id: service.service_id } }"
         :key="service.service_id"
       >
-        <font-awesome-icon icon="fa-solid fa-coins" class="primary text-black text-xs flex-shrink-0" />
-        <div class="text-black truncate text-sm">
+        <font-awesome-icon icon="fa-solid fa-coins" class="primary text-base-content text-xs flex-shrink-0" />
+        <div class="text-base-content truncate text-sm">
             {{ service.name }}
         </div>
       </router-link>
-      <div class="w-[7%] flex items-center justify-center text-black text-sm">
+      <div class="w-[7%] flex items-center justify-center text-base-content text-sm">
         <integer-editable-field
           v-model="service.quantity"
           @save="emitUpdateProposal('quantity', service.service_id, $event)"
         />
       </div>
-      <div class="w-[9%] flex items-center justify-center text-black text-sm">
+      <div class="w-[9%] flex items-center justify-center text-base-content text-sm">
         <hours-decimal-editable-field
           v-model="service.labor_hours"
           @save="emitUpdateProposal('labor_hours', service.service_id, $event)"
         />
       </div>
-      <div class="w-[11%] flex items-center justify-end text-black pr-2 text-sm">
+      <div class="w-[11%] flex items-center justify-end text-base-content pr-2 text-sm">
         <money-editable-field
           v-model="service.labor_hourly_rate"
           @update:modelValue="emitUpdateProposal('labor_hourly_rate', service.service_id, $event)"
         />
       </div>
-      <div class="w-[11%] flex items-center justify-end text-black pr-2 text-sm">
+      <div class="w-[11%] flex items-center justify-end text-base-content pr-2 text-sm">
         <money-field name="labor_hourly_rate_total" v-model="service.labor_hourly_rate_total" />
       </div>
-      <div class="w-[9%] flex items-center justify-center text-black text-sm">
+      <div class="w-[9%] flex items-center justify-center text-base-content text-sm">
         <decimal-editable-field
           v-model="service.profit_percentage"
           @save="emitUpdateProposal('profit_percentage', service.service_id, $event)"
         />
         <span class="ps-1 text-[10px]">%</span>
       </div>
-      <div class="w-[11%] flex items-center justify-end text-black pr-2 text-sm">
+      <div class="w-[11%] flex items-center justify-end text-base-content pr-2 text-sm">
         <money-editable-field
           v-model="service.profit"
           @update:modelValue="emitUpdateProposal('profit', service.service_id, $event)"
         />
       </div>
-      <div class="w-[11%] flex items-center justify-end text-black pr-2 text-sm">
+      <div class="w-[11%] flex items-center justify-end text-base-content pr-2 text-sm">
         <money-editable-field
           v-model="service.total_profit"
           @update:modelValue="emitUpdateProposal('total_profit', service.service_id, $event)"
         />
       </div>
-      <div class="w-[11%] flex items-center justify-end text-black pr-2 text-sm">
+      <div class="w-[11%] flex items-center justify-end text-base-content pr-2 text-sm">
         <money-field name="price" v-model="service.price" />
       </div>
       <div class="w-[13%] flex items-center color-primary-500 justify-end font-bold pr-2 text-sm">

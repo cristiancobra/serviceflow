@@ -8,7 +8,7 @@
     compact-size="max-w-3xl"
     @close="$emit('close')"
   >
-    <div v-if="isLoading" class="p-5 text-center text-gray-500">
+    <div v-if="isLoading" class="p-5 text-center text-base-content/60">
       Carregando jornadas...
     </div>
     <journeys-list

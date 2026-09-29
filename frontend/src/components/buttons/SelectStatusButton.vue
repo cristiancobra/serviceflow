@@ -29,7 +29,7 @@
     >
       <ul 
         v-if="isOpen" 
-        class="absolute z-10 mt-2 w-full min-w-[160px] bg-white rounded-lg shadow-lg border border-gray-200 py-2"
+        class="absolute z-10 mt-2 w-full min-w-[160px] bg-base-100 rounded-lg shadow-lg border border-base-300 py-2"
       >
         <li 
           v-for="item in items" 
@@ -74,14 +74,14 @@ export default {
   computed: {
     buttonClasses() {
       const classes = {
-        'draft': 'bg-gray-100 text-gray-800 border-gray-400 hover:bg-gray-200 focus:ring-gray-400',
+        'draft': 'bg-base-200 text-base-content border-base-content/20 hover:bg-base-300 focus:ring-base-content/20',
         'submitted': 'bg-purple-100 text-purple-800 border-purple-400 hover:bg-purple-200 focus:ring-purple-400',
-        'accepted': 'bg-emerald-100 text-emerald-800 border-emerald-500 hover:bg-emerald-200 focus:ring-emerald-500',
-        'rejected': 'bg-red-100 text-red-800 border-red-400 hover:bg-red-200 focus:ring-red-400',
-        'canceled': 'bg-orange-100 text-orange-800 border-orange-400 hover:bg-orange-200 focus:ring-orange-400',
-        'paid': 'bg-blue-100 text-blue-800 border-blue-500 hover:bg-blue-200 focus:ring-blue-500',
+        'accepted': 'bg-success/10 text-success border-success hover:bg-success/10 focus:ring-success',
+        'rejected': 'bg-error/10 text-error border-error hover:bg-error/10 focus:ring-error',
+        'canceled': 'bg-warning/10 text-warning border-warning hover:bg-warning/10 focus:ring-warning',
+        'paid': 'bg-info/10 text-info border-info hover:bg-info/10 focus:ring-primary',
       };
-      return classes[this.modelValue?.value] || 'bg-gray-100 text-gray-600 border-gray-300';
+      return classes[this.modelValue?.value] || 'bg-base-200 text-base-content/70 border-base-300';
     },
   },
   methods: {
@@ -92,14 +92,14 @@ export default {
     },
     getItemClasses(value) {
       const classes = {
-        'draft': 'bg-gray-100 text-gray-800 border-gray-400 hover:bg-gray-200',
+        'draft': 'bg-base-200 text-base-content border-base-content/20 hover:bg-base-300',
         'submitted': 'bg-purple-100 text-purple-800 border-purple-400 hover:bg-purple-200',
-        'accepted': 'bg-emerald-100 text-emerald-800 border-emerald-500 hover:bg-emerald-200',
-        'rejected': 'bg-red-100 text-red-800 border-red-400 hover:bg-red-200',
-        'canceled': 'bg-orange-100 text-orange-800 border-orange-400 hover:bg-orange-200',
-        'paid': 'bg-blue-100 text-blue-800 border-blue-500 hover:bg-blue-200',
+        'accepted': 'bg-success/10 text-success border-success hover:bg-success/10',
+        'rejected': 'bg-error/10 text-error border-error hover:bg-error/10',
+        'canceled': 'bg-warning/10 text-warning border-warning hover:bg-warning/10',
+        'paid': 'bg-info/10 text-info border-info hover:bg-info/10',
       };
-      return classes[value] || 'bg-gray-100 text-gray-800 border-gray-400';
+      return classes[value] || 'bg-base-200 text-base-content border-base-content/20';
     },
   },
   watch: {

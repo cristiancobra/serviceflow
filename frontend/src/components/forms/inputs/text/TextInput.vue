@@ -1,7 +1,7 @@
 <template>
   <div class="label-input-container">
-    <label v-if="label" class="form-label text-gray-700 font-semibold" :for="name">{{ label }}</label>
-    <input class="text-input text-gray-800 bg-white" type="text" :name="name" :value="modelValue" :placeholder="placeholder"
+    <label v-if="label" class="text-base-content font-semibold" :for="name">{{ label }}</label>
+    <input class="text-input text-base-content bg-base-100" type="text" :name="name" :value="modelValue" :placeholder="placeholder"
     @input="$emit('update:modelValue', $event.target.value)"
    />
   </div>
@@ -23,7 +23,7 @@ export default {
   width: 100%;
   padding: 0.5rem;
   font-size: 1rem;
-  border: 1px solid var(--gray);
+  border: 1px solid color-mix(in oklab, var(--color-base-content) 50%, transparent);
   border-radius: 4px;
   margin-top: 0.5rem;
 }

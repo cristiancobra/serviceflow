@@ -4,7 +4,7 @@
       <div class="section-title">
         <font-awesome-icon
           icon="fa-solid fa-arrow-down"
-          class="icon text-red-600"
+          class="icon text-error"
         />
         <h2>Faturas de Débito</h2>
       </div>
@@ -23,7 +23,7 @@
         />
         <div 
           v-else-if="proposal?.total_operational_cost > 0"
-          class="px-4 py-2 bg-gray-300 text-gray-600 font-medium rounded-lg flex items-center gap-2" 
+          class="px-4 py-2 bg-base-300 text-base-content/70 font-medium rounded-lg flex items-center gap-2" 
           :title="`Já faturado: ${formatCurrency(totalOperationalCostInvoices)} de ${formatCurrency(proposal.total_operational_cost)}`"
         >
           <font-awesome-icon icon="fa-solid fa-lock" />
@@ -31,7 +31,7 @@
         </div>
         <div 
           v-else
-          class="px-4 py-2 bg-gray-200 text-gray-500 font-medium rounded-lg flex items-center gap-2 cursor-not-allowed" 
+          class="px-4 py-2 bg-base-300 text-base-content/60 font-medium rounded-lg flex items-center gap-2 cursor-not-allowed" 
           title="Adicione serviços com custo operacional à proposta primeiro"
         >
           <font-awesome-icon icon="fa-solid fa-info-circle" />
@@ -43,20 +43,20 @@
     <!-- Mensagem quando não há faturas de débito -->
     <div
       v-if="debitInvoices.length === 0"
-      class="flex flex-col items-center justify-center py-8 px-4 text-center bg-gray-50 rounded-lg border-2 border-dashed border-gray-300"
+      class="flex flex-col items-center justify-center py-8 px-4 text-center bg-base-200 rounded-lg border-2 border-dashed border-base-300"
     >
       <div
-        class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mb-4"
+        class="w-16 h-16 bg-base-300 rounded-full flex items-center justify-center mb-4"
       >
         <font-awesome-icon
           icon="fa-solid fa-file-invoice"
-          class="text-2xl text-gray-400"
+          class="text-2xl text-base-content/50"
         />
       </div>
-      <h3 class="text-lg font-medium text-gray-600 mb-2">
+      <h3 class="text-lg font-medium text-base-content/70 mb-2">
         Nenhuma fatura de débito
       </h3>
-      <p class="text-sm text-gray-500 max-w-sm">
+      <p class="text-sm text-base-content/60 max-w-sm">
         Use o botão de "Fatura de Débito" na seção de custos para criar uma nova
         fatura.
       </p>
@@ -67,17 +67,17 @@
       <div
         v-for="invoice in debitInvoices"
         :key="invoice.id"
-        class="bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200"
+        class="bg-base-100 rounded-lg border border-base-300 hover:border-base-300 hover:shadow-md transition-all duration-200"
       >
         <div
           role="button"
-          class="flex items-center justify-between p-2 text-gray-800 hover:text-red-600 transition-colors duration-200 cursor-pointer"
+          class="flex items-center justify-between p-2 text-base-content hover:text-error transition-colors duration-200 cursor-pointer"
           @click="openInvoiceModal(invoice)"
         >
           <!-- Tipo e Fornecedor -->
           <div class="flex items-center gap-4">
             <div
-              :class="getInvoiceBalance(invoice) === 0 ? 'bg-gray-500' : (invoice.category === 'operational' ? 'bg-orange-600' : 'bg-rose-600')"
+              :class="getInvoiceBalance(invoice) === 0 ? 'bg-gray-500' : (invoice.category === 'operational' ? 'bg-warning' : 'bg-error')"
               class="flex items-center justify-center w-10 h-10 rounded-full"
             >
               <font-awesome-icon
@@ -86,8 +86,8 @@
               />
             </div>
             <div class="flex flex-col gap-1">
-              <span class="text-sm font-medium text-gray-600">Fornecedor</span>
-              <span class="text-base font-semibold text-gray-800">
+              <span class="text-sm font-medium text-base-content/70">Fornecedor</span>
+              <span class="text-base font-semibold text-base-content">
                 {{ invoice.company?.business_name || invoice.company?.legal_name || invoice.lead?.name || "Sem fornecedor" }}
               </span>
             </div>
@@ -98,10 +98,10 @@
             <div class="flex items-center">
               <font-awesome-icon
                 icon="fas fa-calendar-alt"
-                class="text-gray-400 mr-2 w-4"
+                class="text-base-content/50 mr-2 w-4"
               />
               <span class="font-medium mr-1 text-sm">Vencimento:</span>
-              <span class="text-gray-700 font-semibold">
+              <span class="text-base-content/80 font-semibold">
                 {{ formatDateBr(invoice.date_due) }}
               </span>
             </div>
@@ -109,10 +109,10 @@
             <div class="flex items-center">
               <font-awesome-icon
                 icon="fas fa-dollar-sign"
-                class="text-gray-400 mr-2 w-4"
+                class="text-base-content/50 mr-2 w-4"
               />
               <span class="font-medium mr-1 text-sm">Valor:</span>
-              <span class="text-rose-600 font-bold">
+              <span class="text-error font-bold">
                 {{ formatCurrency(invoice.price) }}
               </span>
             </div>
@@ -120,7 +120,7 @@
             <div class="flex items-center">
               <font-awesome-icon
                 icon="fas fa-check-circle"
-                class="text-gray-400 mr-2 w-4"
+                class="text-base-content/50 mr-2 w-4"
               />
               <span class="font-medium mr-1 text-sm">Pago:</span>
               <span class="text-success font-bold">
@@ -131,13 +131,13 @@
             <div class="flex items-center">
               <font-awesome-icon
                 icon="fas fa-balance-scale"
-                class="text-gray-400 mr-2 w-4"
+                class="text-base-content/50 mr-2 w-4"
               />
               <span class="font-medium mr-1 text-sm">Saldo:</span>
               <span
                 :class="{
-                  'text-gray-600': getInvoiceBalance(invoice) === 0,
-                  'text-rose-600': getInvoiceBalance(invoice) > 0,
+                  'text-base-content/70': getInvoiceBalance(invoice) === 0,
+                  'text-error': getInvoiceBalance(invoice) > 0,
                 }"
                 class="font-bold"
               >
@@ -164,7 +164,7 @@
             <div class="w-6 h-6 flex items-center justify-center">
               <font-awesome-icon
                 icon="fa-solid fa-chevron-right"
-                class="text-gray-400 text-sm"
+                class="text-base-content/50 text-sm"
               />
             </div>
           </div>
@@ -173,15 +173,15 @@
         <!-- Pagamentos Realizados -->
         <div
           v-if="invoice.transactions && invoice.transactions.length > 0"
-          class="mt-0 space-y-1 rounded-xl border border-gray-200 bg-white p-2 px-16 border-t-4 shadow-sm"
+          class="mt-0 space-y-1 rounded-xl border border-base-300 bg-base-100 p-2 px-16 border-t-4 shadow-sm"
         >
           <div
             v-for="transaction in invoice.transactions"
             :key="transaction.id"
-            class="group flex items-center justify-between ms-0 px-1 py-1 rounded-md bg-white even:bg-sky-50/40 hover:bg-sky-100/60 border-l-4 border-transparent hover:border-sky-400 transition-colors"
+            class="group flex items-center justify-between ms-0 px-1 py-1 rounded-md bg-base-100 even:bg-info/20 hover:bg-info/20 border-l-4 border-transparent hover:border-info transition-colors"
           >
             <div
-              :class="invoice.category === 'operational' ? 'bg-orange-600' : 'bg-rose-600'"
+              :class="invoice.category === 'operational' ? 'bg-warning' : 'bg-error'"
               class="flex items-center justify-center w-6 h-6 me-2 rounded-full"
             >
               <font-awesome-icon
@@ -210,7 +210,7 @@
             </div>
             <div class="flex-1"></div>
             <div
-              class="text-right inline-flex items-center rounded-md  px-2 py-1 text-emerald-700"
+              class="text-right inline-flex items-center rounded-md  px-2 py-1 text-success"
             >
               <money-field
                 name="amount"
@@ -231,27 +231,27 @@
 
       <!-- Totais das faturas de débito -->
       <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-          <div class="text-xs font-semibold text-gray-500">
+        <div class="rounded-xl border border-base-300 bg-base-100 p-4 shadow-sm">
+          <div class="text-xs font-semibold text-base-content/60">
             Total de Débitos
           </div>
-          <div class="mt-1 text-1xl font-bold text-gray-800">
+          <div class="mt-1 text-1xl font-bold text-base-content">
             <money-field name="total" :modelValue="totalDebits" readonly />
           </div>
         </div>
         <div
-          class="rounded-xl border border-emerald-200 bg-emerald-50 p-4 shadow-sm"
+          class="rounded-xl border border-success/30 bg-success/10 p-4 shadow-sm"
         >
-          <div class="text-xs font-semibold text-emerald-700">Total Pago</div>
-          <div class="mt-1 text-1xl font-bold text-emerald-800">
+          <div class="text-xs font-semibold text-success">Total Pago</div>
+          <div class="mt-1 text-1xl font-bold text-success">
             <money-field name="paid" :modelValue="totalPaidDebits" readonly />
           </div>
         </div>
-        <div class="rounded-xl border border-sky-200 bg-sky-50 p-4 shadow-sm">
-          <div class="text-xs font-semibold text-sky-700">Saldo</div>
+        <div class="rounded-xl border border-info/30 bg-info/10 p-4 shadow-sm">
+          <div class="text-xs font-semibold text-info">Saldo</div>
           <div
             class="mt-1 text-1xl font-bold"
-            :class="balanceDebits >= 0 ? 'text-sky-800' : 'text-red-700'"
+            :class="balanceDebits >= 0 ? 'text-info' : 'text-error'"
           >
             <money-field name="balance" :modelValue="balanceDebits" readonly />
           </div>

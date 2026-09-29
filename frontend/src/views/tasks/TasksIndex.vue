@@ -131,7 +131,7 @@ export default {
 
 .new {
   border-radius: 20px 20px 20px 20px;
-  background-color: white;
+  background-color: var(--color-base-100);
   border-color: #ff3eb5;
   color: #ff3eb5;
   margin-left: 50px;

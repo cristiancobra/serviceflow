@@ -1,7 +1,7 @@
 <template>
   <button 
     type="button"
-    class="btn-close"
+    class="btn btn-ghost btn-sm btn-square text-base-content/50 hover:text-base-content"
     @click="$emit('click')"
     :title="title"
   >
@@ -19,30 +19,3 @@ defineProps({
 
 defineEmits(['click']);
 </script>
-
-<style scoped>
-.btn-close {
-  background: transparent;
-  padding: 0.5rem;
-  border-radius: 0.375rem;
-  transition: all 0.2s;
-  line-height: 1;
-  color: #9ca3af;
-  border: none;
-}
-
-.btn-close::before,
-.btn-close::after {
-  content: none !important;
-  display: none !important;
-}
-
-.btn-close:hover {
-  color: #4b5563;
-  background-color: #f3f4f6;
-}
-
-.btn-close:active {
-  background-color: #e5e7eb;
-}
-</style>

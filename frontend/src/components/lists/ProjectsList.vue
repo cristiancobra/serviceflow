@@ -58,12 +58,10 @@
       </div>
       <div class="task-column">
         <router-link :to="{ name: 'projectShow', params: { id: project.id } }">
-          <div class="row title">
-            <div class="col">
-              <p class="text-base-content ps-2">
-                {{ project.name }}
-              </p>
-            </div>
+          <div class="title">
+            <p class="text-base-content ps-2">
+              {{ project.name }}
+            </p>
           </div>
         </router-link>
       </div>

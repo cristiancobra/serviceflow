@@ -19,7 +19,7 @@
       </div>
       <div
         v-else
-        class="flex items-center mt-2 mb-2 ml-6 px-4 py-1 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg shadow-sm hover:bg-blue-100 transition-colors duration-200"
+        class="flex items-center mt-2 mb-2 ml-6 px-4 py-1 bg-info/10 border-l-4 border-info rounded-r-lg shadow-sm hover:bg-info/10 transition-colors duration-200"
         v-for="journey in localJourneys"
         v-bind:key="journey.id"
         :class="{ highlight: journey.id === newJourneyId }"
@@ -33,13 +33,13 @@
             class="user-image mr-2"
           />
           <template v-else>
-            <font-awesome-icon icon="fa-solid fa-user" class="text-blue-600 mr-2" />
-            <span class="font-semibold text-blue-700">{{ journey.user?.name || 'Usuário' }}</span>
+            <font-awesome-icon icon="fa-solid fa-user" class="text-info mr-2" />
+            <span class="font-semibold text-info">{{ journey.user?.name || 'Usuário' }}</span>
           </template>
         </div>
         
         <div class="flex items-center mr-5">
-          <font-awesome-icon icon="fa-solid fa-play" class="text-blue-600 mr-2" />
+          <font-awesome-icon icon="fa-solid fa-play" class="text-info mr-2" />
           <DateEditableInput
             name="start"
             v-model="journey.start"
@@ -47,7 +47,7 @@
           />
         </div>
         <div class="flex items-center mr-5">
-          <font-awesome-icon icon="fa-solid fa-stop" class="text-blue-600 mr-2" />
+          <font-awesome-icon icon="fa-solid fa-stop" class="text-info mr-2" />
           <TimeEditableInput
             class="ps-5"
             name="end"
@@ -56,12 +56,12 @@
           />
         </div>
         <div class="flex items-center mr-5">
-          <font-awesome-icon icon="fa-solid fa-hourglass-half" class="text-blue-600 mr-2" />
+          <font-awesome-icon icon="fa-solid fa-hourglass-half" class="text-info mr-2" />
           <p class="time-bold ps-5">
             {{ formatDuration(journey.duration) }}
           </p>
         </div>
-        <div class="flex items-center mr-5 text-gray-600 min-w-0">
+        <div class="flex items-center mr-5 text-base-content/70 min-w-0">
           <TextEditableField
             name="details"
             class="text-sm truncate"
@@ -315,21 +315,21 @@ export default {
   text-align: center;
   font-size: 16px;
   font-weight: 800;
-  color: var(--purple);
+  color: var(--color-primary);
 }
 
 .big-icon {
   font-size: 2.6rem;
   text-align: center;
   font-weight: 400;
-  background-color: var(--gray);
+  background-color: color-mix(in oklab, var(--color-base-content) 50%, transparent);
   color: white;
 }
 
 .journey-container {
   border-style: solid;
   border-width: 2px;
-  border-color: var(--primary);
+  border-color: var(--color-primary);
   border-radius: 14px;
   padding: 1rem;
 }
@@ -357,7 +357,7 @@ export default {
 .page-link {
   display: block;
   padding: 10px;
-  background-color: #3498db;
+  background-color: var(--color-info);
   color: #fff;
   text-align: center;
   text-decoration: none;
@@ -367,19 +367,19 @@ export default {
 }
 
 .page-link:hover {
-  background-color: #2980b9;
+  background-color: var(--color-info);
 }
 
 .page-item-disabled .page-link {
-  background-color: #ccc;
-  color: #666;
+  background-color: var(--color-base-300);
+  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
   cursor: not-allowed;
 }
 
 .prev-next-link {
   display: block;
   padding: 10px;
-  background-color: #3498db;
+  background-color: var(--color-info);
   color: #fff;
   text-align: center;
   text-decoration: none;
@@ -389,19 +389,19 @@ export default {
 }
 
 .prev-next-link:hover {
-  background-color: #2980b9;
+  background-color: var(--color-info);
 }
 
 .prev-next-link-disabled {
-  background-color: #ccc;
-  color: #666;
+  background-color: var(--color-base-300);
+  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
   cursor: not-allowed;
 }
 
 .highlight {
-  background-color: #fff3cd;
+  background-color: color-mix(in oklab, var(--color-warning) 15%, var(--color-base-100));
   animation: highlightPulse 2s ease-in-out;
-  border-left: 4px solid #ffc107;
+  border-left: 4px solid var(--color-warning);
   /* padding-left: 12px; */
 }
 
@@ -414,16 +414,16 @@ export default {
 
 @keyframes highlightPulse {
   0% {
-    background-color: #fffacd;
-    box-shadow: 0 0 15px rgba(255, 193, 7, 0.8);
+    background-color: color-mix(in oklab, var(--color-warning) 15%, var(--color-base-100));
+    box-shadow: 0 0 15px color-mix(in oklab, var(--color-warning) 80%, transparent);
   }
   50% {
-    background-color: #fff9c4;
-    box-shadow: 0 0 25px rgba(255, 193, 7, 0.6);
+    background-color: color-mix(in oklab, var(--color-warning) 15%, var(--color-base-100));
+    box-shadow: 0 0 25px color-mix(in oklab, var(--color-warning) 60%, transparent);
   }
   100% {
-    background-color: #fff3cd;
-    box-shadow: 0 0 0 rgba(255, 193, 7, 0);
+    background-color: color-mix(in oklab, var(--color-warning) 15%, var(--color-base-100));
+    box-shadow: 0 0 0 color-mix(in oklab, var(--color-warning) 0%, transparent);
   }
 }
 

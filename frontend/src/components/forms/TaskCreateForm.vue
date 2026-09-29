@@ -8,10 +8,10 @@
           <error-message v-if="formResponse" :formResponse="formResponse" />
           <form id="taskForm" @submit.prevent="submitForm">
             <div class="mb-4">
-              <div class="form-control w-full">
+              <div class="w-full">
                 <label class="text-base-content" :for="name"> Nome da tarefa </label>
                 <input
-                  class="input input-bordered w-full"
+                  class="input w-full"
                   type="text"
                   name="name"
                   v-model="form.name"
@@ -22,7 +22,7 @@
             <div class="mb-4">
               <label class="text-base-content" :for="description"> Detalhamento </label>
               <textarea
-                class="input input-bordered w-full"
+                class="input w-full"
                 name="description"
                 v-model="form.description"
                 placeholder="Detalhamento da tarefa"

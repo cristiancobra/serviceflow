@@ -1,18 +1,18 @@
 <template>
-  <div v-if="task" class="modal-panel bg-white rounded-2xl shadow-2xl w-full max-h-[90vh] overflow-y-auto"
+  <div v-if="task" class="modal-panel bg-base-100 rounded-2xl shadow-2xl w-full max-h-[90vh] overflow-y-auto"
     :class="compact ? 'max-w-2xl' : 'max-w-5xl'">
     <!-- Header -->
-    <div class="sticky top-0 bg-gradient-to-r from-blue-50 to-blue-25 border-b border-gray-200 px-8 py-6">
+    <div class="sticky top-0 bg-gradient-to-r from-info/10 to-info/10 border-b border-base-300 px-8 py-6">
       <div class="flex justify-between items-start">
         <div class="flex-1">
           <div class="flex items-center gap-4 mb-2">
             <!-- Status Icon -->
-            <font-awesome-icon v-if="task.date_canceled" icon="fas fa-times-circle" class="text-3xl text-red-500"
+            <font-awesome-icon v-if="task.date_canceled" icon="fas fa-times-circle" class="text-3xl text-error"
               title="Tarefa cancelada" />
             <font-awesome-icon v-else icon="fas fa-check-circle" class="text-3xl"
-              :class="isValidDate(task.date_conclusion) ? 'text-success' : 'text-gray-400'" />
+              :class="isValidDate(task.date_conclusion) ? 'text-success' : 'text-base-content/50'" />
 
-            <div class="text-2xl font-bold text-gray-800 flex-1">
+            <div class="text-2xl font-bold text-base-content flex-1">
               <text-editable-field name="name" v-model="task.name" placeholder="descrição detalhada da tarefa"
                 @save="updateTask('name', $event)" />
             </div>
@@ -37,8 +37,8 @@
 
           <div v-else class="flex items-center gap-2 text-sm mt-2">
             <template v-if="!showOpportunitySelect">
-              <font-awesome-icon icon="fa-solid fa-bullseye" class="text-gray-400" />
-              <button type="button" class="text-gray-400 hover:text-primary font-medium transition-colors"
+              <font-awesome-icon icon="fa-solid fa-bullseye" class="text-base-content/50" />
+              <button type="button" class="text-base-content/50 hover:text-primary font-medium transition-colors"
                 @click="showOpportunitySelect = true">
                 Adicionar oportunidade
               </button>
@@ -46,7 +46,7 @@
             <template v-else>
               <opportunities-select-input name="opportunity_id" label="Oportunidade" fieldToDisplay="name"
                 fieldNull="Nenhuma" v-model="selectedOpportunity" @update:modelValue="onOpportunitySelected" />
-              <button type="button" class="text-gray-400 hover:text-red-500 ml-1 transition-colors" title="Cancelar"
+              <button type="button" class="text-base-content/50 hover:text-error ml-1 transition-colors" title="Cancelar"
                 @click="showOpportunitySelect = false">
                 <font-awesome-icon icon="fa-solid fa-times" />
               </button>
@@ -62,19 +62,19 @@
     <div class="px-8 py-6">
       <!-- Datas e Duração -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <div class="bg-gray-50 rounded-lg p-4">
+        <div class="bg-base-200 rounded-lg p-4">
           <div class="flex items-center gap-2 mb-2">
             <font-awesome-icon icon="fa-solid fa-exclamation-circle" class="text-error" />
-            <label class="text-sm font-semibold text-gray-700">Data de Vencimento</label>
+            <label class="text-sm font-semibold text-base-content/80">Data de Vencimento</label>
           </div>
           <date-time-editable-input v-model="task.date_due" :classText="getDeadlineClass(task.date_due)"
             @save="updateTask('date_due', $event)" />
         </div>
 
-        <div class="bg-gray-50 rounded-lg p-4">
+        <div class="bg-base-200 rounded-lg p-4">
           <div class="flex items-center gap-2 mb-2">
             <font-awesome-icon icon="fa-solid fa-check-circle" class="text-success" />
-            <label class="text-sm font-semibold text-gray-700">Data de Conclusão</label>
+            <label class="text-sm font-semibold text-base-content/80">Data de Conclusão</label>
           </div>
           <date-time-editable-input name="date_conclusion" v-model="task.date_conclusion"
             @save="updateTask('date_conclusion', $event)" />
@@ -83,9 +83,9 @@
         <div class="bg-primary-50 rounded-lg p-4">
           <div class="flex items-center gap-2 mb-2">
             <font-awesome-icon icon="fa-solid fa-clock" class="text-primary" />
-            <label class="text-sm font-semibold text-gray-700">Duração</label>
-            <span v-if="isJourneyRunning" class="flex items-center gap-1 text-xs font-semibold text-green-600">
-              <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+            <label class="text-sm font-semibold text-base-content/80">Duração</label>
+            <span v-if="isJourneyRunning" class="flex items-center gap-1 text-xs font-semibold text-success">
+              <span class="w-2 h-2 rounded-full bg-success animate-pulse"></span>
               AO VIVO
             </span>
           </div>
@@ -97,7 +97,7 @@
       </div>
 
       <!-- Descrição -->
-      <div class="mb-6 bg-gray-50 rounded-lg p-4">
+      <div class="mb-6 bg-base-200 rounded-lg p-4">
         <text-area-editable-input name="description" label="Descrição" v-model="task.description"
           placeholder="Adicione uma descrição detalhada da tarefa" @save="updateTask('description', $event)" />
       </div>
@@ -109,8 +109,8 @@
       </div>
 
       <!-- Área de Cancelamento -->
-      <div v-if="showCancelArea" class="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
-        <h4 class="text-lg font-bold text-red-700 mb-4">Cancelar Tarefa</h4>
+      <div v-if="showCancelArea" class="bg-error/10 border border-error/30 rounded-lg p-6 mb-6">
+        <h4 class="text-lg font-bold text-error mb-4">Cancelar Tarefa</h4>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <date-time-editable-input name="date_canceled" v-model="task.date_canceled" label="Data de Cancelamento"
             @save="updateTask('date_canceled', $event)" />
@@ -121,7 +121,7 @@
     </div>
 
     <!-- Footer com Ações -->
-    <div class="sticky bottom-0 bg-gray-50 border-t border-gray-200 py-4" :class="compact ? 'px-4' : 'px-8'">
+    <div class="sticky bottom-0 bg-base-200 border-t border-base-300 py-4" :class="compact ? 'px-4' : 'px-8'">
       <div class="flex justify-between items-center gap-2">
         <!-- Ações Rápidas -->
         <div class="flex" :class="compact ? 'gap-2' : 'gap-3'">
@@ -147,7 +147,7 @@
             title="Adicionar jornada manualmente" />
 
           <button type="button"
-            class="px-4 py-2 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors"
+            class="px-4 py-2 bg-info text-white rounded-lg font-semibold hover:bg-info transition-colors"
             @click="openLinksModal" title="Ver links da tarefa">
             <font-awesome-icon icon="fa-solid fa-link" :class="{ 'me-2': !compact }" />
             <span v-if="!compact">Links</span>
@@ -162,7 +162,7 @@
           </button>
 
           <button type="button"
-            class="px-4 py-2 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-colors"
+            class="px-4 py-2 bg-error text-white rounded-lg font-semibold hover:bg-error transition-colors"
             @click="toggleCancelArea" :title="showCancelArea ? 'Ocultar cancelamento' : 'Cancelar tarefa'">
             <font-awesome-icon icon="fa-solid fa-times-circle" :class="{ 'me-2': !compact }" />
             <span v-if="!compact">{{ showCancelArea ? 'Ocultar' : 'Cancelar' }}</span>
@@ -175,8 +175,8 @@
           <div v-if="!task.date_conclusion" class="relative group">
             <button type="button" :disabled="!canFinishTask"
               class="px-4 py-2 text-white rounded-lg font-semibold transition-colors" :class="canFinishTask
-                ? 'bg-success hover:bg-green-700 cursor-pointer'
-                : 'bg-gray-300 cursor-not-allowed opacity-60'" @click="finishTask" title="Finalizar tarefa">
+                ? 'bg-success hover:bg-success cursor-pointer'
+                : 'bg-base-300 cursor-not-allowed opacity-60'" @click="finishTask" title="Finalizar tarefa">
               <font-awesome-icon icon="fa-solid fa-check" :class="{ 'me-2': !compact }" />
               <span v-if="!compact">Finalizar</span>
             </button>
@@ -188,7 +188,7 @@
           </div>
 
           <button type="button"
-            class="py-2 text-gray-700 bg-white border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+            class="py-2 text-base-content/80 bg-base-100 border border-base-300 rounded-lg font-semibold hover:bg-base-200 transition-colors"
             :class="compact ? 'px-4' : 'px-6'" @click="closeModal" title="Fechar">
             <font-awesome-icon v-if="compact" icon="fa-solid fa-times" />
             <template v-else>Fechar</template>
@@ -468,24 +468,24 @@ export default {
 
 /* Estilo para o div de visualização (não editando) */
 :deep(.w-full.border-none.p-1) {
-  color: #6b7280;
-  /* text-gray-500 - placeholder */
+  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
+  /* text-base-content/60 - placeholder */
   font-style: italic;
   min-height: 80px;
 }
 
 /* Quando tem conteúdo no div de visualização */
 :deep(.w-full.border-none.p-1:not(:empty)) {
-  color: #374151;
-  /* text-gray-700 - texto normal */
+  color: color-mix(in oklab, var(--color-base-content) 80%, transparent);
+  /* text-base-content/80 - texto normal */
   font-style: normal;
 }
 
 /* Estilo para o textarea quando está editando */
 :deep(textarea) {
-  color: #1f2937 !important;
-  /* text-gray-800 - texto digitado visível */
-  background-color: white !important;
+  color: var(--color-base-content) !important;
+  /* text-base-content - texto digitado visível */
+  background-color: var(--color-base-100) !important;
 }
 
 /* Força visibilidade dos botões Salvar/Cancelar */
@@ -498,7 +498,7 @@ export default {
 
 /* Garante contraste nos botões */
 :deep(.bg-primary-500) {
-  background-color: #3b82f6 !important;
+  background-color: var(--color-info) !important;
   color: white !important;
 }
 

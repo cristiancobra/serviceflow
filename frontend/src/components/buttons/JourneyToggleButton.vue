@@ -3,7 +3,7 @@
     type="button"
     :class="[
       'flex items-center justify-center rounded-full text-white transition hover:scale-110',
-      running ? 'bg-blue-500 hover:bg-blue-700' : 'bg-green-600 hover:bg-green-700',
+      running ? 'bg-info hover:bg-info' : 'bg-success hover:bg-success',
       size,
     ]"
     :title="running ? stopTitle : startTitle"

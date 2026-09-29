@@ -8,22 +8,22 @@
     compact-size="max-w-3xl"
     @close="$emit('close')"
   >
-    <div v-if="!invoice" class="p-5 text-center text-gray-500">
+    <div v-if="!invoice" class="p-5 text-center text-base-content/60">
       Carregando fatura...
     </div>
 
     <template v-else>
       <!-- Mensagem de erro -->
-      <div v-if="errorMessage" class="bg-red-50 border-2 border-red-500 rounded-lg p-4 mb-6">
+      <div v-if="errorMessage" class="bg-error/10 border-2 border-error rounded-lg p-4 mb-6">
         <div class="flex gap-4">
           <div class="flex-shrink-0 pt-0.5">
-            <font-awesome-icon icon="fa-solid fa-circle-exclamation" class="text-2xl text-red-600" />
+            <font-awesome-icon icon="fa-solid fa-circle-exclamation" class="text-2xl text-error" />
           </div>
           <div class="flex-1">
-            <h3 class="text-red-800 font-bold text-lg mb-2">Erro ao atualizar fatura</h3>
-            <p class="text-red-700 text-sm">{{ errorMessage }}</p>
+            <h3 class="text-error font-bold text-lg mb-2">Erro ao atualizar fatura</h3>
+            <p class="text-error text-sm">{{ errorMessage }}</p>
           </div>
-          <button @click="errorMessage = null" class="text-red-500 hover:text-red-700">
+          <button @click="errorMessage = null" class="text-error hover:text-error">
             <font-awesome-icon icon="fa-solid fa-times" />
           </button>
         </div>
@@ -32,10 +32,10 @@
       <!-- Status + Valor -->
       <div class="flex flex-wrap items-center justify-between gap-6 mb-6">
         <div>
-          <p v-if="invoice.category || isDebit" class="text-sm text-gray-500 mb-2">
+          <p v-if="invoice.category || isDebit" class="text-sm text-base-content/60 mb-2">
             <span
               v-if="invoice.category"
-              class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 mr-2"
+              class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-base-200 text-base-content/80 mr-2"
             >
               {{ getCategoryLabel(invoice.category) }}
             </span>
@@ -62,7 +62,7 @@
             </div>
             <div class="min-w-[180px] text-right text-primary">
               <div
-                class="inline-flex items-center rounded-lg bg-white px-3 py-2 ring-1 ring-emerald-200 shadow-sm ml-auto"
+                class="inline-flex items-center rounded-lg bg-base-100 px-3 py-2 ring-1 ring-success/30 shadow-sm ml-auto"
               >
                 <money-editable-field
                   name="price"
@@ -76,7 +76,7 @@
       </div>
 
       <!-- Empresa / Cliente / Oportunidade / Proposta -->
-      <div class="rounded-lg border border-gray-200 p-6 mb-6">
+      <div class="rounded-lg border border-base-300 p-6 mb-6">
         <div class="space-y-4">
           <div class="flex items-center gap-3">
             <company-avatar
@@ -138,10 +138,10 @@
       <!-- Tarefas vinculadas -->
       <div
         v-if="invoice.tasks && invoice.tasks.length > 0"
-        class="rounded-lg border border-green-200 bg-green-50 p-6 mb-6"
+        class="rounded-lg border border-success/30 bg-success/10 p-6 mb-6"
       >
-        <h3 class="text-lg font-bold text-green-800 mb-3 flex items-center gap-2">
-          <font-awesome-icon icon="fa-solid fa-check-circle" class="text-green-600" />
+        <h3 class="text-lg font-bold text-success mb-3 flex items-center gap-2">
+          <font-awesome-icon icon="fa-solid fa-check-circle" class="text-success" />
           Tarefas Vinculadas
         </h3>
         <div class="space-y-2">
@@ -149,50 +149,50 @@
             v-for="task in invoice.tasks"
             :key="task.id"
             type="button"
-            class="w-full flex items-center justify-between p-3 bg-white rounded-lg border border-green-200 hover:border-green-400 transition-colors text-left"
+            class="w-full flex items-center justify-between p-3 bg-base-100 rounded-lg border border-success/30 hover:border-success transition-colors text-left"
             @click="openTaskModal(task.id)"
           >
             <div class="flex items-center gap-3">
               <span
                 class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold"
-                :class="task.status === 'done' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'"
+                :class="task.status === 'done' ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'"
               >
                 {{ task.status === "done" ? "Concluída" : "Pendente" }}
               </span>
-              <span class="text-sm font-medium text-gray-800">{{ task.name }}</span>
+              <span class="text-sm font-medium text-base-content">{{ task.name }}</span>
             </div>
-            <span v-if="task.date_due" class="text-xs text-gray-500">{{ formatDateBr(task.date_due) }}</span>
+            <span v-if="task.date_due" class="text-xs text-base-content/60">{{ formatDateBr(task.date_due) }}</span>
           </button>
         </div>
       </div>
 
       <!-- Datas -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div class="bg-gray-50 rounded-lg p-4">
+        <div class="bg-base-200 rounded-lg p-4">
           <div class="flex items-center gap-2 mb-1">
             <font-awesome-icon icon="fa fa-calendar-alt" class="text-error" />
-            <label class="text-sm font-semibold text-gray-700">Vencimento</label>
+            <label class="text-sm font-semibold text-base-content/80">Vencimento</label>
           </div>
-          <p class="text-gray-800">{{ formatDateBr(invoice.date_due) }}</p>
+          <p class="text-base-content">{{ formatDateBr(invoice.date_due) }}</p>
         </div>
-        <div v-if="invoice.proposal" class="bg-gray-50 rounded-lg p-4">
+        <div v-if="invoice.proposal" class="bg-base-200 rounded-lg p-4">
           <div class="flex items-center gap-2 mb-1">
             <font-awesome-icon icon="fas fa-credit-card" class="text-primary" />
-            <label class="text-sm font-semibold text-gray-700">Parcelamento</label>
+            <label class="text-sm font-semibold text-base-content/80">Parcelamento</label>
           </div>
-          <p class="text-gray-800">{{ invoice.proposal.installment_quantity }}x</p>
+          <p class="text-base-content">{{ invoice.proposal.installment_quantity }}x</p>
         </div>
-        <div class="bg-gray-50 rounded-lg p-4">
+        <div class="bg-base-200 rounded-lg p-4">
           <div class="flex items-center gap-2 mb-1">
-            <font-awesome-icon icon="fa fa-calendar-plus" class="text-gray-500" />
-            <label class="text-sm font-semibold text-gray-700">Criação</label>
+            <font-awesome-icon icon="fa fa-calendar-plus" class="text-base-content/60" />
+            <label class="text-sm font-semibold text-base-content/80">Criação</label>
           </div>
-          <p class="text-gray-800">{{ formatDateBr(invoice.created_at) }}</p>
+          <p class="text-base-content">{{ formatDateBr(invoice.created_at) }}</p>
         </div>
       </div>
 
       <!-- Descrição -->
-      <div class="mb-6 bg-gray-50 rounded-lg p-4">
+      <div class="mb-6 bg-base-200 rounded-lg p-4">
         <text-area-editable-input
           name="description"
           label="Descrição"
@@ -204,7 +204,7 @@
 
       <!-- Pagamentos -->
       <div class="flex items-center justify-between mb-2">
-        <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+        <h3 class="text-lg font-bold text-base-content flex items-center gap-2">
           <font-awesome-icon icon="fas fa-coins" class="text-primary" />
           {{ isDebit ? "Pagamentos realizados" : "Pagamentos recebidos" }}
         </h3>
@@ -225,26 +225,26 @@
 
       <!-- Totais -->
       <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-          <div class="text-xs font-semibold text-gray-500">Total da Fatura</div>
-          <div class="mt-1 font-bold text-gray-800">
+        <div class="rounded-xl border border-base-300 bg-base-100 p-4 shadow-sm">
+          <div class="text-xs font-semibold text-base-content/60">Total da Fatura</div>
+          <div class="mt-1 font-bold text-base-content">
             <money-field name="total" :modelValue="invoiceTotal" readonly />
           </div>
         </div>
         <div
           class="rounded-xl border p-4 shadow-sm"
-          :class="isDebit ? 'border-red-200 bg-red-50' : 'border-emerald-200 bg-emerald-50'"
+          :class="isDebit ? 'border-error/30 bg-error/10' : 'border-success/30 bg-success/10'"
         >
-          <div class="text-xs font-semibold" :class="isDebit ? 'text-red-700' : 'text-emerald-700'">
+          <div class="text-xs font-semibold" :class="isDebit ? 'text-error' : 'text-success'">
             {{ isDebit ? "Total Pago" : "Total Recebido" }}
           </div>
-          <div class="mt-1 font-bold" :class="isDebit ? 'text-red-800' : 'text-emerald-800'">
+          <div class="mt-1 font-bold" :class="isDebit ? 'text-error' : 'text-success'">
             <money-field name="paid" :modelValue="transactionsTotal" readonly />
           </div>
         </div>
-        <div class="rounded-xl border border-sky-200 bg-sky-50 p-4 shadow-sm">
-          <div class="text-xs font-semibold text-sky-700">Saldo</div>
-          <div class="mt-1 font-bold" :class="balance >= 0 ? 'text-sky-800' : 'text-red-700'">
+        <div class="rounded-xl border border-info/30 bg-info/10 p-4 shadow-sm">
+          <div class="text-xs font-semibold text-info">Saldo</div>
+          <div class="mt-1 font-bold" :class="balance >= 0 ? 'text-info' : 'text-error'">
             <money-field name="balance" :modelValue="balance" readonly />
           </div>
         </div>
@@ -301,7 +301,7 @@
         <div class="flex items-center gap-4">
           <label class="flex items-center gap-2 cursor-pointer" title="Mostrar quantidades no PDF">
             <input type="checkbox" class="toggle toggle-sm toggle-primary" v-model="isVisibleQuantity" />
-            <span v-if="!compact" class="text-sm text-gray-700 font-medium">quantidades</span>
+            <span v-if="!compact" class="text-sm text-base-content/80 font-medium">quantidades</span>
           </label>
 
           <button type="button" class="btn btn-primary" title="Gerar PDF" @click="exportPDF">

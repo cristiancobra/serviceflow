@@ -3,9 +3,9 @@
     <add-message v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </add-message>
     <div class="headers-line">
-      <div class="col-1 slot done">concluidos</div>
-      <div class="col-1 slot doing">andamento</div>
-      <div class="col-1 slot late">atrasados</div>
+      <div class="slot done">concluidos</div>
+      <div class="slot doing">andamento</div>
+      <div class="slot late">atrasados</div>
     </div>
 
       <ProjectsList template="index"/>
@@ -67,41 +67,41 @@ export default {
 }
 
 .done {
-  background-color: white;
-  border-color: #2cb48d;
-  color: #2cb48d;
+  background-color: var(--color-base-100);
+  border-color: var(--color-success);
+  color: var(--color-success);
 }
 
 .done:hover {
-  background-color: #2cb48d;
+  background-color: var(--color-success);
   color: white;
 }
 
 .doing {
-  background-color: white;
-  border-color: #e78d1f;
-  color: #e78d1f;
+  background-color: var(--color-base-100);
+  border-color: var(--color-warning);
+  color: var(--color-warning);
 }
 
 .doing:hover {
-  background-color: #e78d1f;
+  background-color: var(--color-warning);
   color: white;
 }
 
 .late {
-  background-color: white;
-  border-color: #b1388d;
-  color: #b1388d;
+  background-color: var(--color-base-100);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .late:hover {
-  background-color: #b1388d;
+  background-color: var(--color-primary);
   color: white;
 }
 
 .new {
   border-radius: 20px 20px 20px 20px;
-  background-color: white;
+  background-color: var(--color-base-100);
   border-color: #ff3eb5;
   color: #ff3eb5;
   margin-left: 50px;

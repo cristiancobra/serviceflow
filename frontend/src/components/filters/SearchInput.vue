@@ -36,14 +36,14 @@ export default {
 .search-input {
     width: 100%;
     padding: 0.5rem;
-    border: 1px solid #ccc;
+    border: 1px solid var(--color-base-300);
     border-radius: 4px;
     font-size: 1rem;
 }
 
 .search-input:focus {
     outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 0.2rem color-mix(in oklab, var(--color-primary) 25%, transparent);
 }
 </style>

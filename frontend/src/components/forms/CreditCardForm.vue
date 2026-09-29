@@ -1,96 +1,96 @@
 <template>
-  <div class="form-container">
+  <div>
     <form @submit.prevent="submitForm">
-      <div class="form-grid">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 mb-6">
         <!-- Nome do Cartão -->
-        <div class="form-group col-span-2">
-          <label for="name" class="form-label required">Nome do Cartão</label>
+        <div class="fieldset md:col-span-2">
+          <label for="name" class="fieldset-legend justify-start">Nome do Cartão <span class="text-error">*</span></label>
           <input
             id="name"
             v-model="form.name"
             type="text"
-            class="form-input"
+            class="input w-full"
             placeholder="Ex: Nubank Empresarial"
             required
           />
-          <span v-if="errors.name" class="error-message">{{ errors.name[0] }}</span>
+          <span v-if="errors.name" class="text-error text-xs">{{ errors.name[0] }}</span>
         </div>
 
         <!-- Bandeira -->
-        <div class="form-group">
-          <label for="brand" class="form-label">Bandeira</label>
+        <div class="fieldset">
+          <label for="brand" class="fieldset-legend">Bandeira</label>
           <input
             id="brand"
             v-model="form.brand"
             type="text"
-            class="form-input"
+            class="input w-full"
             placeholder="Ex: Visa, Mastercard"
           />
-          <span v-if="errors.brand" class="error-message">{{ errors.brand[0] }}</span>
+          <span v-if="errors.brand" class="text-error text-xs">{{ errors.brand[0] }}</span>
         </div>
 
         <!-- Últimos Dígitos -->
-        <div class="form-group">
-          <label for="last_digits" class="form-label">Últimos Dígitos</label>
+        <div class="fieldset">
+          <label for="last_digits" class="fieldset-legend">Últimos Dígitos</label>
           <input
             id="last_digits"
             v-model="form.last_digits"
             type="text"
             maxlength="4"
-            class="form-input"
+            class="input w-full"
             placeholder="Ex: 1234"
           />
-          <span v-if="errors.last_digits" class="error-message">{{ errors.last_digits[0] }}</span>
+          <span v-if="errors.last_digits" class="text-error text-xs">{{ errors.last_digits[0] }}</span>
         </div>
 
         <!-- Dia de Fechamento -->
-        <div class="form-group">
-          <label for="closing_day" class="form-label required">Dia de Fechamento</label>
+        <div class="fieldset">
+          <label for="closing_day" class="fieldset-legend justify-start">Dia de Fechamento <span class="text-error">*</span></label>
           <input
             id="closing_day"
             v-model.number="form.closing_day"
             type="number"
             min="1"
             max="31"
-            class="form-input"
+            class="input w-full"
             required
           />
-          <span v-if="errors.closing_day" class="error-message">{{ errors.closing_day[0] }}</span>
+          <span v-if="errors.closing_day" class="text-error text-xs">{{ errors.closing_day[0] }}</span>
         </div>
 
         <!-- Dia de Vencimento -->
-        <div class="form-group">
-          <label for="due_day" class="form-label required">Dia de Vencimento</label>
+        <div class="fieldset">
+          <label for="due_day" class="fieldset-legend justify-start">Dia de Vencimento <span class="text-error">*</span></label>
           <input
             id="due_day"
             v-model.number="form.due_day"
             type="number"
             min="1"
             max="31"
-            class="form-input"
+            class="input w-full"
             required
           />
-          <span v-if="errors.due_day" class="error-message">{{ errors.due_day[0] }}</span>
+          <span v-if="errors.due_day" class="text-error text-xs">{{ errors.due_day[0] }}</span>
         </div>
 
         <!-- Limite de Crédito -->
-        <div class="form-group">
-          <label for="credit_limit" class="form-label">Limite de Crédito</label>
+        <div class="fieldset">
+          <label for="credit_limit" class="fieldset-legend">Limite de Crédito</label>
           <money-input
             name="credit_limit"
             v-model="form.credit_limit"
-            class="form-input"
+            class="input w-full"
           />
-          <span v-if="errors.credit_limit" class="error-message">{{ errors.credit_limit[0] }}</span>
+          <span v-if="errors.credit_limit" class="text-error text-xs">{{ errors.credit_limit[0] }}</span>
         </div>
 
         <!-- Conta Bancária Padrão -->
-        <div class="form-group">
-          <label for="default_bank_account_id" class="form-label">Conta Padrão p/ Pagamento</label>
+        <div class="fieldset">
+          <label for="default_bank_account_id" class="fieldset-legend">Conta Padrão p/ Pagamento</label>
           <select
             id="default_bank_account_id"
             v-model="form.default_bank_account_id"
-            class="form-input"
+            class="select w-full"
           >
             <option value="">Nenhuma</option>
             <option
@@ -101,16 +101,16 @@
               {{ bankAccount.account_name }}
             </option>
           </select>
-          <span v-if="errors.default_bank_account_id" class="error-message">{{ errors.default_bank_account_id[0] }}</span>
+          <span v-if="errors.default_bank_account_id" class="text-error text-xs">{{ errors.default_bank_account_id[0] }}</span>
         </div>
 
         <!-- Usuário Responsável -->
-        <div class="form-group col-span-2">
-          <label for="user_id" class="form-label">Usuário Responsável</label>
+        <div class="fieldset md:col-span-2">
+          <label for="user_id" class="fieldset-legend">Usuário Responsável</label>
           <select
             id="user_id"
             v-model="form.user_id"
-            class="form-input"
+            class="select w-full"
           >
             <option value="">Nenhum</option>
             <option
@@ -121,40 +121,41 @@
               {{ user.name }}
             </option>
           </select>
-          <span v-if="errors.user_id" class="error-message">{{ errors.user_id[0] }}</span>
+          <span v-if="errors.user_id" class="text-error text-xs">{{ errors.user_id[0] }}</span>
         </div>
 
         <!-- Descrição -->
-        <div class="form-group col-span-2">
-          <label for="description" class="form-label">Descrição</label>
+        <div class="fieldset md:col-span-2">
+          <label for="description" class="fieldset-legend">Descrição</label>
           <textarea
             id="description"
             v-model="form.description"
-            class="form-input"
+            class="textarea w-full"
             rows="3"
             placeholder="Informações adicionais sobre o cartão..."
           ></textarea>
-          <span v-if="errors.description" class="error-message">{{ errors.description[0] }}</span>
+          <span v-if="errors.description" class="text-error text-xs">{{ errors.description[0] }}</span>
         </div>
 
         <!-- Status Ativo -->
-        <div class="form-group col-span-2">
-          <label class="form-checkbox">
+        <div class="fieldset md:col-span-2">
+          <label class="flex items-center gap-2 cursor-pointer select-none">
             <input
               type="checkbox"
+              class="checkbox checkbox-primary checkbox-sm"
               v-model="form.is_active"
             />
-            <span class="checkbox-label">Cartão ativo</span>
+            <span class="text-sm font-medium">Cartão ativo</span>
           </label>
         </div>
       </div>
 
       <!-- Botões de Ação -->
-      <div class="form-actions">
-        <button type="button" @click="cancel" class="btn-secondary">
+      <div class="flex justify-end gap-3 pt-4 border-t border-base-300">
+        <button type="button" @click="cancel" class="btn btn-ghost">
           Cancelar
         </button>
-        <button type="submit" class="btn-primary" :disabled="isSubmitting">
+        <button type="submit" class="btn btn-primary" :disabled="isSubmitting">
           <span v-if="isSubmitting">Salvando...</span>
           <span v-else>{{ isEditing ? 'Atualizar' : 'Criar' }}</span>
         </button>
@@ -296,133 +297,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.form-container {
-  padding: 1.5rem;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.col-span-2 {
-  grid-column: span 2;
-}
-
-.form-label {
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: #374151;
-  font-size: 0.875rem;
-}
-
-.form-label.required::after {
-  content: " *";
-  color: #ef4444;
-}
-
-.form-input {
-  padding: 0.625rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  transition: border-color 0.2s;
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
-}
-
-textarea.form-input {
-  resize: vertical;
-  font-family: inherit;
-}
-
-.form-checkbox {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  user-select: none;
-}
-
-.form-checkbox input[type="checkbox"] {
-  width: 1.25rem;
-  height: 1.25rem;
-  margin-right: 0.5rem;
-  cursor: pointer;
-}
-
-.checkbox-label {
-  font-weight: 500;
-  color: #374151;
-}
-
-.error-message {
-  color: #ef4444;
-  font-size: 0.75rem;
-  margin-top: 0.25rem;
-}
-
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  padding-top: 1rem;
-  border-top: 1px solid #e5e7eb;
-}
-
-.btn-primary,
-.btn-secondary {
-  padding: 0.625rem 1.25rem;
-  border: none;
-  border-radius: 0.375rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 0.875rem;
-}
-
-.btn-primary {
-  background-color: var(--primary);
-  color: white;
-}
-
-.btn-primary:hover:not(:disabled) {
-  opacity: 0.9;
-}
-
-.btn-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.btn-secondary {
-  background-color: #f3f4f6;
-  color: #374151;
-}
-
-.btn-secondary:hover {
-  background-color: #e5e7eb;
-}
-
-@media (max-width: 768px) {
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .col-span-2 {
-    grid-column: span 1;
-  }
-}
-</style>

@@ -127,7 +127,7 @@ li {
 }
 
 a {
-  color: rgb(61, 61, 61);
+  color: var(--color-base-content);
 }
 
 a:link {
@@ -177,14 +177,14 @@ a:active {
 }
 
 .delete {
-  background-color: #ffa1a1;
-  border-color: #c82333;
-  color: #c82333;
+  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
+  border-color: var(--color-error);
+  color: var(--color-error);
 }
 
 .delete:hover {
-  background-color: #c82333;
-  border-color: #c82333;
+  background-color: var(--color-error);
+  border-color: var(--color-error);
   color: white;
 }
 </style>

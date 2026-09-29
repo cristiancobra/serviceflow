@@ -1,6 +1,6 @@
 <template>
   <div class="main-container">
-    <label class="form-label" :for="name">{{ label }}</label>
+    <label :for="name">{{ label }}</label>
     <div v-if="!editing"  @click="startEditing">
       <div v-if="localValue !== null && localValue !== undefined && localValue !== ''">
         <p class="number-editable">
@@ -68,7 +68,7 @@ export default {
 .edit-icon {
   display: none;
   margin-left: 5px;
-  color: var(--green);
+  color: var(--color-success);
 }
 
 .number-editable:hover .edit-icon {
@@ -77,7 +77,7 @@ export default {
 
 .number-editable {
   cursor: pointer;
-  color: var(--primary);
+  color: var(--color-primary);
 }
 .main-container {
   display: flex;

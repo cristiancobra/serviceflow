@@ -3,7 +3,7 @@
 .projects {
     border-style: solid;
     border-width: 2px;
-    border-color: gray;
+    border-color: color-mix(in oklab, var(--color-base-content) 50%, transparent);
     border-radius: 6px;
     padding: 0;
     /* min-height: 14vh; */

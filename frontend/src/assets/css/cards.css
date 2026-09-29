@@ -11,7 +11,7 @@
   }
   
   a {
-    color: rgb(61, 61, 61);
+    color: var(--color-base-content);
   }
   
  */
@@ -23,7 +23,7 @@
   align-items: center;
   justify-content: center;
   font-size: 2rem;
-  color: var(--primary);
+  color: var(--color-primary);
 }
 
 .cards {
@@ -32,7 +32,7 @@
   text-align: left;
   border-bottom-style: solid;
   border-bottom-width: 1px;
-  border-bottom-color: lightgray
+  border-bottom-color: var(--color-base-300)
 }
 
 
@@ -41,8 +41,8 @@
   border-radius: 6px;
   border-style: solid;
   border-width: 1px;
-  border-color: gray;
-  background-color: lightgray;
+  border-color: color-mix(in oklab, var(--color-base-content) 50%, transparent);
+  background-color: var(--color-base-300);
 }
 
 .cards a:link {
@@ -72,44 +72,44 @@
       width: 60%;
       height: 14%;
       transform: scaleX(-1) translateY(100%) rotate(45deg);
-      background-color: white;
+      background-color: var(--color-base-100);
       z-index: 1;
   }
 
   .cards.low::before {
-      background-color: var(--gray);
+      background-color: color-mix(in oklab, var(--color-base-content) 50%, transparent);
   }
 
   .cards.medium::before {
-      background-color: var(--blue);
+      background-color: var(--color-info);
   }
 
   .cards.high::before {
-      background-color: var(--red);
+      background-color: var(--color-error);
   } */
 
 .cards.low {
-  background-color: var(--low-light);
-  border-color: var(--low);
-  color: var(--low);
+  background-color: color-mix(in oklab, var(--color-warning) 15%, var(--color-base-100));
+  border-color: var(--color-warning);
+  color: var(--color-warning);
 }
 
 .cards.medium {
-  background-color: var(--medium-light);
-  border-color: var(--medium);
-  color: var(--medium);
+  background-color: color-mix(in oklab, var(--color-info) 15%, var(--color-base-100));
+  border-color: var(--color-info);
+  color: var(--color-info);
 }
 
 .cards.high {
-  background-color: var(--high-light);
-  border-color: var(--high);
-  color: var(--high);
+  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
+  border-color: var(--color-error);
+  color: var(--color-error);
 }
 
 .cards-project-h2 {
   font-size: 0.8rem;
   font-weight: 400;
-  color: black;
+  color: var(--color-base-content);
 }
 
 .featured-icon {
@@ -124,15 +124,15 @@
 
 
 .low {
-  background-color: var(--low);
+  background-color: var(--color-warning);
 }
 
 .medium {
-  background-color: var(--medium);
+  background-color: var(--color-info);
 }
 
 .high {
-  background-color: var(--high);
+  background-color: var(--color-error);
 }
 
 .cards-project {
@@ -148,31 +148,31 @@
   text-align: left;
   font-size: 14px;
   margin-top: 20px;
-  color: black;
+  color: var(--color-base-content);
 }
 
 .done {
-  color: var(--green);
+  color: var(--color-success);
 }
 
 .doing {
-  border-color: var(--blue);
-  color: var(--blue);
+  border-color: var(--color-info);
+  color: var(--color-info);
 }
 
 .to-do {
-  border-color: var(--orange);
-  color: var(--orange);
+  border-color: var(--color-warning);
+  color: var(--color-warning);
 }
 
 .canceled {
-  border-color: var(--gray);
-  color: var(--gray-light);
+  border-color: color-mix(in oklab, var(--color-base-content) 50%, transparent);
+  color: var(--color-base-300);
 }
 
 .wait {
-  border-color: var(--gray);
-  color: var(--gray);
+  border-color: color-mix(in oklab, var(--color-base-content) 50%, transparent);
+  color: color-mix(in oklab, var(--color-base-content) 50%, transparent);
 }
 
 .label {
@@ -185,7 +185,7 @@
 .line-list {
   border-bottom-style: solid;
   border-bottom-width: 1px;
-  border-bottom-color: lightgray
+  border-bottom-color: var(--color-base-300)
 }
 
 .status {
@@ -196,5 +196,5 @@
 }
 
 /* .primary {
-  color: var(--primary);
+  color: var(--color-primary);
 } */

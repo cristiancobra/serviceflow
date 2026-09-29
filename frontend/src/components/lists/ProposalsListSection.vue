@@ -16,7 +16,7 @@
     <div
       v-for="proposal in localProposals"
       v-bind:key="proposal.id"
-      class="flex items-start justify-start text-left border-b border-gray-300"
+      class="flex items-start justify-start text-left border-b border-base-300"
     >
       <div class="flex flex-1 items-center justify-start mr-4" id="col-user">
         <select-status-button

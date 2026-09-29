@@ -97,7 +97,7 @@ export default {
   align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
-  background-color: var(--primary);
+  background-color: var(--color-primary);
   border-radius: 1rem 1rem 0 0;
   padding: 1.5rem 2rem;
   position: sticky;
@@ -126,8 +126,8 @@ export default {
 
 .modal-card-icon {
   font-size: 1.2rem;
-  color: var(--primary);
-  background-color: white;
+  color: var(--color-primary);
+  background-color: var(--color-base-100);
   border-radius: 50%;
   padding: 0.6rem;
   flex-shrink: 0;

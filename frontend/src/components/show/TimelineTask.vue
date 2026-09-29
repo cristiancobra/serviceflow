@@ -67,12 +67,12 @@ export default {
 
 .timeline-date {
   font-size: 14px;
-  color: #666;
+  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
   margin-bottom: 10px; /* Espaçamento entre a data e o conteúdo */
 }
 
 .timeline-content {
-  background: #f9f9f9;
+  background: var(--color-base-200);
   padding: 10px 15px;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -86,10 +86,10 @@ export default {
   left: -20px; /* Ajusta a posição horizontal */
   width: 12px;
   height: 12px;
-  background: #007bff;
+  background: var(--color-primary);
   border-radius: 50%;
   border: 2px solid #fff;
-  box-shadow: 0 0 0 2px #ccc;
+  box-shadow: 0 0 0 2px var(--color-base-300);
 }
 
 .timeline-item:first-child::before {
@@ -103,7 +103,7 @@ export default {
   left: 0;
   right: 0;
   height: 2px;
-  background: #ccc;
+  background: var(--color-base-300);
   z-index: -1; /* Coloca a linha atrás dos itens */
 }
 </style>

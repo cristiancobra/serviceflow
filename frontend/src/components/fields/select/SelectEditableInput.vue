@@ -1,18 +1,18 @@
 <template>
   <div class="flex items-center">
-    <label v-if="label" class="form-label me-3" :for="name">{{ label }}</label>
-    <div v-if="!editing" @click="startEditing" class="cursor-pointer hover:bg-gray-50 px-3 py-1 rounded">
-      <span :class="classText || 'text-gray-700'">
+    <label v-if="label" class="font-black text-primary me-3" :for="name">{{ label }}</label>
+    <div v-if="!editing" @click="startEditing" class="cursor-pointer hover:bg-base-200 px-3 py-1 rounded">
+      <span :class="classText || 'text-base-content/80'">
         {{ displayValue }}
       </span>
-      <font-awesome-icon icon="fa-solid fa-pen" class="ms-2 text-gray-400 text-xs" />
+      <font-awesome-icon icon="fa-solid fa-pen" class="ms-2 text-base-content/50 text-xs" />
     </div>
     <select
       v-else
       v-model="localValue"
       @blur="emitSave"
       @change="emitSave"
-      class="form-control px-3 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+      class="select select-sm"
       :id="name"
       :name="name"
       ref="selectInput"
@@ -93,10 +93,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.form-label {
-  font-weight: 900;
-  color: var(--primary);
-}
-</style>

@@ -44,7 +44,7 @@
                 />
                 <button
                   type="button"
-                  class="mt-2 text-sm text-blue-600 hover:text-blue-800 font-semibold"
+                  class="mt-2 text-sm text-info hover:text-info font-semibold"
                   @click="toggleCompany()"
                 >
                   + Adicionar nova empresa
@@ -68,7 +68,7 @@
                 <button
                   v-else
                   type="button"
-                  class="mt-2 text-sm text-blue-600 hover:text-blue-800 font-semibold"
+                  class="mt-2 text-sm text-info hover:text-info font-semibold"
                   @click="toggleLead()"
                 >
                   + Adicionar novo contato

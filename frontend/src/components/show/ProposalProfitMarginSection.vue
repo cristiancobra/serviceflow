@@ -7,16 +7,16 @@
    
     
     <div
-      class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-gray-200 py-1 ml-[40%]"
+      class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-base-300 py-1 ml-[40%]"
     >
       <div class="flex items-center justify-center">
-        <font-awesome-icon icon="fa fa-clock" class="list-icon text-black" />
+        <font-awesome-icon icon="fa fa-clock" class="list-icon text-base-content" />
       </div>
-      <div class="flex items-center justify-start text-black">
+      <div class="flex items-center justify-start text-base-content">
         Custo operacional
       </div>
       <div class="flex items-center justify-center">
-        <div class="flex items-center justify-center text-black">
+        <div class="flex items-center justify-center text-base-content">
           <hours-decimal-field
             name="total_hours"
             class="list-integer"
@@ -35,16 +35,16 @@
 
 
     <div
-      class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-gray-200 py-1 ml-[40%]"
+      class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-base-300 py-1 ml-[40%]"
     >
       <div class="flex items-center justify-center">
-        <font-awesome-icon icon="fas fa-percent" class="text-black" />
+        <font-awesome-icon icon="fas fa-percent" class="text-base-content" />
       </div>
-      <div class="flex items-center justify-start text-black">
+      <div class="flex items-center justify-start text-base-content">
         Margem de lucro:
       </div>
       <div class="flex items-center justify-center">
-        <div class="flex items-center justify-center text-black">
+        <div class="flex items-center justify-center text-base-content">
           {{ localProposal.total_profit_percentage }}
           %
         </div>
@@ -55,13 +55,13 @@
     </div>
 
     <div
-      class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-gray-200 py-1 ml-[40%]"
+      class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-base-300 py-1 ml-[40%]"
       :class="{ highlight: isHighlighted }"
     >
       <div class="flex items-center justify-center">
-        <font-awesome-icon icon="fa fa-clock" class="text-black" />
+        <font-awesome-icon icon="fa fa-clock" class="text-base-content" />
       </div>
-      <div class="flex items-center justify-start text-black">
+      <div class="flex items-center justify-start text-base-content">
         Custos de propdução
       </div>
       <div class="col-span-1"></div>
@@ -74,16 +74,16 @@
     </div>
 
     <div
-      class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-gray-200 py-1 ml-[40%]"
+      class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-base-300 py-1 ml-[40%]"
     >
       <div class="flex items-center justify-center">
-        <font-awesome-icon icon="fas fa-tag" class="text-red-700" />
+        <font-awesome-icon icon="fas fa-tag" class="text-error" />
       </div>
-      <div class="flex items-center justify-start text-red-700">
+      <div class="flex items-center justify-start text-error">
         Desconto:
       </div>
       <div class="col-span-1"></div>
-      <div class="flex items-center justify-end text-red-700">
+      <div class="flex items-center justify-end text-error">
         - <money-editable-field
           name="total_discount"
           :modelValue="localProposal.total_discount"
@@ -94,29 +94,29 @@
     </div>
 
     <div
-      class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-gray-200 py-1 ml-[40%]"
+      class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-base-300 py-1 ml-[40%]"
     >
       <div class="flex items-center justify-center">
-        <font-awesome-icon icon="fas fa-dollar-sign" class="text-black" />
+        <font-awesome-icon icon="fas fa-dollar-sign" class="text-base-content" />
       </div>
-      <div class="flex items-center justify-start text-black">Preço final:</div>
+      <div class="flex items-center justify-start text-base-content">Preço final:</div>
       <div class="col-span-1"></div>
-      <div class="flex items-center justify-end font-bold text-black">
+      <div class="flex items-center justify-end font-bold text-base-content">
         <money-field name="total_price" v-model="localProposal.total_price" />
       </div>
     </div>
 
     <div
-      class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-gray-200 py-1 ml-[40%]"
+      class="grid grid-cols-[3rem_1fr_6rem_8rem] gap-2 items-center border-b border-base-300 py-1 ml-[40%]"
     >
       <div class="flex items-center justify-center">
-        <font-awesome-icon icon="fas fa-credit-card" class="text-black" />
+        <font-awesome-icon icon="fas fa-credit-card" class="text-base-content" />
       </div>
-      <div class="flex items-center justify-start text-black">
+      <div class="flex items-center justify-start text-base-content">
         Parcelamento:
       </div>
       <div class="col-span-1"></div>
-      <div class="flex items-center justify-end text-black">
+      <div class="flex items-center justify-end text-base-content">
         <integer-editable-field
           v-model="localProposal.installment_quantity"
           name="installment_quantity"

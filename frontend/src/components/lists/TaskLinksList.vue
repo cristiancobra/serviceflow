@@ -16,7 +16,7 @@
 
       <div v-else class="overflow-x-auto">
           <!-- Header da tabela -->
-          <div class="grid gap-4 px-4 py-2 bg-gray-100 border-b border-gray-200 font-semibold text-sm text-gray-700" :class="gridClass">
+          <div class="grid gap-4 px-4 py-2 bg-base-200 border-b border-base-300 font-semibold text-sm text-base-content/80" :class="gridClass">
               <div :class="titleColClass">Título</div>
               <div :class="urlColClass">URL</div>
               <div :class="observationsColClass">Observações</div>
@@ -28,12 +28,12 @@
           <div 
               v-for="link in links" 
               :key="link.id"
-              class="grid gap-4 px-4 py-0.5 border-b border-gray-200 hover:bg-gray-50 transition-colors items-center"
+              class="grid gap-4 px-4 py-0.5 border-b border-base-300 hover:bg-base-200 transition-colors items-center"
               :class="gridClass"
           >
               <div :class="titleColClass" class="flex items-center">
                   <a 
-                      class="text-sm text-blue-600 font-semibold hover:underline truncate" 
+                      class="text-sm text-info font-semibold hover:underline truncate" 
                       :href="link.url" 
                       target="_blank"
                       :title="link.title"
@@ -57,7 +57,7 @@
                   </span>
               </div>
               <div v-if="showTaskColumn" :class="taskColClass">
-                  <span v-if="link.task" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 truncate">
+                  <span v-if="link.task" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-base-200 text-base-content truncate">
                       <font-awesome-icon icon="fa-solid fa-tasks" class="mr-1" />
                       {{ link.task.name }}
                   </span>
@@ -71,7 +71,7 @@
                       @confirm="$emit('delete-link', link.id)"
                   />
                   <button
-                      class="w-5 h-5 flex items-center justify-center rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors shadow-sm"
+                      class="w-5 h-5 flex items-center justify-center rounded-full bg-info text-white hover:bg-info transition-colors shadow-sm"
                       @click="$emit('copy-link', link.url)"
                       title="Copiar link"
                   >

@@ -9,7 +9,7 @@
         <h1>{{ bankAccount?.account_name || 'Carregando...' }}</h1>
       </div>
       <div class="page-action">
-        <button @click="openEditModal" class="btn-primary">
+        <button @click="openEditModal" class="btn btn-primary">
           <font-awesome-icon icon="fa-solid fa-edit" />
           Editar
         </button>
@@ -136,22 +136,19 @@
     </section>
 
     <!-- Modal de Edição -->
-    <div v-if="showEditModal" class="modal-overlay" @click="closeEditModal">
-      <div class="modal-content" @click.stop>
-        <div class="modal-header">
-          <h2>Editar Conta Bancária</h2>
-          <button @click="closeEditModal" class="btn-close">
-            <font-awesome-icon icon="fa-solid fa-times" />
-          </button>
-        </div>
-        
+    <div
+      v-if="showEditModal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm"
+      @click.self="closeEditModal"
+    >
+      <ModalCard title="Editar Conta Bancária" icon="fa-solid fa-building-columns" size="md" @close="closeEditModal">
         <BankAccountForm
           :bankAccount="bankAccount"
           :isEditing="true"
           @saved="handleSaved"
           @cancel="closeEditModal"
         />
-      </div>
+      </ModalCard>
     </div>
   </div>
 </template>
@@ -159,10 +156,12 @@
 <script>
 import { show, post } from "@/utils/requests/httpUtils";
 import BankAccountForm from "@/components/forms/BankAccountForm.vue";
+import ModalCard from "@/components/modals/ModalCard.vue";
 
 export default {
   name: "BankAccountShow",
   components: {
+    ModalCard,
     BankAccountForm,
   },
   data() {
@@ -237,19 +236,19 @@ export default {
   cursor: pointer;
   padding: 0.5rem;
   margin-right: 0.5rem;
-  color: #6b7280;
+  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
   transition: color 0.2s;
 }
 
 .btn-back:hover {
-  color: #111827;
+  color: var(--color-base-content);
 }
 
 .loading-state,
 .error-state {
   text-align: center;
   padding: 3rem;
-  color: #6b7280;
+  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
   font-size: 1.125rem;
 }
 
@@ -260,8 +259,8 @@ export default {
 }
 
 .card {
-  background-color: white;
-  border: 1px solid #e5e7eb;
+  background-color: var(--color-base-100);
+  border: 1px solid var(--color-base-300);
   border-radius: 0.5rem;
   padding: 1.5rem;
 }
@@ -273,10 +272,10 @@ export default {
 .card-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--color-base-content);
   margin-bottom: 1rem;
   padding-bottom: 0.75rem;
-  border-bottom: 2px solid #e5e7eb;
+  border-bottom: 2px solid var(--color-base-300);
 }
 
 .info-grid {
@@ -294,12 +293,12 @@ export default {
 .info-label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #6b7280;
+  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
 }
 
 .info-value {
   font-size: 1rem;
-  color: #111827;
+  color: var(--color-base-content);
 }
 
 .type-badge {
@@ -307,8 +306,8 @@ export default {
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 600;
-  background-color: #dbeafe;
-  color: #1e40af;
+  background-color: color-mix(in oklab, var(--color-info) 15%, var(--color-base-100));
+  color: var(--color-info);
   display: inline-block;
 }
 
@@ -321,13 +320,13 @@ export default {
 }
 
 .status-active {
-  background-color: #dcfce7;
-  color: #166534;
+  background-color: color-mix(in oklab, var(--color-success) 15%, var(--color-base-100));
+  color: var(--color-success);
 }
 
 .status-inactive {
-  background-color: #fecaca;
-  color: #991b1b;
+  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
+  color: var(--color-error);
 }
 
 .balance-display {
@@ -341,15 +340,15 @@ export default {
 .balance-value {
   font-size: 2rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--color-base-content);
 }
 
 .btn-update-balance {
   padding: 0.5rem 1rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--color-base-300);
   border-radius: 0.375rem;
-  background-color: white;
-  color: #374151;
+  background-color: var(--color-base-100);
+  color: color-mix(in oklab, var(--color-base-content) 80%, transparent);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -359,8 +358,8 @@ export default {
 }
 
 .btn-update-balance:hover {
-  background-color: #f3f4f6;
-  border-color: #9ca3af;
+  background-color: var(--color-base-200);
+  border-color: color-mix(in oklab, var(--color-base-content) 50%, transparent);
 }
 
 .stats-grid {
@@ -374,102 +373,26 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem;
-  background-color: #f9fafb;
+  background-color: var(--color-base-200);
   border-radius: 0.375rem;
 }
 
 .stat-label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #6b7280;
+  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
 }
 
 .stat-value {
   font-size: 1rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-base-content);
 }
 
 .description-text {
-  color: #374151;
+  color: color-mix(in oklab, var(--color-base-content) 80%, transparent);
   line-height: 1.6;
   margin: 0;
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background-color: white;
-  border-radius: 0.5rem;
-  width: 90%;
-  max-width: 800px;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.modal-header h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #111827;
-  margin: 0;
-}
-
-.btn-close {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #6b7280;
-  padding: 0;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0.375rem;
-}
-
-.btn-close:hover {
-  background-color: #f3f4f6;
-  color: #111827;
-}
-
-.btn-primary {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 0.375rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: var(--primary);
-  color: white;
-}
-
-.btn-primary:hover {
-  opacity: 0.9;
 }
 
 @media (max-width: 768px) {

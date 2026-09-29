@@ -14,7 +14,7 @@
     </div>
     <div v-else class="w-8 h-8">
       <button
-              class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-300 text-gray-500 cursor-not-allowed"
+              class="w-8 h-8 flex items-center justify-center rounded-full bg-base-300 text-base-content/60 cursor-not-allowed"
               disabled
             >
         <font-awesome-icon icon="fa-solid fa-check-square" />

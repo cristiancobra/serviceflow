@@ -30,7 +30,7 @@
         fieldNull="Sem departamento"
         @update:modelValue="saveDepartment"
       />
-      <button @click="cancelEdit" class="px-2 py-1 bg-red-500 text-white border-0 rounded cursor-pointer text-sm transition-colors hover:bg-red-600" title="Cancelar">
+      <button @click="cancelEdit" class="px-2 py-1 bg-error text-white border-0 rounded cursor-pointer text-sm transition-colors hover:bg-error" title="Cancelar">
         <font-awesome-icon icon="fa-solid fa-times" />
       </button>
     </div>
@@ -70,7 +70,7 @@ export default {
       const baseClasses = 'inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-semibold border';
       
       if (!this.department) {
-        return `${baseClasses} bg-gray-100 text-gray-500 border-gray-300`;
+        return `${baseClasses} bg-base-200 text-base-content/60 border-base-300`;
       }
       
       return baseClasses;

@@ -46,14 +46,14 @@
             </div>
             <button
               @click="copyCnpjWithSymbols"
-              class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
+              class="px-4 py-2 bg-info hover:bg-info text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
               title="Copiar com símbolos"
             >
               <font-awesome-icon icon="fa-solid fa-copy" />
             </button>
             <button
               @click="copyCnpjWithoutSymbols"
-              class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
+              class="px-4 py-2 bg-success hover:bg-success text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
               title="Copiar apenas números"
             >
               <font-awesome-icon icon="fa-solid fa-hashtag" />
@@ -110,7 +110,7 @@
               id="theme_preference"
               v-model="account.theme_preference"
               @change="updateAccount('theme_preference', account.theme_preference)"
-              class="w-full rounded-lg border border-gray-300 px-3 py-2 bg-base-100 text-base-content text-sm"
+              class="w-full rounded-lg border border-base-300 px-3 py-2 bg-base-100 text-base-content text-sm"
             >
               <option value="light">Diurno</option>
               <option value="dark">Noturno</option>
@@ -159,7 +159,7 @@
             </div>
             <div class="flex justify-start">
               <button 
-                class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md" 
+                class="px-6 py-2 bg-info hover:bg-info text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md" 
                 type="submit"
               >
                 Enviar Logo
@@ -172,7 +172,7 @@
               type="color"
               name="primary_color"
               id="primary_color"
-              class="h-12 w-full rounded-lg border border-gray-300 cursor-pointer"
+              class="h-12 w-full rounded-lg border border-base-300 cursor-pointer"
               value="{{ old('primary_color', $account->primary_color) }}"
             />
           </div>

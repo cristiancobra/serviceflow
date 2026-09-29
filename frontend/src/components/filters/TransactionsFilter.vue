@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-wrap justify-center gap-4 mt-10 mb-12">
     <button
-      class="px-6 py-2 border-2 rounded-lg font-semibold cursor-pointer transition-all duration-300 border-green-500"
-      :class="activeFilter === 'credit' ? 'bg-green-500 text-white' : 'bg-white text-green-500 hover:bg-green-500 hover:text-white'"
+      class="px-6 py-2 border-2 rounded-lg font-semibold cursor-pointer transition-all duration-300 border-success"
+      :class="activeFilter === 'credit' ? 'bg-success text-white' : 'bg-base-100 text-success hover:bg-success hover:text-white'"
       @click="handleFilterClick('credit')"
     >
       <font-awesome-icon icon="fa-solid fa-arrow-up" class="mr-2" />
@@ -10,8 +10,8 @@
     </button>
 
     <button
-      class="px-6 py-2 border-2 rounded-lg font-semibold cursor-pointer transition-all duration-300 border-red-500"
-      :class="activeFilter === 'debit' ? 'bg-red-500 text-white' : 'bg-white text-red-500 hover:bg-red-500 hover:text-white'"
+      class="px-6 py-2 border-2 rounded-lg font-semibold cursor-pointer transition-all duration-300 border-error"
+      :class="activeFilter === 'debit' ? 'bg-error text-white' : 'bg-base-100 text-error hover:bg-error hover:text-white'"
       @click="handleFilterClick('debit')"
     >
       <font-awesome-icon icon="fa-solid fa-arrow-down" class="mr-2" />

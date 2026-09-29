@@ -2,7 +2,7 @@
   <div>
     <!-- Empty State -->
     <div v-if="invoices.length === 0"
-      class="flex flex-col items-center justify-center py-10 text-gray-400">
+      class="flex flex-col items-center justify-center py-10 text-base-content/50">
       <font-awesome-icon icon="fa-solid fa-file-invoice-dollar" class="text-5xl mb-4 opacity-30" />
       <p class="text-lg font-medium">Nenhuma conta encontrada</p>
       <p class="text-sm mt-1">Crie sua primeira conta a pagar clicando em "Nova Conta a Pagar"</p>
@@ -12,12 +12,12 @@
     <div v-for="monthGroup in groupedInvoices" :key="monthGroup.monthKey" class="mb-4">
       <!-- Month Header -->
       <div class="flex items-center mb-1 sticky top-0 z-10">
-        <div class="flex items-center gap-3 bg-white pe-6 pb-1 pt-2">
-          <span class="font-bold text-lg whitespace-nowrap text-red-700">{{ monthGroup.monthLabel }}</span>
-          <span class="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+        <div class="flex items-center gap-3 bg-base-100 pe-6 pb-1 pt-2">
+          <span class="font-bold text-lg whitespace-nowrap text-error">{{ monthGroup.monthLabel }}</span>
+          <span class="text-xs font-semibold text-base-content/60 bg-base-200 px-2 py-1 rounded-full">
             {{ monthGroup.invoices.length }} {{ monthGroup.invoices.length === 1 ? 'conta' : 'contas' }}
           </span>
-          <span class="text-xs font-semibold text-red-600 bg-red-50 px-2 py-1 rounded-full border border-red-200">
+          <span class="text-xs font-semibold text-error bg-error/10 px-2 py-1 rounded-full border border-error/30">
             {{ formatCurrency(monthGroup.total) }}
           </span>
         </div>
@@ -41,13 +41,13 @@
 
           <div
             role="button"
-            class="flex flex-1 min-w-0 items-center justify-between px-4 py-1 bg-white rounded-lg border border-gray-200 hover:border-red-300 hover:shadow-sm transition-all duration-200 cursor-pointer"
+            class="flex flex-1 min-w-0 items-center justify-between px-4 py-1 bg-base-100 rounded-lg border border-base-300 hover:border-error/30 hover:shadow-sm transition-all duration-200 cursor-pointer"
             @click="openInvoiceModal(invoice)"
             :class="{
-              'border-l-4 border-l-orange-400': invoice.status === 'overdue',
-              'border-l-4 border-l-green-400': invoice.status === 'paid',
-              'border-l-4 border-l-gray-300': invoice.status === 'cancelled',
-              'ring-2 ring-red-300': selectedIds.includes(invoice.id),
+              'border-l-4 border-l-warning': invoice.status === 'overdue',
+              'border-l-4 border-l-success': invoice.status === 'paid',
+              'border-l-4 border-l-base-300': invoice.status === 'cancelled',
+              'ring-2 ring-error/30': selectedIds.includes(invoice.id),
             }">
             <!-- Icon + Name -->
             <div class="flex items-center gap-3 min-w-0 flex-1">
@@ -55,10 +55,10 @@
                 :class="getIconBg(invoice)">
                 <font-awesome-icon :icon="getCategoryIcon(invoice.category)" class="text-white text-xs" />
               </div>
-              <p class="font-semibold text-gray-900 text-sm truncate min-w-0">
+              <p class="font-semibold text-base-content text-sm truncate min-w-0">
                 {{ invoice.name || ('Fatura #' + invoice.id) }}
               </p>
-              <p class="text-xs text-gray-500 truncate min-w-0">
+              <p class="text-xs text-base-content/60 truncate min-w-0">
                 {{ getSupplierName(invoice) }}
                 <span v-if="invoice.proposal" class="ml-1 text-indigo-500">• Proposta #{{ invoice.proposal.id }}</span>
               </p>
@@ -74,7 +74,7 @@
             <!-- Task badge -->
             <div v-if="invoice.tasks && invoice.tasks.length > 0" class="mx-3 flex-shrink-0">
               <span
-                class="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
+                class="inline-flex items-center gap-1 px-2 py-0.5 bg-success/10 text-success text-xs font-semibold rounded-full">
                 <font-awesome-icon icon="fa-solid fa-check-circle" class="text-xs" />
                 Tarefa
               </span>
@@ -82,7 +82,7 @@
 
             <!-- Date + Status -->
             <div class="flex items-center gap-2 flex-shrink-0 ml-3">
-              <span class="text-xs text-gray-500 whitespace-nowrap">
+              <span class="text-xs text-base-content/60 whitespace-nowrap">
                 {{ formatDateBr(invoice.date_due) }}
               </span>
               <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap"
@@ -93,11 +93,11 @@
 
             <!-- Amount -->
             <div class="flex items-center justify-end gap-2 ml-4 flex-shrink-0 min-w-[90px]">
-              <span v-if="invoice.balance > 0" class="text-xs text-red-500 whitespace-nowrap">
+              <span v-if="invoice.balance > 0" class="text-xs text-error whitespace-nowrap">
                 Saldo: {{ formatCurrency(invoice.balance) }}
               </span>
-              <span v-else class="text-xs text-green-600 font-medium">Pago</span>
-              <span class="font-bold text-gray-900 text-sm whitespace-nowrap">{{ formatCurrency(invoice.price) }}</span>
+              <span v-else class="text-xs text-success font-medium">Pago</span>
+              <span class="font-bold text-base-content text-sm whitespace-nowrap">{{ formatCurrency(invoice.price) }}</span>
             </div>
           </div>
         </div>
@@ -191,19 +191,19 @@ export default {
     },
     getIconBg(invoice) {
       if (invoice.status === "paid") return "bg-gray-400";
-      if (invoice.status === "overdue") return "bg-orange-500";
-      if (invoice.status === "cancelled") return "bg-gray-300";
-      return "bg-red-500";
+      if (invoice.status === "overdue") return "bg-warning";
+      if (invoice.status === "cancelled") return "bg-base-300";
+      return "bg-error";
     },
     getStatusClass(status) {
       const map = {
-        pending: "bg-yellow-100 text-yellow-800",
-        partial: "bg-blue-100 text-blue-800",
-        paid: "bg-green-100 text-green-800",
-        overdue: "bg-orange-100 text-orange-800",
-        cancelled: "bg-gray-100 text-gray-600",
+        pending: "bg-warning/10 text-warning",
+        partial: "bg-info/10 text-info",
+        paid: "bg-success/10 text-success",
+        overdue: "bg-warning/10 text-warning",
+        cancelled: "bg-base-200 text-base-content/70",
       };
-      return map[status] || "bg-gray-100 text-gray-600";
+      return map[status] || "bg-base-200 text-base-content/70";
     },
     getStatusLabel(status) {
       const map = {

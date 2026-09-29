@@ -8,12 +8,12 @@
     />
 
     <!-- Header Card -->
-    <div class="bg-white border-2 border-primary rounded-xl p-6 mb-8 shadow-lg">
+    <div class="bg-base-100 border-2 border-primary rounded-xl p-6 mb-8 shadow-lg">
       <div class="flex items-center mb-4">
         <font-awesome-icon icon="fas fa-briefcase" class="text-primary text-3xl mr-4" />
-        <h1 class="text-2xl font-black text-gray-800">EMPRESA</h1>
+        <h1 class="text-2xl font-black text-base-content">EMPRESA</h1>
       </div>
-      <div class="text-3xl font-black text-gray-900 mb-2">
+      <div class="text-3xl font-black text-base-content mb-2">
         <text-editable-field
           name="business_name"
           :modelValue="company.business_name"
@@ -21,7 +21,7 @@
           placeholder="Nome fantasia da empresa..."
         />
       </div>
-      <p class="text-gray-600 text-lg">
+      <p class="text-base-content/70 text-lg">
         <text-editable-field
           name="legal_name"
           :modelValue="company.legal_name"
@@ -32,15 +32,15 @@
     </div>
 
     <!-- Photo Section -->
-    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-      <h2 class="text-xl font-bold text-gray-800 mb-4 border-b border-gray-200 pb-2">
+    <div class="bg-base-100 rounded-lg shadow-md p-6 mb-6">
+      <h2 class="text-xl font-bold text-base-content mb-4 border-b border-base-300 pb-2">
         Logo/Foto
       </h2>
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="flex justify-center items-center p-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+        <div class="flex justify-center items-center p-6 bg-base-200 rounded-lg border-2 border-dashed border-base-300">
           <div class="photo-container">
             <img v-if="company.photo" class="photo" :src="urlImagePhoto" alt="Logo da Empresa">
-            <div v-else class="flex items-center justify-center h-full text-gray-400">
+            <div v-else class="flex items-center justify-center h-full text-base-content/50">
               <font-awesome-icon icon="fas fa-building" class="text-6xl" />
             </div>
           </div>
@@ -48,16 +48,16 @@
         <div class="space-y-4">
           <form @submit.prevent="submitFormPhoto">
             <div class="flex flex-col mb-4">
-              <label for="photo" class="mb-2 text-sm font-medium text-gray-700">Logo/Foto:</label>
+              <label for="photo" class="mb-2 text-sm font-medium text-base-content/80">Logo/Foto:</label>
               <input 
                 type="file" 
                 id="photo" 
                 ref="photo" 
                 @change="handlePhotoUpload"
                 accept="image/*"
-                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                class="block w-full text-sm text-base-content/60 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-info/10 file:text-info hover:file:bg-info/10"
               >
-              <p class="mt-2 text-xs text-gray-500">
+              <p class="mt-2 text-xs text-base-content/60">
                 Formatos: JPG, PNG, GIF ou WEBP. Tamanho máximo: 2MB
               </p>
             </div>
@@ -75,12 +75,12 @@
     </div>
 
     <!-- Company Information Section -->
-    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-      <h2 class="text-xl font-bold text-gray-800 mb-4 border-b border-gray-200 pb-2">
+    <div class="bg-base-100 rounded-lg shadow-md p-6 mb-6">
+      <h2 class="text-xl font-bold text-base-content mb-4 border-b border-base-300 pb-2">
         Informações da Empresa
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="flex items-center text-gray-700">
+        <div class="flex items-center text-base-content/80">
           <font-awesome-icon icon="fas fa-id-card" class="text-cyan-500 mr-3 w-5" />
           <span class="font-bold mr-2">CNPJ:</span>
           <text-editable-field
@@ -90,7 +90,7 @@
             placeholder="00.000.000/0000-00"
           />
         </div>
-        <div class="flex items-center text-gray-700">
+        <div class="flex items-center text-base-content/80">
           <font-awesome-icon icon="fas fa-envelope" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">Email:</span>
           <text-editable-field
@@ -100,7 +100,7 @@
             placeholder="email@empresa.com"
           />
         </div>
-        <div class="flex items-center text-gray-700">
+        <div class="flex items-center text-base-content/80">
           <font-awesome-icon icon="fas fa-phone" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">Telefone:</span>
           <text-editable-field
@@ -110,7 +110,7 @@
             placeholder="(00) 0000-0000"
           />
         </div>
-        <div class="flex items-center text-gray-700">
+        <div class="flex items-center text-base-content/80">
           <font-awesome-icon icon="fas fa-mobile-alt" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">Celular:</span>
           <text-editable-field
@@ -120,7 +120,7 @@
             placeholder="(00) 00000-0000"
           />
         </div>
-        <div class="flex items-center text-gray-700">
+        <div class="flex items-center text-base-content/80">
           <font-awesome-icon icon="fab fa-pix" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">Chave Pix:</span>
           <text-editable-field
@@ -134,12 +134,12 @@
     </div>
 
     <!-- Social Media Section -->
-    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-      <h2 class="text-xl font-bold text-gray-800 mb-4 border-b border-gray-200 pb-2">
+    <div class="bg-base-100 rounded-lg shadow-md p-6 mb-6">
+      <h2 class="text-xl font-bold text-base-content mb-4 border-b border-base-300 pb-2">
         Redes Sociais
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="flex items-center text-gray-700">
+        <div class="flex items-center text-base-content/80">
           <font-awesome-icon icon="fab fa-linkedin" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">LinkedIn:</span>
           <text-editable-field
@@ -149,7 +149,7 @@
             placeholder="https://linkedin.com/company/..."
           />
         </div>
-        <div class="flex items-center text-gray-700">
+        <div class="flex items-center text-base-content/80">
           <font-awesome-icon icon="fab fa-facebook" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">Facebook:</span>
           <text-editable-field
@@ -163,12 +163,12 @@
     </div>
 
     <!-- Address Section -->
-    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-      <h2 class="text-xl font-bold text-gray-800 mb-4 border-b border-gray-200 pb-2">
+    <div class="bg-base-100 rounded-lg shadow-md p-6 mb-8">
+      <h2 class="text-xl font-bold text-base-content mb-4 border-b border-base-300 pb-2">
         Endereço
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="flex items-center text-gray-700">
+        <div class="flex items-center text-base-content/80">
           <font-awesome-icon icon="fas fa-map-marker-alt" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">Endereço:</span>
           <text-editable-field
@@ -178,7 +178,7 @@
             placeholder="Rua, número..."
           />
         </div>
-        <div class="flex items-center text-gray-700">
+        <div class="flex items-center text-base-content/80">
           <font-awesome-icon icon="fas fa-building" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">Complemento:</span>
           <text-editable-field
@@ -188,7 +188,7 @@
             placeholder="Sala, andar..."
           />
         </div>
-        <div class="flex items-center text-gray-700">
+        <div class="flex items-center text-base-content/80">
           <font-awesome-icon icon="fas fa-home" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">Bairro:</span>
           <text-editable-field
@@ -198,7 +198,7 @@
             placeholder="Bairro..."
           />
         </div>
-        <div class="flex items-center text-gray-700">
+        <div class="flex items-center text-base-content/80">
           <font-awesome-icon icon="fas fa-city" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">Cidade:</span>
           <text-editable-field
@@ -208,7 +208,7 @@
             placeholder="Cidade..."
           />
         </div>
-        <div class="flex items-center text-gray-700">
+        <div class="flex items-center text-base-content/80">
           <font-awesome-icon icon="fas fa-flag" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">Estado:</span>
           <text-editable-field
@@ -218,7 +218,7 @@
             placeholder="UF..."
           />
         </div>
-        <div class="flex items-center text-gray-700">
+        <div class="flex items-center text-base-content/80">
           <font-awesome-icon icon="fas fa-globe" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">País:</span>
           <text-editable-field
@@ -228,7 +228,7 @@
             placeholder="País..."
           />
         </div>
-        <div class="flex items-center text-gray-700">
+        <div class="flex items-center text-base-content/80">
           <font-awesome-icon icon="fas fa-mail-bulk" class="text-primary mr-3 w-5" />
           <span class="font-bold mr-2">CEP:</span>
           <text-editable-field
@@ -245,7 +245,7 @@
     <div class="flex justify-end">
       <button 
         @click="deleteCompany()"
-        class="bg-red-100 border-2 border-red-600 text-red-600 font-bold px-6 py-2 rounded-full hover:bg-red-600 hover:text-white transition-colors duration-200"
+        class="bg-error/10 border-2 border-error text-error font-bold px-6 py-2 rounded-full hover:bg-error hover:text-white transition-colors duration-200"
       >
         Excluir
       </button>
@@ -417,6 +417,6 @@ export default {
   border: 2px solid #48d1cc;
   border-radius: 50%;
   overflow: hidden;
-  background-color: #f9fafb;
+  background-color: var(--color-base-200);
 }
 </style>

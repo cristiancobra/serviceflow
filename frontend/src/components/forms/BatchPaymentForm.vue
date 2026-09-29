@@ -36,7 +36,7 @@
 
         <div class="flex items-center justify-between px-3 py-2 bg-base-200">
           <span class="text-sm font-bold uppercase text-base-content">Total da movimentação</span>
-          <span class="text-lg font-bold text-red-600">{{ formatCurrency(total) }}</span>
+          <span class="text-lg font-bold text-error">{{ formatCurrency(total) }}</span>
         </div>
       </div>
 
@@ -102,7 +102,7 @@
       />
 
       <div v-if="errorMessages.length" class="mb-6">
-        <p v-for="(message, i) in errorMessages" :key="i" class="error text-red-500 text-sm">
+        <p v-for="(message, i) in errorMessages" :key="i" class="error text-error text-sm">
           {{ message }}
         </p>
       </div>
@@ -120,7 +120,7 @@
         type="submit"
         form="batchPaymentForm"
         :disabled="isSubmitting"
-        class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors flex items-center gap-2 disabled:opacity-60"
+        class="px-6 py-2 bg-error hover:bg-error text-white rounded-lg font-semibold transition-colors flex items-center gap-2 disabled:opacity-60"
       >
         <font-awesome-icon
           :icon="isSubmitting ? 'fa-solid fa-spinner' : 'fa-solid fa-check'"
@@ -186,7 +186,7 @@ export default {
       pixTimer: null,
       pixRequestId: 0,
       selectClass:
-        "w-full px-3 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg shadow-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200 ease-in-out hover:border-gray-400",
+        "w-full px-3 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg shadow-sm focus:ring-2 focus:ring-error focus:border-error transition-all duration-200 ease-in-out hover:border-base-content/20",
     };
   },
   computed: {

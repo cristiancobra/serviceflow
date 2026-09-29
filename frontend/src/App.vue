@@ -88,7 +88,7 @@ export default {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  background-color: var(--background-light);
+  background-color: var(--color-base-200);
 }
 
 .main {

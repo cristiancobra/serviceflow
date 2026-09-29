@@ -46,6 +46,6 @@ export default {
 .icon {
   margin-right: 0.4rem;
   margin-left: 1rem;
-  color: var(--primary);
+  color: var(--color-primary);
 }
 </style>

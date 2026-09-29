@@ -1,37 +1,37 @@
 const colors = [
-    "text-green-600",
-    "text-blue-600", 
-    "text-red-600",
-    "text-orange-600",
+    "text-success",
+    "text-info", 
+    "text-error",
+    "text-warning",
     "text-purple-600",
     "text-indigo-600",
     "text-pink-600",
     "text-teal-600",
-    "text-emerald-600",
+    "text-success",
     "text-cyan-600",
     "text-violet-600",
     "text-fuchsia-600",
-    "text-rose-600",
+    "text-error",
     "text-lime-600",
-    "text-amber-600",
-    "text-sky-600",
-    "text-slate-600",
-    "text-green-500",
-    "text-blue-500",
-    "text-red-500",
-    "text-orange-500",
+    "text-warning",
+    "text-info",
+    "text-base-content/70",
+    "text-success",
+    "text-info",
+    "text-error",
+    "text-warning",
     "text-purple-500",
     "text-indigo-500",
     "text-pink-500",
     "text-teal-500",
-    "text-emerald-500",
+    "text-success",
     "text-cyan-500",
     "text-violet-500",
     "text-fuchsia-500",
-    "text-rose-500",
+    "text-error",
     "text-lime-500",
-    "text-amber-500",
-    "text-sky-500",
+    "text-warning",
+    "text-info",
 ];
 
 export function getColorClassForName(name) {
@@ -77,7 +77,7 @@ export function getDeadlineClass(dateDue, dateConclusion = null) {
     formatedDateDue.setHours(0, 0, 0, 0);
 
     if (formatedDateDue < today) {
-        return "text-red-600";
+        return "text-error";
     }
 
     return "text-base-content";

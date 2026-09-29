@@ -14,7 +14,7 @@
             <div v-else class="companies-grid">
                 <div class="company-card" v-for="company in filteredCompanies" v-bind:key="company.id">
                     <router-link :to="{ name: 'companyShow', params: { id: company.id } }" class="card-link">
-                        <div class="card-header">
+                        <div class="flex items-center gap-4 p-5 max-md:p-4 border-b border-base-300 bg-gradient-to-br from-primary/5 to-primary/[0.02]">
                             <div class="avatar">
                                 <font-awesome-icon icon="fa-solid fa-briefcase" class="avatar-icon" />
                             </div>
@@ -23,7 +23,7 @@
                             </div>
                         </div>
                         
-                        <div class="card-body">
+                        <div class="card-body gap-3 p-5 max-md:p-4">
                             <div v-if="company.cnpj" class="info-item">
                                 <font-awesome-icon icon="fa-solid fa-id-card" class="info-icon" />
                                 <span class="info-text">{{ company.cnpj }}</span>
@@ -107,7 +107,7 @@ export default {
 
 .page-container {
     padding: 30px;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background: linear-gradient(135deg, var(--color-base-200) 0%, var(--color-base-300) 100%);
     min-height: 100vh;
 }
 
@@ -128,8 +128,8 @@ export default {
 
 .page-icon {
     font-size: 48px;
-    color: var(--primary, #007bff);
-    background: rgba(0, 123, 255, 0.1);
+    color: var(--color-primary);
+    background: color-mix(in oklab, var(--color-primary) 10%, transparent);
     padding: 15px;
     border-radius: 12px;
     width: 78px;
@@ -143,13 +143,13 @@ export default {
     margin: 0;
     font-size: 32px;
     font-weight: 700;
-    color: #1a202c;
+    color: var(--color-base-content);
     letter-spacing: -0.5px;
 }
 
 .subtitle {
     margin: 5px 0 0 0;
-    color: #718096;
+    color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
     font-size: 14px;
     font-weight: 500;
 }
@@ -160,7 +160,7 @@ export default {
 }
 
 .btn-create {
-    background: linear-gradient(135deg, var(--primary, #007bff) 0%, #0056b3 100%);
+    background: linear-gradient(135deg, var(--color-primary) 0%, color-mix(in oklab, var(--color-primary) 80%, black) 100%);
     color: white;
     border: none;
     padding: 12px 28px;
@@ -169,7 +169,7 @@ export default {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 4px 15px color-mix(in oklab, var(--color-primary) 30%, transparent);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -178,7 +178,7 @@ export default {
 
 .btn-create:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+    box-shadow: 0 6px 20px color-mix(in oklab, var(--color-primary) 40%, transparent);
 }
 
 .btn-create:active {
@@ -186,7 +186,7 @@ export default {
 }
 
 .section-container {
-    background: white;
+    background: var(--color-base-100);
     border-radius: 16px;
     padding: 30px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
@@ -199,24 +199,24 @@ export default {
 .empty-state {
     text-align: center;
     padding: 60px 20px;
-    color: #718096;
+    color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
 }
 
 .empty-icon {
     font-size: 64px;
-    color: #cbd5e0;
+    color: color-mix(in oklab, var(--color-base-content) 30%, transparent);
     margin-bottom: 20px;
 }
 
 .empty-state h3 {
     margin: 20px 0 10px;
-    color: #2d3748;
+    color: var(--color-base-content);
     font-size: 20px;
 }
 
 .empty-state p {
     margin: 0;
-    color: #a0aec0;
+    color: color-mix(in oklab, var(--color-base-content) 50%, transparent);
     font-size: 14px;
 }
 
@@ -227,8 +227,8 @@ export default {
 }
 
 .company-card {
-    background: white;
-    border: 1px solid #e2e8f0;
+    background: var(--color-base-100);
+    border: 1px solid var(--color-base-300);
     border-radius: 12px;
     overflow: hidden;
     transition: all 0.3s ease;
@@ -236,8 +236,8 @@ export default {
 }
 
 .company-card:hover {
-    border-color: var(--primary, #007bff);
-    box-shadow: 0 12px 24px rgba(0, 123, 255, 0.15);
+    border-color: var(--color-primary);
+    box-shadow: 0 12px 24px color-mix(in oklab, var(--color-primary) 15%, transparent);
     transform: translateY(-4px);
 }
 
@@ -249,38 +249,21 @@ export default {
     height: 100%;
 }
 
-.card-header {
-    padding: 20px;
-    background: linear-gradient(135deg, rgba(0, 123, 255, 0.05) 0%, rgba(0, 123, 255, 0.02) 100%);
-    border-bottom: 1px solid #e2e8f0;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
 .avatar {
     flex-shrink: 0;
 }
 
 .avatar-icon {
     font-size: 40px;
-    color: var(--primary, #007bff);
+    color: var(--color-primary);
 }
 
 .card-title h3 {
     margin: 0;
     font-size: 18px;
     font-weight: 600;
-    color: #1a202c;
+    color: var(--color-base-content);
     word-break: break-word;
-}
-
-.card-body {
-    padding: 20px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
 }
 
 .info-item {
@@ -289,31 +272,31 @@ export default {
     gap: 12px;
     padding: 8px;
     border-radius: 6px;
-    background: #f7fafc;
+    background: var(--color-base-200);
     transition: background 0.2s ease;
 }
 
 .company-card:hover .info-item {
-    background: #edf2f7;
+    background: var(--color-base-200);
 }
 
 .info-icon {
     font-size: 14px;
-    color: var(--primary, #007bff);
+    color: var(--color-primary);
     margin-top: 2px;
     flex-shrink: 0;
 }
 
 .info-text {
     font-size: 13px;
-    color: #4a5568;
+    color: color-mix(in oklab, var(--color-base-content) 80%, transparent);
     word-break: break-all;
     line-height: 1.4;
 }
 
 .no-info {
     padding: 8px;
-    color: #a0aec0;
+    color: color-mix(in oklab, var(--color-base-content) 50%, transparent);
     font-size: 13px;
     font-style: italic;
 }
@@ -365,14 +348,6 @@ export default {
 
     .companies-grid {
         grid-template-columns: 1fr;
-    }
-
-    .card-header {
-        padding: 16px;
-    }
-
-    .card-body {
-        padding: 16px;
     }
 }
 

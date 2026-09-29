@@ -259,13 +259,13 @@ a:active {
 }
 
 .progress {
-  background-color: #e9ecef;
+  background-color: var(--color-base-300);
   border-radius: 1.5rem;
   height: 1.5rem;
 }
 
 .progress-bar {
-  background-color: var(--primary);
+  background-color: var(--color-primary);
   color: white;
   text-align: center;
   line-height: 1.5rem;

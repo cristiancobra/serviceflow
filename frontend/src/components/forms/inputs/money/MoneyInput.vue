@@ -1,11 +1,11 @@
 <template>
   <div>
-    <label v-if="label" class="form-label" :for="name">{{ label }}</label>
+    <label v-if="label" :for="name">{{ label }}</label>
     <div class="input-money-wrapper">
       <span v-if="showCurrencySymbol" class="input-money-symbol">R$</span>
       <input
         ref="inputEl"
-        class="form-control input-money"
+        class="input-money"
         :class="{ 'has-symbol': showCurrencySymbol }"
         type="text"
         inputmode="decimal"
@@ -196,7 +196,7 @@ export default {
   left: 0.75rem;
   top: 50%;
   transform: translateY(-50%);
-  color: #6b7280;
+  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
   font-weight: 500;
   pointer-events: none;
 }

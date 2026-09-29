@@ -62,7 +62,7 @@
 
               <div class="border-t border-base-300 pt-6">
                 <div class="flex items-center space-x-2 mb-4">
-                  <div class="w-2 h-8 bg-blue-500 rounded-full"></div>
+                  <div class="w-2 h-8 bg-info rounded-full"></div>
                   <h4 class="text-lg font-bold text-base-content uppercase tracking-wide">
                     Parcelamento
                   </h4>
@@ -75,7 +75,7 @@
                     class="flex flex-col md:flex-row gap-4 p-4 bg-base-200 rounded-lg border border-base-300"
                   >
                     <div class="flex items-center flex-1">
-                      <span class="inline-flex items-center justify-center w-8 h-8 bg-blue-100 text-blue-800 text-sm font-bold rounded-full mr-3">
+                      <span class="inline-flex items-center justify-center w-8 h-8 bg-info/10 text-info text-sm font-bold rounded-full mr-3">
                         {{ index }}
                       </span>
                       <label :for="'price-' + index" class="text-sm font-semibold text-base-content">
@@ -92,10 +92,10 @@
                   </div>
                 </div>
 
-                <div class="mt-6 p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
+                <div class="mt-6 p-4 bg-info/10 rounded-lg border-2 border-info/30">
                   <div class="flex flex-col md:flex-row gap-4 items-center">
                     <div class="flex-1">
-                      <label for="total" class="text-sm font-semibold text-blue-700">Total Geral</label>
+                      <label for="total" class="text-sm font-semibold text-info">Total Geral</label>
                     </div>
                     <div class="flex-1 md:max-w-xs">
                       <money-field v-model="totalPrices" class="selected font-bold text-lg" readonly />
@@ -326,7 +326,7 @@ export default {
   text-align: center;
   background-color: gray;
   color: white;
-  border-color: gray;
+  border-color: color-mix(in oklab, var(--color-base-content) 50%, transparent);
   cursor: not-allowed;
 }
 </style>

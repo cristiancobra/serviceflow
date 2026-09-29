@@ -1,8 +1,8 @@
 <template>
   <div class="label-input-container">
-    <label class="form-label text-gray-700 font-semibold" :for="name">{{ label }}</label>
+    <label class="text-base-content font-semibold" :for="name">{{ label }}</label>
     <textarea
-      class="input input-bordered w-full text-gray-800 bg-white"
+      class="textarea w-full"
       :name="name"
       :value="modelValue"
       :placeholder="placeholder"

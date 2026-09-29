@@ -57,20 +57,20 @@
                     </div>
                 </div>
                 <div class="space-y-6">
-                    <div class="flex justify-center items-center p-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                    <div class="flex justify-center items-center p-6 bg-base-200 rounded-lg border-2 border-dashed border-base-300">
                         <div class="photo-container">
                             <img class="photo" :src="urlImagePhoto" alt="Foto">
                         </div>
                     </div>
                     <form @submit.prevent="submitFormPhoto" class="space-y-4">
                         <div class="flex flex-col">
-                            <label for="photo" class="mb-2 text-sm font-medium text-gray-700">Foto:</label>
+                            <label for="photo" class="mb-2 text-sm font-medium text-base-content/80">Foto:</label>
                             <input 
                                 type="file" 
                                 id="photo" 
                                 ref="photo" 
                                 @change="handlePhotoUpload"
-                                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                class="block w-full text-sm text-base-content/60 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-info/10 file:text-info hover:file:bg-info/10"
                             >
                         </div>
                         <div class="flex justify-start">
@@ -174,7 +174,7 @@ export default {
 .photo-container {
     width: 200px;
     height: 200px;
-    border: 1px solid black;
+    border: 1px solid var(--color-base-content);
     border-radius: 50%;
     overflow: hidden;
 }

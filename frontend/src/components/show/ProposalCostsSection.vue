@@ -28,29 +28,29 @@
         </div>
         
         <!-- Cabeçalho das colunas -->
-        <div class="flex w-full text-xs text-gray-600 font-semibold pb-2 pt-2 border-b border-gray-300 bg-gray-100">
+        <div class="flex w-full text-xs text-base-content/70 font-semibold pb-2 pt-2 border-b border-base-300 bg-base-200">
             <div class="w-[40%] ps-2 text-left">Custo</div>
             <div class="w-[15%] text-center">Quantidade</div>
             <div class="w-[20%] text-center">Preço unitário</div>
             <div class="w-[25%] text-center">Total</div>
         </div>
-        <div class="flex w-full py-2 border-b border-gray-100 hover:bg-gray-50 text-sm" 
+        <div class="flex w-full py-2 border-b border-base-200 hover:bg-base-200 text-sm" 
         v-for="localCost in localCosts" 
         v-bind:key="localCost.id"
         :class="{ 'highlight': highlightProposalCostIds.includes(localCost.cost_id) }">
             <div class="w-[40%] flex items-center ps-2 gap-2">
-                <font-awesome-icon icon="fa-solid fa-coins" class="primary text-black text-xs flex-shrink-0" />
-                <p class="text-black truncate text-sm">
+                <font-awesome-icon icon="fa-solid fa-coins" class="primary text-base-content text-xs flex-shrink-0" />
+                <p class="text-base-content truncate text-sm">
                     {{ localCost.name }}
                 </p>
             </div>
-            <div class="w-[15%] flex items-center justify-center text-black text-sm">
+            <div class="w-[15%] flex items-center justify-center text-base-content text-sm">
                 <integer-editable-field
                     v-model="localCost.quantity"
                     @save="emitUpdateProposalCost('quantity', localCost.cost_id, $event)"
                 />
             </div>
-            <div class="w-[20%] flex items-center justify-end text-black pr-2 text-sm">
+            <div class="w-[20%] flex items-center justify-end text-base-content pr-2 text-sm">
                 <money-editable-field
                     v-model="localCost.price"
                     @update:modelValue="emitUpdateProposalCost('price', localCost.cost_id, $event)"

@@ -43,13 +43,17 @@
   --color-accent-content: oklch(26% 0.079 36.259);
   --color-neutral: oklch(13% 0.028 261.692);
   --color-neutral-content: oklch(98% 0.002 247.839);
-  --color-info: oklch(71% 0.143 215.221);
+  /* Semânticas escurecidas para contraste >= 4.5:1 tanto como texto sobre
+     base-100 quanto com texto branco (-content) sobre elas. Mesmo matiz e
+     croma das cores originais: info oklch(71%), success #2CB48D,
+     warning oklch(76%), error #fb2c36. */
+  --color-info: oklch(50% 0.143 215.221);
   --color-info-content: oklch(98% 0.019 200.873);
-  --color-success: #2CB48D;
+  --color-success: oklch(50.5% 0.127 168.673);
   --color-success-content: oklch(98% 0.018 155.826);
-  --color-warning: oklch(76% 0.188 70.08);
+  --color-warning: oklch(54% 0.188 70.08);
   --color-warning-content: oklch(98% 0.022 95.277);
-  --color-error: #fb2c36;
+  --color-error: oklch(54.5% 0.237 25.436);
   --color-error-content: oklch(97% 0.014 343.198);
   --radius-selector: 0.5rem;
   --radius-field: 2rem;

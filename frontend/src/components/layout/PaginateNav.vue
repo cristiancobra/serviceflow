@@ -1,54 +1,26 @@
 <template>
-  <div v-if="dataLoaded && (links.prev || links.next)" class="row">
-    <div class="col-12 pagination-row">
-      <nav class="pagination-nav" aria-label="Pagination navigation">
-        <ul class="pagination">
-          <li
-            class="page-item"
-            v-bind:class="{
-              'page-item-disabled': !links.prev,
-            }"
-          >
-            <a
-              class="prev-next-link"
-              v-if="links.prev"
-              v-on:click="fetchData(links.prev)"
-            >
-              Anterior
-            </a>
-            <span
-              class="prev-next-link prev-next-link-disabled"
-              v-else
-              style="pointer-events: none"
-            >
-              Anterior
-            </span>
-          </li>
-          <li
-            class="page-item"
-            v-bind:class="{
-              'page-item-disabled': !links.next,
-            }"
-          >
-            <a
-              class="prev-next-link"
-              v-if="links.next"
-              v-on:click="fetchData(links.next)"
-            >
-              Próximo
-            </a>
-            <span
-              class="prev-next-link prev-next-link-disabled"
-              v-else
-              style="pointer-events: none"
-            >
-              Próximo
-            </span>
-          </li>
-        </ul>
-      </nav>
-    </div>
-  </div>
+  <nav
+    v-if="dataLoaded && (links.prev || links.next)"
+    class="flex justify-end gap-2"
+    aria-label="Pagination navigation"
+  >
+    <button
+      type="button"
+      class="btn btn-primary btn-sm"
+      :disabled="!links.prev"
+      @click="fetchData(links.prev)"
+    >
+      Anterior
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary btn-sm"
+      :disabled="!links.next"
+      @click="fetchData(links.next)"
+    >
+      Próximo
+    </button>
+  </nav>
 </template>
   
 <script>
@@ -103,80 +75,4 @@ export default {
   },
 };
 </script>
-  
-  <style scoped>
-/* paginate */
-/* Adapte as cores e estilos conforme necessário */
-
-.pagination {
-  display: flex;
-  list-style: none;
-  padding: 0;
-}
-
-.pagination-nav {
-  margin: 0px;
-  padding: 0px;
-}
-
-.pagination-row {
-  margin: 0px;
-  padding: 0px;
-  display: flex;
-  justify-content: right;
-  align-items: flex-end;
-}
-
-.page-item {
-  margin-right: 5px;
-}
-
-.page-link {
-  display: block;
-  padding: 10px;
-  background-color: #3498db;
-  color: #fff;
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-}
-
-.page-link:hover {
-  background-color: #2980b9;
-}
-
-.page-item-disabled .page-link {
-  background-color: red;
-  color: #666;
-  cursor: not-allowed;
-}
-
-.prev-next-link {
-  display: block;
-  padding: 10px;
-  background-color: var(--purple);
-  color: #fff;
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-}
-
-.prev-next-link:hover {
-  background-color: var(--purple-light);
-  color: var(--purple);
-  border-color: var(--purple);
-  border-style:solid;
-  border-width: 1px;
-}
-
-.prev-next-link-disabled {
-  background-color: var(--gray);
-  color: white;
-  cursor: not-allowed;
-}
-</style>
   

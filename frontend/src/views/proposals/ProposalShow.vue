@@ -58,10 +58,10 @@
     />
 
     <div
-      class="flex flex-wrap items-center justify-between px-10 gap-6 py-6 mt-8 border-t border-gray-200"
+      class="flex flex-wrap items-center justify-between px-10 gap-6 py-6 mt-8 border-t border-base-300"
     >
       <button
-        class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm"
+        class="px-4 py-2 bg-error hover:bg-error text-white font-medium rounded-lg transition-colors duration-200 shadow-sm"
         @click="deleteProposal()"
       >
         Excluir
@@ -77,15 +77,15 @@
               v-model="isVisibleQuantity"
             />
             <div
-              class="w-11 h-6 bg-gray-200 rounded-full shadow-inner transition-colors duration-200 ease-in-out"
-              :class="isVisibleQuantity ? 'bg-blue-600' : 'bg-gray-300'"
+              class="w-11 h-6 bg-base-300 rounded-full shadow-inner transition-colors duration-200 ease-in-out"
+              :class="isVisibleQuantity ? 'bg-info' : 'bg-base-300'"
             ></div>
             <div
-              class="absolute w-4 h-4 bg-white rounded-full shadow top-1 transition-transform duration-200 ease-in-out transform"
+              class="absolute w-4 h-4 bg-base-100 rounded-full shadow top-1 transition-transform duration-200 ease-in-out transform"
               :class="isVisibleQuantity ? 'translate-x-6' : 'translate-x-1'"
             ></div>
           </div>
-          <span class="text-sm text-gray-700 font-medium">quantidades</span>
+          <span class="text-sm text-base-content/80 font-medium">quantidades</span>
         </label>
 
         <button
@@ -290,7 +290,7 @@ li {
 }
 
 a {
-  color: rgb(61, 61, 61);
+  color: var(--color-base-content);
 }
 
 a:link {

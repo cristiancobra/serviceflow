@@ -25,11 +25,11 @@
         <PaginateNav :paginationData="paginationData" @update-data="updatePaginationList" />
       </div>
       
-      <div class="p-5 text-center text-gray-500" v-if="!localJourneys || localJourneys.length === 0">
+      <div class="p-5 text-center text-base-content/60" v-if="!localJourneys || localJourneys.length === 0">
         Ainda não possui nenhuma jornada
       </div>
       
-      <div class="p-5 text-center text-gray-500" v-else-if="filteredJourneys.length === 0">
+      <div class="p-5 text-center text-base-content/60" v-else-if="filteredJourneys.length === 0">
         Nenhuma jornada encontrada com os critérios de busca
       </div>
       
@@ -48,10 +48,10 @@
           </p>
         </div>
         <div v-if="journey.task" class="flex flex-[6] items-center justify-start">
-          <router-link v-if="getTaskLink(journey.task)" :to="getTaskLink(journey.task)" class="text-black text-sm">
+          <router-link v-if="getTaskLink(journey.task)" :to="getTaskLink(journey.task)" class="text-base-content text-sm">
             {{ journey.task.name }}
           </router-link>
-          <span v-else class="text-black text-sm">{{ journey.task.name }}</span>
+          <span v-else class="text-base-content text-sm">{{ journey.task.name }}</span>
         </div>
         <div v-if="journey.task" class="flex flex-[4] items-center justify-start mr-4">
           <router-link :class="getColorClassForName(journey.task.opportunity.name)" class="flex items-center"
@@ -81,7 +81,7 @@
             </p>
           </router-link>
           <div v-else>
-            <p class="text-sm text-gray-400">
+            <p class="text-sm text-base-content/50">
               ----
             </p>
           </div>
@@ -330,7 +330,7 @@ export default {
   text-align: center;
   font-size: 16px;
   font-weight: 800;
-  color: var(--purple);
+  color: var(--color-primary);
 }
 
 a {

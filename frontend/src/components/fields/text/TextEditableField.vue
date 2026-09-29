@@ -11,7 +11,7 @@
     </div>
     <div v-else-if="editing">
       <input
-        class="bg-base-100 text-base-content w-100 border border-primary-500 rounded-md px-3 py-2 focus:border-primary-600 focus:ring-2 focus:ring-primary-200 focus:outline-none"
+        class="bg-base-100 text-base-content w-full border border-primary-500 rounded-md px-3 py-2 focus:border-primary-600 focus:ring-2 focus:ring-primary-200 focus:outline-none"
         type="text"
         :name="name"
         v-model="localValue"

@@ -7,7 +7,7 @@
         'flex items-center justify-center rounded-full border-2',
         sizeClasses,
         overlap ? 'ml-[-10px]' : '',
-        hasCompanyData ? 'border-white' : 'border-gray-300 bg-gray-200',
+        hasCompanyData ? 'border-white' : 'border-base-300 bg-base-300',
         companyIdData && !editable ? 'cursor-pointer hover:opacity-80 transition-opacity' : '',
         customClass
       ]"
@@ -34,7 +34,7 @@
       <font-awesome-icon
         v-else
         icon="fa-solid fa-briefcase"
-        class="text-sm text-gray-500"
+        class="text-sm text-base-content/60"
       />
     </component>
 
@@ -46,7 +46,7 @@
       :title="'Alterar foto'"
     >
       <div
-        class="flex items-center justify-center rounded-full bg-blue-500 text-white cursor-pointer shadow-md"
+        class="flex items-center justify-center rounded-full bg-info text-white cursor-pointer shadow-md"
         :class="editIconSizeClasses"
       >
         <font-awesome-icon icon="fa-solid fa-camera" class="text-xs" />

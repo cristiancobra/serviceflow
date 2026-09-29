@@ -8,7 +8,7 @@
         :key="'date-' + index"
       >
         <p v-if="date.value">{{ formatDateBr(date.value) }}</p>
-        <p v-else class="text-gray-400">---</p>
+        <p v-else class="text-base-content/50">---</p>
       </div>
     </div>
 
@@ -55,13 +55,13 @@ export default {
         { 
           label: "Criada", 
           value: this.proposal.created_at,
-          labelClass: "text-blue-700 font-semibold",
+          labelClass: "text-info font-semibold",
           circleClass: "circle-blue"
         },
         { 
           label: "Rascunhada", 
           value: this.proposal.draft_at,
-          labelClass: "text-gray-600 font-semibold",
+          labelClass: "text-base-content/70 font-semibold",
           circleClass: "circle-gray"
         },
         { 
@@ -73,19 +73,19 @@ export default {
         { 
           label: "Aceita", 
           value: this.proposal.accepted_at,
-          labelClass: "text-green-700 font-semibold",
+          labelClass: "text-success font-semibold",
           circleClass: "circle-green"
         },
         { 
           label: "Rejeitada", 
           value: this.proposal.rejected_at,
-          labelClass: "text-red-700 font-semibold",
+          labelClass: "text-error font-semibold",
           circleClass: "circle-red"
         },
         { 
           label: "Cancelada", 
           value: this.proposal.canceled_at,
-          labelClass: "text-gray-500 font-semibold",
+          labelClass: "text-base-content/60 font-semibold",
           circleClass: "circle-gray"
         },
       ],
@@ -102,13 +102,13 @@ export default {
           { 
             label: "Criada", 
             value: newProposal?.created_at || "",
-            labelClass: "text-blue-700 font-semibold",
+            labelClass: "text-info font-semibold",
             circleClass: "circle-blue"
           },
           { 
             label: "Rascunhada", 
             value: newProposal?.draft_at || "",
-            labelClass: "text-gray-600 font-semibold",
+            labelClass: "text-base-content/70 font-semibold",
             circleClass: "circle-gray"
           },
           { 
@@ -120,19 +120,19 @@ export default {
           { 
             label: "Aceita", 
             value: newProposal?.accepted_at || "",
-            labelClass: "text-green-700 font-semibold",
+            labelClass: "text-success font-semibold",
             circleClass: "circle-green"
           },
           { 
             label: "Rejeitada", 
             value: newProposal?.rejected_at || "",
-            labelClass: "text-red-700 font-semibold",
+            labelClass: "text-error font-semibold",
             circleClass: "circle-red"
           },
           { 
             label: "Cancelada", 
             value: newProposal?.canceled_at || "",
-            labelClass: "text-gray-500 font-semibold",
+            labelClass: "text-base-content/60 font-semibold",
             circleClass: "circle-gray"
           },
         ];
@@ -194,7 +194,7 @@ export default {
   left: 5%;
   right: 5%;
   height: 2px;
-  background: #e5e7eb;
+  background: var(--color-base-300);
   transform: translateY(-50%);
 }
 
@@ -210,24 +210,24 @@ export default {
   content: "";
   width: 14px;
   height: 14px;
-  background: #e5e7eb;
+  background: var(--color-base-300);
   border-radius: 50%;
   border: 3px solid #fff;
-  box-shadow: 0 0 0 1px #d1d5db;
+  box-shadow: 0 0 0 1px var(--color-base-300);
   transition: all 0.3s ease;
 }
 
 /* Círculos coloridos quando ativos */
 .timeline-circle.active.circle-blue::after {
-  background: #3b82f6;
-  box-shadow: 0 0 0 2px #3b82f6;
+  background: var(--color-info);
+  box-shadow: 0 0 0 2px var(--color-info);
   width: 16px;
   height: 16px;
 }
 
 .timeline-circle.active.circle-gray::after {
   background: #6b7280;
-  box-shadow: 0 0 0 2px #6b7280;
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--color-base-content) 60%, transparent);
   width: 16px;
   height: 16px;
 }
@@ -240,15 +240,15 @@ export default {
 }
 
 .timeline-circle.active.circle-green::after {
-  background: #15803d;
-  box-shadow: 0 0 0 2px #15803d;
+  background: var(--color-success);
+  box-shadow: 0 0 0 2px var(--color-success);
   width: 16px;
   height: 16px;
 }
 
 .timeline-circle.active.circle-red::after {
-  background: #b91c1c;
-  box-shadow: 0 0 0 2px #b91c1c;
+  background: var(--color-error);
+  box-shadow: 0 0 0 2px var(--color-error);
   width: 16px;
   height: 16px;
 }

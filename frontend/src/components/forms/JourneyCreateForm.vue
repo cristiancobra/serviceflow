@@ -1,5 +1,5 @@
 <template>
-  <div class="journey-form-container pt-4 pb-4 mt-3 mb-3 px-4 bg-orange-50 border-l-4 border-orange-500 rounded-r-lg shadow-sm">
+  <div class="journey-form-container pt-4 pb-4 mt-3 mb-3 px-4 bg-warning/10 border-l-4 border-warning rounded-r-lg shadow-sm">
     <AddMessage
       :messageStatus="messageStatus"
       :messageText="messageText"
@@ -11,20 +11,20 @@
     <form @submit.prevent="submitForm">
       <div class="flex items-center gap-4">
         <div class="flex-1">
-          <label for="start" class="block text-sm font-semibold text-orange-700 mb-1">Início</label>
+          <label for="start" class="block text-sm font-semibold text-warning mb-1">Início</label>
           <VueDatePicker v-model="form.start" class="w-full" />
         </div>
         <div class="flex-1">
-          <label for="end" class="block text-sm font-semibold text-orange-700 mb-1">Fim</label>
+          <label for="end" class="block text-sm font-semibold text-warning mb-1">Fim</label>
           <VueDatePicker v-model="form.end" class="w-full" />
         </div>
         <div class="flex-[2]">
-          <label for="details" class="block text-sm font-semibold text-orange-700 mb-1">Detalhes</label>
+          <label for="details" class="block text-sm font-semibold text-warning mb-1">Detalhes</label>
           <textarea
             name="description"
             rows="1"
             v-model="form.details"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+            class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-warning focus:border-warning"
             id="details"
             placeholder="Adicione detalhes da jornada..."
           ></textarea>
@@ -32,14 +32,14 @@
         <div class="flex items-end gap-2">
           <button 
             type="submit" 
-            class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition font-semibold"
+            class="px-4 py-2 bg-warning text-white rounded-lg hover:bg-warning transition font-semibold"
           >
             Salvar
           </button>
           <button 
             type="button"
             @click="$emit('close')"
-            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition font-semibold"
+            class="px-4 py-2 bg-base-300 text-base-content/80 rounded-lg hover:bg-gray-400 transition font-semibold"
           >
             Cancelar
           </button>
@@ -174,10 +174,10 @@ export default {
 
 .errorBox.isActive {
   display: block;
-  color: red;
+  color: var(--color-error);
   padding: 10px;
-  background-color: #ffe6e6;
-  border: 1px solid red;
+  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
+  border: 1px solid var(--color-error);
   border-radius: 5px;
   margin-bottom: 10px;
 }

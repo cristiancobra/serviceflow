@@ -1,6 +1,6 @@
 <template>
   <div v-if="!editing" @click="startEditing">
-    <label class="form-label" :for="name">{{ label }}</label>
+    <label :for="name">{{ label }}</label>
     <p v-if="selectedName">
       <router-link :to="'/opportunities/' + localValue">
       <font-awesome-icon icon="fa-solid fa-search" class="primary"/>

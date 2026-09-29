@@ -6,7 +6,7 @@
       'flex items-center justify-center rounded-full border-2',
       sizeClasses,
       overlap ? 'ml-[-10px]' : '',
-      hasUserData ? 'border-white' : 'border-gray-300 bg-gray-200',
+      hasUserData ? 'border-white' : 'border-base-300 bg-base-300',
       userId ? 'cursor-pointer hover:opacity-80 transition-opacity' : '',
       customClass
     ]"
@@ -33,7 +33,7 @@
     <font-awesome-icon
       v-else
       icon="fa-solid fa-user"
-      class="text-sm text-gray-500"
+      class="text-sm text-base-content/60"
     />
   </component>
 </template>

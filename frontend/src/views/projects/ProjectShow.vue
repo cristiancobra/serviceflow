@@ -53,7 +53,7 @@
         <div class="column-30">
           <div class="table-row">
             <DateEditableInput
-              class="d-flex justify-content-end"
+              class="justify-end"
               name="date_start"
               label="Início:"
               v-model="project.date_start"
@@ -62,7 +62,7 @@
           </div>
           <div class="table-row">
             <DateEditableInput
-              class="d-flex justify-content-end"
+              class="justify-end"
               name="date_due"
               label="Prazo:"
               v-model="project.date_due"
@@ -71,7 +71,7 @@
           </div>
           <div class="table-row">
             <DateEditableInput
-              class="d-flex justify-content-end"
+              class="justify-end"
               name="date_conclusion"
               label="Conclusão:"
               v-model="project.date_conclusion"
@@ -91,12 +91,10 @@
       />
     </section>
 
-    <div class="row">
-      <div class="col-1">
-        <button class="button delete" @click="confirmDeleteProject()">
-          excluir
-        </button>
-      </div>
+    <div>
+      <button class="button delete" @click="confirmDeleteProject()">
+        excluir
+      </button>
     </div>
   </div>
 </template>
@@ -289,7 +287,7 @@ li {
 }
 
 a {
-  color: rgb(61, 61, 61);
+  color: var(--color-base-content);
 }
 
 a:link {
@@ -319,7 +317,7 @@ a:active {
   margin-top: 60px;
   border-style: solid;
   border-width: 2px;
-  border-color: gray;
+  border-color: color-mix(in oklab, var(--color-base-content) 50%, transparent);
   border-radius: 6px;
   padding: 10px;
   padding-right: 20px;
@@ -327,27 +325,27 @@ a:active {
 }
 
 .done {
-  background-color: var(--green-light);
-  border-color: var(--green);
-  color: var(--green);
+  background-color: color-mix(in oklab, var(--color-success) 15%, var(--color-base-100));
+  border-color: var(--color-success);
+  color: var(--color-success);
 }
 
 .doing {
-  background-color: var(--blue-light);
-  border-color: var(--blue);
-  color: var(--blue);
+  background-color: color-mix(in oklab, var(--color-info) 15%, var(--color-base-100));
+  border-color: var(--color-info);
+  color: var(--color-info);
 }
 
 .to-do {
-  background-color: var(--orange-light);
-  border-color: var(--orange);
-  color: var(--orange);
+  background-color: color-mix(in oklab, var(--color-warning) 15%, var(--color-base-100));
+  border-color: var(--color-warning);
+  color: var(--color-warning);
 }
 
 .wait {
-  background-color: var(--gray-light);
-  border-color: var(--gray);
-  color: var(--gray);
+  background-color: var(--color-base-300);
+  border-color: color-mix(in oklab, var(--color-base-content) 50%, transparent);
+  color: color-mix(in oklab, var(--color-base-content) 50%, transparent);
 }
 
 .status {
@@ -360,7 +358,7 @@ a:active {
   font-weight: 900;
   padding-top: 10px;
   padding-bottom: 0px;
-  color: black;
+  color: var(--color-base-content);
 }
 
 .container {
@@ -381,14 +379,14 @@ a:active {
 }
 
 .delete {
-  background-color: #ffa1a1;
-  border-color: #c82333;
-  color: #c82333;
+  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
+  border-color: var(--color-error);
+  color: var(--color-error);
 }
 
 .delete:hover {
-  background-color: #c82333;
-  border-color: #c82333;
+  background-color: var(--color-error);
+  border-color: var(--color-error);
   color: white;
 }
 
@@ -396,23 +394,23 @@ a:active {
   font-size: 1.2rem;
   text-align: center;
   font-weight: 400;
-  color: var(--green);
+  color: var(--color-success);
 }
 
 /* Estilo para destacar a tarefa quando navegamos até ela */
 .highlight-task {
-  background-color: #fff3cd;
+  background-color: color-mix(in oklab, var(--color-warning) 15%, var(--color-base-100));
   transition: background-color 0.3s ease;
-  box-shadow: 0 0 15px rgba(255, 193, 7, 0.5);
+  box-shadow: 0 0 15px color-mix(in oklab, var(--color-warning) 50%, transparent);
   animation: highlightPulse 2s ease-in-out;
 }
 
 @keyframes highlightPulse {
   0%, 100% {
-    background-color: #fff3cd;
+    background-color: color-mix(in oklab, var(--color-warning) 15%, var(--color-base-100));
   }
   50% {
-    background-color: #ffe69c;
+    background-color: color-mix(in oklab, var(--color-warning) 15%, var(--color-base-100));
   }
 }
 </style>

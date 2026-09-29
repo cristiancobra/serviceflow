@@ -1,25 +1,3 @@
-.btn-close {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #000;
-  cursor: pointer;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 0;
-  line-height: 1;
-}
-
-.btn-close:hover {
-  color: #ff0000; /* Cor ao passar o mouse */
-}
-
-.btn-close::before {
-  content: '×'; /* Símbolo de fechar */
-}
-
 .label-input-container {
     display: flex;
     flex-direction: column;
@@ -32,7 +10,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    background-color: var(--high-light);
+    background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
     border-radius: 10px;
     padding: 0.5rem 1rem;
     margin-top: 0.5rem;
@@ -41,7 +19,7 @@
   }
 
   .error-text {
-    color: red;
+    color: var(--color-error);
     font-size: 0.8rem;
     text-align: left;
     font-weight: 500;
@@ -59,7 +37,7 @@
     width: 100%;
     padding: 0.5rem;
     border-radius: 5px;
-    border: 1px solid var(--gray);
+    border: 1px solid color-mix(in oklab, var(--color-base-content) 50%, transparent);
     font-size: 1rem;
     text-align: right;
   }

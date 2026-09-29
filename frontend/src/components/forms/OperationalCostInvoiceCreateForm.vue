@@ -64,7 +64,7 @@
           <!-- Lista de Parcelas -->
           <div class="border-t border-base-300 pt-4">
             <div class="flex items-center space-x-2 mb-4">
-              <div class="w-2 h-6 bg-blue-500 rounded-full"></div>
+              <div class="w-2 h-6 bg-info rounded-full"></div>
               <h4 class="text-base font-bold text-base-content uppercase tracking-wide">
                 Parcelamento
               </h4>
@@ -77,7 +77,7 @@
                 class="flex flex-col sm:flex-row gap-3 p-3 bg-base-200 rounded-lg border border-base-300"
               >
                 <div class="flex items-center flex-1">
-                  <span class="inline-flex items-center justify-center w-7 h-7 bg-blue-100 text-blue-800 text-sm font-bold rounded-full mr-3">
+                  <span class="inline-flex items-center justify-center w-7 h-7 bg-info/10 text-info text-sm font-bold rounded-full mr-3">
                     {{ index + 1 }}
                   </span>
                   <label class="text-sm font-semibold text-base-content">
@@ -96,10 +96,10 @@
               </div>
             </div>
 
-            <div class="mt-4 p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
+            <div class="mt-4 p-4 bg-info/10 rounded-lg border-2 border-info/30">
               <div class="flex flex-col sm:flex-row gap-3 items-center">
                 <div class="flex-1">
-                  <label class="text-sm font-semibold text-blue-700">Total das Parcelas</label>
+                  <label class="text-sm font-semibold text-info">Total das Parcelas</label>
                 </div>
                 <div class="flex items-center gap-2 sm:max-w-xs">
                   <span class="text-base-content font-bold">R$</span>
@@ -138,8 +138,8 @@
           </div>
 
           <!-- Mensagem de erro -->
-          <div v-if="errorMessage" class="p-3 bg-red-50 border border-red-200 rounded-lg">
-            <p class="text-sm text-red-700">{{ errorMessage }}</p>
+          <div v-if="errorMessage" class="p-3 bg-error/10 border border-error/30 rounded-lg">
+            <p class="text-sm text-error">{{ errorMessage }}</p>
           </div>
         </form>
 

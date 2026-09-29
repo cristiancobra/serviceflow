@@ -1,29 +1,29 @@
 <template>
   <div class="navbar-container">
-    <nav class="navbar">
-      <a class="navbar-brand" href="#">
+    <nav class="navbar relative justify-between px-20 py-0 max-md:px-16 max-md:py-12">
+      <a href="#">
         <img
           :src="logoServiceflow"
-          class="logo"
+          class="h-[22px] max-md:h-[60px]"
           alt="logo-serviceflow"
         />
       </a>
       <button
-        class="navbar-toggler"
+        class="menu-toggle hidden max-md:block bg-transparent border-none cursor-pointer"
         :class="{ open: isNavbarOpen }"
         @click="toggleNavbar"
       >
         <!-- Adiciona a classe condicional 'open' -->
-        <span class="navbar-toggler-icon"></span>
+        <span class="menu-toggle-icon"></span>
       </button>
 
-      <div :class="['navbar-collapse', { show: isNavbarOpen }]">
-        <ul class="navbar-nav">
+      <div :class="isNavbarOpen ? 'flex flex-col items-start' : 'flex flex-row items-center max-md:hidden'">
+        <ul class="flex flex-row max-md:flex-col list-none p-0 m-0 [&_a]:text-white [&_a]:no-underline">
           <router-link to="/">
             <li
-              class="nav-item"
+              class="group relative flex my-[0.4rem] px-[0.2rem] py-2 text-white text-[0.8rem]"
               @mouseover="toggleActive('home')"
-              :class="{ active: activeItem === 'home' }"
+              :class="{ 'border border-primary rounded-[30px]': activeItem === 'home' }"
             >
               <font-awesome-icon icon="fas fa-calendar" class="router-link-text" />
               <span class="router-link-text"></span>
@@ -32,9 +32,9 @@
 
           <router-link to="/leads">
             <li
-              class="nav-item"
+              class="group relative flex my-[0.4rem] px-[0.2rem] py-2 text-white text-[0.8rem]"
               @mouseover="toggleActive('contacts')"
-              :class="{ active: activeItem === 'contacts' }"
+              :class="{ 'border border-primary rounded-[30px]': activeItem === 'contacts' }"
             >
               <font-awesome-icon icon="fas fa-user" class="router-link-text" />
               <span class="router-link-text"></span>
@@ -43,9 +43,9 @@
 
           <router-link to="/companies">
             <li
-              class="nav-item"
+              class="group relative flex my-[0.4rem] px-[0.2rem] py-2 text-white text-[0.8rem]"
               @mouseover="toggleActive('companies')"
-              :class="{ active: activeItem === 'companies' }"
+              :class="{ 'border border-primary rounded-[30px]': activeItem === 'companies' }"
             >
               <font-awesome-icon icon="fas fa-briefcase" class="router-link-text" />
               <span class="router-link-text"></span>
@@ -54,9 +54,9 @@
 
           <router-link to="/opportunities">
             <li
-              class="nav-item"
+              class="group relative flex my-[0.4rem] px-[0.2rem] py-2 text-white text-[0.8rem]"
               @mouseover="toggleActive('opportunities')"
-              :class="{ active: activeItem === 'opportunities' }"
+              :class="{ 'border border-primary rounded-[30px]': activeItem === 'opportunities' }"
             >
               <font-awesome-icon icon="fas fa-bullseye" class="router-link-text" />
               <span class="router-link-text"></span>
@@ -64,19 +64,19 @@
           </router-link>
 
           <li
-            class="nav-item"
+            class="group relative flex my-[0.4rem] px-[0.2rem] py-2 text-white text-[0.8rem]"
             @mouseover="showSubmenu('financeiro')"
             @mouseleave="hideSubmenu('financeiro')"
-            :class="{ active: activeItem === 'financeiro' }"
+            :class="{ 'border border-primary rounded-[30px]': activeItem === 'financeiro' }"
           >
             <font-awesome-icon icon="fas fa-coins" class="router-link-text" />
             <span class="router-link-text"></span>
-            <ul class="submenu" v-show="submenus.financeiro">
+            <ul class="hidden group-hover:block absolute top-full left-0 z-[1000] w-[200px] list-none p-0 m-0 bg-primary shadow-md" v-show="submenus.financeiro">
               <router-link to="/financial">
                 <li
-                  class="nav-item"
+                  class="relative flex m-0 px-4 py-2 whitespace-nowrap text-white text-[0.8rem] hover:bg-white/10"
                   @mouseover="toggleActive('financial-report')"
-                  :class="{ active: activeItem === 'financial-report' }"
+                  :class="{ 'border border-primary rounded-[30px]': activeItem === 'financial-report' }"
                 >
                   <font-awesome-icon icon="fas fa-chart-line" />
                   <span class="text-white ps-2">RELATÓRIOS</span>
@@ -84,9 +84,9 @@
               </router-link>
               <router-link to="/opportunities-hours-report">
                 <li
-                  class="nav-item"
+                  class="relative flex m-0 px-4 py-2 whitespace-nowrap text-white text-[0.8rem] hover:bg-white/10"
                   @mouseover="toggleActive('opportunities-hours-report')"
-                  :class="{ active: activeItem === 'opportunities-hours-report' }"
+                  :class="{ 'border border-primary rounded-[30px]': activeItem === 'opportunities-hours-report' }"
                 >
                   <font-awesome-icon icon="fas fa-hourglass-half" />
                   <span class="text-white ps-2">PREVISTO X REALIZADO</span>
@@ -94,9 +94,9 @@
               </router-link>
               <router-link to="/proposals">
                 <li
-                  class="nav-item"
+                  class="relative flex m-0 px-4 py-2 whitespace-nowrap text-white text-[0.8rem] hover:bg-white/10"
                   @mouseover="toggleActive('proposals')"
-                  :class="{ active: activeItem === 'proposals' }"
+                  :class="{ 'border border-primary rounded-[30px]': activeItem === 'proposals' }"
                 >
                   <font-awesome-icon icon="fas fa-file-invoice-dollar" />
                   <span class="text-white ps-2">PROPOSTAS</span>
@@ -104,9 +104,9 @@
               </router-link>
               <router-link to="/invoices">
                 <li
-                  class="nav-item"
+                  class="relative flex m-0 px-4 py-2 whitespace-nowrap text-white text-[0.8rem] hover:bg-white/10"
                   @mouseover="toggleActive('invoices')"
-                  :class="{ active: activeItem === 'invoices' }"
+                  :class="{ 'border border-primary rounded-[30px]': activeItem === 'invoices' }"
                 >
                   <font-awesome-icon icon="fas fa-receipt" />
                   <span class="text-white ps-2">FATURAS</span>
@@ -114,9 +114,9 @@
               </router-link>
               <router-link to="/contas-a-pagar">
                 <li
-                  class="nav-item"
+                  class="relative flex m-0 px-4 py-2 whitespace-nowrap text-white text-[0.8rem] hover:bg-white/10"
                   @mouseover="toggleActive('contas-a-pagar')"
-                  :class="{ active: activeItem === 'contas-a-pagar' }"
+                  :class="{ 'border border-primary rounded-[30px]': activeItem === 'contas-a-pagar' }"
                 >
                   <font-awesome-icon icon="fas fa-file-invoice-dollar" />
                   <span class="text-white ps-2">CONTAS A PAGAR</span>
@@ -124,9 +124,9 @@
               </router-link>
               <router-link to="/transactions">
                 <li
-                  class="nav-item"
+                  class="relative flex m-0 px-4 py-2 whitespace-nowrap text-white text-[0.8rem] hover:bg-white/10"
                   @mouseover="toggleActive('transactions')"
-                  :class="{ active: activeItem === 'transactions' }"
+                  :class="{ 'border border-primary rounded-[30px]': activeItem === 'transactions' }"
                 >
                   <font-awesome-icon icon="fas fa-exchange-alt" />
                   <span class="text-white ps-2">MOVIMENTAÇÕES</span>
@@ -134,9 +134,9 @@
               </router-link>
               <router-link to="/bank-accounts">
                 <li
-                  class="nav-item"
+                  class="relative flex m-0 px-4 py-2 whitespace-nowrap text-white text-[0.8rem] hover:bg-white/10"
                   @mouseover="toggleActive('bank-accounts')"
-                  :class="{ active: activeItem === 'bank-accounts' }"
+                  :class="{ 'border border-primary rounded-[30px]': activeItem === 'bank-accounts' }"
                 >
                   <font-awesome-icon icon="fas fa-building-columns" />
                   <span class="text-white ps-2">CONTAS BANCÁRIAS</span>
@@ -144,9 +144,9 @@
               </router-link>
               <router-link to="/credit-cards">
                 <li
-                  class="nav-item"
+                  class="relative flex m-0 px-4 py-2 whitespace-nowrap text-white text-[0.8rem] hover:bg-white/10"
                   @mouseover="toggleActive('credit-cards')"
-                  :class="{ active: activeItem === 'credit-cards' }"
+                  :class="{ 'border border-primary rounded-[30px]': activeItem === 'credit-cards' }"
                 >
                   <font-awesome-icon icon="fas fa-credit-card" />
                   <span class="text-white ps-2">CARTÕES DE CRÉDITO</span>
@@ -154,9 +154,9 @@
               </router-link>
               <router-link to="/recurring-expenses">
                 <li
-                  class="nav-item"
+                  class="relative flex m-0 px-4 py-2 whitespace-nowrap text-white text-[0.8rem] hover:bg-white/10"
                   @mouseover="toggleActive('recurring-expenses')"
-                  :class="{ active: activeItem === 'recurring-expenses' }"
+                  :class="{ 'border border-primary rounded-[30px]': activeItem === 'recurring-expenses' }"
                 >
                   <font-awesome-icon icon="fas fa-rotate" />
                   <span class="text-white ps-2">DESPESAS RECORRENTES</span>
@@ -164,9 +164,9 @@
               </router-link>
               <router-link to="/services">
                 <li
-                  class="nav-item"
+                  class="relative flex m-0 px-4 py-2 whitespace-nowrap text-white text-[0.8rem] hover:bg-white/10"
                   @mouseover="toggleActive('services')"
-                  :class="{ active: activeItem === 'services' }"
+                  :class="{ 'border border-primary rounded-[30px]': activeItem === 'services' }"
                 >
                   <font-awesome-icon icon="fas fa-coins" />
                   <span class="text-white ps-2">SERVIÇOS</span>
@@ -174,9 +174,9 @@
               </router-link>
               <router-link to="/costs">
                 <li
-                  class="nav-item"
+                  class="relative flex m-0 px-4 py-2 whitespace-nowrap text-white text-[0.8rem] hover:bg-white/10"
                   @mouseover="toggleActive('costs')"
-                  :class="{ active: activeItem === 'costs' }"
+                  :class="{ 'border border-primary rounded-[30px]': activeItem === 'costs' }"
                 >
                   <font-awesome-icon icon="fas fa-dollar-sign" />
                   <span class="text-white ps-2">CUSTOS</span>
@@ -187,9 +187,9 @@
 
           <router-link to="/projects">
             <li
-              class="nav-item"
+              class="group relative flex my-[0.4rem] px-[0.2rem] py-2 text-white text-[0.8rem]"
               @mouseover="toggleActive('projects')"
-              :class="{ active: activeItem === 'projects' }"
+              :class="{ 'border border-primary rounded-[30px]': activeItem === 'projects' }"
             >
               <font-awesome-icon icon="fas fa-project-diagram" class="router-link-text" />
               <span class="router-link-text"></span>
@@ -198,9 +198,9 @@
 
           <router-link to="/tasks">
             <li
-              class="nav-item"
+              class="group relative flex my-[0.4rem] px-[0.2rem] py-2 text-white text-[0.8rem]"
               @mouseover="toggleActive('tasks')"
-              :class="{ active: activeItem === 'tasks' }"
+              :class="{ 'border border-primary rounded-[30px]': activeItem === 'tasks' }"
             >
               <font-awesome-icon icon="fas fa-tasks" class="router-link-text" />
               <span class="router-link-text"></span>
@@ -208,10 +208,10 @@
           </router-link>
 
           <li
-            class="nav-item"
+            class="group relative flex my-[0.4rem] px-[0.2rem] py-2 text-white text-[0.8rem]"
             @mouseover="toggleActive('links')"
             @click="openModal({ component: 'LinksModal', id: 'links' })"
-            :class="{ active: activeItem === 'links' }"
+            :class="{ 'border border-primary rounded-[30px]': activeItem === 'links' }"
           >
             <font-awesome-icon icon="fas fa-link" class="router-link-text" />
             <span class="router-link-text"></span>
@@ -219,10 +219,10 @@
 
           <router-link to="/logout">
             <li
-              class="nav-item"
+              class="group relative flex my-[0.4rem] px-[0.2rem] py-2 text-white text-[0.8rem]"
               @click="logout"
               @mouseover="toggleActive('submitLogout')"
-              :class="{ active: activeItem === 'logout' }"
+              :class="{ 'border border-primary rounded-[30px]': activeItem === 'logout' }"
             >
               <font-awesome-icon icon="fas fa-sign-out" class="router-link-text" />
               <span class="router-link-text"></span>
@@ -236,7 +236,7 @@
             class="flex-1 flex items-center gap-2 text-primary no-underline hover:opacity-80 transition-opacity min-w-0 bg-transparent border-0 cursor-pointer"
             style="min-width:0"
           >
-            <font-awesome-icon icon="fas fa-play" class="flex-shrink-0 text-green-600" />
+            <font-awesome-icon icon="fas fa-play" class="flex-shrink-0 text-success" />
             <span class="truncate font-semibold text-primary">{{ taskDisplayName }}</span>
             <journey-timer class="flex-shrink-0 text-sm text-primary/80" />
           </button>
@@ -310,193 +310,59 @@ export default {
 .navbar-container {
   position: sticky;
   top: 0;
-  color:  var(--primary);
-  background-color: rgba(var(--primary-rgb), 0.8);
+  color:  var(--color-primary);
   backdrop-filter: blur(10px);
   z-index: 1000;
   height: auto;
 }
 
-.navbar {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-left: 5rem;
-  padding-right: 5rem;
-  padding-top: 0rem;
-  padding-bottom: 0rem;
-}
-
-.navbar-brand .logo {
-  height: 22px;
-}
-
-.navbar-toggler {
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: none;
-}
-
-.navbar-toggler-icon {
+/* Ícone hambúrguer: as três linhas são o próprio span + ::before/::after */
+.menu-toggle-icon {
   width: 60px;
   height: 6px;
-  background-color: #fff;
+  background-color: var(--color-base-100);
   display: block;
   position: relative;
   transition: transform 0.3s ease;
 }
 
-.navbar-toggler-icon::before,
-.navbar-toggler-icon::after {
+.menu-toggle-icon::before,
+.menu-toggle-icon::after {
   content: "";
   width: 60px;
   height: 6px;
-  background-color: #fff;
+  background-color: var(--color-base-100);
   display: block;
   position: absolute;
   left: 0;
   transition: transform 0.3s ease;
 }
 
-.navbar-toggler-icon::before {
+.menu-toggle-icon::before {
   top: -18px;
 }
 
-.navbar-toggler-icon::after {
+.menu-toggle-icon::after {
   top: 20px;
 }
 /* botao fechar */
-.navbar-toggler.open .navbar-toggler-icon {
+.menu-toggle.open .menu-toggle-icon {
   transform: rotate(45deg); /* Rotaciona o ícone principal */
 }
 
-.navbar-toggler.open .navbar-toggler-icon::before {
+.menu-toggle.open .menu-toggle-icon::before {
   transform: rotate(90deg) translateX(-18px); /* Rotaciona e desloca a linha superior */
 }
 
-.navbar-toggler.open .navbar-toggler-icon::after {
+.menu-toggle.open .menu-toggle-icon::after {
   transform: rotate(90deg) translateX(20px); /* Rotaciona e desloca a linha inferior */
 }
 
-.navbar-collapse {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.navbar-collapse.show {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.navbar-nav {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: row;
-}
-
-.navbar-nav a {
-  text-decoration: none;
-  color: white;
-}
-
-.navbar-nav a:hover {
-  text-decoration: none;
-}
-
-.nav-item {
-  position: relative;
-  display: flex;
-  margin: 0.4rem 0;
-  color: white;
-  font-size: 0.8rem;
-  text-decoration: none;
-  padding-left: 0.2rem;
-  padding-right: 0.2rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-}
-
-.nav-item.active {
-  border-color: var(--primary);
-  border-style: solid;
-  border-width: 1px;
-  border-radius: 30px;
-}
-
 .router-link-text {
-  color:  var(--primary);
+  color:  var(--color-primary);
   text-decoration: none;
   margin-left: 0.5rem;
   font-size: 0.8rem;
   font-weight: 400;
-}
-
-.submenu {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background-color: var(--primary);
-  padding: 0;
-  margin: 0;
-  list-style: none;
-  z-index: 1000;
-  width: 200px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.nav-item:hover .submenu {
-  display: block;
-}
-
-.submenu .nav-item {
-  margin: 0;
-  padding: 0.5rem 1rem;
-  white-space: nowrap;
-}
-
-.submenu .nav-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* tela celular */
-@media screen and (max-width: 768px) {
-  .navbar {
-    padding-left: 4rem;
-    padding-right: 4rem;
-    padding-top: 3rem;
-    padding-bottom: 3rem;
-  }
-
-  .navbar-toggler {
-    display: block;
-    /* Mostra o toggler em telas pequenas */
-  }
-
-  .navbar-collapse {
-    display: none;
-    /* Esconde a navbar em telas pequenas */
-  }
-
-  .navbar-collapse.show {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .navbar-nav {
-    flex-direction: column;
-  }
-
-  .navbar-brand .logo {
-    height: 60px;
-    /* Ajusta o tamanho do logo em telas pequenas */
-  }
 }
 </style>

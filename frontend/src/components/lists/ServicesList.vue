@@ -27,7 +27,7 @@
       </div>
       
       <!-- Header da tabela -->
-      <div class="flex items-center w-full px-4 py-2 bg-gray-100 font-semibold text-sm text-gray-700 border-b border-gray-300">
+      <div class="flex items-center w-full px-4 py-2 bg-base-200 font-semibold text-sm text-base-content/80 border-b border-base-300">
         <div class="flex items-center justify-center w-12"></div>
         <div class="flex items-center justify-start w-48 px-2">Nome</div>
         <div class="flex items-center justify-start flex-1 px-2">Observações</div>
@@ -47,7 +47,7 @@
       >
         <router-link
           :to="{ name: 'serviceShow', params: { id: service.id } }"
-          class="flex items-center w-full no-underline text-base-content hover:bg-gray-50 transition-colors py-2"
+          class="flex items-center w-full no-underline text-base-content hover:bg-base-200 transition-colors py-2"
         >
           <div class="flex items-center justify-center text-xl w-12 text-primary">
             <font-awesome-icon icon="fa fa-tools" />

@@ -1,6 +1,6 @@
 <template>
   <div class="main-container">
-    <label class="form-label" :for="name">{{ label }}</label>
+    <label :for="name">{{ label }}</label>
       <div v-if="localValue">
         <p class="text-end">
         {{ localValue }}

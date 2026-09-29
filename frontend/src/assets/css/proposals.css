@@ -3,7 +3,7 @@
 .proposal-item {
     border-bottom-style: solid;
     border-bottom-width: 2px;
-    border-bottom-color: black;
+    border-bottom-color: var(--color-base-content);
     font-weight: 800;
     font-size: 1rem;
 }
@@ -13,7 +13,7 @@
 }
 
 .proposal-item a {
-    color: black;
+    color: var(--color-base-content);
     text-decoration: none;
 }
 
@@ -22,7 +22,7 @@
     width: 100%;
     border-bottom-style: solid;
     border-bottom-width: 1px;
-    border-bottom-color: lightgray;
+    border-bottom-color: var(--color-base-300);
     font-size: 0.8rem;
 }
 
@@ -31,6 +31,6 @@
 }
 
 .service-item a {
-    color: black;
+    color: var(--color-base-content);
     text-decoration: none;
 }

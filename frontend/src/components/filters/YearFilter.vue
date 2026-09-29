@@ -3,8 +3,8 @@
     <button
       v-for="year in years"
       :key="year"
-      class="px-6 py-2 border-2 rounded-lg font-semibold cursor-pointer transition-all duration-300 border-blue-500"
-      :class="activeYear === year ? 'bg-blue-500 text-white' : 'bg-white text-blue-500 hover:bg-blue-500 hover:text-white'"
+      class="px-6 py-2 border-2 rounded-lg font-semibold cursor-pointer transition-all duration-300 border-info"
+      :class="activeYear === year ? 'bg-info text-white' : 'bg-base-100 text-info hover:bg-info hover:text-white'"
       @click="handleYearClick(year)"
     >
       {{ year }}

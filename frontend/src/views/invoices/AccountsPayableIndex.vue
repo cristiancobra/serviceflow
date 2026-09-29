@@ -3,11 +3,11 @@
     <!-- Header -->
     <div class="page-header">
       <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-file-invoice-dollar" class="page-icon text-red-600" />
+        <font-awesome-icon icon="fa-solid fa-file-invoice-dollar" class="page-icon text-error" />
         <h1>CONTAS A PAGAR</h1>
       </div>
       <button @click="openCreateInvoiceModal"
-        class="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold text-sm">
+        class="flex items-center gap-2 px-4 py-2 bg-error text-white rounded-lg hover:bg-error transition-colors font-semibold text-sm">
         <font-awesome-icon icon="fa-solid fa-plus" />
         Nova Conta a Pagar
       </button>
@@ -16,33 +16,33 @@
     <!-- Summary Cards -->
     <section class="px-8 mt-4 mb-6">
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="rounded-xl border border-red-200 bg-red-50 p-4 shadow-sm">
-          <div class="text-xs font-semibold text-red-700 uppercase tracking-wide">Total Pendente</div>
-          <div class="mt-1 text-xl font-bold text-red-800">
+        <div class="rounded-xl border border-error/30 bg-error/10 p-4 shadow-sm">
+          <div class="text-xs font-semibold text-error uppercase tracking-wide">Total Pendente</div>
+          <div class="mt-1 text-xl font-bold text-error">
             {{ formatCurrency(summaries.totalPending) }}
           </div>
-          <div class="text-xs text-red-500 mt-0.5">{{ summaries.countPending }} faturas</div>
+          <div class="text-xs text-error mt-0.5">{{ summaries.countPending }} faturas</div>
         </div>
-        <div class="rounded-xl border border-orange-200 bg-orange-50 p-4 shadow-sm">
-          <div class="text-xs font-semibold text-orange-700 uppercase tracking-wide">Vencidas</div>
-          <div class="mt-1 text-xl font-bold text-orange-800">
+        <div class="rounded-xl border border-warning/30 bg-warning/10 p-4 shadow-sm">
+          <div class="text-xs font-semibold text-warning uppercase tracking-wide">Vencidas</div>
+          <div class="mt-1 text-xl font-bold text-warning">
             {{ formatCurrency(summaries.totalOverdue) }}
           </div>
-          <div class="text-xs text-orange-500 mt-0.5">{{ summaries.countOverdue }} faturas</div>
+          <div class="text-xs text-warning mt-0.5">{{ summaries.countOverdue }} faturas</div>
         </div>
-        <div class="rounded-xl border border-yellow-200 bg-yellow-50 p-4 shadow-sm">
-          <div class="text-xs font-semibold text-yellow-700 uppercase tracking-wide">A Vencer em 30d</div>
-          <div class="mt-1 text-xl font-bold text-yellow-800">
+        <div class="rounded-xl border border-warning/30 bg-warning/10 p-4 shadow-sm">
+          <div class="text-xs font-semibold text-warning uppercase tracking-wide">A Vencer em 30d</div>
+          <div class="mt-1 text-xl font-bold text-warning">
             {{ formatCurrency(summaries.totalUpcoming) }}
           </div>
-          <div class="text-xs text-yellow-500 mt-0.5">{{ summaries.countUpcoming }} faturas</div>
+          <div class="text-xs text-warning mt-0.5">{{ summaries.countUpcoming }} faturas</div>
         </div>
-        <div class="rounded-xl border border-green-200 bg-green-50 p-4 shadow-sm">
-          <div class="text-xs font-semibold text-green-700 uppercase tracking-wide">Pagas este Mês</div>
-          <div class="mt-1 text-xl font-bold text-green-800">
+        <div class="rounded-xl border border-success/30 bg-success/10 p-4 shadow-sm">
+          <div class="text-xs font-semibold text-success uppercase tracking-wide">Pagas este Mês</div>
+          <div class="mt-1 text-xl font-bold text-success">
             {{ formatCurrency(summaries.totalPaidThisMonth) }}
           </div>
-          <div class="text-xs text-green-500 mt-0.5">{{ summaries.countPaidThisMonth }} faturas</div>
+          <div class="text-xs text-success mt-0.5">{{ summaries.countPaidThisMonth }} faturas</div>
         </div>
       </div>
     </section>
@@ -66,13 +66,13 @@
           'px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors border',
           activeDepartment === null
             ? 'bg-gray-800 text-white border-gray-800'
-            : 'bg-white text-gray-600 border-gray-300 hover:border-gray-400',
+            : 'bg-base-100 text-base-content/70 border-base-300 hover:border-base-content/20',
         ]">
           Todos os departamentos
         </button>
         <button v-for="dept in departments" :key="dept.id" @click="activeDepartment = dept.id" :class="[
           'px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors border',
-          activeDepartment === dept.id ? 'text-white border-transparent' : 'bg-white border-gray-300',
+          activeDepartment === dept.id ? 'text-white border-transparent' : 'bg-base-100 border-base-300',
         ]" :style="activeDepartment === dept.id
           ? { backgroundColor: dept.color, borderColor: dept.color }
           : { color: dept.color }">
@@ -86,16 +86,16 @@
     <section class="px-8 mb-6">
       <div class="relative">
         <font-awesome-icon icon="fa-solid fa-search"
-          class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
+          class="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/50 text-sm" />
         <input v-model="searchTerm" type="text" placeholder="Buscar por nome, fornecedor..."
-          class="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-sm" />
+          class="w-full pl-9 pr-4 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-error focus:border-transparent text-sm" />
       </div>
     </section>
 
     <!-- Loading -->
     <section class="px-8 mb-20">
       <div v-if="isLoading" class="flex items-center justify-center py-16">
-        <font-awesome-icon icon="fa-solid fa-spinner" class="animate-spin text-3xl text-red-500" />
+        <font-awesome-icon icon="fa-solid fa-spinner" class="animate-spin text-3xl text-error" />
       </div>
 
       <!-- Invoice List grouped by month -->
@@ -117,12 +117,12 @@
         • <strong>{{ formatCurrency(selectedTotal) }}</strong>
       </span>
       <button @click="selectedIds = []"
-        class="px-3 py-1.5 rounded-lg text-sm font-semibold text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">
+        class="px-3 py-1.5 rounded-lg text-sm font-semibold text-base-content/30 hover:text-white hover:bg-gray-700 transition-colors">
         Limpar
       </button>
       <button @click="openBatchPaymentModal" :disabled="selectedInvoices.length < 2"
         :title="selectedInvoices.length < 2 ? 'Selecione pelo menos duas contas' : ''"
-        class="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-semibold bg-red-600 hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+        class="flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-semibold bg-error hover:bg-error transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
         <font-awesome-icon icon="fa-solid fa-layer-group" />
         Pagar em lote
       </button>
@@ -167,37 +167,37 @@ export default {
           label: "Todas",
           icon: "fa-solid fa-list",
           activeClass: "bg-gray-800 text-white",
-          inactiveClass: "bg-white border border-gray-300 text-gray-700 hover:border-gray-400",
+          inactiveClass: "bg-base-100 border border-base-300 text-base-content/80 hover:border-base-content/20",
           count: this.invoices.length,
         },
         {
           value: "overdue",
           label: "Vencidas",
           icon: "fa-solid fa-exclamation-circle",
-          activeClass: "bg-orange-600 text-white",
-          inactiveClass: "bg-orange-50 border border-orange-300 text-orange-700 hover:bg-orange-100",
+          activeClass: "bg-warning text-white",
+          inactiveClass: "bg-warning/10 border border-warning/30 text-warning hover:bg-warning/10",
           count: this.invoices.filter((i) => i.status === "overdue").length,
         },
         {
           value: "upcoming_7",
           label: "A Vencer 7d",
           icon: "fa-solid fa-clock",
-          activeClass: "bg-yellow-600 text-white",
-          inactiveClass: "bg-yellow-50 border border-yellow-300 text-yellow-700 hover:bg-yellow-100",
+          activeClass: "bg-warning text-white",
+          inactiveClass: "bg-warning/10 border border-warning/30 text-warning hover:bg-warning/10",
         },
         {
           value: "upcoming_30",
           label: "A Vencer 30d",
           icon: "fa-solid fa-calendar",
-          activeClass: "bg-blue-600 text-white",
-          inactiveClass: "bg-blue-50 border border-blue-300 text-blue-700 hover:bg-blue-100",
+          activeClass: "bg-info text-white",
+          inactiveClass: "bg-info/10 border border-info/30 text-info hover:bg-info/10",
         },
         {
           value: "paid",
           label: "Pagas",
           icon: "fa-solid fa-check-circle",
-          activeClass: "bg-green-600 text-white",
-          inactiveClass: "bg-green-50 border border-green-300 text-green-700 hover:bg-green-100",
+          activeClass: "bg-success text-white",
+          inactiveClass: "bg-success/10 border border-success/30 text-success hover:bg-success/10",
         },
       ];
     },

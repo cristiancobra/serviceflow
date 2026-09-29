@@ -1,7 +1,7 @@
 <template>
   <div class="">
-    <label v-if="label" :for="label" class="form-label">{{ label }}</label>
-    <VueDatePicker class="form-control" :name="name" :label="label" v-model="localValue"
+    <label v-if="label" :for="label">{{ label }}</label>
+    <VueDatePicker :name="name" :label="label" v-model="localValue"
       :placeholder="placeholder" teleport teleport-center @update:modelValue="emitSave" />
   </div>
 </template>

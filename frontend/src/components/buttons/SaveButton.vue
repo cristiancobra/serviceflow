@@ -22,7 +22,7 @@ defineEmits(['click']);
 
 <style scoped>
 .btn-save {
-  background-color: var(--color-primary, #B1388D);
+  background-color: var(--color-primary, var(--color-primary));
   color: white;
   font-weight: 500;
   padding: 0.5rem 0.75rem;
@@ -33,7 +33,7 @@ defineEmits(['click']);
 }
 
 .btn-save:hover {
-  background-color: #8B2A6E;
+  background-color: color-mix(in oklab, var(--color-primary) 80%, black);
   transform: translateY(-1px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

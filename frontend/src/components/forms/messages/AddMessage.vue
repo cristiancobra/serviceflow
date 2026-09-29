@@ -82,21 +82,21 @@ li {
 }
 
 .container-message.success {
-  color: var(--green);
-  border-color: var(--green);
-  background-color: var(--green-light);
+  color: var(--color-success);
+  border-color: var(--color-success);
+  background-color: color-mix(in oklab, var(--color-success) 15%, var(--color-base-100));
 }
 
 .container-message.error {
-  color: var(--red);
-  border-color: var(--red);
-  background-color: var(--red-light);
+  color: var(--color-error);
+  border-color: var(--color-error);
+  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
 }
 
 .container-message.deleted {
-  color: var(--red);
-  border-color: var(--red);
-  background-color: var(--red-light);
+  color: var(--color-error);
+  border-color: var(--color-error);
+  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
 }
 
 .icon {
@@ -105,11 +105,11 @@ li {
 }
 
 .icon.success {
-  color: var(--green);
+  color: var(--color-success);
 }
 
 .icon.error {
-  color: var(--red);
+  color: var(--color-error);
 }
 
 .close-button {

@@ -9,11 +9,11 @@
         <h1>{{ creditCard?.name || 'Carregando...' }}</h1>
       </div>
       <div class="page-action">
-        <button @click="openChargeModal" class="btn-primary">
+        <button @click="openChargeModal" class="btn btn-primary">
           <font-awesome-icon icon="fa-solid fa-plus" />
           Nova Compra
         </button>
-        <button @click="openEditModal" class="btn-secondary">
+        <button @click="openEditModal" class="btn btn-secondary">
           <font-awesome-icon icon="fa-solid fa-edit" />
           Editar
         </button>
@@ -96,16 +96,16 @@
             class="list-line clickable"
             @click="viewInvoice(invoice)"
           >
-            <div class="w-2/10 text-left text-black font-semibold">
+            <div class="w-2/10 text-left text-base-content font-semibold">
               {{ invoice.reference_label }}
             </div>
-            <div class="w-2/10 text-center text-black">
+            <div class="w-2/10 text-center text-base-content">
               {{ formatDate(invoice.closing_date) }}
             </div>
-            <div class="w-2/10 text-center text-black">
+            <div class="w-2/10 text-center text-base-content">
               {{ formatDate(invoice.due_date) }}
             </div>
-            <div class="w-2/10 text-center text-black font-semibold">
+            <div class="w-2/10 text-center text-base-content font-semibold">
               {{ invoice.total_amount_formatted }}
             </div>
             <div class="w-2/10 text-center">
@@ -127,40 +127,34 @@
     </section>
 
     <!-- Modal de Edição -->
-    <div v-if="showEditModal" class="modal-overlay" @click="closeEditModal">
-      <div class="modal-content" @click.stop>
-        <div class="modal-header">
-          <h2>Editar Cartão de Crédito</h2>
-          <button @click="closeEditModal" class="btn-close">
-            <font-awesome-icon icon="fa-solid fa-times" />
-          </button>
-        </div>
-
+    <div
+      v-if="showEditModal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm"
+      @click.self="closeEditModal"
+    >
+      <ModalCard title="Editar Cartão de Crédito" icon="fa-solid fa-credit-card" size="md" @close="closeEditModal">
         <CreditCardForm
           :creditCard="creditCard"
           :isEditing="true"
           @saved="handleSaved"
           @cancel="closeEditModal"
         />
-      </div>
+      </ModalCard>
     </div>
 
     <!-- Modal de Nova Compra -->
-    <div v-if="showChargeModal" class="modal-overlay" @click="closeChargeModal">
-      <div class="modal-content" @click.stop>
-        <div class="modal-header">
-          <h2>Nova Compra</h2>
-          <button @click="closeChargeModal" class="btn-close">
-            <font-awesome-icon icon="fa-solid fa-times" />
-          </button>
-        </div>
-
+    <div
+      v-if="showChargeModal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm"
+      @click.self="closeChargeModal"
+    >
+      <ModalCard title="Nova Compra" icon="fa-solid fa-shopping-cart" size="md" @close="closeChargeModal">
         <CreditCardChargeForm
           :creditCardId="creditCard.id"
           @saved="handleChargeSaved"
           @cancel="closeChargeModal"
         />
-      </div>
+      </ModalCard>
     </div>
   </div>
 </template>
@@ -169,10 +163,12 @@
 import { show, index } from "@/utils/requests/httpUtils";
 import CreditCardForm from "@/components/forms/CreditCardForm.vue";
 import CreditCardChargeForm from "@/components/forms/CreditCardChargeForm.vue";
+import ModalCard from "@/components/modals/ModalCard.vue";
 
 export default {
   name: "CreditCardShow",
   components: {
+    ModalCard,
     CreditCardForm,
     CreditCardChargeForm,
   },
@@ -271,12 +267,12 @@ export default {
   cursor: pointer;
   padding: 0.5rem;
   margin-right: 0.5rem;
-  color: #6b7280;
+  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
   transition: color 0.2s;
 }
 
 .btn-back:hover {
-  color: #111827;
+  color: var(--color-base-content);
 }
 
 .page-action {
@@ -288,7 +284,7 @@ export default {
 .error-state {
   text-align: center;
   padding: 3rem;
-  color: #6b7280;
+  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
   font-size: 1.125rem;
 }
 
@@ -299,8 +295,8 @@ export default {
 }
 
 .card {
-  background-color: white;
-  border: 1px solid #e5e7eb;
+  background-color: var(--color-base-100);
+  border: 1px solid var(--color-base-300);
   border-radius: 0.5rem;
   padding: 1.5rem;
 }
@@ -312,10 +308,10 @@ export default {
 .card-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--color-base-content);
   margin-bottom: 1rem;
   padding-bottom: 0.75rem;
-  border-bottom: 2px solid #e5e7eb;
+  border-bottom: 2px solid var(--color-base-300);
 }
 
 .info-grid {
@@ -333,12 +329,12 @@ export default {
 .info-label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #6b7280;
+  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
 }
 
 .info-value {
   font-size: 1rem;
-  color: #111827;
+  color: var(--color-base-content);
 }
 
 .status-badge {
@@ -351,29 +347,29 @@ export default {
 
 .status-active,
 .status-paid {
-  background-color: #dcfce7;
-  color: #166534;
+  background-color: color-mix(in oklab, var(--color-success) 15%, var(--color-base-100));
+  color: var(--color-success);
 }
 
 .status-inactive,
 .status-overdue {
-  background-color: #fecaca;
-  color: #991b1b;
+  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
+  color: var(--color-error);
 }
 
 .status-open {
-  background-color: #dbeafe;
-  color: #1e40af;
+  background-color: color-mix(in oklab, var(--color-info) 15%, var(--color-base-100));
+  color: var(--color-info);
 }
 
 .status-closed,
 .status-partial {
-  background-color: #fef3c7;
-  color: #92400e;
+  background-color: color-mix(in oklab, var(--color-warning) 15%, var(--color-base-100));
+  color: var(--color-warning);
 }
 
 .description-text {
-  color: #374151;
+  color: color-mix(in oklab, var(--color-base-content) 80%, transparent);
   line-height: 1.6;
   margin: 0;
 }
@@ -381,16 +377,16 @@ export default {
 .list-header {
   display: flex;
   padding: 0.75rem;
-  background-color: #f9fafb;
-  border-bottom: 2px solid #e5e7eb;
-  color: #374151;
+  background-color: var(--color-base-200);
+  border-bottom: 2px solid var(--color-base-300);
+  color: color-mix(in oklab, var(--color-base-content) 80%, transparent);
 }
 
 .list-line {
   display: flex;
   align-items: center;
   padding: 0.75rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--color-base-300);
   transition: background-color 0.2s;
 }
 
@@ -399,102 +395,13 @@ export default {
 }
 
 .list-line.clickable:hover {
-  background-color: #f9fafb;
+  background-color: var(--color-base-200);
 }
 
 .empty-state {
   text-align: center;
   padding: 2rem;
-  color: #6b7280;
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background-color: white;
-  border-radius: 0.5rem;
-  width: 90%;
-  max-width: 800px;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.modal-header h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #111827;
-  margin: 0;
-}
-
-.btn-close {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #6b7280;
-  padding: 0;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0.375rem;
-}
-
-.btn-close:hover {
-  background-color: #f3f4f6;
-  color: #111827;
-}
-
-.btn-primary,
-.btn-secondary {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 0.375rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.btn-primary {
-  background-color: var(--primary);
-  color: white;
-}
-
-.btn-primary:hover {
-  opacity: 0.9;
-}
-
-.btn-secondary {
-  background-color: #f3f4f6;
-  color: #374151;
-}
-
-.btn-secondary:hover {
-  background-color: #e5e7eb;
+  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
 }
 
 @media (max-width: 768px) {

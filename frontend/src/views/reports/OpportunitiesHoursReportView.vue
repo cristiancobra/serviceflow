@@ -7,7 +7,7 @@
       </div>
     </div>
 
-    <p class="text-gray-500 text-sm -mt-2 mb-4">
+    <p class="text-base-content/60 text-sm -mt-2 mb-4">
       Compara, por oportunidade, o valor de hora previsto na proposta aceita com o valor
       estimado a partir das horas reais apontadas nas jornadas das tarefas.
     </p>
@@ -17,9 +17,9 @@
     <!-- Summary Cards -->
     <section class="section-container">
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 shadow-sm">
-          <div class="text-xs font-semibold text-blue-700 uppercase tracking-wide">Valor Previsto</div>
-          <div class="mt-1 text-xl font-bold text-blue-800">
+        <div class="rounded-xl border border-info/30 bg-info/10 p-4 shadow-sm">
+          <div class="text-xs font-semibold text-info uppercase tracking-wide">Valor Previsto</div>
+          <div class="mt-1 text-xl font-bold text-info">
             {{ formatCurrency(totals.predicted_value) }}
           </div>
         </div>
@@ -31,17 +31,17 @@
         </div>
         <div
           class="rounded-xl border p-4 shadow-sm"
-          :class="totals.difference_value < 0 ? 'border-red-200 bg-red-50' : 'border-green-200 bg-green-50'"
+          :class="totals.difference_value < 0 ? 'border-error/30 bg-error/10' : 'border-success/30 bg-success/10'"
         >
           <div
             class="text-xs font-semibold uppercase tracking-wide"
-            :class="totals.difference_value < 0 ? 'text-red-700' : 'text-green-700'"
+            :class="totals.difference_value < 0 ? 'text-error' : 'text-success'"
           >
             Lucro/Prejuízo (previsto - real)
           </div>
           <div
             class="mt-1 text-xl font-bold"
-            :class="totals.difference_value < 0 ? 'text-red-800' : 'text-green-800'"
+            :class="totals.difference_value < 0 ? 'text-error' : 'text-success'"
           >
             {{ formatCurrency(totals.difference_value) }}
           </div>
@@ -56,7 +56,7 @@
           @click="sortMode = 'date'"
           :class="[
             'px-4 py-2 rounded-lg text-sm font-semibold transition-colors',
-            sortMode === 'date' ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200',
+            sortMode === 'date' ? 'bg-gray-800 text-white' : 'bg-base-200 text-base-content/70 hover:bg-base-300',
           ]"
         >
           <font-awesome-icon icon="fa-solid fa-calendar" class="mr-1" />
@@ -66,7 +66,7 @@
           @click="sortMode = 'profit-desc'"
           :class="[
             'px-4 py-2 rounded-lg text-sm font-semibold transition-colors',
-            sortMode === 'profit-desc' ? 'bg-green-700 text-white' : 'bg-green-50 text-green-700 hover:bg-green-100',
+            sortMode === 'profit-desc' ? 'bg-success text-white' : 'bg-success/10 text-success hover:bg-success/10',
           ]"
         >
           <font-awesome-icon icon="fa-solid fa-arrow-up" class="mr-1" />
@@ -76,7 +76,7 @@
           @click="sortMode = 'profit-asc'"
           :class="[
             'px-4 py-2 rounded-lg text-sm font-semibold transition-colors',
-            sortMode === 'profit-asc' ? 'bg-red-700 text-white' : 'bg-red-50 text-red-700 hover:bg-red-100',
+            sortMode === 'profit-asc' ? 'bg-error text-white' : 'bg-error/10 text-error hover:bg-error/10',
           ]"
         >
           <font-awesome-icon icon="fa-solid fa-arrow-down" class="mr-1" />
@@ -84,17 +84,17 @@
         </button>
       </div>
 
-      <div v-if="isLoading" class="text-center text-gray-500 py-10">
+      <div v-if="isLoading" class="text-center text-base-content/60 py-10">
         Carregando...
       </div>
 
-      <div v-else-if="opportunities.length === 0" class="text-center text-gray-500 py-10">
+      <div v-else-if="opportunities.length === 0" class="text-center text-base-content/60 py-10">
         Nenhuma oportunidade encontrada em {{ selectedYear }}.
       </div>
 
-      <div v-else class="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+      <div v-else class="overflow-x-auto rounded-xl border border-base-300 shadow-sm">
         <table class="min-w-full text-sm">
-          <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
+          <thead class="bg-base-200 text-base-content/70 uppercase text-xs">
             <tr>
               <th class="px-4 py-3 text-left">Oportunidade</th>
               <th class="px-4 py-3 text-left">Status</th>
@@ -107,13 +107,13 @@
               <th class="px-4 py-3 text-right">Lucro/Prejuízo</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-100">
+          <tbody class="divide-y divide-base-200">
             <tr
               v-for="opportunity in sortedOpportunities"
               :key="opportunity.opportunity_id"
-              class="hover:bg-gray-50"
+              class="hover:bg-base-200"
             >
-              <td class="px-4 py-3 font-medium text-gray-800">
+              <td class="px-4 py-3 font-medium text-base-content">
                 {{ opportunity.opportunity_name }}
               </td>
               <td class="px-4 py-3">
@@ -124,22 +124,22 @@
                   {{ statusBadge(opportunity.status).label }}
                 </span>
               </td>
-              <td class="px-4 py-3 text-gray-600">
+              <td class="px-4 py-3 text-base-content/70">
                 {{ opportunity.company_name || '-' }}
               </td>
-              <td class="px-4 py-3 text-right text-gray-600">
+              <td class="px-4 py-3 text-right text-base-content/70">
                 {{ opportunity.predicted_hours !== null ? formatHours(opportunity.predicted_hours) : '-' }}
               </td>
-              <td class="px-4 py-3 text-right text-gray-600">
+              <td class="px-4 py-3 text-right text-base-content/70">
                 {{ opportunity.predicted_hourly_rate !== null ? formatCurrency(opportunity.predicted_hourly_rate) : '-' }}
               </td>
-              <td class="px-4 py-3 text-right text-gray-800 font-semibold">
+              <td class="px-4 py-3 text-right text-base-content font-semibold">
                 {{ opportunity.predicted_value !== null ? formatCurrency(opportunity.predicted_value) : '-' }}
               </td>
-              <td class="px-4 py-3 text-right text-gray-600">
+              <td class="px-4 py-3 text-right text-base-content/70">
                 {{ formatHours(opportunity.real_hours) }}
               </td>
-              <td class="px-4 py-3 text-right text-gray-800 font-semibold">
+              <td class="px-4 py-3 text-right text-base-content font-semibold">
                 {{ opportunity.real_value !== null ? formatCurrency(opportunity.real_value) : '-' }}
               </td>
               <td
@@ -153,7 +153,7 @@
                     <font-awesome-icon
                       v-if="opportunity.status === 'open'"
                       icon="fa-solid fa-circle-exclamation"
-                      class="text-amber-500"
+                      class="text-warning"
                       title="Oportunidade em andamento — valores ainda parciais"
                     />
                   </span>
@@ -238,14 +238,14 @@ export default {
       return `${new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 1 }).format(hours || 0)}h`;
     },
     differenceClass(value) {
-      if (value === null || value === undefined) return "text-gray-400";
-      return value < 0 ? "text-red-700" : value > 0 ? "text-green-700" : "text-gray-600";
+      if (value === null || value === undefined) return "text-base-content/50";
+      return value < 0 ? "text-error" : value > 0 ? "text-success" : "text-base-content/70";
     },
     statusBadge(status) {
       const badges = {
-        open: { label: "Aberta", classes: "bg-amber-100 text-amber-800" },
-        concluded: { label: "Concluída", classes: "bg-green-100 text-green-800" },
-        canceled: { label: "Cancelada", classes: "bg-gray-200 text-gray-600" },
+        open: { label: "Aberta", classes: "bg-warning/10 text-warning" },
+        concluded: { label: "Concluída", classes: "bg-success/10 text-success" },
+        canceled: { label: "Cancelada", classes: "bg-base-300 text-base-content/70" },
       };
       return badges[status] || badges.open;
     },

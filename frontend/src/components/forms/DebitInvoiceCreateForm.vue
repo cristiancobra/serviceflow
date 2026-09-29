@@ -45,7 +45,7 @@
             />
             <button
               type="button"
-              class="mt-2 text-sm text-blue-600 hover:text-blue-800 font-semibold"
+              class="mt-2 text-sm text-info hover:text-info font-semibold"
               @click="toggleLead()"
             >
               + Adicionar novo contato
@@ -63,7 +63,7 @@
             />
             <button
               type="button"
-              class="mt-2 text-sm text-blue-600 hover:text-blue-800 font-semibold"
+              class="mt-2 text-sm text-info hover:text-info font-semibold"
               @click="toggleCompany()"
             >
               + Adicionar nova empresa
@@ -81,7 +81,7 @@
             />
             <button
               type="button"
-              class="mt-2 text-sm text-blue-600 hover:text-blue-800 font-semibold"
+              class="mt-2 text-sm text-info hover:text-info font-semibold"
               @click="toggleLead()"
             >
               + Adicionar novo contato
@@ -123,7 +123,7 @@
           <!-- Lista de Parcelas -->
           <div v-if="installmentQuantity > 1" class="border-t border-base-300 pt-4">
             <div class="flex items-center space-x-2 mb-4">
-              <div class="w-2 h-6 bg-red-500 rounded-full"></div>
+              <div class="w-2 h-6 bg-error rounded-full"></div>
               <h4 class="text-base font-bold text-base-content uppercase tracking-wide">
                 Parcelamento
               </h4>
@@ -136,7 +136,7 @@
                 class="flex flex-col sm:flex-row gap-3 p-3 bg-base-200 rounded-lg border border-base-300"
               >
                 <div class="flex items-center flex-1">
-                  <span class="inline-flex items-center justify-center w-7 h-7 bg-red-100 text-red-800 text-sm font-bold rounded-full mr-3">
+                  <span class="inline-flex items-center justify-center w-7 h-7 bg-error/10 text-error text-sm font-bold rounded-full mr-3">
                     {{ index + 1 }}
                   </span>
                   <label class="text-sm font-semibold text-base-content">
@@ -155,10 +155,10 @@
               </div>
             </div>
 
-            <div class="mt-4 p-4 bg-red-50 rounded-lg border-2 border-red-200">
+            <div class="mt-4 p-4 bg-error/10 rounded-lg border-2 border-error/30">
               <div class="flex flex-col sm:flex-row gap-3 items-center">
                 <div class="flex-1">
-                  <label class="text-sm font-semibold text-red-700">Total das Parcelas</label>
+                  <label class="text-sm font-semibold text-error">Total das Parcelas</label>
                 </div>
                 <div class="flex items-center gap-2 sm:max-w-xs">
                   <span class="text-base-content font-bold">R$</span>
@@ -197,8 +197,8 @@
           </div>
 
           <!-- Mensagem de erro -->
-          <div v-if="errorMessage" class="p-3 bg-red-50 border border-red-200 rounded-lg">
-            <p class="text-sm text-red-700">{{ errorMessage }}</p>
+          <div v-if="errorMessage" class="p-3 bg-error/10 border border-error/30 rounded-lg">
+            <p class="text-sm text-error">{{ errorMessage }}</p>
           </div>
         </form>
 

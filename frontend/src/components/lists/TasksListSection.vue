@@ -9,7 +9,7 @@
         <button-new-form target="task" @open-modal="openTaskCreateModal" />
 
         <button @click="createOrganizationTask"
-          class="w-9 h-9 flex items-center justify-center rounded-full bg-success text-white hover:bg-green-700 transition shadow-md"
+          class="w-9 h-9 flex items-center justify-center rounded-full bg-success text-white hover:bg-success transition shadow-md"
           title="Criar tarefa de organização (30min)">
           <font-awesome-icon icon="fa-solid fa-calendar-check" />
         </button>
@@ -35,9 +35,9 @@
 
           <!-- Dropdown Menu Status -->
           <div v-show="isDropdownOpen"
-            class="absolute top-full left-0 mt-2 w-full bg-white border-2 border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden">
+            class="absolute top-full left-0 mt-2 w-full bg-base-100 border-2 border-base-300 rounded-lg shadow-lg z-50 overflow-hidden">
             <button v-for="filter in filterOptions" :key="filter.value" @click="selectFilter(filter.value)"
-              class="w-full px-4 py-2 text-left font-semibold text-sm cursor-pointer transition-all duration-300 border-b border-gray-100 last:border-b-0"
+              class="w-full px-4 py-2 text-left font-semibold text-sm cursor-pointer transition-all duration-300 border-b border-base-200 last:border-b-0"
               :class="filter.class" :title="filter.title">
               {{ filter.label }}
             </button>
@@ -47,7 +47,7 @@
         <!-- Dropdown de Filtro por Departamento -->
         <div class="relative" ref="departmentDropdown">
           <button @click="toggleDepartmentDropdown"
-            class="px-4 py-2 border-2 rounded-lg font-semibold text-sm cursor-pointer transition-all duration-300 flex items-center gap-2 min-w-[220px] justify-between bg-white border-gray-300 text-gray-700 hover:border-primary hover:text-primary">
+            class="px-4 py-2 border-2 rounded-lg font-semibold text-sm cursor-pointer transition-all duration-300 flex items-center gap-2 min-w-[220px] justify-between bg-base-100 border-base-300 text-base-content/80 hover:border-primary hover:text-primary">
             <span>{{ currentDepartmentLabel }}</span>
             <font-awesome-icon :icon="isDepartmentDropdownOpen ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"
               class="text-xs" />
@@ -55,14 +55,14 @@
 
           <!-- Dropdown Menu Departamentos -->
           <div v-show="isDepartmentDropdownOpen"
-            class="absolute top-full left-0 mt-2 w-full bg-white border-2 border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden max-h-[300px] overflow-y-auto">
+            class="absolute top-full left-0 mt-2 w-full bg-base-100 border-2 border-base-300 rounded-lg shadow-lg z-50 overflow-hidden max-h-[300px] overflow-y-auto">
             <button @click="selectDepartment(null)"
-              class="w-full px-4 py-2 text-left font-semibold text-sm cursor-pointer transition-all duration-300 border-b border-gray-100 hover:bg-gray-50"
+              class="w-full px-4 py-2 text-left font-semibold text-sm cursor-pointer transition-all duration-300 border-b border-base-200 hover:bg-base-200"
               title="Todos os departamentos">
               Todos os departamentos
             </button>
             <button v-for="department in departments" :key="department.id" @click="selectDepartment(department.id)"
-              class="w-full px-4 py-2 text-left font-semibold text-sm cursor-pointer transition-all duration-300 border-b border-gray-100 last:border-b-0 hover:opacity-80"
+              class="w-full px-4 py-2 text-left font-semibold text-sm cursor-pointer transition-all duration-300 border-b border-base-200 last:border-b-0 hover:opacity-80"
               :style="{ backgroundColor: department.color + '20', color: department.color }"
               :title="department.description">
               <font-awesome-icon :icon="department.icon" class="mr-2" />
@@ -79,7 +79,7 @@
             <span class="font-bold text-base-content text-sm uppercase tracking-wide whitespace-nowrap">
               {{ monthGroup.monthLabel }}
             </span>
-            <div class="h-px flex-1 bg-gray-200"></div>
+            <div class="h-px flex-1 bg-base-300"></div>
           </div>
           <template v-for="(dayTasks, dayKey) in monthGroup.tasksByDay" :key="dayKey">
             <div v-for="localTask in dayTasks" :key="localTask.id"
@@ -121,7 +121,7 @@
                       <companies-select-input v-model="selectedCompanyId" name="company_id" fieldsToDisplay="legal_name"
                         fieldNull="Nenhuma" @update:modelValue="saveCompany(localTask.id, $event)" />
                       <button @click="cancelEditCompany(localTask.id)"
-                        class="bg-transparent border-0 text-red-600 cursor-pointer px-2 py-1 text-sm transition-colors hover:text-red-800 ms-2"
+                        class="bg-transparent border-0 text-error cursor-pointer px-2 py-1 text-sm transition-colors hover:text-error ms-2"
                         title="Cancelar">
                         <font-awesome-icon icon="fa-solid fa-times" />
                       </button>
@@ -185,7 +185,7 @@
                         :autoSelect="false" fieldNull="Nenhuma"
                         @update:modelValue="saveOpportunity(localTask.id, $event)" />
                       <button @click="cancelEditOpportunity(localTask.id)"
-                        class="bg-transparent border-0 text-red-600 cursor-pointer px-2 py-1 text-sm transition-colors hover:text-red-800 ms-2"
+                        class="bg-transparent border-0 text-error cursor-pointer px-2 py-1 text-sm transition-colors hover:text-error ms-2"
                         title="Cancelar">
                         <font-awesome-icon icon="fa-solid fa-times" />
                       </button>
@@ -315,11 +315,11 @@ export default {
       departments: [], // Lista de departamentos
       filterOptions: [
         { value: null, label: 'Todas as situações', class: 'hover:bg-primary hover:text-white text-primary', title: 'Todas as tarefas' },
-        { value: 'to-do', label: 'Fazer', class: 'hover:bg-orange-500 hover:text-white text-orange-500', title: 'Tarefas a fazer' },
-        { value: 'doing', label: 'Fazendo', class: 'hover:bg-blue-500 hover:text-white text-blue-500', title: 'Tarefas em andamento' },
-        { value: 'wait', label: 'Aguardando', class: 'hover:bg-yellow-500 hover:text-white text-yellow-500', title: 'Tarefas aguardando' },
+        { value: 'to-do', label: 'Fazer', class: 'hover:bg-warning hover:text-white text-warning', title: 'Tarefas a fazer' },
+        { value: 'doing', label: 'Fazendo', class: 'hover:bg-info hover:text-white text-info', title: 'Tarefas em andamento' },
+        { value: 'wait', label: 'Aguardando', class: 'hover:bg-warning hover:text-white text-warning', title: 'Tarefas aguardando' },
         { value: 'done', label: 'Feitas', class: 'hover:bg-success hover:text-white text-success', title: 'Tarefas concluídas' },
-        { value: 'canceled', label: 'Canceladas', class: 'hover:bg-gray-500 hover:text-white text-gray-500', title: 'Tarefas canceladas' },
+        { value: 'canceled', label: 'Canceladas', class: 'hover:bg-gray-500 hover:text-white text-base-content/60', title: 'Tarefas canceladas' },
       ],
     };
   },
@@ -755,11 +755,11 @@ export default {
       }
 
       const colorMap = {
-        'to-do': 'bg-orange-500 text-white border-orange-500',
-        'doing': 'bg-blue-500 text-white border-blue-500',
-        'wait': 'bg-yellow-500 text-white border-yellow-500',
+        'to-do': 'bg-warning text-white border-warning',
+        'doing': 'bg-info text-white border-info',
+        'wait': 'bg-warning text-white border-warning',
         'done': 'bg-success text-white border-success',
-        'canceled': 'bg-gray-500 text-white border-gray-500',
+        'canceled': 'bg-gray-500 text-white border-base-content/20',
       };
 
       return colorMap[filter.value] || 'bg-primary text-white border-primary';

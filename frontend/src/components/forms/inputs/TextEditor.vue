@@ -7,7 +7,7 @@
       </div>
       <div v-else-if="!editing" @click="startEditing" v-html="modelValue" class="preview-content"></div>
       <div v-else class="quill-wrapper">
-        <div class="editor-hint mb-2 text-muted small">
+        <div class="mb-2 text-sm italic text-base-content/60">
           💡 Dicas: Link (selecione texto + 🔗) | Imagem (📷 faz upload automático) | Vídeo (🎬 URL do YouTube/Vimeo)
         </div>
         <QuillEditor
@@ -206,7 +206,7 @@ export default {
 .editor-container {
   border-style: solid;
   border-width: 1px;
-  border-color: #e0e0e0;
+  border-color: var(--color-base-300);
   border-radius: 8px;
   padding: 1rem;
   min-height: 100px;
@@ -214,7 +214,7 @@ export default {
 }
 
 .placeholder-text {
-  color: #999;
+  color: color-mix(in oklab, var(--color-base-content) 50%, transparent);
   font-style: italic;
 }
 
@@ -307,28 +307,28 @@ export default {
 }
 
 .preview-content :deep(blockquote) {
-  border-left: 4px solid #ccc;
+  border-left: 4px solid var(--color-base-300);
   margin: 1em 0;
   padding-left: 1em;
-  color: #666;
+  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
 }
 
 .preview-content :deep(pre) {
-  background-color: #f5f5f5;
+  background-color: var(--color-base-200);
   padding: 1em;
   border-radius: 4px;
   overflow-x: auto;
 }
 
 .preview-content :deep(code) {
-  background-color: #f5f5f5;
+  background-color: var(--color-base-200);
   padding: 0.2em 0.4em;
   border-radius: 3px;
   font-family: monospace;
 }
 
 .preview-content :deep(a) {
-  color: #0066cc;
+  color: var(--color-info);
   text-decoration: underline;
 }
 
@@ -348,12 +348,6 @@ export default {
 
 .quill-wrapper {
   cursor: text;
-}
-
-.editor-hint {
-  font-size: 0.875rem;
-  color: #6c757d;
-  font-style: italic;
 }
 
 .editor-actions {

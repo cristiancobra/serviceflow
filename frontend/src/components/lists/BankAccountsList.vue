@@ -6,7 +6,7 @@
         <h1>CONTAS BANCÁRIAS</h1>
       </div>
       <div class="page-action">
-        <button @click="openCreateModal" class="btn-primary">
+        <button @click="openCreateModal" class="btn btn-primary">
           <font-awesome-icon icon="fa-solid fa-plus" />
           Nova Conta
         </button>
@@ -144,48 +144,40 @@
     </section>
 
     <!-- Modal de Criar/Editar -->
-    <div v-if="showModal" class="modal-overlay" @click="closeModal">
-      <div class="modal-content" @click.stop>
-        <div class="modal-header">
-          <h2>{{ isEditing ? 'Editar' : 'Nova' }} Conta Bancária</h2>
-          <button @click="closeModal" class="btn-close">
-            <font-awesome-icon icon="fa-solid fa-times" />
-          </button>
-        </div>
-        
+    <div
+      v-if="showModal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm"
+      @click.self="closeModal"
+    >
+      <ModalCard :title="`${isEditing ? 'Editar' : 'Nova'} Conta Bancária`" icon="fa-solid fa-building-columns" size="md" @close="closeModal">
         <BankAccountForm
           :bankAccount="selectedBankAccount"
           :isEditing="isEditing"
           @saved="handleSaved"
           @cancel="closeModal"
         />
-      </div>
+      </ModalCard>
     </div>
 
     <!-- Modal de Confirmação de Exclusão -->
-    <div v-if="showDeleteModal" class="modal-overlay" @click="closeDeleteModal">
-      <div class="modal-content modal-small" @click.stop>
-        <div class="modal-header">
-          <h2>Confirmar Exclusão</h2>
-          <button @click="closeDeleteModal" class="btn-close">
-            <font-awesome-icon icon="fa-solid fa-times" />
-          </button>
-        </div>
-        
-        <div class="modal-body">
-          <p>Tem certeza que deseja excluir a conta bancária <strong>{{ bankAccountToDelete?.account_name }}</strong>?</p>
-          <p class="text-sm text-gray-600 mt-2">Esta ação não poderá ser desfeita.</p>
-        </div>
-        
-        <div class="modal-footer">
-          <button @click="closeDeleteModal" class="btn-secondary">
+    <div
+      v-if="showDeleteModal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm"
+      @click.self="closeDeleteModal"
+    >
+      <ModalCard title="Confirmar Exclusão" icon="fa-solid fa-trash" size="sm" @close="closeDeleteModal">
+        <p>Tem certeza que deseja excluir a conta bancária <strong>{{ bankAccountToDelete?.account_name }}</strong>?</p>
+        <p class="text-sm text-base-content/60 mt-2">Esta ação não poderá ser desfeita.</p>
+
+        <template #footer>
+          <button @click="closeDeleteModal" class="btn btn-ghost">
             Cancelar
           </button>
-          <button @click="deleteBankAccount" class="btn-danger">
+          <button @click="deleteBankAccount" class="btn btn-error">
             Excluir
           </button>
-        </div>
-      </div>
+        </template>
+      </ModalCard>
     </div>
   </div>
 </template>
@@ -193,10 +185,12 @@
 <script>
 import { index, destroy, post, get } from "@/utils/requests/httpUtils";
 import BankAccountForm from "@/components/forms/BankAccountForm.vue";
+import ModalCard from "@/components/modals/ModalCard.vue";
 
 export default {
   name: "BankAccountsList",
   components: {
+    ModalCard,
     BankAccountForm,
   },
   data() {
@@ -374,36 +368,36 @@ export default {
 
 .filter-select {
   padding: 0.5rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--color-base-300);
   border-radius: 0.375rem;
-  background-color: white;
-  color: #374151;
+  background-color: var(--color-base-100);
+  color: color-mix(in oklab, var(--color-base-content) 80%, transparent);
 }
 
 .filter-select:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-primary) 10%, transparent);
 }
 
 .list-header {
   display: flex;
   padding: 1rem;
-  background-color: #f9fafb;
-  border-bottom: 2px solid #e5e7eb;
-  color: #374151;
+  background-color: var(--color-base-200);
+  border-bottom: 2px solid var(--color-base-300);
+  color: color-mix(in oklab, var(--color-base-content) 80%, transparent);
 }
 
 .list-line {
   display: flex;
   align-items: center;
   padding: 1rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--color-base-300);
   transition: background-color 0.2s;
 }
 
 .list-line:hover {
-  background-color: #f9fafb;
+  background-color: var(--color-base-200);
 }
 
 .type-badge {
@@ -411,8 +405,8 @@ export default {
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 600;
-  background-color: #dbeafe;
-  color: #1e40af;
+  background-color: color-mix(in oklab, var(--color-info) 15%, var(--color-base-100));
+  color: var(--color-info);
 }
 
 .status-toggle {
@@ -426,21 +420,21 @@ export default {
 }
 
 .status-active {
-  background-color: #dcfce7;
-  color: #166534;
+  background-color: color-mix(in oklab, var(--color-success) 15%, var(--color-base-100));
+  color: var(--color-success);
 }
 
 .status-active:hover {
-  background-color: #bbf7d0;
+  background-color: color-mix(in oklab, var(--color-success) 15%, var(--color-base-100));
 }
 
 .status-inactive {
-  background-color: #fecaca;
-  color: #991b1b;
+  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
+  color: var(--color-error);
 }
 
 .status-inactive:hover {
-  background-color: #fca5a5;
+  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
 }
 
 .action-buttons {
@@ -463,30 +457,30 @@ export default {
 }
 
 .btn-view {
-  background-color: #dbeafe;
-  color: #1e40af;
+  background-color: color-mix(in oklab, var(--color-info) 15%, var(--color-base-100));
+  color: var(--color-info);
 }
 
 .btn-view:hover {
-  background-color: #bfdbfe;
+  background-color: color-mix(in oklab, var(--color-info) 15%, var(--color-base-100));
 }
 
 .btn-edit {
-  background-color: #fef3c7;
-  color: #92400e;
+  background-color: color-mix(in oklab, var(--color-warning) 15%, var(--color-base-100));
+  color: var(--color-warning);
 }
 
 .btn-edit:hover {
-  background-color: #fde68a;
+  background-color: color-mix(in oklab, var(--color-warning) 15%, var(--color-base-100));
 }
 
 .btn-delete {
-  background-color: #fecaca;
-  color: #991b1b;
+  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
+  color: var(--color-error);
 }
 
 .btn-delete:hover {
-  background-color: #fca5a5;
+  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
 }
 
 .empty-state {
@@ -505,118 +499,4 @@ export default {
   font-size: 1.125rem;
 }
 
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background-color: white;
-  border-radius: 0.5rem;
-  width: 90%;
-  max-width: 800px;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-}
-
-.modal-small {
-  max-width: 500px;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.modal-header h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #111827;
-  margin: 0;
-}
-
-.btn-close {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #6b7280;
-  padding: 0;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0.375rem;
-}
-
-.btn-close:hover {
-  background-color: #f3f4f6;
-  color: #111827;
-}
-
-.modal-body {
-  padding: 1.5rem;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  padding: 1.5rem;
-  border-top: 1px solid #e5e7eb;
-}
-
-.btn-primary,
-.btn-secondary,
-.btn-danger {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 0.375rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.btn-primary {
-  background-color: var(--primary);
-  color: white;
-}
-
-.btn-primary:hover {
-  opacity: 0.9;
-}
-
-.btn-secondary {
-  background-color: #f3f4f6;
-  color: #374151;
-}
-
-.btn-secondary:hover {
-  background-color: #e5e7eb;
-}
-
-.btn-danger {
-  background-color: #ef4444;
-  color: white;
-}
-
-.btn-danger:hover {
-  background-color: #dc2626;
-}
 </style>

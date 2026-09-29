@@ -44,7 +44,7 @@ export default {
     statusClass() {
       // Prioridade: Cancelada > Concluída > Fazendo (com jornadas) > Status atual
       if (this.task.date_canceled) {
-        return "text-red-500";
+        return "text-error";
       }
       
       if (this.isValidDate(this.task.date_conclusion)) {
@@ -53,16 +53,16 @@ export default {
       
       // Fazendo: tarefa sem conclusão, sem cancelamento, mas COM jornadas
       if (this.hasActiveJourneys) {
-        return "text-blue-500";
+        return "text-info";
       }
       
       // Baseado no status da tarefa
       const statusClasses = {
-        'wait': 'text-yellow-500',
-        'to-do': 'text-gray-400',
+        'wait': 'text-warning',
+        'to-do': 'text-base-content/50',
       };
       
-      return statusClasses[this.task.status] || "text-gray-400";
+      return statusClasses[this.task.status] || "text-base-content/50";
     },
     statusTitle() {
       // Prioridade: Cancelada > Concluída > Fazendo (com jornadas) > Status atual

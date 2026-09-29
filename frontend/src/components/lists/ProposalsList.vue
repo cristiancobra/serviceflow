@@ -21,19 +21,19 @@
             type="text"
             v-model="searchTerm"
             placeholder="Buscar por empresa, oportunidade ou descrição..."
-            class="w-full px-4 py-3 pl-12 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            class="w-full px-4 py-3 pl-12 bg-base-100 border border-base-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
           />
           <font-awesome-icon 
             icon="fa-solid fa-search" 
-            class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+            class="absolute left-4 top-1/2 transform -translate-y-1/2 text-base-content/50"
           />
         </div>
       </div>
 
       <!-- Table Container -->
-      <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+      <div class="bg-base-100 rounded-lg shadow-md overflow-hidden border border-base-300">
         <!-- Table Header -->
-        <div class="grid grid-cols-12 gap-4 px-4 py-3 bg-gradient-to-r from-gray-100 to-gray-50 border-b-2 border-gray-300 font-semibold text-sm text-gray-700">
+        <div class="grid grid-cols-12 gap-4 px-4 py-3 bg-gradient-to-r from-base-200 to-base-200 border-b-2 border-base-300 font-semibold text-sm text-base-content/80">
           <div class="col-span-1 text-center">Status</div>
           <div class="col-span-1 text-center">Data</div>
           <div class="col-span-2 text-left">Empresa/Lead</div>
@@ -45,15 +45,15 @@
 
         <!-- Table Body -->
         <div v-if="filteredProposals.length === 0" class="py-12 text-center">
-          <font-awesome-icon icon="fa-solid fa-inbox" class="text-gray-300 text-5xl mb-4" />
-          <p class="text-gray-500 text-lg">Nenhuma proposta encontrada</p>
+          <font-awesome-icon icon="fa-solid fa-inbox" class="text-base-content/30 text-5xl mb-4" />
+          <p class="text-base-content/60 text-lg">Nenhuma proposta encontrada</p>
         </div>
 
         <div
           v-for="(proposal, index) in filteredProposals"
           :key="proposal.id"
-          class="grid grid-cols-12 gap-4 px-4 py-3 border-b border-gray-100 hover:bg-blue-50 transition-colors duration-150 cursor-pointer items-center"
-          :class="{ 'bg-gray-50': index % 2 === 0 }"
+          class="grid grid-cols-12 gap-4 px-4 py-3 border-b border-base-200 hover:bg-info/10 transition-colors duration-150 cursor-pointer items-center"
+          :class="{ 'bg-base-200': index % 2 === 0 }"
           @click="$router.push({ name: 'proposalShow', params: { id: proposal.id } })"
         >
           <!-- Status -->
@@ -62,46 +62,46 @@
           </div>
 
           <!-- Data -->
-          <div class="col-span-1 text-center text-gray-700 text-sm font-medium">
+          <div class="col-span-1 text-center text-base-content/80 text-sm font-medium">
             {{ formatDateBr(proposal.date) }}
           </div>
 
           <!-- Empresa/Lead -->
           <div class="col-span-2 text-left">
-            <p v-if="!proposal.opportunity" class="text-gray-400 text-sm italic">
+            <p v-if="!proposal.opportunity" class="text-base-content/50 text-sm italic">
               sem oportunidade associada
             </p>
             <p
               v-else-if="proposal.opportunity?.company?.business_name"
-              class="text-gray-800 font-semibold text-sm truncate"
+              class="text-base-content font-semibold text-sm truncate"
             >
               {{ proposal.opportunity.company.business_name }}
             </p>
             <p
               v-else-if="proposal.opportunity?.company?.legal_name"
-              class="text-gray-800 font-semibold text-sm truncate"
+              class="text-base-content font-semibold text-sm truncate"
             >
               {{ proposal.opportunity.company.legal_name }}
             </p>
             <p 
               v-else-if="proposal.opportunity?.lead?.name"
-              class="text-gray-800 font-semibold text-sm truncate"
+              class="text-base-content font-semibold text-sm truncate"
             >
               {{ proposal.opportunity.lead.name }}
             </p>
-            <p v-else class="text-gray-400 text-sm italic">sem associação</p>
+            <p v-else class="text-base-content/50 text-sm italic">sem associação</p>
           </div>
 
           <!-- Oportunidade -->
           <div class="col-span-2 text-left">
-            <p class="text-gray-700 text-sm truncate">
+            <p class="text-base-content/80 text-sm truncate">
               {{ proposal.opportunity?.name || '---' }}
             </p>
           </div>
 
           <!-- Descrição -->
           <div class="col-span-3 text-left">
-            <p v-html="getShortDescription(proposal)" class="text-gray-600 text-sm truncate"></p>
+            <p v-html="getShortDescription(proposal)" class="text-base-content/70 text-sm truncate"></p>
           </div>
 
           <!-- Valor -->
@@ -109,7 +109,7 @@
             <money-field 
               name="total_price" 
               v-model="proposal.total_price"
-              class="text-gray-800 font-semibold text-sm"
+              class="text-base-content font-semibold text-sm"
             />
           </div>
 
@@ -119,8 +119,8 @@
               name="total_paid" 
               :modelValue="getTotalPaid(proposal)" 
               :class="{
-                'text-blue-600 font-bold': getTotalPaid(proposal) < proposal.total_price && !proposal.paid_at,
-                'text-gray-800 font-bold': proposal.paid_at,
+                'text-info font-bold': getTotalPaid(proposal) < proposal.total_price && !proposal.paid_at,
+                'text-base-content font-bold': proposal.paid_at,
               }"
               class="text-sm"
               readonly 

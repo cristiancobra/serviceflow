@@ -24,15 +24,10 @@
 .myModal .modal-content {
     margin-top: 4%;
     padding: 2rem;
-    background-color: #fff;
-    /* Cor de fundo branca para o conteúdo do modal */
-    border-radius: 0.3rem;
-    width: 60vw;
-  }
-
-[data-theme="service-dark"] .myModal .modal-content {
     background-color: var(--color-base-100);
     color: var(--color-base-content);
+    border-radius: 0.3rem;
+    width: 60vw;
   }
 
   @media (max-width: 768px) {
@@ -66,7 +61,7 @@
 
   .myModal-icon {
     font-size: 1.5rem;
-    color: var(--primary);
+    color: var(--color-primary);
   }
 
   .myModal-title {
@@ -74,7 +69,7 @@
     font-weight: 700;
     margin-left: 1rem;
     text-align: left;
-    color: var(--primary);
+    color: var(--color-primary);
   }
 
   .myModal-button-close {
@@ -86,7 +81,7 @@
     padding: 2px;
     cursor: pointer;
     margin-left: auto;
-    color: black;
+    color: var(--color-base-content);
   }
   
   .myModal-button-close:before, .myModal-button-close:after {

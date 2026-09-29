@@ -14,16 +14,16 @@
         </div>
       </div>
       <div
-        class="flex items-center justify-between mb-4 p-4 bg-blue-50 rounded-lg"
+        class="flex items-center justify-between mb-4 p-4 bg-info/10 rounded-lg"
       >
-        <span class="text-gray-700 font-semibold">Propostas abertas:</span>
-        <span class="text-2xl font-bold text-blue-600">{{
+        <span class="text-base-content/80 font-semibold">Propostas abertas:</span>
+        <span class="text-2xl font-bold text-info">{{
           reports.acceptedProposalsCount
         }}</span>
       </div>
 
-      <div class="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
-        <span class="text-gray-700 font-semibold">Total em propostas:</span>
+      <div class="flex items-center justify-between p-4 bg-info/10 rounded-lg">
+        <span class="text-base-content/80 font-semibold">Total em propostas:</span>
         <div class="w-64">
           <money-field
             name="total_price"
@@ -35,9 +35,9 @@
 
 
     <!-- Seção de Transações -->
-    <div class="bg-white rounded-lg shadow-md p-6 mt-10">
+    <div class="bg-base-100 rounded-lg shadow-md p-6 mt-10">
       <h3
-        class="text-xl font-bold text-gray-800 mb-4 border-b-2 border-green-500 pb-2"
+        class="text-xl font-bold text-base-content mb-4 border-b-2 border-success pb-2"
       >
         Transações de {{ selectedYear }}
       </h3>
@@ -45,9 +45,9 @@
       <div class="space-y-4">
         <!-- Total de Entradas -->
         <div
-          class="flex items-center justify-between p-4 bg-green-50 rounded-lg border-l-4 border-green-500"
+          class="flex items-center justify-between p-4 bg-success/10 rounded-lg border-l-4 border-success"
         >
-          <span class="text-green-700 font-semibold flex items-center">
+          <span class="text-success font-semibold flex items-center">
             <svg
               class="w-5 h-5 mr-2"
               fill="none"
@@ -74,9 +74,9 @@
 
         <!-- Total de Saídas -->
         <div
-          class="flex items-center justify-between p-4 bg-red-50 rounded-lg border-l-4 border-red-500"
+          class="flex items-center justify-between p-4 bg-error/10 rounded-lg border-l-4 border-error"
         >
-          <span class="text-red-700 font-semibold flex items-center">
+          <span class="text-error font-semibold flex items-center">
             <svg
               class="w-5 h-5 mr-2"
               fill="none"
@@ -106,16 +106,16 @@
           class="flex items-center justify-between p-4 rounded-lg border-l-4"
           :class="
             transactionsTotals.balance >= 0
-              ? 'bg-blue-50 border-blue-500'
-              : 'bg-orange-50 border-orange-500'
+              ? 'bg-info/10 border-info'
+              : 'bg-warning/10 border-warning'
           "
         >
           <span
             class="font-bold flex items-center"
             :class="
               transactionsTotals.balance >= 0
-                ? 'text-blue-700'
-                : 'text-orange-700'
+                ? 'text-info'
+                : 'text-warning'
             "
           >
             <svg
@@ -145,9 +145,9 @@
     </div>
 
     <!-- Seção MEI -->
-    <div v-if="account.is_mei" class="bg-white rounded-lg shadow-md p-6 mt-10">
+    <div v-if="account.is_mei" class="bg-base-100 rounded-lg shadow-md p-6 mt-10">
       <h3
-        class="text-xl font-bold text-gray-800 mb-4 border-b-2 border-purple-500 pb-2"
+        class="text-xl font-bold text-base-content mb-4 border-b-2 border-purple-500 pb-2"
       >
         MEI - Microempreendedor Individual ({{ selectedYear }})
       </h3>
@@ -155,9 +155,9 @@
       <div class="space-y-4">
         <!-- Limite anual -->
         <div
-          class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border-l-4 border-gray-400"
+          class="flex items-center justify-between p-4 bg-base-200 rounded-lg border-l-4 border-base-content/20"
         >
-          <span class="text-gray-700 font-semibold">Limite anual do MEI:</span>
+          <span class="text-base-content/80 font-semibold">Limite anual do MEI:</span>
           <div class="w-64">
             <money-field name="mei_limit" v-model="meiAnnualLimit" :readonly="true" />
           </div>
@@ -178,13 +178,13 @@
           class="flex items-center justify-between p-4 rounded-lg border-l-4"
           :class="
             meiExceeded > 0
-              ? 'bg-red-50 border-red-500'
-              : 'bg-green-50 border-green-500'
+              ? 'bg-error/10 border-error'
+              : 'bg-success/10 border-success'
           "
         >
           <span
             class="font-semibold"
-            :class="meiExceeded > 0 ? 'text-red-700' : 'text-green-700'"
+            :class="meiExceeded > 0 ? 'text-error' : 'text-success'"
           >
             {{ meiExceeded > 0 ? "Limite excedido em:" : "Ainda pode faturar:" }}
           </span>
@@ -198,20 +198,20 @@
         </div>
 
         <!-- Barra de progresso do limite -->
-        <div class="p-4 bg-gray-50 rounded-lg">
-          <div class="flex justify-between text-sm text-gray-600 mb-1">
+        <div class="p-4 bg-base-200 rounded-lg">
+          <div class="flex justify-between text-sm text-base-content/70 mb-1">
             <span>Uso do limite anual</span>
             <span>{{ meiUsagePercentage.toFixed(1) }}%</span>
           </div>
-          <div class="w-full bg-gray-200 rounded-full h-3">
+          <div class="w-full bg-base-300 rounded-full h-3">
             <div
               class="h-3 rounded-full transition-all"
               :class="
                 meiExceeded > 0
-                  ? 'bg-red-500'
+                  ? 'bg-error'
                   : meiUsagePercentage >= 80
-                  ? 'bg-yellow-500'
-                  : 'bg-green-500'
+                  ? 'bg-warning'
+                  : 'bg-success'
               "
               :style="{ width: meiUsagePercentage + '%' }"
             ></div>
@@ -220,15 +220,15 @@
 
         <!-- Apuração de lucro isento x tributável -->
         <div class="pt-2">
-          <h4 class="text-md font-semibold text-gray-700 mb-3">
+          <h4 class="text-md font-semibold text-base-content/80 mb-3">
             Apuração de lucro para o IRPF (presunção de 32% - prestação de
             serviços)
           </h4>
           <div class="space-y-4">
             <div
-              class="flex items-center justify-between p-4 bg-yellow-50 rounded-lg border-l-4 border-yellow-500"
+              class="flex items-center justify-between p-4 bg-warning/10 rounded-lg border-l-4 border-warning"
             >
-              <span class="text-yellow-700 font-semibold"
+              <span class="text-warning font-semibold"
                 >Lucro tributável (32%):</span
               >
               <div class="w-64">
@@ -254,7 +254,7 @@
               </div>
             </div>
           </div>
-          <p class="text-xs text-gray-500 mt-2">
+          <p class="text-xs text-base-content/60 mt-2">
             Valores de referência para a Declaração de Ajuste Anual do IRPF,
             considerando o percentual de presunção de lucro de 32% aplicável a
             atividades de prestação de serviços (rendimento tributável x

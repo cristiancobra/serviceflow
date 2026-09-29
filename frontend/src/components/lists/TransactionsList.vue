@@ -12,30 +12,30 @@
 
     <section class="px-8 mt-4 mb-20">
       <!-- Filtros -->
-      <div class="mb-4 rounded-lg bg-gradient-to-br from-slate-100 to-slate-200 px-6 py-3 shadow-sm border border-white/50">
+      <div class="mb-4 rounded-lg bg-gradient-to-br from-base-200 to-base-300 px-6 py-3 shadow-sm border border-white/50">
         <div class="flex flex-wrap gap-6 items-end">
           <!-- Busca -->
           <div class="flex-1 min-w-64 relative">
-            <font-awesome-icon icon="fa-solid fa-search" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none" />
+            <font-awesome-icon icon="fa-solid fa-search" class="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/50 text-sm pointer-events-none" />
             <input
               type="text"
               v-model="searchTerm"
               placeholder="Buscar por cliente, fatura, conta..."
-              class="w-full pl-10 pr-4 py-2 border-2 border-gray-300 rounded-lg bg-white text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all"
+              class="w-full pl-10 pr-4 py-2 border-2 border-base-300 rounded-lg bg-base-100 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all"
             />
           </div>
           
           <!-- Filtro de Conta -->
           <div class="flex flex-col gap-1 min-w-80">
-            <label for="bank-account-filter" class="text-sm font-semibold text-gray-900 flex items-center gap-2">
-              <font-awesome-icon icon="fa-solid fa-building-columns" class="text-blue-500 text-sm" />
+            <label for="bank-account-filter" class="text-sm font-semibold text-base-content flex items-center gap-2">
+              <font-awesome-icon icon="fa-solid fa-building-columns" class="text-info text-sm" />
               Conta Bancária:
             </label>
             <select
               id="bank-account-filter"
               v-model="selectedBankAccount"
               @change="filterByBankAccount"
-              class="px-4 py-2 border-2 border-gray-300 rounded-lg bg-white text-sm font-medium text-gray-700 cursor-pointer hover:border-blue-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all"
+              class="px-4 py-2 border-2 border-base-300 rounded-lg bg-base-100 text-sm font-medium text-base-content/80 cursor-pointer hover:border-info focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all"
             >
               <option value="">Todas as contas</option>
               <option
@@ -54,83 +54,83 @@
       <div v-for="monthGroup in groupedTransactions" :key="monthGroup.monthKey" class="mb-4">
         <!-- Header do Mês -->
         <div class="flex items-center mb-1 sticky top-0 z-10">
-          <div class="flex items-center gap-3 bg-white pe-6 pb-1 pt-2">
+          <div class="flex items-center gap-3 bg-base-100 pe-6 pb-1 pt-2">
             <span class="font-bold text-primary text-lg whitespace-nowrap">{{ monthGroup.monthLabel }}</span>
           </div>
           
         </div>
 
         <!-- Tabela do Mês -->
-        <div class="bg-white rounded-lg overflow-hidden shadow-md border border-gray-200">
+        <div class="bg-base-100 rounded-lg overflow-hidden shadow-md border border-base-300">
           <div class="overflow-x-auto">
             <table class="w-full table-fixed">
-              <thead class="bg-gradient-to-r from-gray-100 to-gray-200 border-b-2 border-gray-300">
+              <thead class="bg-gradient-to-r from-base-200 to-base-300 border-b-2 border-base-300">
                 <tr>
-                  <th class="w-[8%] px-3 py-2 text-center text-xs font-bold uppercase tracking-wider text-gray-900">
+                  <th class="w-[8%] px-3 py-2 text-center text-xs font-bold uppercase tracking-wider text-base-content">
                     <font-awesome-icon icon="fa-solid fa-calendar" class="mr-1" />
                     Data
                   </th>
-                  <th class="w-[20%] px-3 py-2 text-left text-xs font-bold uppercase tracking-wider text-gray-900">
+                  <th class="w-[20%] px-3 py-2 text-left text-xs font-bold uppercase tracking-wider text-base-content">
                     <font-awesome-icon icon="fa-solid fa-user" class="mr-1" />
                     Cliente
                   </th>
-                  <th class="w-[16%] px-3 py-2 text-left text-xs font-bold uppercase tracking-wider text-gray-900">
+                  <th class="w-[16%] px-3 py-2 text-left text-xs font-bold uppercase tracking-wider text-base-content">
                     <font-awesome-icon icon="fa-solid fa-bullseye" class="mr-1" />
                     Oportunidade
                   </th>
-                  <th class="w-[6%] px-3 py-2 text-center text-xs font-bold uppercase tracking-wider text-gray-900">
+                  <th class="w-[6%] px-3 py-2 text-center text-xs font-bold uppercase tracking-wider text-base-content">
                     <font-awesome-icon icon="fa-solid fa-file-contract" class="mr-1" />
                     Proposta
                   </th>
-                  <th class="w-[10%] px-3 py-2 text-left text-xs font-bold uppercase tracking-wider text-gray-900">
+                  <th class="w-[10%] px-3 py-2 text-left text-xs font-bold uppercase tracking-wider text-base-content">
                     <font-awesome-icon icon="fa-solid fa-receipt" class="mr-1" />
                     Fatura
                   </th>
-                  <th class="w-[8%] px-3 py-2 text-center text-xs font-bold uppercase tracking-wider text-gray-900">
+                  <th class="w-[8%] px-3 py-2 text-center text-xs font-bold uppercase tracking-wider text-base-content">
                     <font-awesome-icon icon="fa-solid fa-calendar-check" class="mr-1" />
                     Vencimento
                   </th>
-                  <th class="w-[14%] px-3 py-2 text-left text-xs font-bold uppercase tracking-wider text-gray-900">
+                  <th class="w-[14%] px-3 py-2 text-left text-xs font-bold uppercase tracking-wider text-base-content">
                     <font-awesome-icon icon="fa-solid fa-wallet" class="mr-1" />
                     Conta
                   </th>
-                  <th class="w-[9%] px-3 py-2 text-right text-xs font-bold uppercase tracking-wider text-gray-900">
+                  <th class="w-[9%] px-3 py-2 text-right text-xs font-bold uppercase tracking-wider text-base-content">
                     <font-awesome-icon icon="fa-solid fa-money-bill-wave" class="mr-1" />
                     Valor
                   </th>
-                  <th class="w-[5%] px-3 py-2 text-center text-xs font-bold uppercase tracking-wider text-gray-900">
+                  <th class="w-[5%] px-3 py-2 text-center text-xs font-bold uppercase tracking-wider text-base-content">
                     <font-awesome-icon icon="fa-solid fa-flag" class="mr-1" />
                     Status
                   </th>
-                  <th class="w-[4%] px-3 py-2 text-center text-xs font-bold uppercase tracking-wider text-gray-900">
+                  <th class="w-[4%] px-3 py-2 text-center text-xs font-bold uppercase tracking-wider text-base-content">
                     <font-awesome-icon icon="fa-solid fa-exchange-alt" class="mr-1" />
                     Tipo
                   </th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-gray-100">
+              <tbody class="divide-y divide-base-200">
                 <template v-for="row in monthGroup.rows" :key="row.key">
                 <!-- Pagamento em lote: uma linha só, como no extrato -->
                 <tr
                   v-if="row.batch"
-                  class="hover:bg-gray-50 transition-colors cursor-pointer"
+                  class="hover:bg-base-200 transition-colors cursor-pointer"
                   @click="toggleBatch(row.batch.id)"
                 >
                   <td class="w-[8%] px-3 py-1 text-center">
-                    <span class="inline-block bg-primary-content text-black px-3 py-0.5 rounded-md text-xs font-semibold">
+                    <span class="inline-block bg-primary-content text-base-content px-3 py-0.5 rounded-md text-xs font-semibold">
                       {{ formatDateBr(row.batch.transaction_date) }}
                     </span>
                   </td>
                   <td colspan="3" class="px-3 py-1 text-left max-w-0">
                     <div class="flex items-center gap-2 min-w-0">
-                      <font-awesome-icon icon="fa-solid fa-layer-group" class="text-gray-400 text-sm flex-shrink-0" />
-                      <span class="text-sm font-semibold text-gray-900 truncate" :title="row.batch.description || 'Pagamento em lote'">
+                      <font-awesome-icon icon="fa-solid fa-layer-group" class="text-base-content/50 text-sm flex-shrink-0" />
+                      <span class="text-sm font-semibold text-base-content truncate" :title="row.batch.description || 'Pagamento em lote'">
                         {{ row.batch.description || 'Pagamento em lote' }}
                       </span>
                     </div>
                   </td>
                   <td colspan="2" class="px-3 py-1 text-left">
-                    <span class="inline-flex items-center gap-1 text-emerald-600 font-semibold text-sm">
+                    <span class="inline-flex items-center gap-1 text-success font-semibold text-sm">
                       <font-awesome-icon
                         :icon="expandedBatches.includes(row.batch.id) ? 'fa-solid fa-chevron-down' : 'fa-solid fa-chevron-right'"
                         class="text-xs"
@@ -140,21 +140,21 @@
                   </td>
                   <td class="w-[14%] px-3 py-1 text-left max-w-0">
                     <div class="flex items-center gap-2 min-w-0">
-                      <font-awesome-icon icon="fa-solid fa-university" class="text-gray-400 text-sm flex-shrink-0" />
-                      <span class="text-sm font-medium text-gray-900 truncate">
+                      <font-awesome-icon icon="fa-solid fa-university" class="text-base-content/50 text-sm flex-shrink-0" />
+                      <span class="text-sm font-medium text-base-content truncate">
                         {{ row.batch.bank_account?.name || row.batch.bank_account?.bank_name || '-' }}
                       </span>
                     </div>
                   </td>
                   <td class="w-[9%] px-3 py-1 text-right">
-                    <span class="text-sm font-bold" :class="row.batch.type === 'credit' ? 'text-green-600' : 'text-red-600'">
+                    <span class="text-sm font-bold" :class="row.batch.type === 'credit' ? 'text-success' : 'text-error'">
                       {{ formatCurrency(row.batch.amount) }}
                     </span>
                   </td>
                   <td class="w-[5%] px-3 py-1 text-center">
                     <button
                       type="button"
-                      class="text-gray-400 hover:text-red-600 transition-colors"
+                      class="text-base-content/50 hover:text-error transition-colors"
                       title="Estornar o pagamento em lote inteiro"
                       @click.stop="destroyBatch(row.batch)"
                     >
@@ -163,12 +163,12 @@
                   </td>
                   <td class="w-[4%] px-3 py-1 text-center">
                     <span
-                      :class="row.batch.type === 'credit' ? 'bg-green-100' : 'bg-red-100'"
+                      :class="row.batch.type === 'credit' ? 'bg-success/10' : 'bg-error/10'"
                       class="w-6 h-6 flex items-center justify-center rounded-full mx-auto"
                     >
                       <font-awesome-icon
                         :icon="row.batch.type === 'credit' ? 'fa-solid fa-arrow-up' : 'fa-solid fa-arrow-down'"
-                        :class="row.batch.type === 'credit' ? 'text-green-600' : 'text-red-600'"
+                        :class="row.batch.type === 'credit' ? 'text-success' : 'text-error'"
                         class="text-xs"
                       />
                     </span>
@@ -176,13 +176,13 @@
                 </tr>
                 <tr
                   v-else-if="!row.batchId || expandedBatches.includes(row.batchId)"
-                  class="hover:bg-gray-50 transition-colors"
-                  :class="{ 'bg-gray-50/70': row.batchId }"
+                  class="hover:bg-base-200 transition-colors"
+                  :class="{ 'bg-base-200/70': row.batchId }"
                 >
                   <!-- Data -->
                   <td class="w-[8%] px-3 py-1 text-center">
-                    <font-awesome-icon v-if="row.batchId" icon="fa-solid fa-turn-up" class="rotate-90 text-gray-300 text-xs mr-1" />
-                    <span v-else class="inline-block bg-primary-content text-black px-3 py-0.5 rounded-md text-xs font-semibold">
+                    <font-awesome-icon v-if="row.batchId" icon="fa-solid fa-turn-up" class="rotate-90 text-base-content/30 text-xs mr-1" />
+                    <span v-else class="inline-block bg-primary-content text-base-content px-3 py-0.5 rounded-md text-xs font-semibold">
                       {{ formatDateBr(row.transaction.transaction_date) }}
                     </span>
                   </td>
@@ -190,8 +190,8 @@
                   <!-- Cliente -->
                   <td class="w-[20%] px-3 py-1 text-left max-w-0">
                     <div class="flex items-center gap-2 min-w-0">
-                      <font-awesome-icon icon="fa-solid fa-building" class="text-gray-400 text-sm flex-shrink-0" />
-                      <span class="text-sm font-medium text-gray-900 truncate" :title="getClientName(row.transaction.invoice?.proposal?.opportunity, row.transaction.invoice) || '-'">
+                      <font-awesome-icon icon="fa-solid fa-building" class="text-base-content/50 text-sm flex-shrink-0" />
+                      <span class="text-sm font-medium text-base-content truncate" :title="getClientName(row.transaction.invoice?.proposal?.opportunity, row.transaction.invoice) || '-'">
                         {{ getClientName(row.transaction.invoice?.proposal?.opportunity, row.transaction.invoice) || '-' }}
                       </span>
                     </div>
@@ -202,13 +202,13 @@
                     <router-link
                       v-if="row.transaction.invoice?.proposal?.opportunity?.name"
                       :to="{ name: 'opportunityShow', params: { id: row.transaction.invoice.proposal.opportunity.id } }"
-                      class="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors min-w-0"
+                      class="flex items-center gap-1 text-info hover:text-info font-medium text-sm transition-colors min-w-0"
                       :title="row.transaction.invoice.proposal.opportunity.name.trim()"
                     >
                       <font-awesome-icon icon="fa-solid fa-bullseye" class="text-xs flex-shrink-0" />
                       <span class="truncate block">{{ row.transaction.invoice.proposal.opportunity.name.trim() }}</span>
                     </router-link>
-                    <span v-else class="text-gray-400 text-sm italic">-</span>
+                    <span v-else class="text-base-content/50 text-sm italic">-</span>
                   </td>
                   
                   <!-- Proposta -->
@@ -221,7 +221,7 @@
                     >
                       <font-awesome-icon icon="fa-solid fa-magnifying-glass" />
                     </router-link>
-                    <span v-else class="text-gray-400">-</span>
+                    <span v-else class="text-base-content/50">-</span>
                   </td>
                   
                   <!-- Fatura -->
@@ -229,14 +229,14 @@
                     <button
                       v-if="row.transaction.invoice"
                       type="button"
-                      class="inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-800 font-semibold text-sm transition-colors"
+                      class="inline-flex items-center gap-2 text-success hover:text-success font-semibold text-sm transition-colors"
                       :title="'Fatura #' + row.transaction.invoice.id"
                       @click="openInvoiceModal(row.transaction.invoice)"
                     >
                       <font-awesome-icon icon="fa-solid fa-receipt" class="text-sm" />
                       {{ getInvoiceLabel(row.transaction.invoice) }}
                     </button>
-                    <div v-else class="inline-flex items-center gap-1 text-amber-500 font-medium text-xs">
+                    <div v-else class="inline-flex items-center gap-1 text-warning font-medium text-xs">
                       <font-awesome-icon icon="fa-solid fa-circle-dot" class="text-xs" />
                       Avulsa
                     </div>
@@ -244,17 +244,17 @@
                   
                   <!-- Data Vencimento -->
                   <td class="w-[8%] px-3 py-1 text-center">
-                    <span v-if="row.transaction.invoice?.date_due" class="text-sm font-medium text-gray-900">
+                    <span v-if="row.transaction.invoice?.date_due" class="text-sm font-medium text-base-content">
                       {{ formatDateBr(row.transaction.invoice.date_due) }}
                     </span>
-                    <span v-else class="text-gray-400 text-sm italic">-</span>
+                    <span v-else class="text-base-content/50 text-sm italic">-</span>
                   </td>
                   
                   <!-- Conta -->
                   <td class="w-[14%] px-3 py-1 text-left max-w-0">
                     <div class="flex items-center gap-2 min-w-0">
-                      <font-awesome-icon icon="fa-solid fa-university" class="text-gray-400 text-sm flex-shrink-0" />
-                      <span class="text-sm font-medium text-gray-900 truncate" :title="row.transaction.bank_account?.name || row.transaction.bank_account?.bank_name || '-'">
+                      <font-awesome-icon icon="fa-solid fa-university" class="text-base-content/50 text-sm flex-shrink-0" />
+                      <span class="text-sm font-medium text-base-content truncate" :title="row.transaction.bank_account?.name || row.transaction.bank_account?.bank_name || '-'">
                         {{ row.transaction.bank_account?.name || row.transaction.bank_account?.bank_name || '-' }}
                       </span>
                     </div>
@@ -262,7 +262,7 @@
                   
                   <!-- Valor -->
                   <td class="w-[9%] px-3 py-1 text-right">
-                    <span class="text-sm font-bold" :class="row.transaction.type === 'credit' ? 'text-green-600' : 'text-red-600'">
+                    <span class="text-sm font-bold" :class="row.transaction.type === 'credit' ? 'text-success' : 'text-error'">
                       <money-field name="amount" v-model="row.transaction.amount" :readonly="true" />
                     </span>
                   </td>
@@ -282,16 +282,16 @@
                   <td class="w-[4%] px-3 py-1 text-center">
                     <span
                       :class="{
-                        'bg-green-100': row.transaction.type === 'credit',
-                        'bg-red-100': row.transaction.type === 'debit',
+                        'bg-success/10': row.transaction.type === 'credit',
+                        'bg-error/10': row.transaction.type === 'debit',
                       }"
                       class="w-6 h-6 flex items-center justify-center rounded-full mx-auto"
                     >
                       <font-awesome-icon
                         :icon="row.transaction.type === 'credit' ? 'fa-solid fa-arrow-up' : 'fa-solid fa-arrow-down'"
                         :class="{
-                          'text-green-600': row.transaction.type === 'credit',
-                          'text-red-600': row.transaction.type === 'debit',
+                          'text-success': row.transaction.type === 'credit',
+                          'text-error': row.transaction.type === 'debit',
                         }"
                         class="text-xs"
                       />
@@ -306,10 +306,10 @@
       </div>
 
       <!-- Estado Vazio -->
-      <div v-if="filteredTransactions && filteredTransactions.length === 0" class="text-center py-16 bg-gradient-to-b from-gray-50 to-gray-100 rounded-lg border-2 border-dashed border-gray-300">
-        <font-awesome-icon icon="fa-solid fa-inbox" class="text-5xl text-gray-300 mb-4 block" />
-        <p class="text-xl font-bold text-gray-900 mb-2">Nenhuma movimentação encontrada</p>
-        <p class="text-sm text-gray-600">Tente ajustar seus filtros de busca</p>
+      <div v-if="filteredTransactions && filteredTransactions.length === 0" class="text-center py-16 bg-gradient-to-b from-base-200 to-base-200 rounded-lg border-2 border-dashed border-base-300">
+        <font-awesome-icon icon="fa-solid fa-inbox" class="text-5xl text-base-content/30 mb-4 block" />
+        <p class="text-xl font-bold text-base-content mb-2">Nenhuma movimentação encontrada</p>
+        <p class="text-sm text-base-content/70">Tente ajustar seus filtros de busca</p>
       </div>
     </section>
   </div>
@@ -514,13 +514,13 @@ export default {
       switch (status) {
         case 'confirmed':
         case 'received':
-          return 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-900 border-green-300';
+          return 'bg-gradient-to-r from-success/10 to-success/10 text-success border-success/30';
         case 'pending':
-          return 'bg-gradient-to-r from-yellow-100 to-amber-100 text-yellow-900 border-yellow-300';
+          return 'bg-gradient-to-r from-warning/10 to-warning/10 text-warning border-warning/30';
         case 'cancelled':
-          return 'bg-gradient-to-r from-red-100 to-rose-100 text-red-900 border-red-300';
+          return 'bg-gradient-to-r from-error/10 to-error/10 text-error border-error/30';
         default:
-          return 'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 border-gray-300';
+          return 'bg-gradient-to-r from-base-200 to-base-300 text-base-content/80 border-base-300';
       }
     },
     

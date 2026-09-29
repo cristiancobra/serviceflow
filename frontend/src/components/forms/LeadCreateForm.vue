@@ -31,7 +31,7 @@
             placeholder="email@exemplo.com"
             @blur="validateEmail"
           />
-          <small v-if="errors.email" class="text-red-600 text-sm block mt-2">
+          <small v-if="errors.email" class="text-error text-sm block mt-2">
             <font-awesome-icon icon="fa-solid fa-circle-exclamation" class="me-1" />
             {{ errors.email }}
           </small>
@@ -45,7 +45,7 @@
             placeholder="(11) 99999-9999"
             @blur="validatePhone"
           />
-          <small v-if="errors.cel_phone" class="text-red-600 text-sm block mt-2">
+          <small v-if="errors.cel_phone" class="text-error text-sm block mt-2">
             <font-awesome-icon icon="fa-solid fa-circle-exclamation" class="me-1" />
             {{ errors.cel_phone }}
           </small>

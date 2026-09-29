@@ -33,9 +33,9 @@
         @save="$emit('update-field', 'date_canceled', $event)"
       />
       
-      <div class="mt-6 pt-4 border-t border-gray-300">
+      <div class="mt-6 pt-4 border-t border-base-300">
         <div class="flex items-center justify-between">
-          <span class="text-sm font-medium text-gray-700 flex items-center">
+          <span class="text-sm font-medium text-base-content/80 flex items-center">
             <font-awesome-icon icon="fas fa-clock" class="text-primary mr-2" />
             Duração Total:
           </span>

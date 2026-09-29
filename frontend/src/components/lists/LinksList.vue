@@ -16,7 +16,7 @@
     <div class="table-row">
       <input
         type="text"
-        class="form-control search-container"
+        class="search-container"
         v-model="searchTerm"
         placeholder="Digite para buscar"
       />
@@ -131,7 +131,7 @@ export default {
 .link-name {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--primary);
+  color: var(--color-primary);
 }
 
 .link-url {

@@ -1,14 +1,14 @@
 <template>
   <div class="mb-4 relative" v-click-outside="closeDropdown">
-    <label class="block text-sm font-semibold text-gray-900 mb-2" :for="name">{{ label }}</label>
+    <label class="block text-sm font-semibold text-base-content mb-2" :for="name">{{ label }}</label>
     
     <!-- Selected value display -->
     <div
       @click="toggleDropdown"
       :class="[
-        'w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm cursor-pointer transition-all duration-200 ease-in-out hover:border-gray-400',
-        isOpen ? 'ring-2 ring-blue-500 border-blue-500' : '',
-        disabled ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : ''
+        'w-full px-3 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg shadow-sm cursor-pointer transition-all duration-200 ease-in-out hover:border-base-content/20',
+        isOpen ? 'ring-2 ring-primary border-info' : '',
+        disabled ? 'bg-base-200 text-base-content/60 cursor-not-allowed' : ''
       ]"
     >
       <div v-if="selectedItem" class="flex items-center gap-2">
@@ -21,13 +21,13 @@
         />
         <span>{{ displayItemText(selectedItem) }}</span>
       </div>
-      <span v-else-if="fieldNull" class="text-gray-600">{{ fieldNull }}</span>
-      <span v-else class="text-gray-400">{{ placeholder || 'Selecione...' }}</span>
+      <span v-else-if="fieldNull" class="text-base-content/70">{{ fieldNull }}</span>
+      <span v-else class="text-base-content/50">{{ placeholder || 'Selecione...' }}</span>
       
       <!-- Arrow icon -->
       <font-awesome-icon
         :icon="isOpen ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"
-        class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm pointer-events-none"
+        class="absolute right-3 top-1/2 transform -translate-y-1/2 text-base-content/50 text-sm pointer-events-none"
         style="margin-top: 12px;"
       />
     </div>
@@ -36,16 +36,16 @@
     <transition name="dropdown">
       <div
         v-if="isOpen"
-        class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+        class="absolute z-50 w-full mt-1 bg-base-100 border border-base-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"
       >
         <!-- Search input -->
-        <div class="sticky top-0 bg-white p-2 border-b border-gray-200">
+        <div class="sticky top-0 bg-base-100 p-2 border-b border-base-300">
           <input
             :value="searchQuery || ''"
             @input="searchQuery = $event.target.value"
             type="text"
             placeholder="Buscar..."
-            class="w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
             @click.stop
           />
         </div>
@@ -54,7 +54,7 @@
         <div
           v-if="fieldNull"
           @click="selectItem(null)"
-          class="px-3 py-2 hover:bg-gray-100 cursor-pointer transition-colors text-gray-600"
+          class="px-3 py-2 hover:bg-base-200 cursor-pointer transition-colors text-base-content/70"
         >
           {{ fieldNull }}
         </div>
@@ -65,8 +65,8 @@
           :key="item.id"
           @click="selectItem(item)"
           :class="[
-            'px-3 py-2 hover:bg-blue-50 cursor-pointer transition-colors flex items-center gap-2',
-            localValue === item.id ? 'bg-blue-100' : ''
+            'px-3 py-2 hover:bg-info/10 cursor-pointer transition-colors flex items-center gap-2',
+            localValue === item.id ? 'bg-info/10' : ''
           ]"
         >
           <!-- Avatar -->
@@ -76,14 +76,14 @@
             v-bind="getAvatarProps(item)"
             size="sm"
           />
-          <span class="text-gray-900">{{ displayItemText(item) }}</span>
+          <span class="text-base-content">{{ displayItemText(item) }}</span>
         </div>
 
         <!-- Create new option -->
         <div
           v-if="searchQuery && searchQuery.trim() && filteredItems.length === 0 && allowCreateNew"
           @click="$emit('create-new', searchQuery.trim())"
-          class="px-3 py-2 hover:bg-blue-50 cursor-pointer transition-colors flex items-center gap-2 text-blue-600 font-medium border-t border-gray-200"
+          class="px-3 py-2 hover:bg-info/10 cursor-pointer transition-colors flex items-center gap-2 text-info font-medium border-t border-base-300"
         >
           <font-awesome-icon icon="fa-solid fa-plus" class="text-sm" />
           <span>Criar: {{ searchQuery.trim() }}</span>
@@ -92,7 +92,7 @@
         <!-- No results message -->
         <div
           v-if="searchQuery && searchQuery.trim() && filteredItems.length === 0 && !allowCreateNew"
-          class="px-3 py-4 text-center text-gray-500"
+          class="px-3 py-4 text-center text-base-content/60"
         >
           Nenhum resultado encontrado
         </div>

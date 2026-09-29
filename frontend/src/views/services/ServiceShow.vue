@@ -34,9 +34,9 @@
     />
 
     <div class="table-row">
-      <div>
+      <div class="flex justify-end">
         <button
-          class="offset-10 col-1 myButton delete"
+          class="myButton delete"
           @click="deleteService()"
         >
           excluir
@@ -165,14 +165,14 @@ export default {
 }
 
 .delete {
-  background-color: #ffa1a1;
-  border-color: #c82333;
-  color: #c82333;
+  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
+  border-color: var(--color-error);
+  color: var(--color-error);
 }
 
 .delete:hover {
-  background-color: #c82333;
-  border-color: #c82333;
+  background-color: var(--color-error);
+  border-color: var(--color-error);
   color: white;
 }
 </style>

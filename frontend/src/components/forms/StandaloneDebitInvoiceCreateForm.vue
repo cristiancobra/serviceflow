@@ -11,13 +11,13 @@
           <!-- Nome da conta -->
           <div>
             <label class="block text-sm font-semibold text-base-content mb-1">
-              Nome da Conta <span class="text-red-500">*</span>
+              Nome da Conta <span class="text-error">*</span>
             </label>
             <input
               v-model="form.name"
               type="text"
               placeholder="Ex: Internet, Aluguel, Fornecedor X..."
-              class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
+              class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-error focus:border-transparent transition-colors"
               required
             />
           </div>
@@ -28,7 +28,7 @@
               <label class="block text-sm font-semibold text-base-content mb-1">Categoria</label>
               <select
                 v-model="form.category"
-                class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
+                class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-error focus:border-transparent transition-colors"
               >
                 <option value="fixed_cost">Custo Fixo</option>
                 <option value="recurring">Recorrente</option>
@@ -41,7 +41,7 @@
               <label class="block text-sm font-semibold text-base-content mb-1">Forma de Pagamento</label>
               <select
                 v-model="form.payment_method"
-                class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
+                class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-error focus:border-transparent transition-colors"
                 @change="handlePaymentMethodChange"
               >
                 <option value="pix">Pix</option>
@@ -106,7 +106,7 @@
           <div class="flex flex-col sm:flex-row gap-4">
             <div class="flex-1">
               <label class="block text-sm font-semibold text-base-content mb-1">
-                Valor Total <span class="text-red-500">*</span>
+                Valor Total <span class="text-error">*</span>
               </label>
               <div class="flex items-center gap-2">
                 <span class="text-base-content/60 font-medium">R$</span>
@@ -114,7 +114,7 @@
                   name="total_amount"
                   :model-value="totalAmount"
                   @update:model-value="(value) => { totalAmount = value; updatePrices(); }"
-                  class="flex-1 px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
+                  class="flex-1 px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-error focus:border-transparent transition-colors"
                 />
               </div>
             </div>
@@ -123,7 +123,7 @@
               <select
                 v-model.number="installmentQuantity"
                 @change="initializePrices"
-                class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
+                class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-error focus:border-transparent transition-colors"
               >
                 <option v-for="n in 24" :key="n" :value="n">{{ n }}x</option>
               </select>
@@ -133,7 +133,7 @@
           <!-- Parcelamento detalhado -->
           <div v-if="installmentQuantity > 1" class="border-t border-base-300 pt-4">
             <div class="flex items-center gap-2 mb-3">
-              <div class="w-2 h-5 bg-red-500 rounded-full"></div>
+              <div class="w-2 h-5 bg-error rounded-full"></div>
               <h4 class="text-sm font-bold text-base-content uppercase tracking-wide">Parcelamento</h4>
             </div>
             <div class="space-y-2">
@@ -142,7 +142,7 @@
                 :key="index"
                 class="flex items-center gap-3 p-2 bg-base-200 rounded-lg border border-base-300"
               >
-                <span class="inline-flex items-center justify-center w-6 h-6 bg-red-100 text-red-800 text-xs font-bold rounded-full flex-shrink-0">
+                <span class="inline-flex items-center justify-center w-6 h-6 bg-error/10 text-error text-xs font-bold rounded-full flex-shrink-0">
                   {{ index + 1 }}
                 </span>
                 <div class="flex items-center gap-2 flex-1">
@@ -151,13 +151,13 @@
                     :name="`price-${index}`"
                     :model-value="form.prices[index]"
                     @update:model-value="(value) => { form.prices[index] = value; adjustPrices(index); }"
-                    class="flex-1 px-2 py-1 border border-base-300 rounded focus:ring-1 focus:ring-red-500 text-sm"
+                    class="flex-1 px-2 py-1 border border-base-300 rounded focus:ring-1 focus:ring-error text-sm"
                   />
                 </div>
               </div>
               <div class="flex justify-between text-sm pt-1 px-1">
                 <span class="text-base-content/60">Total das parcelas:</span>
-                <span :class="Math.abs(totalPrices - totalAmount) > 0.01 ? 'text-red-600 font-bold' : 'text-green-600 font-semibold'">
+                <span :class="Math.abs(totalPrices - totalAmount) > 0.01 ? 'text-error font-bold' : 'text-success font-semibold'">
                   R$ {{ parseFloat(totalPrices).toFixed(2) }}
                 </span>
               </div>
@@ -168,12 +168,12 @@
           <div>
             <label class="block text-sm font-semibold text-base-content mb-1">
               {{ installmentQuantity > 1 ? 'Data da 1ª Parcela' : 'Data de Vencimento' }}
-              <span class="text-red-500">*</span>
+              <span class="text-error">*</span>
             </label>
             <input
               v-model="form.date_due"
               type="date"
-              class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors"
+              class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-error focus:border-transparent transition-colors"
               required
             />
           </div>
@@ -185,7 +185,7 @@
               v-model="form.observations"
               rows="3"
               placeholder="Detalhes adicionais..."
-              class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors resize-none"
+              class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-error focus:border-transparent transition-colors resize-none"
             ></textarea>
           </div>
 
@@ -195,7 +195,7 @@
               <input
                 type="checkbox"
                 v-model="form.generate_task"
-                class="w-4 h-4 rounded border-base-300 text-green-600 focus:ring-green-500"
+                class="w-4 h-4 rounded border-base-300 text-success focus:ring-success"
               />
               <div>
                 <span class="text-sm font-semibold text-base-content">Gerar tarefa financeira</span>
@@ -214,8 +214,8 @@
           </div>
 
           <!-- Error Message -->
-          <div v-if="errorMessage" class="p-3 bg-red-50 border border-red-200 rounded-lg">
-            <p class="text-red-700 text-sm">{{ errorMessage }}</p>
+          <div v-if="errorMessage" class="p-3 bg-error/10 border border-error/30 rounded-lg">
+            <p class="text-error text-sm">{{ errorMessage }}</p>
           </div>
 
         </form>

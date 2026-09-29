@@ -5,7 +5,7 @@
       {{ title }}
     </h3>
 
-    <p v-if="loading" class="text-sm text-gray-500">Gerando QR Code...</p>
+    <p v-if="loading" class="text-sm text-base-content/60">Gerando QR Code...</p>
 
     <p v-else-if="error" class="text-sm text-teal-900">
       {{ error }}
@@ -14,16 +14,16 @@
     </p>
 
     <div v-else-if="pix" class="flex flex-col sm:flex-row items-center gap-4">
-      <img :src="pix.qr_code" alt="QR Code Pix" class="w-44 h-44 rounded-lg bg-white p-1 shadow-sm" />
+      <img :src="pix.qr_code" alt="QR Code Pix" class="w-44 h-44 rounded-lg bg-base-100 p-1 shadow-sm" />
       <div class="flex-1 min-w-0 w-full">
         <p class="text-sm text-teal-900 mb-1">
           Valor: <strong><money-field name="pix_amount" :modelValue="pix.amount" readonly /></strong>
         </p>
         <p v-if="isPayable" class="text-sm text-teal-900 mb-1">
           Para: <strong>{{ pix.recipient_name }}</strong>
-          <span class="text-xs text-gray-600">(chave {{ pix.pix_key }})</span>
+          <span class="text-xs text-base-content/70">(chave {{ pix.pix_key }})</span>
         </p>
-        <p class="text-xs text-gray-600 mb-2">
+        <p class="text-xs text-base-content/70 mb-2">
           <template v-if="isPayable">
             Escaneie com o app do banco no celular (Pix &rarr; ler QR Code) ou copie o código abaixo.
             Confira o nome do recebedor no app antes de confirmar.
@@ -37,7 +37,7 @@
             type="text"
             readonly
             :value="pix.payload"
-            class="flex-1 min-w-0 rounded-lg border border-gray-300 bg-white px-2 py-1 text-xs font-mono text-gray-700"
+            class="flex-1 min-w-0 rounded-lg border border-base-300 bg-base-100 px-2 py-1 text-xs font-mono text-base-content/80"
             @focus="$event.target.select()"
           />
           <button type="button" class="btn btn-sm btn-primary" title="Copiar Pix copia e cola" @click="copyPayload">

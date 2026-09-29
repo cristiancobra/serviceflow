@@ -12,53 +12,53 @@
     </div>
 
     <!-- Formulário de adicionar novo departamento -->
-    <div v-if="showAddForm" class="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+    <div v-if="showAddForm" class="mb-6 p-4 bg-base-200 rounded-lg border border-base-300">
       <form @submit.prevent="createDepartment" class="space-y-3">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+            <label class="block text-sm font-medium text-base-content/80 mb-1">Nome</label>
             <input
               v-model="newDepartment.name"
               type="text"
               required
               placeholder="Ex: Comercial"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Cor</label>
+            <label class="block text-sm font-medium text-base-content/80 mb-1">Cor</label>
             <div class="flex gap-2">
               <input
                 v-model="newDepartment.color"
                 type="color"
-                class="h-10 w-20 rounded border border-gray-300 cursor-pointer"
+                class="h-10 w-20 rounded border border-base-300 cursor-pointer"
               />
               <input
                 v-model="newDepartment.color"
                 type="text"
                 placeholder="#3B82F6"
-                class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="flex-1 px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Ícone</label>
+            <label class="block text-sm font-medium text-base-content/80 mb-1">Ícone</label>
             <button
               type="button"
               @click="showIconPicker = showIconPicker === 'new' ? null : 'new'"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg flex items-center gap-2 bg-white hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              class="w-full px-3 py-2 border border-base-300 rounded-lg flex items-center gap-2 bg-base-100 hover:bg-base-200 focus:ring-2 focus:ring-primary focus:border-transparent"
             >
-              <font-awesome-icon :icon="`fa-solid ${newDepartment.icon}`" class="text-gray-600" />
-              <span class="text-gray-700 text-sm">{{ newDepartment.icon }}</span>
-              <font-awesome-icon icon="fa-solid fa-chevron-down" class="ml-auto text-gray-400 text-xs" />
+              <font-awesome-icon :icon="`fa-solid ${newDepartment.icon}`" class="text-base-content/70" />
+              <span class="text-base-content/80 text-sm">{{ newDepartment.icon }}</span>
+              <font-awesome-icon icon="fa-solid fa-chevron-down" class="ml-auto text-base-content/50 text-xs" />
             </button>
-            <div v-if="showIconPicker === 'new'" class="mt-1 p-2 border border-gray-200 rounded-lg bg-white shadow grid grid-cols-6 gap-1 max-h-40 overflow-y-auto">
+            <div v-if="showIconPicker === 'new'" class="mt-1 p-2 border border-base-300 rounded-lg bg-base-100 shadow grid grid-cols-6 gap-1 max-h-40 overflow-y-auto">
               <button
                 v-for="ic in departmentIcons"
                 :key="ic.name"
                 type="button"
                 @click="newDepartment.icon = ic.name; showIconPicker = null"
-                :class="newDepartment.icon === ic.name ? 'bg-blue-100 text-blue-600 ring-1 ring-blue-400' : 'text-gray-600 hover:bg-gray-100'"
+                :class="newDepartment.icon === ic.name ? 'bg-info/10 text-info ring-1 ring-primary' : 'text-base-content/70 hover:bg-base-200'"
                 class="p-2 rounded flex flex-col items-center gap-0.5 transition-colors"
                 :title="ic.label"
               >
@@ -68,22 +68,22 @@
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Ordem</label>
+            <label class="block text-sm font-medium text-base-content/80 mb-1">Ordem</label>
             <input
               v-model.number="newDepartment.order"
               type="number"
               min="0"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Descrição (opcional)</label>
+          <label class="block text-sm font-medium text-base-content/80 mb-1">Descrição (opcional)</label>
           <input
             v-model="newDepartment.description"
             type="text"
             placeholder="Descrição do departamento"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
           />
         </div>
         <div class="flex gap-2 justify-end">
@@ -104,7 +104,7 @@
       <div
         v-for="department in sortedDepartments"
         :key="department.id"
-        class="p-4 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-shadow"
+        class="p-4 bg-base-100 rounded-lg border border-base-300 hover:shadow-md transition-shadow"
       >
         <div v-if="editingId !== department.id" class="flex items-center justify-between">
           <div class="flex items-center gap-4 flex-1">
@@ -119,20 +119,20 @@
                 <h4 class="font-bold text-lg" :style="{ color: department.color }">
                   {{ department.name }}
                 </h4>
-                <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                <span class="text-xs text-base-content/60 bg-base-200 px-2 py-1 rounded">
                   Ordem: {{ department.order }}
                 </span>
                 <span
                   v-if="!department.active"
-                  class="text-xs text-red-600 bg-red-100 px-2 py-1 rounded font-semibold"
+                  class="text-xs text-error bg-error/10 px-2 py-1 rounded font-semibold"
                 >
                   Inativo
                 </span>
               </div>
-              <p v-if="department.description" class="text-sm text-gray-600 mt-1">
+              <p v-if="department.description" class="text-sm text-base-content/70 mt-1">
                 {{ department.description }}
               </p>
-              <p class="text-xs text-gray-400 mt-1">
+              <p class="text-xs text-base-content/50 mt-1">
                 Slug: {{ department.slug }} | Cor: {{ department.color }}
               </p>
             </div>
@@ -162,47 +162,47 @@
         <div v-else class="space-y-3">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+              <label class="block text-sm font-medium text-base-content/80 mb-1">Nome</label>
               <input
                 v-model="editForm.name"
                 type="text"
                 required
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Cor</label>
+              <label class="block text-sm font-medium text-base-content/80 mb-1">Cor</label>
               <div class="flex gap-2">
                 <input
                   v-model="editForm.color"
                   type="color"
-                  class="h-10 w-20 rounded border border-gray-300 cursor-pointer"
+                  class="h-10 w-20 rounded border border-base-300 cursor-pointer"
                 />
                 <input
                   v-model="editForm.color"
                   type="text"
-                  class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  class="flex-1 px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Ícone</label>
+              <label class="block text-sm font-medium text-base-content/80 mb-1">Ícone</label>
               <button
                 type="button"
                 @click="showIconPicker = showIconPicker === 'edit' ? null : 'edit'"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg flex items-center gap-2 bg-white hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="w-full px-3 py-2 border border-base-300 rounded-lg flex items-center gap-2 bg-base-100 hover:bg-base-200 focus:ring-2 focus:ring-primary focus:border-transparent"
               >
-                <font-awesome-icon v-if="editForm.icon" :icon="`fa-solid ${editForm.icon}`" class="text-gray-600" />
-                <span class="text-gray-700 text-sm">{{ editForm.icon || 'Selecione um ícone' }}</span>
-                <font-awesome-icon icon="fa-solid fa-chevron-down" class="ml-auto text-gray-400 text-xs" />
+                <font-awesome-icon v-if="editForm.icon" :icon="`fa-solid ${editForm.icon}`" class="text-base-content/70" />
+                <span class="text-base-content/80 text-sm">{{ editForm.icon || 'Selecione um ícone' }}</span>
+                <font-awesome-icon icon="fa-solid fa-chevron-down" class="ml-auto text-base-content/50 text-xs" />
               </button>
-              <div v-if="showIconPicker === 'edit'" class="mt-1 p-2 border border-gray-200 rounded-lg bg-white shadow grid grid-cols-6 gap-1 max-h-40 overflow-y-auto">
+              <div v-if="showIconPicker === 'edit'" class="mt-1 p-2 border border-base-300 rounded-lg bg-base-100 shadow grid grid-cols-6 gap-1 max-h-40 overflow-y-auto">
                 <button
                   v-for="ic in departmentIcons"
                   :key="ic.name"
                   type="button"
                   @click="editForm.icon = ic.name; showIconPicker = null"
-                  :class="editForm.icon === ic.name ? 'bg-blue-100 text-blue-600 ring-1 ring-blue-400' : 'text-gray-600 hover:bg-gray-100'"
+                  :class="editForm.icon === ic.name ? 'bg-info/10 text-info ring-1 ring-primary' : 'text-base-content/70 hover:bg-base-200'"
                   class="p-2 rounded flex flex-col items-center gap-0.5 transition-colors"
                   :title="ic.label"
                 >
@@ -212,21 +212,21 @@
               </div>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Ordem</label>
+              <label class="block text-sm font-medium text-base-content/80 mb-1">Ordem</label>
               <input
                 v-model.number="editForm.order"
                 type="number"
                 min="0"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
+            <label class="block text-sm font-medium text-base-content/80 mb-1">Descrição</label>
             <input
               v-model="editForm.description"
               type="text"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              class="w-full px-3 py-2 border border-base-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
           <div class="flex gap-2 justify-end">

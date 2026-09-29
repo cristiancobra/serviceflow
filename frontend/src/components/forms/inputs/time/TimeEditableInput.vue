@@ -4,7 +4,7 @@
     <TimeValue
       v-if="!editing"
       :id="name"
-      class="text-black"
+      class="text-base-content"
       :name="name"
       v-model="localValue"
       @click="startEditing"

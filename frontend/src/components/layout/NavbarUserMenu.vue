@@ -9,15 +9,18 @@
       />
       <font-awesome-icon v-else icon="fas fa-user" :class="['user-faicon', { 'user-faicon-working': openJourney }]" />
     </div>
-    <div v-if="dropdownVisible" class="dropdown-menu">
+    <div
+      v-if="dropdownVisible"
+      class="absolute top-full right-0 z-[1000] min-w-[230px] max-w-[300px] bg-primary border border-base-300 shadow-md"
+    >
      
-      <router-link :to="`/users/${userData.id}`" class="dropdown-item">
+      <router-link :to="`/users/${userData.id}`" class="block p-2.5 text-white no-underline hover:bg-base-200 hover:text-primary">
         PERFIL DO USUÁRIO
       </router-link>
-      <router-link :to="`/accounts/${accountId}`" class="dropdown-item">
+      <router-link :to="`/accounts/${accountId}`" class="block p-2.5 text-white no-underline hover:bg-base-200 hover:text-primary">
         CONTA
       </router-link>
-      <router-link to="/journeys" class="dropdown-item">JORNADAS</router-link>
+      <router-link to="/journeys" class="block p-2.5 text-white no-underline hover:bg-base-200 hover:text-primary">JORNADAS</router-link>
       
       <!-- Últimas 5 tarefas -->
       <div v-if="recentJourneys.length > 0" class="recent-tasks-section">
@@ -26,9 +29,9 @@
           v-for="journey in recentJourneys"
           :key="journey.id"
           :to="getJourneyLink(journey)"
-          class="dropdown-item recent-task-item"
+          class="flex items-center px-2.5 py-2 text-[0.9rem] text-white no-underline hover:bg-base-200 hover:text-primary"
         >
-          <font-awesome-icon icon="fas fa-history" class="text-gray-400 text-sm mr-2" />
+          <font-awesome-icon icon="fas fa-history" class="text-base-content/50 text-sm mr-2" />
           <span class="truncate">{{ truncateTaskName(journey.task_name) }}</span>
         </router-link>
       </div>
@@ -165,7 +168,7 @@ export default {
   width: 48px;
   height: 50px;
   border-style: solid;
-  border-color: var(--primary);
+  border-color: var(--color-primary);
   border-width: 5px;
   border-radius: 50%;
   margin-right: 0px;
@@ -173,8 +176,8 @@ export default {
 }
 
 .user-image-working {
-  border-color: #059669;
-  box-shadow: 0 0 10px rgba(5, 150, 105, 0.6);
+  border-color: var(--color-success);
+  box-shadow: 0 0 10px color-mix(in oklab, var(--color-success) 60%, transparent);
   animation: border-pulse 2s ease-in-out infinite;
 }
 
@@ -189,35 +192,13 @@ export default {
 }
 
 .user-faicon-working {
-  border-color: #059669;
-  box-shadow: 0 0 10px rgba(5, 150, 105, 0.6);
+  border-color: var(--color-success);
+  box-shadow: 0 0 10px color-mix(in oklab, var(--color-success) 60%, transparent);
   animation: border-pulse 2s ease-in-out infinite;
 }
 
-.dropdown-menu {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background-color: var(--primary);
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  display: block;
-  min-width: 230px;
-  max-width: 300px;
-}
 
-.dropdown-item {
-  display: block;
-  padding: 10px;
-  text-decoration: none;
-  color: white;
-}
 
-.dropdown-item:hover {
-  background-color: #f0f0f0;
-  color: var(--primary);
-}
 
 .recent-tasks-section {
   border-top: 1px solid rgba(255, 255, 255, 0.2);
@@ -233,18 +214,7 @@ export default {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-.recent-task-item {
-  display: flex;
-  align-items: center;
-  padding: 8px 10px;
-  font-size: 0.9rem;
-}
 
-.recent-task-item .truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 
 .play-container {
   position: absolute;
@@ -256,13 +226,13 @@ export default {
 }
 
 .working {
-  color: #10b981;
+  color: var(--color-success);
   filter: drop-shadow(0 0 3px rgba(16, 185, 129, 0.8));
   animation: pulse-working 2s ease-in-out infinite;
 }
 
 .stopped {
-  color: #6b7280;
+  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
   opacity: 0.6;
 }
 
@@ -279,12 +249,12 @@ export default {
 
 @keyframes border-pulse {
   0%, 100% {
-    border-color: #059669;
-    box-shadow: 0 0 10px rgba(5, 150, 105, 0.6);
+    border-color: var(--color-success);
+    box-shadow: 0 0 10px color-mix(in oklab, var(--color-success) 60%, transparent);
   }
   50% {
-    border-color: #10b981;
-    box-shadow: 0 0 20px rgba(5, 150, 105, 0.9);
+    border-color: var(--color-success);
+    box-shadow: 0 0 20px color-mix(in oklab, var(--color-success) 90%, transparent);
   }
 }
 </style>

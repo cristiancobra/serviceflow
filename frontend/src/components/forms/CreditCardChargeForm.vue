@@ -1,79 +1,79 @@
 <template>
-  <div class="form-container">
+  <div>
     <form @submit.prevent="submitForm">
-      <div class="form-grid">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 mb-6">
         <!-- Descrição -->
-        <div class="form-group col-span-2">
-          <label for="description" class="form-label required">Descrição</label>
+        <div class="fieldset md:col-span-2">
+          <label for="description" class="fieldset-legend justify-start">Descrição <span class="text-error">*</span></label>
           <input
             id="description"
             v-model="form.description"
             type="text"
-            class="form-input"
+            class="input w-full"
             placeholder="Ex: Notebook"
             required
           />
-          <span v-if="errors.description" class="error-message">{{ errors.description[0] }}</span>
+          <span v-if="errors.description" class="text-error text-xs">{{ errors.description[0] }}</span>
         </div>
 
         <!-- Valor -->
-        <div class="form-group">
-          <label for="amount" class="form-label required">Valor Total</label>
+        <div class="fieldset">
+          <label for="amount" class="fieldset-legend justify-start">Valor Total <span class="text-error">*</span></label>
           <money-input
             name="amount"
             v-model="form.amount"
-            class="form-input"
+            class="input w-full"
           />
-          <span v-if="errors.amount" class="error-message">{{ errors.amount[0] }}</span>
+          <span v-if="errors.amount" class="text-error text-xs">{{ errors.amount[0] }}</span>
         </div>
 
         <!-- Parcelas -->
-        <div class="form-group">
-          <label for="installment_total" class="form-label">Parcelas</label>
+        <div class="fieldset">
+          <label for="installment_total" class="fieldset-legend">Parcelas</label>
           <input
             id="installment_total"
             v-model.number="form.installment_total"
             type="number"
             min="1"
             max="60"
-            class="form-input"
+            class="input w-full"
           />
-          <span v-if="errors.installment_total" class="error-message">{{ errors.installment_total[0] }}</span>
+          <span v-if="errors.installment_total" class="text-error text-xs">{{ errors.installment_total[0] }}</span>
         </div>
 
         <!-- Data da Compra -->
-        <div class="form-group">
-          <label for="purchase_date" class="form-label required">Data da Compra</label>
+        <div class="fieldset">
+          <label for="purchase_date" class="fieldset-legend justify-start">Data da Compra <span class="text-error">*</span></label>
           <input
             id="purchase_date"
             v-model="form.purchase_date"
             type="date"
-            class="form-input"
+            class="input w-full"
             required
           />
-          <span v-if="errors.purchase_date" class="error-message">{{ errors.purchase_date[0] }}</span>
+          <span v-if="errors.purchase_date" class="text-error text-xs">{{ errors.purchase_date[0] }}</span>
         </div>
 
         <!-- Categoria -->
-        <div class="form-group">
-          <label for="category" class="form-label">Categoria</label>
+        <div class="fieldset">
+          <label for="category" class="fieldset-legend">Categoria</label>
           <input
             id="category"
             v-model="form.category"
             type="text"
-            class="form-input"
+            class="input w-full"
             placeholder="Ex: Equipamentos"
           />
-          <span v-if="errors.category" class="error-message">{{ errors.category[0] }}</span>
+          <span v-if="errors.category" class="text-error text-xs">{{ errors.category[0] }}</span>
         </div>
       </div>
 
       <!-- Botões de Ação -->
-      <div class="form-actions">
-        <button type="button" @click="cancel" class="btn-secondary">
+      <div class="flex justify-end gap-3 pt-4 border-t border-base-300">
+        <button type="button" @click="cancel" class="btn btn-ghost">
           Cancelar
         </button>
-        <button type="submit" class="btn-primary" :disabled="isSubmitting">
+        <button type="submit" class="btn btn-primary" :disabled="isSubmitting">
           <span v-if="isSubmitting">Salvando...</span>
           <span v-else>Lançar Compra</span>
         </button>
@@ -151,109 +151,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.form-container {
-  padding: 1.5rem;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.col-span-2 {
-  grid-column: span 2;
-}
-
-.form-label {
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: #374151;
-  font-size: 0.875rem;
-}
-
-.form-label.required::after {
-  content: " *";
-  color: #ef4444;
-}
-
-.form-input {
-  padding: 0.625rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  transition: border-color 0.2s;
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
-}
-
-.error-message {
-  color: #ef4444;
-  font-size: 0.75rem;
-  margin-top: 0.25rem;
-}
-
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  padding-top: 1rem;
-  border-top: 1px solid #e5e7eb;
-}
-
-.btn-primary,
-.btn-secondary {
-  padding: 0.625rem 1.25rem;
-  border: none;
-  border-radius: 0.375rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 0.875rem;
-}
-
-.btn-primary {
-  background-color: var(--primary);
-  color: white;
-}
-
-.btn-primary:hover:not(:disabled) {
-  opacity: 0.9;
-}
-
-.btn-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.btn-secondary {
-  background-color: #f3f4f6;
-  color: #374151;
-}
-
-.btn-secondary:hover {
-  background-color: #e5e7eb;
-}
-
-@media (max-width: 768px) {
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .col-span-2 {
-    grid-column: span 1;
-  }
-}
-</style>

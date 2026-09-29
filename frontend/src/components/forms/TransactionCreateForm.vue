@@ -36,7 +36,7 @@
                     name="price"
                     v-model="form.amount"
                     placeholder="0,00"
-                    class="w-full px-3 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ease-in-out hover:border-gray-400"
+                    class="w-full px-3 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg shadow-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out hover:border-base-content/20"
                   />
                 </div>
               </div>
@@ -51,7 +51,7 @@
                   <select
                     id="credit_card_id"
                     v-model="form.credit_card_id"
-                    class="w-full px-3 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ease-in-out hover:border-gray-400"
+                    class="w-full px-3 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg shadow-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out hover:border-base-content/20"
                   >
                     <option
                       v-for="card in creditCards"
@@ -72,7 +72,7 @@
                   <select
                     id="bank_account_id"
                     v-model="form.bank_account_id"
-                    class="w-full px-3 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ease-in-out hover:border-gray-400"
+                    class="w-full px-3 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg shadow-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out hover:border-base-content/20"
                   >
                     <option
                       v-for="account in bankAccounts"
@@ -93,7 +93,7 @@
                   <select
                     id="method"
                     v-model="form.method"
-                    class="w-full px-3 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ease-in-out hover:border-gray-400"
+                    class="w-full px-3 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg shadow-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 ease-in-out hover:border-base-content/20"
                   >
                     <option value="pix" class="text-base-content">PIX</option>
                     <option value="bank_transfer" class="text-base-content">
@@ -136,7 +136,7 @@
 
               <div v-if="errorMessage" class="mb-6">
                 <div class="w-full">
-                  <p class="error text-red-500">
+                  <p class="error text-error">
                     {{ errorMessage }}
                   </p>
                 </div>
@@ -317,7 +317,7 @@ export default {
   display: flex;
   background-color: gray;
   color: white;
-  border-color: gray;
+  border-color: color-mix(in oklab, var(--color-base-content) 50%, transparent);
   cursor: not-allowed;
 }
 </style>

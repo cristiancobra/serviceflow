@@ -1,5 +1,5 @@
 <template>
-  <SelectInput class="text-black" :label="label" :name="name" v-model="localValue" :items="opportunities" :fieldsToDisplay="fieldToDisplay"
+  <SelectInput class="text-base-content" :label="label" :name="name" v-model="localValue" :items="opportunities" :fieldsToDisplay="fieldToDisplay"
     :fieldNull="fieldNullValue" :autoSelect=autoSelect @update:modelValue="updateInput" />
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="text-black text-right">
+  <div class="text-base-content text-right">
     <div class="price">
       <p>
         {{ formatCurrencySymbol(localValue || 0) }}

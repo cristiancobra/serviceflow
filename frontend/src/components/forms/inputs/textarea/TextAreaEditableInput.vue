@@ -1,20 +1,20 @@
 <template>
   <div class="w-full mb-5 flex flex-col items-start">
-    <label v-if="label" class="text-left text-gray-700 font-bold mb-2" :for="name">{{ label }}:</label>
+    <label v-if="label" class="text-left text-base-content/80 font-bold mb-2" :for="name">{{ label }}:</label>
 
     <div
       v-if="!editing"
-      class="w-full border-none p-1 cursor-pointer bg-transparent min-h-[60px] whitespace-pre-wrap text-gray-700"
+      class="w-full border-none p-1 cursor-pointer bg-transparent min-h-[60px] whitespace-pre-wrap text-base-content/80"
       @click="startEditing"
       ref="editableContent"
     >
-      <span v-if="!modelValue" class="text-gray-400 italic">{{ placeholder }}</span>
+      <span v-if="!modelValue" class="text-base-content/50 italic">{{ placeholder }}</span>
       <span v-else>{{ modelValue }}</span>
     </div>
 
     <div v-else class="w-full">
       <textarea
-        class="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-primary focus:border-transparent resize-none overflow-hidden text-gray-800 bg-white"
+        class="w-full border border-base-300 rounded-md p-3 focus:ring-2 focus:ring-primary focus:border-transparent resize-none overflow-hidden text-base-content bg-base-100"
         :value="modelValue"
         :id="name"
         :name="name"

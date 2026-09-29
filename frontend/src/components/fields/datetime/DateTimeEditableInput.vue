@@ -1,16 +1,16 @@
 <template>
   <div class="flex items-center whitespace-nowrap">
-    <label v-if="label" class="form-label me-3" :for="name">{{ label }}</label>
+    <label v-if="label" class="font-black text-primary me-3" :for="name">{{ label }}</label>
     <div v-if="!editing" @click="startEditing">
       <span class="default-text" :class="classText">
         {{ formatedDate }}
       </span>
-      <font-awesome-icon icon="fa-solid fa-clock" class="ms-2 me-1 text-gray-400" />
+      <font-awesome-icon icon="fa-solid fa-clock" class="ms-2 me-1 text-base-content/50" />
       <span class="default-text" :class="classText">
         {{ formatedTime }}
       </span>
     </div>
-    <VueDatePicker v-else class="form-control" :id="name" :name="name" :label="label" v-model="localValue"
+    <VueDatePicker v-else :id="name" :name="name" :label="label" v-model="localValue"
       :placeholder="placeholder" @update:modelValue="emitSave" />
   </div>
 </template>
@@ -95,11 +95,6 @@ export default {
 </script>
 
 <style scoped>
-.form-label {
-  font-weight: 900;
-  padding-right: 0rem;
-  color: var(--primary);
-}
 
 .show-label {
   text-align: left;

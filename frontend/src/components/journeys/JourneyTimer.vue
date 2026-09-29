@@ -37,7 +37,7 @@ export default {
 
 .journey-timer-icon {
   font-size: 1em;
-  color: #b1b7c2;
+  color: color-mix(in oklab, var(--color-base-content) 50%, transparent);
   margin-top: -3px;
 }
 </style>

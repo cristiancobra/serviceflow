@@ -79,7 +79,7 @@ export default {
 .edit-icon {
   display: none;
   margin-left: 5px;
-  color: var(--green);
+  color: var(--color-success);
 }
 
 .number-editable:hover .edit-icon {
@@ -88,6 +88,6 @@ export default {
 
 .number-editable {
   cursor: pointer;
-  color: var(--primary);
+  color: var(--color-primary);
 }
 </style>

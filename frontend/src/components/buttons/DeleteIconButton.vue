@@ -1,7 +1,7 @@
 <template>
   <button
     type="button"
-    :class="['flex items-center justify-center rounded-full bg-red-700 text-white transition hover:scale-110 hover:bg-red-500', size]"
+    :class="['flex items-center justify-center rounded-full bg-error text-white transition hover:scale-110 hover:bg-error', size]"
     :title="title"
     @click="openModal"
   >
@@ -15,15 +15,15 @@
       @click="cancel"
     >
       <div
-        class="w-[90%] max-w-md rounded-lg bg-white shadow-xl"
+        class="w-[90%] max-w-md rounded-lg bg-base-100 shadow-xl"
         @click.stop
       >
-        <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4">
-          <h2 class="text-lg font-bold text-gray-900">{{ modalTitle }}</h2>
+        <div class="flex items-center justify-between border-b border-base-300 px-6 py-4">
+          <h2 class="text-lg font-bold text-base-content">{{ modalTitle }}</h2>
           <button
             type="button"
             title="Fechar"
-            class="flex h-7 w-7 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-900"
+            class="flex h-7 w-7 items-center justify-center rounded-md text-base-content/60 hover:bg-base-200 hover:text-base-content"
             @click="cancel"
           >
             <font-awesome-icon icon="fa-solid fa-times" />
@@ -31,21 +31,21 @@
         </div>
 
         <div class="px-6 py-6">
-          <p class="text-gray-800">{{ confirmMessage }}</p>
-          <p v-if="warningText" class="mt-2 text-sm text-gray-500">{{ warningText }}</p>
+          <p class="text-base-content">{{ confirmMessage }}</p>
+          <p v-if="warningText" class="mt-2 text-sm text-base-content/60">{{ warningText }}</p>
         </div>
 
-        <div class="flex justify-end gap-3 border-t border-gray-200 px-6 py-4">
+        <div class="flex justify-end gap-3 border-t border-base-300 px-6 py-4">
           <button
             type="button"
-            class="rounded-md bg-gray-100 px-4 py-2 font-semibold text-gray-700 transition hover:bg-gray-200"
+            class="rounded-md bg-base-200 px-4 py-2 font-semibold text-base-content/80 transition hover:bg-base-300"
             @click="cancel"
           >
             {{ cancelLabel }}
           </button>
           <button
             type="button"
-            class="rounded-md bg-red-700 px-4 py-2 font-semibold text-white transition hover:scale-110 hover:bg-red-500"
+            class="rounded-md bg-error px-4 py-2 font-semibold text-white transition hover:scale-110 hover:bg-error"
             @click="confirmDelete"
           >
             {{ confirmLabel }}

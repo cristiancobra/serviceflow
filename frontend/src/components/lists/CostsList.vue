@@ -21,21 +21,21 @@
       <div class="mb-4">
         <input
           type="text"
-          class="w-full px-4 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
+          class="w-full px-4 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg shadow-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
           v-model="searchTerm"
           placeholder="🔍 Buscar por nome ou descrição..."
         />
       </div>
       
       <div v-if="!costs.length" class="text-center py-12">
-        <font-awesome-icon icon="fa-solid fa-inbox" class="text-gray-300 text-6xl mb-4" />
+        <font-awesome-icon icon="fa-solid fa-inbox" class="text-base-content/30 text-6xl mb-4" />
         <h3 class="text-xl font-semibold text-base-content mb-2">Nenhum custo cadastrado</h3>
         <p class="text-base-content/60">Comece criando seu primeiro custo de produção</p>
       </div>
       
       <div v-else>
         <!-- Header da Tabela -->
-        <div class="grid grid-cols-12 gap-4 px-4 py-3 bg-gray-100 rounded-t-lg font-semibold text-sm text-gray-700 border-b border-gray-300">
+        <div class="grid grid-cols-12 gap-4 px-4 py-3 bg-base-200 rounded-t-lg font-semibold text-sm text-base-content/80 border-b border-base-300">
           <div class="col-span-1 flex items-center justify-center">
             <font-awesome-icon icon="fa fa-cogs" class="text-primary" />
           </div>
@@ -49,7 +49,7 @@
           v-for="cost in filteredCosts"
           :key="cost.id"
           :to="{ name: 'costShow', params: { id: cost.id } }"
-          class="grid grid-cols-12 gap-4 px-4 py-4 bg-white hover:bg-gray-50 border-b border-gray-200 transition-colors duration-150 items-center no-underline text-gray-900"
+          class="grid grid-cols-12 gap-4 px-4 py-4 bg-base-100 hover:bg-base-200 border-b border-base-300 transition-colors duration-150 items-center no-underline text-base-content"
         >
           <!-- Ícone -->
           <div class="col-span-12 md:col-span-1 flex items-center justify-center mb-3 md:mb-0">
@@ -60,20 +60,20 @@
 
           <!-- Nome -->
           <div class="col-span-12 md:col-span-5">
-            <p class="font-semibold text-gray-900 text-base mb-1">
+            <p class="font-semibold text-base-content text-base mb-1">
               {{ cost.name }}
             </p>
-            <p v-if="cost.observations" class="text-sm text-gray-500 line-clamp-1">
+            <p v-if="cost.observations" class="text-sm text-base-content/60 line-clamp-1">
               {{ cost.observations }}
             </p>
           </div>
 
           <!-- Data de Criação -->
           <div class="col-span-6 md:col-span-3 text-left md:text-center">
-            <p class="text-sm text-gray-600">
+            <p class="text-sm text-base-content/70">
               {{ formatDate(cost.created_at) }}
             </p>
-            <p class="text-xs text-gray-400">
+            <p class="text-xs text-base-content/50">
               {{ formatTime(cost.created_at) }}
             </p>
           </div>
@@ -199,16 +199,16 @@ export default {
 
 .big {
   font-size: 44px;
-  color: var(--green);
+  color: var(--color-success);
 }
 
 .card {
   border-style: solid;
   border-width: 2px;
-  border-color: var(--green);
+  border-color: var(--color-success);
   border-radius: 6px;
   padding: 10px;
-  background-color: var(--green-light);
+  background-color: color-mix(in oklab, var(--color-success) 15%, var(--color-base-100));
   /* height: 15vh; */
 }
 
@@ -250,7 +250,7 @@ export default {
   font-size: 1.3rem;
   margin: 1rem;
   flex-basis: 0%;
-  color: var(--primary).
+  color: var(--color-primary).
 }
 
 .comments {

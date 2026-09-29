@@ -29,14 +29,14 @@ export default {
       const baseClasses = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold';
 
       const statusClasses = {
-        'pending': 'bg-blue-100 text-blue-800',
-        'partial': 'bg-yellow-100 text-yellow-800',
-        'paid': 'bg-green-100 text-green-800',
-        'overdue': 'bg-red-100 text-red-800',
-        'cancelled': 'bg-gray-100 text-gray-800'
+        'pending': 'bg-info/10 text-info',
+        'partial': 'bg-warning/10 text-warning',
+        'paid': 'bg-success/10 text-success',
+        'overdue': 'bg-error/10 text-error',
+        'cancelled': 'bg-base-200 text-base-content'
       };
       
-      return `${baseClasses} ${statusClasses[this.status] || 'bg-gray-100 text-gray-800'}`;
+      return `${baseClasses} ${statusClasses[this.status] || 'bg-base-200 text-base-content'}`;
     }
   }
 };

@@ -369,7 +369,7 @@ li {
 }
 
 a {
-  color: rgb(61, 61, 61);
+  color: var(--color-base-content);
 }
 
 a:link {
@@ -395,18 +395,18 @@ a:active {
 
 /* Estilo para destacar a tarefa quando navegamos até ela */
 .highlight-task {
-  background-color: #fff3cd;
+  background-color: color-mix(in oklab, var(--color-warning) 15%, var(--color-base-100));
   transition: background-color 0.3s ease;
-  box-shadow: 0 0 15px rgba(255, 193, 7, 0.5);
+  box-shadow: 0 0 15px color-mix(in oklab, var(--color-warning) 50%, transparent);
   animation: highlightPulse 2s ease-in-out;
 }
 
 @keyframes highlightPulse {
   0%, 100% {
-    background-color: #fff3cd;
+    background-color: color-mix(in oklab, var(--color-warning) 15%, var(--color-base-100));
   }
   50% {
-    background-color: #ffe69c;
+    background-color: color-mix(in oklab, var(--color-warning) 15%, var(--color-base-100));
   }
 }
 </style>

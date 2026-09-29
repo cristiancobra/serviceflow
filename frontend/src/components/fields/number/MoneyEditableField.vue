@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label v-if="label" class="form-label" :for="name">{{ label }}</label>
+    <label v-if="label" :for="name">{{ label }}</label>
     <div v-if="!editing"  @click="startEditing">
       <div v-if="localValue !== null && localValue !== undefined && localValue !== ''">
         <p class="price-editable text-right">
@@ -77,7 +77,7 @@ export default {
 .edit-icon {
   display: none;
   margin-left: 5px;
-  color: var(--green);
+  color: var(--color-success);
 }
 
 .price-editable:hover .edit-icon {
@@ -92,12 +92,12 @@ export default {
 
 .price-editable {
   cursor: pointer;
-  color: var(--primary);
+  color: var(--color-primary);
 }
 
 /* --primary tem contraste baixo demais no fundo escuro; usa a variante mais clara */
 [data-theme="service-dark"] .price-editable {
-  color: var(--primary-light);
+  color: color-mix(in oklab, var(--color-primary) 60%, white);
 }
 
 .show-label {

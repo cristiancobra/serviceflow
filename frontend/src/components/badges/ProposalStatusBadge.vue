@@ -39,15 +39,15 @@ export default {
       const baseClasses = 'inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold w-full';
       
       const statusClasses = {
-        'draft': 'bg-gray-100 text-gray-800 border-2 border-gray-400',
+        'draft': 'bg-base-200 text-base-content border-2 border-base-content/20',
         'submitted': 'bg-purple-100 text-purple-800 border-2 border-purple-400',
-        'accepted': 'bg-emerald-100 text-emerald-800 border-2 border-emerald-500',
-        'rejected': 'bg-red-100 text-red-800 border-2 border-red-400',
-        'canceled': 'bg-orange-100 text-orange-800 border-2 border-orange-400',
-        'paid': 'bg-blue-100 text-blue-800 border-2 border-blue-500'
+        'accepted': 'bg-success/10 text-success border-2 border-success',
+        'rejected': 'bg-error/10 text-error border-2 border-error',
+        'canceled': 'bg-warning/10 text-warning border-2 border-warning',
+        'paid': 'bg-info/10 text-info border-2 border-info'
       };
       
-      return `${baseClasses} ${statusClasses[this.currentStatus] || 'bg-gray-100 text-gray-800'}`;
+      return `${baseClasses} ${statusClasses[this.currentStatus] || 'bg-base-200 text-base-content'}`;
     }
   }
 };
