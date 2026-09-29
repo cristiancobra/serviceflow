@@ -19,6 +19,7 @@ ServiceFlow é um sistema de gestão de serviços e oportunidades de negócio de
 ### 🎨 Frontend (Vue.js)
 - [Estrutura de Componentes](./frontend/component-structure.md)
 - [Estilos e CSS](./frontend/styling-guide.md)
+- [Plano de Reformulação do Layout](./frontend/plano-de-reformulacao-do-layout.md) - Migração para tokens do tema e componentes compartilhados
 - [Componentes de Formulário](./frontend/form-components.md)
 - [Componentes de Seleção (Selects)](./frontend/select-components.md)
 
