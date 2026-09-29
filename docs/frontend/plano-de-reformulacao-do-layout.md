@@ -2,7 +2,7 @@
 
 Objetivo: deixar o frontend consistente e sustentável usando **DaisyUI 5 + Tailwind 4**, com o tema escuro (`service-dark`) funcionando em todas as telas e com componentes compartilhados que a IA consiga reutilizar em vez de copiar.
 
-A regra que orienta todo código novo está no [CLAUDE.md](../../CLAUDE.md), seção "UI: DaisyUI + Tailwind". Este documento trata da **dívida existente**: o que falta migrar, em que ordem e como.
+A regra que orienta todo código novo está no [Guia de Estilos](./styling-guide.md). Este documento trata da **dívida existente**: o que falta migrar, em que ordem e como.
 
 ## Status
 
@@ -14,7 +14,7 @@ A regra que orienta todo código novo está no [CLAUDE.md](../../CLAUDE.md), se�
 | 3. Botões padronizados | ⏳ Pendente |
 | 4. Listas como tabela | ⏳ Pendente |
 | 5. Feedback ao usuário (confirmação, toast, loading) | ⏳ Pendente |
-| 6. Atualizar a documentação de `docs/frontend/` | ⏳ Pendente |
+| 6. Atualizar a documentação de `docs/frontend/` | 🔄 `styling-guide.md` reescrito; faltam `forms-pattern.md` e `detail-modal-template.md` |
 | 7. Enxugar o CSS restante | ⏳ Contínuo (consequência das etapas anteriores) |
 
 ## Diagnóstico (setembro de 2026)
@@ -144,8 +144,8 @@ No celular a tabela rola na horizontal em vez de espremer as colunas. Começar p
 
 ## Etapa 6: Documentação
 
-Reescrever os exemplos de `forms-pattern.md`, `styling-guide.md` e `detail-modal-template.md` usando tokens do tema, `ModalCard` e os componentes criados nas etapas 2 a 5. Enquanto isso não for feito, a documentação contradiz o CLAUDE.md.
+O `styling-guide.md` já foi reescrito e é a referência da regra. Falta reescrever os exemplos de `forms-pattern.md` e `detail-modal-template.md` usando tokens do tema, `ModalCard` e os componentes criados nas etapas 2 a 5. Enquanto isso não for feito, a documentação contradiz o CLAUDE.md.
 
 ## Etapa 7: CSS restante
 
-Não atacar diretamente. As etapas 1 a 4 removem a maior parte do CSS legado e do `<style scoped>`. No fim, revisar o que sobrou em `src/assets/css/` e apagar os arquivos vazios ou sem uso.
+Não atacar diretamente. As etapas 1 a 4 removem a maior parte do CSS legado e do `<style scoped>`. No fim, revisar o que sobrou em `src/assets/css/` e apagar os arquivos vazios ou sem uso. Apagar também o `frontend/tailwind.config.js`: é sobra do Tailwind 3, não é carregado pelo Tailwind 4 e define um tema (`mytheme`) que não vale mais, o que confunde quem o encontra.
