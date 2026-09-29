@@ -33,7 +33,7 @@
 
             <div v-else class="leads-grid">
                 <div class="lead-card" v-for="lead in filteredLeads" v-bind:key="lead.id">
-                    <router-link :to="{ name: 'leadShow', params: { id: lead.id } }" class="card-link">
+                    <div role="button" class="card-link" @click="openLeadModal(lead)">
                         <div class="card-header">
                             <div class="avatar">
                                 <img 
@@ -62,7 +62,7 @@
                                 <small>Sem informações de contato</small>
                             </div>
                         </div>
-                    </router-link>
+                    </div>
                 </div>
             </div>
         </section>
@@ -70,6 +70,7 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import { index } from "@/utils/requests/httpUtils";
 import { IMAGES_PATH } from "@/config/apiConfig";
 import LeadCreateForm from "@/components/forms/LeadCreateForm.vue";
@@ -105,6 +106,25 @@ export default {
         }
     },
     methods: {
+        ...mapMutations(["openModal"]),
+        openLeadModal(lead) {
+            this.openModal({
+                component: "LeadDetailModal",
+                props: { leadId: lead.id },
+                listeners: {
+                    "lead-updated": this.replaceLead,
+                    "lead-deleted": this.removeLead,
+                },
+                id: `lead-${lead.id}`,
+            });
+        },
+        replaceLead(updated) {
+            const index = this.leads.findIndex((lead) => lead.id === updated.id);
+            if (index !== -1) this.leads.splice(index, 1, { ...this.leads[index], ...updated });
+        },
+        removeLead(id) {
+            this.leads = this.leads.filter((lead) => lead.id !== id);
+        },
         addLeadCreated(newLead) {
             this.isCreateLeadModalVisible = false;
             this.leads.unshift(newLead);
@@ -267,6 +287,7 @@ export default {
 .card-link {
     text-decoration: none;
     color: inherit;
+    cursor: pointer;
     display: flex;
     flex-direction: column;
     height: 100%;

@@ -1,7 +1,7 @@
 <template>
-  <component
-    :is="leadIdData ? 'router-link' : 'div'"
-    :to="leadIdData ? { name: 'leadShow', params: { id: leadIdData } } : null"
+  <div
+    :role="leadIdData ? 'button' : null"
+    @click="openLeadModal"
     :class="[
       'flex items-center justify-center rounded-full border-2',
       sizeClasses,
@@ -35,10 +35,11 @@
       icon="fa-solid fa-user"
       class="text-sm text-gray-500"
     />
-  </component>
+  </div>
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import { IMAGES_PATH } from "@/config/apiConfig";
 
 export default {
@@ -106,6 +107,18 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(["openModal"]),
+    openLeadModal(event) {
+      if (!this.leadIdData) return;
+      // O avatar costuma ficar dentro de cards clicáveis; não deixa o clique abrir o card também
+      event.preventDefault();
+      event.stopPropagation();
+      this.openModal({
+        component: "LeadDetailModal",
+        props: { leadId: this.leadIdData },
+        id: `lead-${this.leadIdData}`,
+      });
+    },
     getInitials(name) {
       if (!name) return "??";
       const words = name.trim().split(" ").filter((word) => word.length > 0);
