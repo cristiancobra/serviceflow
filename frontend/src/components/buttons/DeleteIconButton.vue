@@ -9,57 +9,30 @@
   </button>
 
   <teleport to="body">
+    <!-- z-[1000]: este botão também é usado dentro de outros modais (z-50) -->
     <div
       v-if="showModal"
-      class="fixed inset-0 z-[1000] flex items-center justify-center bg-black/50"
-      @click="cancel"
+      class="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm"
+      @click.self="cancel"
     >
-      <div
-        class="w-[90%] max-w-md rounded-lg bg-base-100 shadow-xl"
-        @click.stop
-      >
-        <div class="flex items-center justify-between border-b border-base-300 px-6 py-4">
-          <h2 class="text-lg font-bold text-base-content">{{ modalTitle }}</h2>
-          <button
-            type="button"
-            title="Fechar"
-            class="flex h-7 w-7 items-center justify-center rounded-md text-base-content/60 hover:bg-base-200 hover:text-base-content"
-            @click="cancel"
-          >
-            <font-awesome-icon icon="fa-solid fa-times" />
-          </button>
-        </div>
+      <ModalCard :title="modalTitle" icon="fa-solid fa-trash" size="sm" @close="cancel">
+        <p class="text-base-content">{{ confirmMessage }}</p>
+        <p v-if="warningText" class="mt-2 text-sm text-base-content/60">{{ warningText }}</p>
 
-        <div class="px-6 py-6">
-          <p class="text-base-content">{{ confirmMessage }}</p>
-          <p v-if="warningText" class="mt-2 text-sm text-base-content/60">{{ warningText }}</p>
-        </div>
-
-        <div class="flex justify-end gap-3 border-t border-base-300 px-6 py-4">
-          <button
-            type="button"
-            class="rounded-md bg-base-200 px-4 py-2 font-semibold text-base-content/80 transition hover:bg-base-300"
-            @click="cancel"
-          >
-            {{ cancelLabel }}
-          </button>
-          <button
-            type="button"
-            class="rounded-md bg-error px-4 py-2 font-semibold text-white transition hover:scale-110 hover:bg-error"
-            @click="confirmDelete"
-          >
-            {{ confirmLabel }}
-          </button>
-        </div>
-      </div>
+        <template #footer>
+          <button type="button" class="btn btn-ghost" @click="cancel">{{ cancelLabel }}</button>
+          <button type="button" class="btn btn-error" @click="confirmDelete">{{ confirmLabel }}</button>
+        </template>
+      </ModalCard>
     </div>
   </teleport>
 </template>
 
 <script setup>
 import { ref } from "vue";
+import ModalCard from "@/components/modals/ModalCard.vue";
 
-const props = defineProps({
+defineProps({
   title: {
     type: String,
     default: "Excluir",

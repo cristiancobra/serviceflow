@@ -1,14 +1,10 @@
 <template>
     <div class="page-container">
-        <div class="page-header">
-            <div class="page-title">
-                <font-awesome-icon icon="fa-solid fa-bullseye" class="page-icon" />
-                <h1>OPORTUNIDADES</h1>
-            </div>
-            <div class="page-action">
-                <button-new-form target="opportunity" @open-modal="openCreateOpportunityModal" />
-            </div>
-        </div>
+        <PageHeader title="OPORTUNIDADES" icon="fa-solid fa-bullseye">
+          <template #actions>
+            <button-new-form target="opportunity" @open-modal="openCreateOpportunityModal" />
+          </template>
+        </PageHeader>
 
         <section class="section-container">
 
@@ -68,9 +64,11 @@ import DateTimeEditableInput from "@/components/fields/datetime/DateTimeEditable
 import DateTimeValue from "@/components/fields/datetime/DateTimeValue.vue";
 import SearchInput from "@/components/filters/SearchInput.vue";
 import ButtonNewForm from "@/components/buttons/ButtonNewForm.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
 
 export default {
     components: {
+    PageHeader,
         CompanyAvatar,
         LeadAvatar,
         UserAvatar,

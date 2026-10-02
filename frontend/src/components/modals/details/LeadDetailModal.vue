@@ -2,11 +2,14 @@
   <ModalCard
     title="Contato"
     :subtitle="lead?.name || ''"
+    :subtitle-editable="!!lead"
+    subtitle-placeholder="Nome do contato"
     icon="fa-solid fa-user"
     size="lg"
     :compact="compact"
     compact-size="max-w-3xl"
     @close="$emit('close')"
+    @save-subtitle="updateLeadField('name', $event)"
   >
     <div v-if="!lead" class="p-5 text-center text-base-content/60">
       Carregando contato...
@@ -51,14 +54,6 @@
         </div>
 
         <div class="flex-1 min-w-0">
-          <div class="text-2xl font-bold text-base-content">
-            <text-editable-field
-              name="name"
-              :modelValue="lead.name"
-              @save="(value) => updateLeadField('name', value)"
-              placeholder="Nome do contato..."
-            />
-          </div>
           <div class="text-base-content/70">
             <text-editable-field
               name="comments"
@@ -124,14 +119,14 @@
             class="border border-base-300 rounded-lg p-4 bg-base-200"
           >
             <div class="flex items-center justify-between gap-2">
-              <router-link
-                :to="{ name: 'opportunityShow', params: { id: opportunity.id } }"
+              <button
+                type="button"
                 class="font-bold text-primary hover:underline flex items-center gap-2 min-w-0"
-                @click="$emit('close')"
+                @click="openOpportunityModal(opportunity)"
               >
                 <font-awesome-icon icon="fas fa-bullseye" />
                 <span class="truncate">{{ opportunity.name || `#${opportunity.id}` }}</span>
-              </router-link>
+              </button>
               <span class="bg-info/10 text-info px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap">
                 {{ opportunity.proposals?.length || 0 }} proposta{{ (opportunity.proposals?.length || 0) !== 1 ? "s" : "" }}
               </span>
@@ -420,6 +415,17 @@ export default {
         }
         this.message = { status: "error", text };
       }
+    },
+    openOpportunityModal(opportunity) {
+      this.openModal({
+        component: "OpportunityDetailModal",
+        props: { opportunityId: opportunity.id },
+        listeners: {
+          "opportunity-updated": this.getLead,
+          "opportunity-deleted": this.getLead,
+        },
+        id: `opportunity-${opportunity.id}`,
+      });
     },
     openCreateOpportunityModal() {
       this.openModal({

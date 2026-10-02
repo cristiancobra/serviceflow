@@ -1,65 +1,63 @@
 <template>
-  <div v-if="task" class="modal-panel bg-base-100 rounded-2xl shadow-2xl w-full max-h-[90vh] overflow-y-auto"
-    :class="compact ? 'max-w-2xl' : 'max-w-5xl'">
-    <!-- Header -->
-    <div class="sticky top-0 bg-gradient-to-r from-info/10 to-info/10 border-b border-base-300 px-8 py-6">
-      <div class="flex justify-between items-start">
-        <div class="flex-1">
-          <div class="flex items-center gap-4 mb-2">
-            <!-- Status Icon -->
-            <font-awesome-icon v-if="task.date_canceled" icon="fas fa-times-circle" class="text-3xl text-error"
-              title="Tarefa cancelada" />
-            <font-awesome-icon v-else icon="fas fa-check-circle" class="text-3xl"
-              :class="isValidDate(task.date_conclusion) ? 'text-success' : 'text-base-content/50'" />
-
-            <div class="text-2xl font-bold text-base-content flex-1">
-              <text-editable-field name="name" v-model="task.name" placeholder="descrição detalhada da tarefa"
-                @save="updateTask('name', $event)" />
-            </div>
-          </div>
-
-          <!-- Oportunidade/Projeto -->
-          <div v-if="task.opportunity" class="flex items-center gap-2 text-sm mt-2">
-            <font-awesome-icon icon="fa-solid fa-bullseye" class="text-primary" />
-            <router-link :to="{ name: 'opportunityShow', params: { id: task.opportunity.id } }"
-              class="text-primary hover:underline font-medium">
-              {{ task.opportunity.name }}
-            </router-link>
-          </div>
-
-          <div v-else-if="task.project" class="flex items-center gap-2 text-sm mt-2">
-            <font-awesome-icon icon="fa-solid fa-folder-open" class="text-primary" />
-            <router-link :to="{ name: 'projectShow', params: { id: task.project.id } }"
-              class="text-primary hover:underline font-medium">
-              {{ task.project.name }}
-            </router-link>
-          </div>
-
-          <div v-else class="flex items-center gap-2 text-sm mt-2">
-            <template v-if="!showOpportunitySelect">
-              <font-awesome-icon icon="fa-solid fa-bullseye" class="text-base-content/50" />
-              <button type="button" class="text-base-content/50 hover:text-primary font-medium transition-colors"
-                @click="showOpportunitySelect = true">
-                Adicionar oportunidade
-              </button>
-            </template>
-            <template v-else>
-              <opportunities-select-input name="opportunity_id" label="Oportunidade" fieldToDisplay="name"
-                fieldNull="Nenhuma" v-model="selectedOpportunity" @update:modelValue="onOpportunitySelected" />
-              <button type="button" class="text-base-content/50 hover:text-error ml-1 transition-colors" title="Cancelar"
-                @click="showOpportunitySelect = false">
-                <font-awesome-icon icon="fa-solid fa-times" />
-              </button>
-            </template>
-          </div>
-        </div>
-
-        <close-button @click="closeModal" />
-      </div>
+  <ModalCard
+    title="Tarefa"
+    :subtitle="task?.name || ''"
+    :subtitle-editable="!!task"
+    subtitle-placeholder="Nome da tarefa"
+    icon="fa-solid fa-tasks"
+    size="xl"
+    :compact="compact"
+    compact-size="max-w-2xl"
+    @close="closeModal"
+    @save-subtitle="updateTask('name', $event)"
+  >
+    <div v-if="!task" class="p-5 text-center text-base-content/60">
+      Carregando tarefa...
     </div>
 
-    <!-- Body -->
-    <div class="px-8 py-6">
+    <template v-else>
+      <!-- Status e oportunidade/projeto (o nome da tarefa fica editável no cabeçalho) -->
+      <div class="flex items-center gap-4 mb-6 pb-6 border-b border-base-300">
+        <font-awesome-icon v-if="task.date_canceled" icon="fas fa-times-circle" class="text-3xl text-error"
+          title="Tarefa cancelada" />
+        <font-awesome-icon v-else icon="fas fa-check-circle" class="text-3xl"
+          :class="isValidDate(task.date_conclusion) ? 'text-success' : 'text-base-content/50'"
+          :title="isValidDate(task.date_conclusion) ? 'Tarefa concluída' : 'Tarefa em aberto'" />
+
+        <div v-if="task.opportunity" class="flex items-center gap-2 text-sm">
+          <font-awesome-icon icon="fa-solid fa-bullseye" class="text-primary" />
+          <button type="button" class="text-primary hover:underline font-medium" @click="openOpportunityModal">
+            {{ task.opportunity.name }}
+          </button>
+        </div>
+
+        <div v-else-if="task.project" class="flex items-center gap-2 text-sm">
+          <font-awesome-icon icon="fa-solid fa-folder-open" class="text-primary" />
+          <router-link :to="{ name: 'projectShow', params: { id: task.project.id } }"
+            class="text-primary hover:underline font-medium">
+            {{ task.project.name }}
+          </router-link>
+        </div>
+
+        <div v-else class="flex items-center gap-2 text-sm">
+          <template v-if="!showOpportunitySelect">
+            <font-awesome-icon icon="fa-solid fa-bullseye" class="text-base-content/50" />
+            <button type="button" class="text-base-content/50 hover:text-primary font-medium transition-colors"
+              @click="showOpportunitySelect = true">
+              Adicionar oportunidade
+            </button>
+          </template>
+          <template v-else>
+            <opportunities-select-input name="opportunity_id" label="Oportunidade" fieldToDisplay="name"
+              fieldNull="Nenhuma" v-model="selectedOpportunity" @update:modelValue="onOpportunitySelected" />
+            <button type="button" class="text-base-content/50 hover:text-error ml-1 transition-colors" title="Cancelar"
+              @click="showOpportunitySelect = false">
+              <font-awesome-icon icon="fa-solid fa-times" />
+            </button>
+          </template>
+        </div>
+      </div>
+
       <!-- Datas e Duração -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div class="bg-base-200 rounded-lg p-4">
@@ -118,11 +116,11 @@
             :disabled="!task.date_canceled" @update:modelValue="updateTask('cancellation_reason', $event)" />
         </div>
       </div>
-    </div>
+    </template>
 
     <!-- Footer com Ações -->
-    <div class="sticky bottom-0 bg-base-200 border-t border-base-300 py-4" :class="compact ? 'px-4' : 'px-8'">
-      <div class="flex justify-between items-center gap-2">
+    <template v-if="task" #footer>
+      <div class="flex justify-between items-center gap-2 w-full">
         <!-- Ações Rápidas -->
         <div class="flex" :class="compact ? 'gap-2' : 'gap-3'">
           <button type="button"
@@ -195,8 +193,8 @@
           </button>
         </div>
       </div>
-    </div>
-  </div>
+    </template>
+  </ModalCard>
 </template>
 
 <script>
@@ -207,10 +205,9 @@ import { getDeadlineClass } from "@/utils/card/cardUtils";
 import { BACKEND_URL, TASK_URL_PARAMETER, JOURNEY_URL_PARAMETER } from "@/config/apiConfig";
 import DateTimeEditableInput from "@/components/fields/datetime/DateTimeEditableInput.vue";
 import TextAreaEditableInput from "@/components/forms/inputs/textarea/TextAreaEditableInput.vue";
-import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 import CancellationReasonSelectInput from "@/components/forms/selects/CancellationReasonSelectInput.vue";
 import JourneyCreateForm from "@/components/forms/JourneyCreateForm.vue";
-import CloseButton from "@/components/buttons/CloseButton.vue";
+import ModalCard from "@/components/modals/ModalCard.vue";
 import AddJourneyButton from "@/components/buttons/AddJourneyButton.vue";
 import OpportunitiesSelectInput from "@/components/forms/selects/OpportunitiesSelectInput.vue";
 import JourneyTimer from "@/components/journeys/JourneyTimer.vue";
@@ -220,10 +217,9 @@ export default {
   components: {
     DateTimeEditableInput,
     TextAreaEditableInput,
-    TextEditableField,
     CancellationReasonSelectInput,
     JourneyCreateForm,
-    CloseButton,
+    ModalCard,
     AddJourneyButton,
     OpportunitiesSelectInput,
     JourneyTimer,
@@ -392,6 +388,23 @@ export default {
       });
     },
 
+    openOpportunityModal() {
+      this.openModal({
+        component: "OpportunityDetailModal",
+        props: { opportunityId: this.task.opportunity.id },
+        listeners: {
+          "opportunity-updated": this.onOpportunityUpdated,
+          "opportunity-deleted": this.refreshTask,
+        },
+        id: `opportunity-${this.task.opportunity.id}`,
+      });
+    },
+    onOpportunityUpdated(opportunity) {
+      if (this.task.opportunity?.id !== opportunity.id) return;
+      this.task.opportunity = { ...this.task.opportunity, name: opportunity.name };
+      this.$emit('task-updated', this.task);
+    },
+
     openLinksModal() {
       this.openModal({
         component: "LinksModal",
@@ -451,21 +464,6 @@ export default {
 </script>
 
 <style scoped>
-/* Animação suave para o modal */
-.modal-panel {
-  animation: fadeIn 0.2s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
 /* Estilo para o div de visualização (não editando) */
 :deep(.w-full.border-none.p-1) {
   color: color-mix(in oklab, var(--color-base-content) 60%, transparent);

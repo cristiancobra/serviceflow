@@ -6,9 +6,17 @@
     <div class="modal-card-header">
       <div class="modal-card-header-title">
         <font-awesome-icon v-if="icon" :icon="icon" class="modal-card-icon" />
-        <div>
-          <h2>{{ title }}</h2>
-          <p v-if="subtitle" class="modal-card-subtitle">{{ subtitle }}</p>
+        <div class="min-w-0 flex-1">
+          <h2 :class="{ 'modal-card-title-label': subtitle || subtitleEditable }">{{ title }}</h2>
+          <HeaderEditableField
+            v-if="subtitleEditable"
+            class="modal-card-subtitle"
+            :model-value="subtitle"
+            :placeholder="subtitlePlaceholder"
+            :empty-text="subtitlePlaceholder || 'sem nome'"
+            @save="$emit('save-subtitle', $event)"
+          />
+          <p v-else-if="subtitle" class="modal-card-subtitle">{{ subtitle }}</p>
         </div>
       </div>
       <button
@@ -32,14 +40,29 @@
 </template>
 
 <script>
+import HeaderEditableField from "@/components/fields/text/HeaderEditableField.vue";
+
 export default {
   name: "ModalCard",
+  components: {
+    HeaderEditableField,
+  },
   props: {
     title: {
       type: String,
       default: "",
     },
     subtitle: {
+      type: String,
+      default: "",
+    },
+    // Nome do elemento editável direto no cabeçalho (emite @save-subtitle com o novo valor).
+    // Usar nos modais de detalhe, em vez de repetir o nome editável no conteúdo.
+    subtitleEditable: {
+      type: Boolean,
+      default: false,
+    },
+    subtitlePlaceholder: {
       type: String,
       default: "",
     },
@@ -64,7 +87,7 @@ export default {
       default: "max-w-md",
     },
   },
-  emits: ["close"],
+  emits: ["close", "save-subtitle"],
   computed: {
     sizeClass() {
       return {
@@ -109,6 +132,8 @@ export default {
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex: 1;
+  min-width: 0; /* deixa nomes longos quebrarem a linha sem empurrar o X para fora */
 }
 
 .modal-card-header-title h2 {
@@ -118,10 +143,22 @@ export default {
   margin: 0;
 }
 
+/* Com subtítulo, o título vira um rótulo pequeno (o tipo: "Tarefa", "Oportunidade")
+   e o subtítulo (o nome do elemento) passa a ser o texto principal */
+.modal-card-header-title h2.modal-card-title-label {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 .modal-card-subtitle {
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 0.875rem;
-  margin: 0.25rem 0 0;
+  color: white;
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1.3;
+  margin: 0.125rem 0 0;
 }
 
 .modal-card-icon {

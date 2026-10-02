@@ -1,13 +1,13 @@
 <template>
-  <section class="section-container flex-1 mr-10 mb-6 p-10 border border-primary rounded-lg">
-    <div class="section-title items-center mb-4">
+  <section class="rounded-lg border border-base-300 p-6">
+    <div class="flex items-center mb-4">
       <font-awesome-icon
         icon="fas fa-calendar"
         class="text-primary text-xl mr-2"
       />
       <h2 class="text-xl font-semibold">Datas</h2>
     </div>
-    <div class="">
+    <div>
       <DateEditableInput
         name="date_start"
         label="Início:"

@@ -1,6 +1,7 @@
 import TaskDetailModal from "@/components/modals/details/TaskDetailModal.vue";
 import InvoiceDetailModal from "@/components/modals/details/InvoiceDetailModal.vue";
 import LeadDetailModal from "@/components/modals/details/LeadDetailModal.vue";
+import OpportunityDetailModal from "@/components/modals/details/OpportunityDetailModal.vue";
 import LinksModal from "@/components/modals/LinksModal.vue";
 import TaskCreateForm from "@/components/forms/TaskCreateForm.vue";
 import CompanyCreateForm from "@/components/forms/CompanyCreateForm.vue";
@@ -27,6 +28,7 @@ export default {
   TaskDetailModal,
   InvoiceDetailModal,
   LeadDetailModal,
+  OpportunityDetailModal,
   LinksModal,
   TaskCreateForm,
   CompanyCreateForm,

@@ -1,12 +1,15 @@
 <template>
   <ModalCard
     title="Fatura"
-    :subtitle="invoice?.name || (invoice ? `Fatura #${invoice.id}` : '')"
+    :subtitle="invoice?.name || ''"
+    :subtitle-editable="!!invoice"
+    :subtitle-placeholder="invoice ? `Fatura #${invoice.id}` : ''"
     icon="fa-solid fa-file-invoice-dollar"
     size="lg"
     :compact="compact"
     compact-size="max-w-3xl"
     @close="$emit('close')"
+    @save-subtitle="updateInvoice('name', $event)"
   >
     <div v-if="!invoice" class="p-5 text-center text-base-content/60">
       Carregando fatura...
@@ -113,13 +116,9 @@
 
           <div v-if="invoice.proposal?.opportunity" class="flex items-center gap-2 text-sm">
             <font-awesome-icon icon="fa-solid fa-bullseye" class="text-primary" />
-            <router-link
-              :to="{ name: 'opportunityShow', params: { id: invoice.proposal.opportunity.id } }"
-              class="text-primary hover:underline font-medium"
-              @click="$emit('close')"
-            >
+            <button type="button" class="text-primary hover:underline font-medium" @click="openOpportunityModal">
               {{ invoice.proposal.opportunity.name }}
-            </router-link>
+            </button>
           </div>
 
           <div v-if="invoice.proposal" class="flex items-center gap-2 text-sm">
@@ -487,6 +486,17 @@ export default {
         props: { leadId },
         listeners: { "lead-updated": this.refreshInvoice },
         id: `lead-${leadId}`,
+      });
+    },
+    openOpportunityModal() {
+      const opportunityId = this.invoice.proposal.opportunity.id;
+      this.openModal({
+        component: "OpportunityDetailModal",
+        props: { opportunityId },
+        listeners: {
+          "opportunity-updated": this.getInvoice,
+        },
+        id: `opportunity-${opportunityId}`,
       });
     },
     openTaskModal(taskId) {
