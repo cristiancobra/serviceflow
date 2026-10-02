@@ -42,7 +42,7 @@ O frontend usa **DaisyUI 5 + Tailwind CSS 4**. Este guia é a regra para todo te
 
 - `text-white` é aceitável sobre fundos coloridos (`bg-primary`, `bg-error`...). Ainda melhor: `text-primary-content`, `text-error-content` etc.
 - Os tokens `success`, `warning`, `info` e `error` do tema claro foram escurecidos para dar contraste de pelo menos 4,5:1 como texto. Não clareie sem refazer a conta.
-- **Cuidado**: `text-primary` no tema escuro tem contraste de 3,15:1, abaixo do recomendado. Está registrado como pendência no plano.
+- `text-primary` no tema escuro dá 3,15:1. Isso foi avaliado e aceito; ver a decisão no plano. Não crie correções locais novas para isso.
 
 ## Exemplos
 

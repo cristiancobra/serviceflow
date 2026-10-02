@@ -92,7 +92,7 @@ Feita por script, levando em conta a propriedade CSS: 344 cores e 181 variáveis
 
 ### Pendências da etapa 1
 
-- **Primária como texto no tema escuro**: `#B1388D` sobre o `base-100` escuro dá 3,15:1 (mínimo 4,5). Afeta todo `text-primary` e `color: var(--color-primary)` no tema escuro. Hoje só o `MoneyEditableField` corrige, localmente, com `[data-theme="service-dark"]`. Resolver no tema exige decidir entre clarear a primária no `service-dark` (o que piora o contraste do texto claro dos botões `btn-primary`) ou criar um token só para texto.
+- ~~**Primária como texto no tema escuro**~~ **Decidido (outubro de 2026): manter como está.** `#B1388D` sobre o `base-100` escuro dá 3,15:1, abaixo dos 4,5:1 do WCAG para texto. Mas, avaliado na tela (navbar, modal de fatura, tela de empresa), ficou aceitável. As alternativas tinham custo: clarear a primária no `service-dark` obrigaria a usar texto escuro nos `btn-primary`, e um token só para texto fugiria do padrão DaisyUI. A correção local do `MoneyEditableField` continua.
 - **Rosa `#ff3eb5`** dos botões "novo" (`.new` em `style.css`, `TasksIndex`, `ProjectsIndex`): é um acento próprio, parecido mas diferente da primária. Resolver na etapa 3 (botões).
 - **Cinzas escuros de fundo** (`bg-gray-400` a `900`, 26 usos, e `#6b7280`/`#4b5563` no `CancelButton`): revisar na etapa 3.
 
