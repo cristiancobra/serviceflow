@@ -5,6 +5,9 @@ O frontend usa **DaisyUI 5 + Tailwind CSS 4**. Este guia é a regra para todo te
 ## Regra: ordem de preferência
 
 1. **Componente Vue do projeto**, quando já existe um para o caso. Reutilize antes de criar.
+   - Cabeçalho de página: `PageHeader` (`components/layout/PageHeader.vue`)
+   - Lista ou seção vazia: `EmptyState` (`components/layout/EmptyState.vue`)
+   - Ativo/inativo: `StatusToggle` (`components/buttons/StatusToggle.vue`)
    - Modais: `ModalCard` (`components/modals/ModalCard.vue`)
    - Botão de fechar: `CloseButton`
    - Status: `SelectStatusButton`
@@ -119,6 +122,22 @@ Use sempre o `ModalCard`.
 ```
 
 `size`: `sm` (max-w-md), `md` (max-w-2xl), `lg` (max-w-4xl) ou `xl` (max-w-6xl). Referência: `components/lists/CreditCardsList.vue`.
+
+**Modais de detalhe** (tarefa, contato, oportunidade, fatura...): o tipo vai no `title` e o **nome do elemento no subtítulo, editável no próprio cabeçalho**. Assim ele continua visível quando o conteúdo rola. **Não repita o nome no conteúdo.**
+
+```vue
+<ModalCard
+  title="Tarefa"
+  :subtitle="task?.name || ''"
+  :subtitle-editable="!!task"
+  subtitle-placeholder="Nome da tarefa"
+  icon="fa-solid fa-tasks"
+  @close="closeModal"
+  @save-subtitle="updateTask('name', $event)"
+>
+```
+
+O campo editável do cabeçalho é o `HeaderEditableField` (`components/fields/text/`), a versão branca sobre roxo do `TextEditableField`. Referência: `components/modals/details/TaskDetailModal.vue`.
 
 ### Layout responsivo
 

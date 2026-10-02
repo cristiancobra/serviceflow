@@ -10,7 +10,7 @@ A regra que orienta todo código novo está no [Guia de Estilos](./styling-guide
 |---|---|
 | 0. Remover classes do Bootstrap | ✅ Concluída |
 | 1. Cores fixas → tokens do tema | ✅ Concluída (com pendências listadas na etapa) |
-| 2. Componentes de estrutura de página | ⏳ Pendente |
+| 2. Componentes de estrutura de página | ✅ Concluída |
 | 3. Botões padronizados | ⏳ Pendente |
 | 4. Listas como tabela | ⏳ Pendente |
 | 5. Feedback ao usuário (confirmação, toast, loading) | ⏳ Pendente |
@@ -102,15 +102,16 @@ Feita por script, levando em conta a propriedade CSS: 344 cores e 181 variáveis
 - Abrir as telas principais nos dois temas (light e dark): listas, telas de detalhe, modais de detalhe e formulários.
 - Buscar resíduos: `grep -rE '(text|bg|border)-(gray|red|green|blue|yellow|orange)-[0-9]' frontend/src`.
 
-## Etapa 2: Componentes de estrutura de página
+## Etapa 2: Componentes de estrutura de página (✅ concluída)
 
-Criar em `components/layout/`:
+- **`PageHeader`** (`components/layout/PageHeader.vue`): props `title`, `icon`, `icon-class` e `show-back` (emite `@back`), slots `title` (título com conteúdo próprio, ex: campo editável) e `actions`. Aplicado nas 28 telas que tinham `page-header`. As regras globais `.page-header`, `.page-title`, `.page-icon` e `.page-action` foram apagadas do `show.css`, assim como os estilos locais `btn-back`/`page-action` e o CSS morto de `LeadsList`/`CompaniesList`. A seta de voltar agora é branca, porque antes era cinza sobre a faixa roxa.
+- **`EmptyState`** (`components/layout/EmptyState.vue`): props `text`, `icon` e `description`, com slot para uma ação. Aplicado nas 9 ocorrências de `.empty-state`. As versões com título (`LeadsList`, `CompaniesList`) ficaram com ícone e título um pouco menores, iguais às demais.
+- **`StatusToggle`** (`components/buttons/StatusToggle.vue`): badge `badge-soft` de ativo/inativo. Clicável nas listas (emite `@toggle`) e só indicador com `readonly` nas telas de detalhe. Aplicado nas listas e telas de cartões, contas bancárias e despesas recorrentes.
 
-- **`PageHeader`**: props `title` e `icon`, slot `actions`. Substitui `page-header`/`page-title`/`page-icon`/`page-action` nas 30 telas.
-- **`EmptyState`**: props `icon` e `text`, slot opcional para uma ação ("Criar o primeiro...").
-- **`StatusToggle`**: o badge clicável de ativo/inativo das listas financeiras (`badge badge-success`/`badge-error` + `cursor-pointer`).
+- **Todos os modais usam `ModalCard`**: o `TaskDetailModal` (que tinha cabeçalho azulado próprio) e a confirmação do `DeleteIconButton` foram migrados, e o overlay do `CreditInvoiceCreateForm` foi padronizado. Assim, todo modal tem o mesmo cabeçalho: faixa roxa, ícone, texto branco e X à direita. O `modal.css` (classes `.myModal*`, sem uso) foi apagado.
+- **Nome do elemento no cabeçalho dos modais de detalhe**: tarefa, contato, oportunidade e fatura mostram o nome editável no subtítulo do `ModalCard` (`subtitle-editable`, via `HeaderEditableField`), e o nome editável repetido no conteúdo foi removido.
 
-Ao migrar cada tela, apagar o CSS correspondente do `<style scoped>` e, no fim, do `lists.css`.
+**Não incluídos**: estados vazios escritos direto com Tailwind (sem a classe `.empty-state`), como os de `TransactionsList` e das seções de faturas. Migrar para `EmptyState` quando o arquivo for alterado.
 
 ## Etapa 3: Botões
 
