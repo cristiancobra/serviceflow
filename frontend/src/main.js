@@ -29,7 +29,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 /* import specific icons */
 import {
-  faArrowDown, faArrowLeft, faArrowUp,
+  faAlignLeft, faArrowDown, faArrowLeft, faArrowUp,
   faBalanceScale, faBolt, faBriefcase, faBuilding, faBuildingColumns, faBullseye,
   faCalendar, faCalendarAlt, faCalendarCheck, faCalendarPlus,
   faCamera, faChartLine, faCheck, faCheckCircle, faCheckSquare,
@@ -59,7 +59,7 @@ import { faFacebook, faInstagram, faLinkedin, faPix } from '@fortawesome/free-br
 
 /* add icons to the library */
 library.add(
-  faArrowDown, faArrowLeft, faArrowUp,
+  faAlignLeft, faArrowDown, faArrowLeft, faArrowUp,
   faBalanceScale, faBolt, faBriefcase, faBuilding, faBuildingColumns, faBullseye,
   faCalendar, faCalendarAlt, faCalendarCheck, faCalendarPlus,
   faCamera, faChartLine, faCheck, faCheckCircle, faCheckSquare,

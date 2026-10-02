@@ -1,10 +1,10 @@
 <template>
   <div v-if="!editing" @click="startEditing" class="cursor-pointer hover:bg-base-200 p-2 rounded">
     <label :for="name">{{ label }}</label>
-    <p v-if="selectedName" class="text-base-content font-medium mt-1">
+    <p v-if="selectedName" class="text-base-content font-medium">
       {{ selectedName }}
     </p>
-    <p v-else class="text-base-content/50 italic mt-1">
+    <p v-else class="text-base-content/50 italic">
       não possui
     </p>
   </div>

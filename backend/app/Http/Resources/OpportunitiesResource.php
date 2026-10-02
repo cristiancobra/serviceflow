@@ -35,6 +35,8 @@ class OpportunitiesResource extends JsonResource
             'date_canceled' => DateTimeConversionService::convertFromUtc($this->date_canceled, $timezone),
             'description' => $this->description,
             'duration_time' => $this->duration_time,
+            'contracted_hours' => $this->whenLoaded('proposals', fn () => $this->contractedHours()),
+            'duration_by_department' => $this->whenLoaded('tasks', fn () => $this->durationByDepartment()),
             'source' => $this->source,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
@@ -49,5 +51,45 @@ class OpportunitiesResource extends JsonResource
             'tasks' => TasksResource::collection($this->whenLoaded('tasks')),
             'proposals' => ProposalsResource::collection($this->whenLoaded('proposals')),
 		];
+    }
+
+    /**
+     * Horas contratadas (em segundos): total_hours da proposta aceita mais recente,
+     * mesma regra do relatório de horas. Sem proposta aceita = 0.
+     */
+    private function contractedHours()
+    {
+        $proposal = $this->proposals
+            ->where('status', 'accepted')
+            ->sortByDesc('accepted_at')
+            ->first();
+
+        return (int) ($proposal->total_hours ?? 0);
+    }
+
+    /**
+     * Soma o duration_time das tarefas agrupado por departamento.
+     * Tarefas sem departamento ficam num grupo com department = null.
+     */
+    private function durationByDepartment()
+    {
+        return $this->tasks
+            ->groupBy(fn ($task) => $task->department_id ?? 0)
+            ->map(function ($tasks) {
+                $department = $tasks->first()->department;
+
+                return [
+                    'department' => $department ? [
+                        'id' => $department->id,
+                        'name' => $department->name,
+                        'color' => $department->color,
+                        'icon' => $department->icon,
+                    ] : null,
+                    'duration_time' => (int) $tasks->sum('duration_time'),
+                ];
+            })
+            ->filter(fn ($group) => $group['duration_time'] > 0)
+            ->sortByDesc('duration_time')
+            ->values();
     }
 }

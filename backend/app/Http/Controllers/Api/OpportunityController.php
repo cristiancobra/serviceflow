@@ -122,6 +122,9 @@ class OpportunityController extends Controller
                 'lead',
                 'user',
                 'links',
+                'proposals.invoices.transactions',
+                'proposals.invoices.lead',
+                'proposals.invoices.company',
             ])->find($opportunity->id));
         } catch (ValidationException $validationException) {
             return response()->json([

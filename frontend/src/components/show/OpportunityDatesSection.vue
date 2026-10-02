@@ -1,12 +1,5 @@
 <template>
-  <section class="rounded-lg border border-base-300 p-6">
-    <div class="flex items-center mb-4">
-      <font-awesome-icon
-        icon="fas fa-calendar"
-        class="text-primary text-xl mr-2"
-      />
-      <h2 class="text-xl font-semibold">Datas</h2>
-    </div>
+  <SectionCard title="Datas" icon="fas fa-calendar">
     <div>
       <DateEditableInput
         name="date_start"
@@ -32,29 +25,18 @@
         :modelValue="opportunity.date_canceled"
         @save="$emit('update-field', 'date_canceled', $event)"
       />
-      
-      <div class="mt-6 pt-4 border-t border-base-300">
-        <div class="flex items-center justify-between">
-          <span class="text-sm font-medium text-base-content/80 flex items-center">
-            <font-awesome-icon icon="fas fa-clock" class="text-primary mr-2" />
-            Duração Total:
-          </span>
-          <span class="text-lg font-bold text-primary">
-            {{ formatDuration(opportunity.duration_time) }}
-          </span>
-        </div>
-      </div>
     </div>
-  </section>
+  </SectionCard>
 </template>
 
 <script>
+import SectionCard from "@/components/common/SectionCard.vue";
 import DateEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
-import { formatDuration } from "@/utils/date/dateUtils";
 
 export default {
   name: "OpportunityDatesSection",
   components: {
+    SectionCard,
     DateEditableInput,
   },
   props: {
@@ -62,9 +44,6 @@ export default {
       type: Object,
       required: true,
     },
-  },
-  methods: {
-    formatDuration,
   },
   emits: ['update-field'],
 };

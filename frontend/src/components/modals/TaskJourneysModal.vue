@@ -15,6 +15,8 @@
       v-else
       :journeys="journeys"
       :paginationData="paginationData"
+      @journey-updated="emitTaskUpdated"
+      @journey-deleted="emitTaskUpdated"
     />
   </ModalCard>
 </template>
@@ -22,7 +24,7 @@
 <script>
 import axios from "axios";
 import { mapState } from "vuex";
-import { BACKEND_URL, JOURNEY_BY_TASK_URL_QUERY } from "@/config/apiConfig";
+import { BACKEND_URL, JOURNEY_BY_TASK_URL_QUERY, TASK_URL_PARAMETER } from "@/config/apiConfig";
 import ModalCard from "@/components/modals/ModalCard.vue";
 import JourneysList from "@/components/lists/JourneysList.vue";
 
@@ -47,7 +49,8 @@ export default {
       default: false,
     },
   },
-  emits: ["close"],
+  // task-updated: duração da tarefa mudou (payload: tarefa recarregada); o App.vue repassa ao store
+  emits: ["close", "task-updated"],
   data() {
     return {
       journeys: [],
@@ -70,6 +73,14 @@ export default {
         console.error("Erro ao buscar jornadas da tarefa:", error);
       } finally {
         this.isLoading = false;
+      }
+    },
+    async emitTaskUpdated() {
+      try {
+        const response = await axios.get(`${BACKEND_URL}${TASK_URL_PARAMETER}${this.taskId}`);
+        this.$emit("task-updated", response.data.data);
+      } catch (error) {
+        console.error("Erro ao recarregar a tarefa:", error);
       }
     },
   },

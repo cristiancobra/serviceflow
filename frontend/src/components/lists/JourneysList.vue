@@ -211,8 +211,8 @@ export default {
         .delete(`${BACKEND_URL}${JOURNEY_URL_PARAMETER}${item.id}`)
         .then((response) => {
           if (response.status === 200) {
-            // this.$emit("journey-deleted", journeyToDelete.id);
             this.deleteItemList(item.id);
+            this.$emit("journey-deleted", item.id);
             this.messageStatus = "deleted";
             this.messageText = "Jornada excluída com sucesso!";
             this.emitLastJourneyEnd();
@@ -280,6 +280,7 @@ export default {
 
         this.updatedJourney = response.data.data;
         this.updateJourneyInList(this.updatedJourney);
+        this.$emit("journey-updated", this.updatedJourney);
         this.emitLastJourneyEnd();
       } catch (error) {
         console.error("Erro ao atualizar a jornada:", error);

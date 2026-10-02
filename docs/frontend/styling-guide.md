@@ -9,6 +9,7 @@ O frontend usa **DaisyUI 5 + Tailwind CSS 4**. Este guia é a regra para todo te
    - Lista ou seção vazia: `EmptyState` (`components/layout/EmptyState.vue`)
    - Ativo/inativo: `StatusToggle` (`components/buttons/StatusToggle.vue`)
    - Modais: `ModalCard` (`components/modals/ModalCard.vue`)
+   - Card de seção com cabeçalho roxo (título + ícone), ex: seções do modal de oportunidade: `SectionCard` (`components/common/SectionCard.vue`)
    - Botão de fechar: `CloseButton`
    - Status: `SelectStatusButton`
    - Campos: `components/forms/inputs/` (formulários) e `components/fields/` (campos editáveis nas telas de detalhe)

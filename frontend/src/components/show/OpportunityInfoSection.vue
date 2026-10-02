@@ -1,13 +1,6 @@
 <template>
-  <section id="info" class="rounded-lg border border-base-300 p-6">
-    <div class="flex items-center mb-4">
-      <font-awesome-icon
-        icon="fas fa-file-invoice"
-        class="text-primary text-xl mr-2"
-      />
-      <h2 class="text-xl font-semibold">Informações</h2>
-    </div>
-    <div class="space-y-4">
+  <SectionCard id="info" title="Informações" icon="fas fa-file-invoice">
+    <div class="space-y-1">
       <div class="flex items-center gap-3">
         <company-avatar
           :photo="opportunity.company?.photo"
@@ -55,10 +48,11 @@
         />
       </div>
     </div>
-  </section>
+  </SectionCard>
 </template>
 
 <script>
+import SectionCard from "@/components/common/SectionCard.vue";
 import CompaniesSelectEditableField from "../fields/selects/CompaniesSelectEditableField.vue";
 import CompanyAvatar from "../common/CompanyAvatar.vue";
 import LeadAvatar from "../common/LeadAvatar.vue";
@@ -69,6 +63,7 @@ import UsersSelectEditableField from "../fields/selects/UsersSelectEditableField
 export default {
   name: "OpportunityInfoSection",
   components: {
+    SectionCard,
     CompaniesSelectEditableField,
     CompanyAvatar,
     LeadAvatar,
