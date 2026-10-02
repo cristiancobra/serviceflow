@@ -1,11 +1,6 @@
 <template>
   <div class="page-container">
-    <div class="page-header">
-      <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-tools" class="page-icon" />
-        <h1 class="title">CUSTO DE PRODUÇÃO</h1>
-      </div>
-    </div>
+    <PageHeader title="CUSTO DE PRODUÇÃO" icon="fa-solid fa-tools" />
 
     <section class="section-container">
     <div class="table-row">
@@ -53,6 +48,7 @@
 import { destroy, show, updateField } from "@/utils/requests/httpUtils";
 import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 import MoneyEditableField from '../../components/fields/number/MoneyEditableField.vue';
+import PageHeader from "@/components/layout/PageHeader.vue";
 
 export default {
   data() {
@@ -62,6 +58,7 @@ export default {
     };
   },
   components: {
+    PageHeader,
     TextEditableField,
     MoneyEditableField,
   },

@@ -19,7 +19,6 @@
 @import './forms.css' layer(legacy);
 @import './lists.css' layer(legacy);
 @import './login.css' layer(legacy);
-@import './modal.css' layer(legacy);
 @import './projects.css' layer(legacy);
 @import './proposals.css' layer(legacy);
 @import './show.css' layer(legacy);

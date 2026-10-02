@@ -1,11 +1,7 @@
 <template>
   <div class="page-container">
-    <div class="page-header">
-      <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-tools" class="page-icon" />
-        <h1>SERVIÇOS</h1>
-      </div>
-      <div class="action-container">
+    <PageHeader title="SERVIÇOS" icon="fa-solid fa-tools">
+      <template #actions>
         <button
           type="button"
           class="px-6 py-2 bg-primary hover:opacity-90 text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
@@ -14,8 +10,8 @@
           <font-awesome-icon icon="fa-solid fa-plus" />
           Novo Serviço
         </button>
-      </div>
-    </div>
+      </template>
+    </PageHeader>
     <div class="section-container">
       <div class="search-container">
         <input
@@ -92,9 +88,13 @@ import { BACKEND_URL, SERVICE_URL } from "@/config/apiConfig";
 import { formatCurrencySymbol } from "@/utils/number/moneyUtils";
 import axios from "axios";
 import { index } from "@/utils/requests/httpUtils";
+import PageHeader from "@/components/layout/PageHeader.vue";
 
 export default {
   name: "ServicesList",
+  components: {
+    PageHeader,
+  },
   data() {
     return {
       isActive: true,

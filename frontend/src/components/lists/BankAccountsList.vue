@@ -1,17 +1,13 @@
 <template>
   <div class="page-container">
-    <div class="page-header">
-      <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-building-columns" class="page-icon" />
-        <h1>CONTAS BANCÁRIAS</h1>
-      </div>
-      <div class="page-action">
+    <PageHeader title="CONTAS BANCÁRIAS" icon="fa-solid fa-building-columns">
+      <template #actions>
         <button @click="openCreateModal" class="btn btn-primary">
           <font-awesome-icon icon="fa-solid fa-plus" />
           Nova Conta
         </button>
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
     <section class="section-container">
       <div class="filters-container">
@@ -101,13 +97,7 @@
         </div>
         
         <div class="w-1/10 text-center">
-          <button
-            @click="toggleActive(bankAccount)"
-            class="status-toggle"
-            :class="bankAccount.is_active ? 'status-active' : 'status-inactive'"
-          >
-            {{ bankAccount.is_active ? 'Ativo' : 'Inativo' }}
-          </button>
+          <StatusToggle :active="bankAccount.is_active" @toggle="toggleActive(bankAccount)" />
         </div>
         
         <div class="w-1/10 text-center">
@@ -137,10 +127,11 @@
         </div>
       </div>
 
-      <div v-if="filteredBankAccounts && filteredBankAccounts.length === 0" class="empty-state">
-        <font-awesome-icon icon="fa-solid fa-building-columns" class="empty-icon" />
-        <p>Nenhuma conta bancária encontrada</p>
-      </div>
+      <EmptyState
+        v-if="filteredBankAccounts && filteredBankAccounts.length === 0"
+        text="Nenhuma conta bancária encontrada"
+        icon="fa-solid fa-building-columns"
+      />
     </section>
 
     <!-- Modal de Criar/Editar -->
@@ -186,10 +177,16 @@
 import { index, destroy, post, get } from "@/utils/requests/httpUtils";
 import BankAccountForm from "@/components/forms/BankAccountForm.vue";
 import ModalCard from "@/components/modals/ModalCard.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
+import EmptyState from "@/components/layout/EmptyState.vue";
+import StatusToggle from "@/components/buttons/StatusToggle.vue";
 
 export default {
   name: "BankAccountsList",
   components: {
+    StatusToggle,
+    EmptyState,
+    PageHeader,
     ModalCard,
     BankAccountForm,
   },
@@ -409,34 +406,6 @@ export default {
   color: var(--color-info);
 }
 
-.status-toggle {
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.status-active {
-  background-color: color-mix(in oklab, var(--color-success) 15%, var(--color-base-100));
-  color: var(--color-success);
-}
-
-.status-active:hover {
-  background-color: color-mix(in oklab, var(--color-success) 15%, var(--color-base-100));
-}
-
-.status-inactive {
-  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
-  color: var(--color-error);
-}
-
-.status-inactive:hover {
-  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
-}
-
 .action-buttons {
   display: flex;
   gap: 0.5rem;
@@ -481,22 +450,6 @@ export default {
 
 .btn-delete:hover {
   background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
-}
-
-.empty-state {
-  text-align: center;
-  padding: 3rem;
-  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
-}
-
-.empty-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  opacity: 0.5;
-}
-
-.empty-state p {
-  font-size: 1.125rem;
 }
 
 </style>

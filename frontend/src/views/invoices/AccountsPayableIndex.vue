@@ -1,17 +1,19 @@
 <template>
   <div class="page-container">
     <!-- Header -->
-    <div class="page-header">
-      <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-file-invoice-dollar" class="page-icon text-error" />
-        <h1>CONTAS A PAGAR</h1>
-      </div>
-      <button @click="openCreateInvoiceModal"
-        class="flex items-center gap-2 px-4 py-2 bg-error text-white rounded-lg hover:bg-error transition-colors font-semibold text-sm">
-        <font-awesome-icon icon="fa-solid fa-plus" />
-        Nova Conta a Pagar
-      </button>
-    </div>
+    <PageHeader
+      title="CONTAS A PAGAR"
+      icon="fa-solid fa-file-invoice-dollar"
+      icon-class="text-error"
+    >
+      <template #actions>
+        <button @click="openCreateInvoiceModal"
+          class="flex items-center gap-2 px-4 py-2 bg-error text-white rounded-lg hover:bg-error transition-colors font-semibold text-sm">
+          <font-awesome-icon icon="fa-solid fa-plus" />
+          Nova Conta a Pagar
+        </button>
+      </template>
+    </PageHeader>
 
     <!-- Summary Cards -->
     <section class="px-8 mt-4 mb-6">
@@ -135,10 +137,12 @@ import { mapMutations } from "vuex";
 import { BACKEND_URL } from "@/config/apiConfig";
 import axios from "axios";
 import AccountsPayableList from "@/components/lists/AccountsPayableList.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
 
 export default {
   name: "AccountsPayableIndex",
   components: {
+    PageHeader,
     AccountsPayableList,
   },
   data() {

@@ -5,11 +5,12 @@
                 <SearchInput v-model="searchTerm" placeholder="🔍 Buscar por nome, CNPJ, email ou telefone..." />
             </div>
 
-            <div v-if="filteredCompanies.length === 0" class="empty-state">
-                <font-awesome-icon icon="fa-solid fa-inbox" class="empty-icon" />
-                <h3>Nenhuma empresa encontrada</h3>
-                <p>{{ searchTerm ? 'Tente ajustar sua busca' : 'Comece criando sua primeira empresa' }}</p>
-            </div>
+            <EmptyState
+                v-if="filteredCompanies.length === 0"
+                text="Nenhuma empresa encontrada"
+                :description="searchTerm ? 'Tente ajustar sua busca' : 'Comece criando sua primeira empresa'"
+                icon="fa-solid fa-inbox"
+            />
 
             <div v-else class="companies-grid">
                 <div class="company-card" v-for="company in filteredCompanies" v-bind:key="company.id">
@@ -50,13 +51,13 @@
 
 <script>
 import { index } from "@/utils/requests/httpUtils";
-import CompanyCreateForm from "@/components/forms/CompanyCreateForm.vue";
 import SearchInput from "@/components/filters/SearchInput.vue";
+import EmptyState from "@/components/layout/EmptyState.vue";
 
 export default {
   name: "CompaniesList",
   components: {
-    CompanyCreateForm,
+    EmptyState,
     SearchInput,
   },
   data() {
@@ -111,80 +112,6 @@ export default {
     min-height: 100vh;
 }
 
-.page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 40px;
-    gap: 20px;
-}
-
-.page-title {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    flex: 1;
-}
-
-.page-icon {
-    font-size: 48px;
-    color: var(--color-primary);
-    background: color-mix(in oklab, var(--color-primary) 10%, transparent);
-    padding: 15px;
-    border-radius: 12px;
-    width: 78px;
-    height: 78px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.page-title h1 {
-    margin: 0;
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--color-base-content);
-    letter-spacing: -0.5px;
-}
-
-.subtitle {
-    margin: 5px 0 0 0;
-    color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.page-action {
-    display: flex;
-    gap: 10px;
-}
-
-.btn-create {
-    background: linear-gradient(135deg, var(--color-primary) 0%, color-mix(in oklab, var(--color-primary) 80%, black) 100%);
-    color: white;
-    border: none;
-    padding: 12px 28px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px color-mix(in oklab, var(--color-primary) 30%, transparent);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    white-space: nowrap;
-}
-
-.btn-create:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px color-mix(in oklab, var(--color-primary) 40%, transparent);
-}
-
-.btn-create:active {
-    transform: translateY(0);
-}
-
 .section-container {
     background: var(--color-base-100);
     border-radius: 16px;
@@ -194,30 +121,6 @@ export default {
 
 .search-container {
     margin-bottom: 30px;
-}
-
-.empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
-}
-
-.empty-icon {
-    font-size: 64px;
-    color: color-mix(in oklab, var(--color-base-content) 30%, transparent);
-    margin-bottom: 20px;
-}
-
-.empty-state h3 {
-    margin: 20px 0 10px;
-    color: var(--color-base-content);
-    font-size: 20px;
-}
-
-.empty-state p {
-    margin: 0;
-    color: color-mix(in oklab, var(--color-base-content) 50%, transparent);
-    font-size: 14px;
 }
 
 .companies-grid {
@@ -313,35 +216,6 @@ export default {
         padding: 20px;
     }
 
-    .page-header {
-        flex-direction: column;
-        align-items: flex-start;
-        margin-bottom: 30px;
-    }
-
-    .page-title {
-        width: 100%;
-    }
-
-    .page-icon {
-        width: 60px;
-        height: 60px;
-        font-size: 36px;
-    }
-
-    .page-title h1 {
-        font-size: 24px;
-    }
-
-    .page-action {
-        width: 100%;
-    }
-
-    .btn-create {
-        flex: 1;
-        justify-content: center;
-    }
-
     .section-container {
         padding: 20px;
     }
@@ -354,19 +228,6 @@ export default {
 @media (max-width: 480px) {
     .page-container {
         padding: 15px;
-    }
-
-    .page-title h1 {
-        font-size: 20px;
-    }
-
-    .subtitle {
-        font-size: 12px;
-    }
-
-    .btn-create {
-        padding: 10px 20px;
-        font-size: 14px;
     }
 
     .section-container {

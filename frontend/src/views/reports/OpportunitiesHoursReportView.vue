@@ -1,11 +1,6 @@
 <template>
   <div class="page-container">
-    <div class="page-header">
-      <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-hourglass-half" class="page-icon" />
-        <h1>PREVISTO X REALIZADO</h1>
-      </div>
-    </div>
+    <PageHeader title="PREVISTO X REALIZADO" icon="fa-solid fa-hourglass-half" />
 
     <p class="text-base-content/60 text-sm -mt-2 mb-4">
       Compara, por oportunidade, o valor de hora previsto na proposta aceita com o valor
@@ -171,10 +166,12 @@
 <script>
 import { getOpportunitiesHoursReport } from "@/utils/requests/httpUtils";
 import YearFilter from "@/components/filters/YearFilter.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
 
 export default {
   name: "OpportunitiesHoursReportView",
   components: {
+    PageHeader,
     YearFilter,
   },
   data() {

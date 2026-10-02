@@ -1,17 +1,13 @@
 <template>
   <div class="page-container">
-    <div class="page-header">
-      <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-briefcase" class="page-icon" />
-        <h1>EMPRESAS</h1>
-      </div>
-      <div class="page-action">
+    <PageHeader title="EMPRESAS" icon="fa-solid fa-briefcase">
+      <template #actions>
         <button type="button" class="btn-create" @click="openCreateCompanyModal">
           <font-awesome-icon icon="fa-solid fa-plus" class="me-2" />
           Nova Empresa
         </button>
-      </div>
-    </div>
+      </template>
+    </PageHeader>
     <companies-list ref="companiesList" template="index" />
   </div>
 </template>
@@ -19,9 +15,11 @@
 <script>
 import { mapMutations } from "vuex";
 import CompaniesList from "@/components/lists/CompaniesList.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
 
 export default {
   components: {
+    PageHeader,
     CompaniesList,
   },
   methods: {

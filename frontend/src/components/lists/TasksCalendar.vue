@@ -1,16 +1,12 @@
 <template>
   <div class="page-container">
-    <div class="page-header">
-      <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-tasks" class="page-icon" />
-        <h1 class="">AGENDA</h1>
-      </div>
-      <div class="page-action">
+    <PageHeader title="AGENDA" icon="fa-solid fa-tasks">
+      <template #actions>
         <button type="button" class="btn btn-primary" @click="openTaskCreateModal">
           <font-awesome-icon icon="fa-solid fa-plus" class="text-white" />
         </button>
-      </div>
-    </div>
+      </template>
+    </PageHeader>
     <tasks-list-section 
       :tasks="localTasks" 
       :showOpportunityColumn="true" 
@@ -38,6 +34,7 @@ import {
 } from "@/config/apiConfig";
 import TasksListSection from "@/components/lists/TasksListSection.vue";
 import { mapState, mapMutations } from "vuex";
+import PageHeader from "@/components/layout/PageHeader.vue";
 
 export default {
   props: {
@@ -60,6 +57,7 @@ export default {
     };
   },
   components: {
+    PageHeader,
     TasksListSection,
   },
   methods: {

@@ -1,11 +1,6 @@
 <template>
     <div class="page-container">
-        <div class="page-header">
-            <div class="page-title">
-                <font-awesome-icon icon="fa-solid fa-user" class="page-icon" />
-                <h1>Perfil do Usuário</h1>
-            </div>
-        </div>
+        <PageHeader title="Perfil do Usuário" icon="fa-solid fa-user" />
 
         <section class="section-container">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -93,6 +88,7 @@ import { show, submitFormCreate, updateField } from "@/utils/requests/httpUtils"
 import { BACKEND_URL, USER_URL, IMAGES_PATH } from "@/config/apiConfig";
 import axios from "axios";
 import TextEditableField from "@/components/fields/text/TextEditableField.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
 
 export default {
     data() {
@@ -109,6 +105,7 @@ export default {
         }
     },
     components: {
+    PageHeader,
         TextEditableField,
     },
     methods: {

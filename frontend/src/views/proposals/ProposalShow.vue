@@ -1,17 +1,13 @@
 <template>
   <div class="page-container">
-    <div class="page-header">
-      <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-tools" class="page-icon" />
-        <h1>PROPOSTA</h1>
-      </div>
-      <div class="action-container">
+    <PageHeader title="PROPOSTA" icon="fa-solid fa-tools">
+      <template #actions>
         <select-status-button
           :status="proposal.status"
           @update:modelValue="updateProposal('status', $event)"
         />
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
     <div class="section-container">
       <div class="w-1/2">
@@ -117,6 +113,7 @@ import DebitInvoicesSection from "@/components/lists/DebitInvoicesSection.vue";
 import SelectStatusButton from "../../components/buttons/SelectStatusButton.vue";
 import TimelineProposal from "@/components/TimelineProposal.vue";
 import CreditInvoicesSection from '../../components/lists/CreditInvoicesSection.vue';
+import PageHeader from "@/components/layout/PageHeader.vue";
 
 export default {
   data() {
@@ -130,6 +127,7 @@ export default {
     };
   },
   components: {
+    PageHeader,
     DescriptionSection,
     OpportunitiesSelectEditableField,
     ProposalProfitMarginSection,

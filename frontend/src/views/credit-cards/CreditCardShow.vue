@@ -1,14 +1,12 @@
 <template>
   <div class="page-container">
-    <div class="page-header">
-      <div class="page-title">
-        <button @click="goBack" class="btn-back">
-          <font-awesome-icon icon="fa-solid fa-arrow-left" />
-        </button>
-        <font-awesome-icon icon="fa-solid fa-credit-card" class="page-icon" />
-        <h1>{{ creditCard?.name || 'Carregando...' }}</h1>
-      </div>
-      <div class="page-action">
+    <PageHeader
+      :title="creditCard?.name || 'Carregando...'"
+      icon="fa-solid fa-credit-card"
+      show-back
+      @back="goBack"
+    >
+      <template #actions>
         <button @click="openChargeModal" class="btn btn-primary">
           <font-awesome-icon icon="fa-solid fa-plus" />
           Nova Compra
@@ -17,8 +15,8 @@
           <font-awesome-icon icon="fa-solid fa-edit" />
           Editar
         </button>
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
     <section class="section-container">
       <div v-if="loading" class="loading-state">
@@ -57,12 +55,7 @@
             <div class="info-item">
               <span class="info-label">Status:</span>
               <span class="info-value">
-                <span
-                  class="status-badge"
-                  :class="creditCard.is_active ? 'status-active' : 'status-inactive'"
-                >
-                  {{ creditCard.is_active ? 'Ativo' : 'Inativo' }}
-                </span>
+                <StatusToggle :active="creditCard.is_active" readonly />
               </span>
             </div>
             <div class="info-item" v-if="creditCard.default_bank_account">
@@ -115,9 +108,10 @@
             </div>
           </div>
 
-          <div v-if="invoices.length === 0" class="empty-state">
-            <p>Nenhuma fatura ainda. Lance uma compra para começar.</p>
-          </div>
+          <EmptyState
+            v-if="invoices.length === 0"
+            text="Nenhuma fatura ainda. Lance uma compra para começar."
+          />
         </div>
       </div>
 
@@ -164,10 +158,16 @@ import { show, index } from "@/utils/requests/httpUtils";
 import CreditCardForm from "@/components/forms/CreditCardForm.vue";
 import CreditCardChargeForm from "@/components/forms/CreditCardChargeForm.vue";
 import ModalCard from "@/components/modals/ModalCard.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
+import EmptyState from "@/components/layout/EmptyState.vue";
+import StatusToggle from "@/components/buttons/StatusToggle.vue";
 
 export default {
   name: "CreditCardShow",
   components: {
+    StatusToggle,
+    EmptyState,
+    PageHeader,
     ModalCard,
     CreditCardForm,
     CreditCardChargeForm,
@@ -261,25 +261,6 @@ export default {
 </script>
 
 <style scoped>
-.btn-back {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-  margin-right: 0.5rem;
-  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
-  transition: color 0.2s;
-}
-
-.btn-back:hover {
-  color: var(--color-base-content);
-}
-
-.page-action {
-  display: flex;
-  gap: 0.75rem;
-}
-
 .loading-state,
 .error-state {
   text-align: center;
@@ -345,13 +326,11 @@ export default {
   display: inline-block;
 }
 
-.status-active,
 .status-paid {
   background-color: color-mix(in oklab, var(--color-success) 15%, var(--color-base-100));
   color: var(--color-success);
 }
 
-.status-inactive,
 .status-overdue {
   background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
   color: var(--color-error);
@@ -396,12 +375,6 @@ export default {
 
 .list-line.clickable:hover {
   background-color: var(--color-base-200);
-}
-
-.empty-state {
-  text-align: center;
-  padding: 2rem;
-  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
 }
 
 @media (max-width: 768px) {

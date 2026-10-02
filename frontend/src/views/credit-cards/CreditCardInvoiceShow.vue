@@ -1,17 +1,12 @@
 <template>
   <div class="page-container">
-    <div class="page-header">
-      <div class="page-title">
-        <button @click="goBack" class="btn-back">
-          <font-awesome-icon icon="fa-solid fa-arrow-left" />
-        </button>
-        <font-awesome-icon icon="fa-solid fa-file-invoice-dollar" class="page-icon" />
-        <h1 v-if="invoice">
-          Fatura {{ invoice.credit_card?.name }} — {{ invoice.reference_label }}
-        </h1>
-        <h1 v-else>Carregando...</h1>
-      </div>
-      <div class="page-action" v-if="invoice">
+    <PageHeader
+      :title="invoice ? `Fatura ${invoice.credit_card?.name} — ${invoice.reference_label}` : 'Carregando...'"
+      icon="fa-solid fa-file-invoice-dollar"
+      show-back
+      @back="goBack"
+    >
+      <template v-if="invoice" #actions>
         <button
           v-if="invoice.status === 'open'"
           @click="closeInvoice"
@@ -28,8 +23,8 @@
           <font-awesome-icon icon="fa-solid fa-money-bill-wave" />
           Registrar Pagamento
         </button>
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
     <section class="section-container">
       <div v-if="loading" class="loading-state">
@@ -119,9 +114,10 @@
             </div>
           </div>
 
-          <div v-if="!invoice.charges || invoice.charges.length === 0" class="empty-state">
-            <p>Nenhuma compra lançada nesta fatura.</p>
-          </div>
+          <EmptyState
+            v-if="!invoice.charges || invoice.charges.length === 0"
+            text="Nenhuma compra lançada nesta fatura."
+          />
         </div>
 
         <!-- Pagamentos -->
@@ -184,11 +180,15 @@
 import { show, post, destroy } from "@/utils/requests/httpUtils";
 import CreditCardInvoicePaymentForm from "@/components/forms/CreditCardInvoicePaymentForm.vue";
 import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
 import ModalCard from "@/components/modals/ModalCard.vue";
+import EmptyState from "@/components/layout/EmptyState.vue";
 
 export default {
   name: "CreditCardInvoiceShow",
   components: {
+    EmptyState,
+    PageHeader,
     ModalCard,
     CreditCardInvoicePaymentForm,
     DeleteIconButton,
@@ -279,25 +279,6 @@ export default {
 </script>
 
 <style scoped>
-.btn-back {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-  margin-right: 0.5rem;
-  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
-  transition: color 0.2s;
-}
-
-.btn-back:hover {
-  color: var(--color-base-content);
-}
-
-.page-action {
-  display: flex;
-  gap: 0.75rem;
-}
-
 .loading-state,
 .error-state {
   text-align: center;
@@ -398,12 +379,6 @@ export default {
   align-items: center;
   padding: 0.75rem;
   border-bottom: 1px solid var(--color-base-300);
-}
-
-.empty-state {
-  text-align: center;
-  padding: 2rem;
-  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
 }
 
 .btn-action {

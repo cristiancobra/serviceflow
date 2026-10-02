@@ -1,11 +1,6 @@
 <template>
   <div class="page-container">
-    <div class="page-header">
-      <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-tasks" class="page-icon" />
-        <h1>TAREFAS</h1>
-      </div>
-    </div>
+    <PageHeader title="TAREFAS" icon="fa-solid fa-tasks" />
 
     <!-- Filtro antigo - removido pois agora está integrado ao TasksListSection -->
     <!-- <tasks-filter
@@ -32,10 +27,12 @@ import TasksListSection from "@/components/lists/TasksListSection.vue";
 // import TasksFilter from "@/components/filters/TasksFilter.vue"; // Filtro antigo - agora está integrado ao TasksListSection
 import SuccessMessage from "../../components/forms/messages/SuccessMessage.vue";
 import ErrorMessage from "../../components/forms/messages/ErrorMessage.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
 
 export default {
   name: "TasksIndexView",
   components: {
+    PageHeader,
     TasksListSection,
     // TasksFilter, // Filtro antigo - agora está integrado ao TasksListSection
     SuccessMessage,

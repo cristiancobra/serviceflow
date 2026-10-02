@@ -5,12 +5,7 @@
       :messageText="messageText"
       @update:messageStatus="messageStatus = $event"
     />
-    <div class="page-header">
-      <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-cogs" class="page-icon" />
-        <h1>Configurações</h1>
-      </div>
-    </div>
+    <PageHeader title="Configurações" icon="fa-solid fa-cogs" />
 
     <section class="section-container">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -200,6 +195,7 @@ import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 import MoneyEditableField from "@/components/fields/number/MoneyEditableField.vue";
 import DepartmentsManager from "@/components/lists/DepartmentsManager.vue";
 import { mapMutations } from "vuex";
+import PageHeader from "@/components/layout/PageHeader.vue";
 
 export default {
   data() {
@@ -224,6 +220,7 @@ export default {
     };
   },
   components: {
+    PageHeader,
     AddMessage,
     TextEditableField,
     MoneyEditableField,

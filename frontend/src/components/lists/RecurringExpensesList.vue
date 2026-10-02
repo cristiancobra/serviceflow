@@ -1,17 +1,13 @@
 <template>
   <div class="page-container">
-    <div class="page-header">
-      <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-rotate" class="page-icon" />
-        <h1>DESPESAS RECORRENTES</h1>
-      </div>
-      <div class="page-action">
+    <PageHeader title="DESPESAS RECORRENTES" icon="fa-solid fa-rotate">
+      <template #actions>
         <button @click="openCreateModal" class="btn btn-primary">
           <font-awesome-icon icon="fa-solid fa-plus" />
           Nova Despesa Recorrente
         </button>
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
     <section class="section-container">
       <div class="filters-container">
@@ -89,13 +85,12 @@
         </div>
 
         <div class="w-1/10 text-center">
-          <button
-            @click="toggleActive(recurringExpense)"
-            class="status-toggle"
-            :class="recurringExpense.is_active ? 'status-active' : 'status-inactive'"
-          >
-            {{ recurringExpense.is_active ? 'Ativa' : 'Inativa' }}
-          </button>
+          <StatusToggle
+            :active="recurringExpense.is_active"
+            active-label="Ativa"
+            inactive-label="Inativa"
+            @toggle="toggleActive(recurringExpense)"
+          />
         </div>
 
         <div class="w-1/10 text-center">
@@ -133,10 +128,11 @@
         </div>
       </div>
 
-      <div v-if="filteredRecurringExpenses && filteredRecurringExpenses.length === 0" class="empty-state">
-        <font-awesome-icon icon="fa-solid fa-rotate" class="empty-icon" />
-        <p>Nenhuma despesa recorrente encontrada</p>
-      </div>
+      <EmptyState
+        v-if="filteredRecurringExpenses && filteredRecurringExpenses.length === 0"
+        text="Nenhuma despesa recorrente encontrada"
+        icon="fa-solid fa-rotate"
+      />
     </section>
 
     <!-- Modal de Criar/Editar -->
@@ -219,10 +215,16 @@ import { index, destroy, post } from "@/utils/requests/httpUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import RecurringExpenseForm from "@/components/forms/RecurringExpenseForm.vue";
 import ModalCard from "@/components/modals/ModalCard.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
+import EmptyState from "@/components/layout/EmptyState.vue";
+import StatusToggle from "@/components/buttons/StatusToggle.vue";
 
 export default {
   name: "RecurringExpensesList",
   components: {
+    StatusToggle,
+    EmptyState,
+    PageHeader,
     ModalCard,
     RecurringExpenseForm,
   },
@@ -473,34 +475,6 @@ export default {
   background-color: var(--color-base-200);
 }
 
-.status-toggle {
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.status-active {
-  background-color: color-mix(in oklab, var(--color-success) 15%, var(--color-base-100));
-  color: var(--color-success);
-}
-
-.status-active:hover {
-  background-color: color-mix(in oklab, var(--color-success) 15%, var(--color-base-100));
-}
-
-.status-inactive {
-  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
-  color: var(--color-error);
-}
-
-.status-inactive:hover {
-  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
-}
-
 .action-buttons {
   display: flex;
   gap: 0.5rem;
@@ -555,22 +529,6 @@ export default {
 
 .btn-delete:hover {
   background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
-}
-
-.empty-state {
-  text-align: center;
-  padding: 3rem;
-  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
-}
-
-.empty-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  opacity: 0.5;
-}
-
-.empty-state p {
-  font-size: 1.125rem;
 }
 
 </style>

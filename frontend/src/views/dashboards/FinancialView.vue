@@ -4,15 +4,7 @@
 
     <!-- Seção de Propostas -->
     
-      <div class="page-header">
-        <div class="page-title">
-          <font-awesome-icon icon="fa-solid fa-tools" class="page-icon" />
-          <h1
-          >
-            Propostas
-          </h1>
-        </div>
-      </div>
+      <PageHeader title="Propostas" icon="fa-solid fa-tools" />
       <div
         class="flex items-center justify-between mb-4 p-4 bg-info/10 rounded-lg"
       >
@@ -274,6 +266,7 @@ import {
 } from "../../utils/requests/httpUtils";
 import MoneyField from "../../components/fields/number/MoneyField.vue";
 import YearFilter from "../../components/filters/YearFilter.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
 
 export default {
   data() {
@@ -292,6 +285,7 @@ export default {
     };
   },
   components: {
+    PageHeader,
     MoneyField,
     YearFilter,
   },

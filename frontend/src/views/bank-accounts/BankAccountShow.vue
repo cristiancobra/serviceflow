@@ -1,20 +1,18 @@
 <template>
   <div class="page-container">
-    <div class="page-header">
-      <div class="page-title">
-        <button @click="goBack" class="btn-back">
-          <font-awesome-icon icon="fa-solid fa-arrow-left" />
-        </button>
-        <font-awesome-icon icon="fa-solid fa-building-columns" class="page-icon" />
-        <h1>{{ bankAccount?.account_name || 'Carregando...' }}</h1>
-      </div>
-      <div class="page-action">
+    <PageHeader
+      :title="bankAccount?.account_name || 'Carregando...'"
+      icon="fa-solid fa-building-columns"
+      show-back
+      @back="goBack"
+    >
+      <template #actions>
         <button @click="openEditModal" class="btn btn-primary">
           <font-awesome-icon icon="fa-solid fa-edit" />
           Editar
         </button>
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
     <section class="section-container">
       <div v-if="loading" class="loading-state">
@@ -51,12 +49,7 @@
             <div class="info-item">
               <span class="info-label">Status:</span>
               <span class="info-value">
-                <span 
-                  class="status-badge"
-                  :class="bankAccount.is_active ? 'status-active' : 'status-inactive'"
-                >
-                  {{ bankAccount.is_active ? 'Ativa' : 'Inativa' }}
-                </span>
+                <StatusToggle :active="bankAccount.is_active" active-label="Ativa" inactive-label="Inativa" readonly />
               </span>
             </div>
           </div>
@@ -157,10 +150,14 @@
 import { show, post } from "@/utils/requests/httpUtils";
 import BankAccountForm from "@/components/forms/BankAccountForm.vue";
 import ModalCard from "@/components/modals/ModalCard.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
+import StatusToggle from "@/components/buttons/StatusToggle.vue";
 
 export default {
   name: "BankAccountShow",
   components: {
+    StatusToggle,
+    PageHeader,
     ModalCard,
     BankAccountForm,
   },
@@ -230,20 +227,6 @@ export default {
 </script>
 
 <style scoped>
-.btn-back {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-  margin-right: 0.5rem;
-  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
-  transition: color 0.2s;
-}
-
-.btn-back:hover {
-  color: var(--color-base-content);
-}
-
 .loading-state,
 .error-state {
   text-align: center;
@@ -309,24 +292,6 @@ export default {
   background-color: color-mix(in oklab, var(--color-info) 15%, var(--color-base-100));
   color: var(--color-info);
   display: inline-block;
-}
-
-.status-badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  display: inline-block;
-}
-
-.status-active {
-  background-color: color-mix(in oklab, var(--color-success) 15%, var(--color-base-100));
-  color: var(--color-success);
-}
-
-.status-inactive {
-  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
-  color: var(--color-error);
 }
 
 .balance-display {

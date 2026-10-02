@@ -1,15 +1,12 @@
 <template>
   <div class="page-container">
-    <div class="page-header">
-      <div class="page-title">
-      </div>
-      <div class="section-action">
+    <PageHeader>
+      <template #actions>
         <div class="text-800 text-white">
           <span>{{ dateNow }}</span>
         </div>
-      </div>
-
-    </div>
+      </template>
+    </PageHeader>
 
     <tasks-list-section 
       :tasks="localTasks" 
@@ -28,6 +25,7 @@ import {
 } from "@/config/apiConfig";
 import "../assets/css/dashboard.css";
 import TasksListSection from '../components/lists/TasksListSection.vue';
+import PageHeader from "@/components/layout/PageHeader.vue";
 
 export default {
   data() {
@@ -37,6 +35,7 @@ export default {
     };
   },
   components: {
+    PageHeader,
     TasksListSection,
   },
   methods: {

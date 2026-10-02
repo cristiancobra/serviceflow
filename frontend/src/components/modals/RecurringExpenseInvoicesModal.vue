@@ -7,14 +7,13 @@
     compact-size="max-w-3xl"
     @close="$emit('close')"
   >
-    <div v-if="isLoadingInvoices" class="empty-state">
-      <p>Carregando faturas...</p>
-    </div>
+    <EmptyState v-if="isLoadingInvoices" text="Carregando faturas..." />
 
-    <div v-else-if="invoicesForModal.length === 0" class="empty-state">
-      <font-awesome-icon icon="fa-solid fa-receipt" class="empty-icon" />
-      <p>Nenhuma fatura gerada ainda</p>
-    </div>
+    <EmptyState
+      v-else-if="invoicesForModal.length === 0"
+      text="Nenhuma fatura gerada ainda"
+      icon="fa-solid fa-receipt"
+    />
 
     <div v-else class="invoices-table-wrapper">
       <table class="invoices-table">
@@ -110,10 +109,12 @@ import ModalCard from "@/components/modals/ModalCard.vue";
 import DateEditableInput from "@/components/fields/date/DateEditableInput.vue";
 import MoneyEditableField from "@/components/fields/number/MoneyEditableField.vue";
 import TransactionsListSection from "@/components/show/TransactionsListSection.vue";
+import EmptyState from "@/components/layout/EmptyState.vue";
 
 export default {
   name: "RecurringExpenseInvoicesModal",
   components: {
+    EmptyState,
     ModalCard,
     DateEditableInput,
     MoneyEditableField,
@@ -394,22 +395,6 @@ export default {
 .invoice-status-cancelled {
   background-color: var(--color-base-300);
   color: color-mix(in oklab, var(--color-base-content) 80%, transparent);
-}
-
-.empty-state {
-  text-align: center;
-  padding: 3rem;
-  color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
-}
-
-.empty-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  opacity: 0.5;
-}
-
-.empty-state p {
-  font-size: 1.125rem;
 }
 
 .btn-secondary {

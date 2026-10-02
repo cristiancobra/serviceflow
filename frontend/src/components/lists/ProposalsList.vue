@@ -1,17 +1,13 @@
 <template>
   <div class="page-container">
-    <div class="page-header">
-      <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-money-bill" class="page-icon" />
-        <h1>PROPOSTAS</h1>
-      </div>
-      <div class="page-action">
+    <PageHeader title="PROPOSTAS" icon="fa-solid fa-money-bill">
+      <template #actions>
         <!-- <ProposalCreateForm
           @new-proposal-event="addProposalCreated"
           :opportunityId="opportunityId"
         /> -->
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
     <section class="section-container">
       <!-- Search Bar -->
@@ -140,9 +136,11 @@ import { getDeadlineClass } from "@/utils/card/cardUtils";
 import { index, updateField } from "@/utils/requests/httpUtils";
 import MoneyField from "../fields/number/MoneyField.vue";
 import ProposalStatusBadge from "../badges/ProposalStatusBadge.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
 
 export default {
   components: {
+    PageHeader,
     MoneyField,
     ProposalStatusBadge,
   },

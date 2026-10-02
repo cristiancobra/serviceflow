@@ -1,11 +1,6 @@
 <template>
   <div class="page-container">
-    <div class="page-header">
-      <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-tools" class="page-icon" />
-        <h1>SERVIÇO</h1>
-      </div>
-    </div>
+    <PageHeader title="SERVIÇO" icon="fa-solid fa-tools" />
 
     <section class="section-container">
       <div class="section-header">
@@ -52,6 +47,7 @@ import { destroy, show, updateField } from "@/utils/requests/httpUtils";
 import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 import ServiceCostsSection from "../../components/show/ServiceCostsSection.vue";
 import ServiceProfitMarginSection from "@/components/show/ServiceProfitMarginSection.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
 
 export default {
   data() {
@@ -61,6 +57,7 @@ export default {
     };
   },
   components: {
+    PageHeader,
     TextEditableField,
     ServiceCostsSection,
     ServiceProfitMarginSection,

@@ -1,17 +1,13 @@
 <template>
   <div class="page-container">
-    <div class="page-header">
-      <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-file-invoice-dollar" class="page-icon" />
-        <h1>FATURAS</h1>
-      </div>
-      <div class="page-action">
+    <PageHeader title="FATURAS" icon="fa-solid fa-file-invoice-dollar">
+      <template #actions>
         <!-- <InvoiceCreateForm
           @new-invoice-event="addInvoiceCreated"
           :proposalId="proposalId"
         /> -->
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
     <section class="section-container">
       <div class="w-full mb-6">
@@ -176,9 +172,11 @@ import { getDeadlineClass } from "@/utils/card/cardUtils";
 import { index, updateField } from "@/utils/requests/httpUtils";
 import MoneyField from "../fields/number/MoneyField.vue";
 import InvoiceStatusBadge from "../badges/InvoiceStatusBadge.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
 
 export default {
   components: {
+    PageHeader,
     MoneyField,
     InvoiceStatusBadge,
   },

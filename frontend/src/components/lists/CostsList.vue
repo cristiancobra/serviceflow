@@ -1,11 +1,7 @@
 <template>
   <div class="page-container">
-    <div class="page-header">
-      <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-tools" class="page-icon" />
-        <h1>CUSTOS DE PRODUÇÃO</h1>
-      </div>
-      <div class="action-container">
+    <PageHeader title="CUSTOS DE PRODUÇÃO" icon="fa-solid fa-tools">
+      <template #actions>
         <button
           type="button"
           class="px-6 py-2 bg-primary hover:opacity-90 text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
@@ -14,8 +10,8 @@
           <font-awesome-icon icon="fa-solid fa-plus" />
           Novo Custo
         </button>
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
     <section class="section-container">
       <div class="mb-4">
@@ -95,8 +91,12 @@ import { BACKEND_URL, COST_URL } from "@/config/apiConfig";
 import axios from "axios";
 import { mapMutations } from "vuex";
 import { index } from "@/utils/requests/httpUtils";
+import PageHeader from "@/components/layout/PageHeader.vue";
 
 export default {
+  components: {
+    PageHeader,
+  },
   data() {
     return {
       isActive: true,

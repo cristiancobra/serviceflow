@@ -18,55 +18,6 @@
 }
 
 
-.page-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 2rem;
-  padding-top: 1rem;
-  padding-left: 2rem;
-  padding-right: 2rem;
-  padding-bottom: 0.4rem;
-  border-radius: 14px 14px 0 0;
-  background-color: var(--color-primary);
-}
-
-.page-title {
-  flex: 12;
-  display: flex;
-  justify-content: start;
-  align-items: center;
-}
-
-.page-title h1 {
-  font-size: 1.4rem;
-  line-height: 2.5rem;
-  font-weight: 800;
-  text-align: left;
-  color: white;
-}
-
-.page-title h2 {
-  font-size: 1.4rem;
-  font-weight: 800;
-  text-align: left;
-  color: var(--color-primary);
-  padding-top: 3rem;
-}
-
-.page-icon {
-  font-size: 1.2rem;
-  font-weight: 800;
-  text-align: left;
-  color: var(--color-primary);
-  background-color: var(--color-base-100);
-  border-radius: 50%;
-  margin-right: 0.8rem;
-  padding: 0.3rem;
-}
-
-
-
 .row-simple {
   display: flex;
   justify-content: left;
@@ -144,12 +95,6 @@
   margin-bottom: 2rem;
 }
 
-
-.page-action {
-  flex: 2;
-  display: flex;
-  justify-content: center;
-}
 
 .info-container {
   margin-top: 1%;
@@ -356,11 +301,6 @@
   font-weight: 900 !important;
   padding-bottom: 0px;
   color: var(--color-base-content);
-}
-
-.page-title-icon {
-  font-size: 2rem;
-  color: var(--color-primary);
 }
 
 .table-row {

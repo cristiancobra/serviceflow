@@ -1,23 +1,20 @@
 <template>
   <div class="page-container">
-    <div class="page-header">
-      <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-folder-open" class="page-icon" />
-        <h1>
-          <TextEditableField
-            name="name"
-            v-model="project.name"
-            placeholder="descrição detalhada da tarefa"
-            @save="updateProject('name', $event)"
-          />
-        </h1>
-      </div>
-      <div class="page-action">
+    <PageHeader icon="fa-solid fa-folder-open">
+      <template #title>
+        <TextEditableField
+          name="name"
+          v-model="project.name"
+          placeholder="descrição detalhada da tarefa"
+          @save="updateProject('name', $event)"
+        />
+      </template>
+      <template #actions>
         <p class="show-duration">
           {{ formatDuration(project.duration_time) }}
         </p>
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
     <div class="section-container">
       <div class="section-title">
@@ -116,10 +113,12 @@ import OpportunitiesSelectEditableField from "../../components/fields/selects/Op
 import TasksListSection from "@/components/lists/TasksListSection.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 import TextEditor from "@/components/forms/inputs/TextEditor.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
 
 export default {
   name: "ProjectShow",
   components: {
+    PageHeader,
     DateEditableInput,
     OpportunitiesSelectEditableField,
     TasksListSection,

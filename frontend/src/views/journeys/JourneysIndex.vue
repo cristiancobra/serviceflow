@@ -1,11 +1,6 @@
 <template>
   <div class="page-container">
-    <div class="page-header">
-      <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-clock" class="page-icon" />
-        <h1>JORNADAS</h1>
-      </div>
-    </div>
+    <PageHeader title="JORNADAS" icon="fa-solid fa-clock" />
 
     <journeys-filter
       @filter-change="handleFilterChange"
@@ -28,10 +23,12 @@ import JourneysList from "@/components/lists/JourneysList.vue";
 import JourneysFilter from "@/components/filters/JourneysFilter.vue";
 import SuccessMessage from "@/components/forms/messages/SuccessMessage.vue";
 import ErrorMessage from "@/components/forms/messages/ErrorMessage.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
 
 export default {
   name: "JourneysIndexView",
   components: {
+    PageHeader,
     JourneysList,
     JourneysFilter,
     SuccessMessage,

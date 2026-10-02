@@ -6,12 +6,8 @@
       :messageText="messageText"
     >
     </AddMessage>
-    <div class="page-header">
-      <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-project-diagram" class="page-icon" />
-        <h1>PROJETOS</h1>
-      </div>
-      <div class="page-action">
+    <PageHeader title="PROJETOS" icon="fa-solid fa-project-diagram">
+      <template #actions>
         <button
           type="button"
           class="px-6 py-2 bg-primary hover:opacity-90 text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
@@ -20,8 +16,8 @@
           <font-awesome-icon icon="fa-solid fa-plus" />
           Novo Projeto
         </button>
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
     <section class="section-container">
     <div class="search-container">
@@ -105,10 +101,12 @@ import axios from "axios";
 import { mapMutations } from "vuex";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import DateTimeValue from "../fields/datetime/DateTimeValue.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
 
 export default {
   name: "ProjectsList",
   components: {
+    PageHeader,
     DateTimeEditableInput,
     DateTimeValue,
   },

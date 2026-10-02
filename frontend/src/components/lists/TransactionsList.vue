@@ -1,14 +1,10 @@
 <template>
   <div class="page-container">
-    <div class="page-header">
-      <div class="page-title">
-        <font-awesome-icon icon="fa-solid fa-coins" class="page-icon" />
-        <h1>MOVIMENTAÇÕES</h1>
-      </div>
-      <div class="page-action">
+    <PageHeader title="MOVIMENTAÇÕES" icon="fa-solid fa-coins">
+      <template #actions>
         <!-- Espaço para futuro botão de criar transação -->
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
     <section class="px-8 mt-4 mb-20">
       <!-- Filtros -->
@@ -320,9 +316,11 @@ import { mapMutations } from "vuex";
 import { index, destroy } from "@/utils/requests/httpUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import MoneyField from "../fields/number/MoneyField.vue";
+import PageHeader from "@/components/layout/PageHeader.vue";
 
 export default {
   components: {
+    PageHeader,
     MoneyField,
   },
   props: {
