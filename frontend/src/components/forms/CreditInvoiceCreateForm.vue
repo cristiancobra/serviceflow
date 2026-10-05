@@ -1,17 +1,21 @@
 <template>
   <div>
-    <button v-if="installmentStatus === 'notIssued'" type="button" class="button-new" @click="openModal">
-      <font-awesome-icon icon="fa-solid fa-plus-circle" class="mr-2" />
-      <span class="pt-1">{{ proposal.installment_quantity }}</span>
+    <button v-if="installmentStatus === 'notIssued'" type="button" class="btn btn-primary btn-sm" @click="openModal">
+      <font-awesome-icon icon="fa-solid fa-plus" />
+      Gerar {{ proposal.installment_quantity }} {{ proposal.installment_quantity == 1 ? 'fatura' : 'faturas' }}
     </button>
-    <div v-else-if="installmentStatus === 'issued'" class="button disabled p-2 flex items-center">
-      <font-awesome-icon icon="fa-solid fa-circle-check" class="mr-2" />
-      FATURAS GERADAS
-    </div>
-    <div v-else-if="installmentStatus === 'pending'" class="button delete p-2 flex items-center">
-      <font-awesome-icon icon="fa-solid fa-circle-check" class="mr-2" />
-      PENDENTE
-    </div>
+    <span v-else-if="installmentStatus === 'issued'" class="badge badge-success badge-soft gap-2 font-semibold">
+      <font-awesome-icon icon="fa-solid fa-circle-check" />
+      Faturas geradas
+    </span>
+    <span
+      v-else-if="installmentStatus === 'pending'"
+      class="badge badge-warning badge-soft gap-2 font-semibold"
+      title="As faturas só podem ser geradas depois que a proposta for aceita"
+    >
+      <font-awesome-icon icon="fa-solid fa-clock" />
+      Aguardando aceite
+    </span>
 
     <div v-if="isModalVisible" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm">
       <ModalCard

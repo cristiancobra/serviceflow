@@ -41,30 +41,31 @@
         <div
           v-for="invoice in localInvoices"
           :key="invoice.id"
-          class="bg-base-100 rounded-lg border border-base-300 hover:border-base-300 hover:shadow-md transition-all duration-200"
+          class="bg-base-200 rounded-lg border border-base-300 hover:border-primary/40 hover:shadow-md transition-all duration-200 cursor-pointer"
+          title="Ver detalhes da fatura"
+          @click="openInvoiceModal(invoice)"
         >
           <div class="flex items-center justify-between p-2 text-base-content">
             <div class="flex items-center gap-4">
               <div
-                :class="
-                  calculateInvoiceBalance(invoice) === 0
-                    ? 'bg-success'
-                    : 'bg-info'
-                "
+                :class="invoiceIconClass(invoice)"
                 class="flex items-center justify-center w-10 h-10 rounded-full"
               >
-                <font-awesome-icon icon="fa fa-receipt" class="text-white" />
+                <font-awesome-icon icon="fa fa-receipt" />
               </div>
               <div class="flex flex-col">
                 <span class="text-sm font-medium text-base-content/70"
                   >Vencimento</span
                 >
-                <date-editable-input
-                  name="date_due"
-                  :modelValue="invoice.date_due"
-                  @save="updateInvoice('date_due', $event, invoice.id)"
-                  class-text="text-base font-semibold"
-                />
+                <!-- @click.stop: editar a data não abre o modal da fatura -->
+                <div @click.stop>
+                  <date-editable-input
+                    name="date_due"
+                    :modelValue="invoice.date_due"
+                    @save="updateInvoice('date_due', $event, invoice.id)"
+                    class-text="text-base font-semibold"
+                  />
+                </div>
               </div>
             </div>
 
@@ -80,7 +81,10 @@
                 </span>
               </div>
 
-              <div class="flex items-center">
+              <div
+                v-if="invoice.total_paid > 0 && calculateInvoiceBalance(invoice) > 0"
+                class="flex items-center"
+              >
                 <font-awesome-icon
                   icon="fas fa-check-circle"
                   class="text-base-content/50 mr-2 w-4"
@@ -91,100 +95,75 @@
                 </span>
               </div>
 
-              <div class="flex items-center">
+              <div
+                v-if="calculateInvoiceBalance(invoice) > 0 && calculateInvoiceBalance(invoice) !== Number(invoice.price)"
+                class="flex items-center"
+              >
                 <font-awesome-icon
                   icon="fas fa-balance-scale"
                   class="text-base-content/50 mr-2 w-4"
                 />
                 <span class="font-medium mr-1 text-sm">Saldo:</span>
-                <span
-                  :class="
-                    calculateInvoiceBalance(invoice) === 0
-                      ? 'text-base-content/70'
-                      : 'text-warning'
-                  "
-                  class="font-bold"
-                >
+                <span class="text-warning font-bold">
                   {{ formatCurrency(calculateInvoiceBalance(invoice)) }}
                 </span>
               </div>
 
-              <button
-                v-if="invoice.balance > 0"
-                @click.prevent.stop="openTransactionModal(invoice)"
-                class="btn btn-primary"
-                title="Adicionar Transação"
-              >
-                <font-awesome-icon icon="fas fa-plus" class="text-sm" />
-              </button>
-
-              <button
-                type="button"
-                class="w-6 h-6 flex items-center justify-center hover:bg-base-200 rounded transition-colors"
-                title="Ver detalhes da fatura"
-                @click.prevent.stop="openInvoiceModal(invoice)"
-              >
-                <font-awesome-icon
-                  icon="fa-solid fa-chevron-right"
-                  class="text-base-content/50 hover:text-info text-sm"
-                />
-              </button>
+              <div class="w-28 flex justify-end">
+                <button
+                  v-if="invoice.balance > 0"
+                  type="button"
+                  class="btn btn-primary btn-sm"
+                  title="Registrar pagamento recebido"
+                  @click.prevent.stop="openTransactionModal(invoice)"
+                >
+                  <font-awesome-icon icon="fa-solid fa-coins" />
+                  Receber
+                </button>
+                <span
+                  v-else
+                  class="badge badge-lg badge-success badge-soft gap-2 font-semibold"
+                  title="Fatura quitada"
+                >
+                  <font-awesome-icon icon="fa-solid fa-circle-check" />
+                  Pago
+                </span>
+              </div>
             </div>
           </div>
 
           <!-- Pagamentos Recebidos -->
           <div
             v-if="invoice.transactions && invoice.transactions.length > 0"
-            class="mt-0 space-y-1 rounded-xl border border-base-300 bg-base-100 p-2 border-t-4 shadow-sm"
+            class="mx-3 mb-3 space-y-1 rounded-lg bg-base-100 p-2"
           >
             <div
               v-for="transaction in invoice.transactions"
               :key="transaction.id"
-              class="group flex items-center justify-between ms-0 px-1 py-1 rounded-md bg-base-100 even:bg-info/20 hover:bg-info/20 border-l-4 border-transparent hover:border-info transition-colors"
+              class="flex items-center justify-end gap-3 px-2 py-1 rounded-md hover:bg-info/10 border-l-4 border-transparent hover:border-info transition-colors"
             >
-              <div
-                class="flex items-center justify-center w-6 h-6 me-2 bg-info rounded-full"
-              >
-                <font-awesome-icon
-                  icon="fas fa-coins"
-                  class="text-white text-xs"
-                />
-              </div>
-              <div class="min-w-[160px]">
-                <div
-                  class="inline-flex items-center gap-2 rounded-full bg-indigo-100 px-3 py-1"
-                >
-                  <span class="h-2.5 w-2.5 rounded-full bg-gray-400"></span>
-                  <date-time-editable-input
-                    name="transaction_date"
-                    :modelValue="transaction.transaction_date"
-                    @save="
-                      updateTransaction(
-                        'transaction_date',
-                        $event,
-                        transaction.id
-                      )
-                    "
-                    class-text="text-sm font-semibold text-indigo-700"
-                  />
-                </div>
-              </div>
-              <div class="flex-1"></div>
-              <div
-                class="text-right inline-flex items-center rounded-md bg-success/10 px-2 py-1 ring-1 ring-success/30 text-success"
-              >
-                <money-field
-                  name="amount"
-                  v-model="transaction.amount"
-                  readonly
-                />
-              </div>
-              <delete-icon-button
-                class="ml-2"
-                title="Excluir transação"
-                confirm-message="Tem certeza que deseja excluir esta transação? Esta ação não pode ser desfeita."
-                @confirm="deleteTransaction(transaction.id, invoice.id)"
+              <font-awesome-icon
+                icon="fa-solid fa-coins"
+                class="text-primary text-sm"
               />
+              <date-time-editable-input
+                @click.stop
+                name="transaction_date"
+                :modelValue="transaction.transaction_date"
+                @save="
+                  updateTransaction(
+                    'transaction_date',
+                    $event,
+                    transaction.id
+                  )
+                "
+                class-text="text-sm text-base-content/70"
+              />
+              <span
+                class="min-w-28 text-right font-semibold tabular-nums text-base-content"
+              >
+                {{ formatCurrency(transaction.amount) }}
+              </span>
             </div>
           </div>
         </div>
@@ -247,13 +226,12 @@
 
   <script>
 import { mapMutations } from "vuex";
-import { updateField, destroy } from "@/utils/requests/httpUtils";
+import { updateField } from "@/utils/requests/httpUtils";
 import { formatDateBr } from "@/utils/date/dateUtils";
 import DateEditableInput from "../fields/date/DateEditableInput.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
 import CreditInvoiceCreateForm from "@/components/forms/CreditInvoiceCreateForm.vue";
 import MoneyField from "../fields/number/MoneyField.vue";
-import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
 
 export default {
   props: {
@@ -272,7 +250,6 @@ export default {
     DateTimeEditableInput,
     CreditInvoiceCreateForm,
     MoneyField,
-    DeleteIconButton,
   },
   watch: {
     "proposal.invoices": {
@@ -361,6 +338,15 @@ export default {
     calculateInvoiceBalance(invoice) {
       return invoice.price - (invoice.total_paid || 0);
     },
+    // Paga e parcial saem do saldo, que a tela recalcula ao registrar pagamento;
+    // vencida e cancelada vêm do status calculado pela API.
+    invoiceIconClass(invoice) {
+      if (invoice.status === "cancelled") return "bg-base-300 text-base-content/40";
+      if (this.calculateInvoiceBalance(invoice) <= 0) return "bg-success text-success-content";
+      if (invoice.status === "overdue") return "bg-error text-error-content";
+      if (invoice.total_paid > 0) return "bg-warning text-warning-content";
+      return "bg-info text-info-content";
+    },
     async updateTransaction(fieldName, editedValue, transactionId) {
       const updatedTransaction = await updateField(
         "transactions",
@@ -407,28 +393,6 @@ export default {
         this.localInvoices[index] = updatedInvoice;
       }
 
-      this.$emit("invoices-updated", this.localInvoices);
-    },
-    async deleteTransaction(transactionId, invoiceId) {
-      await destroy("transactions", transactionId);
-
-      const invoice = this.localInvoices.find((inv) => inv.id === invoiceId);
-      if (invoice) {
-        invoice.transactions = invoice.transactions.filter(
-          (t) => t.id !== transactionId
-        );
-
-        // Recalcular o total_paid da invoice
-        invoice.total_paid = invoice.transactions.reduce(
-          (sum, t) => sum + Number(t.amount || 0),
-          0
-        );
-
-        // Atualizar o saldo da invoice
-        invoice.balance = invoice.price - invoice.total_paid;
-      }
-
-      // Emitir evento para atualizar o componente pai
       this.$emit("invoices-updated", this.localInvoices);
     },
   },
