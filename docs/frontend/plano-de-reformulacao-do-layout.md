@@ -11,7 +11,7 @@ A regra que orienta todo código novo está no [Guia de Estilos](./styling-guide
 | 0. Remover classes do Bootstrap | ✅ Concluída |
 | 1. Cores fixas → tokens do tema | ✅ Concluída (com pendências listadas na etapa) |
 | 2. Componentes de estrutura de página | ✅ Concluída |
-| 3. Botões padronizados | ⏳ Pendente |
+| 3. Botões padronizados | 🔄 Padrão decidido; execução pendente |
 | 4. Listas como tabela | ⏳ Pendente |
 | 5. Feedback ao usuário (confirmação, toast, loading) | ⏳ Pendente |
 | 6. Atualizar a documentação de `docs/frontend/` | 🔄 `styling-guide.md` reescrito; faltam `forms-pattern.md` e `detail-modal-template.md` |
@@ -115,12 +115,22 @@ Feita por script, levando em conta a propriedade CSS: 344 cores e 181 variáveis
 
 ## Etapa 3: Botões
 
-- **Ações de ícone nas listas** (ver, editar, excluir): `btn btn-sm btn-square btn-ghost`, com `text-error` no excluir. Avaliar um componente `ActionButtons` com as três ações e eventos `@view`, `@edit`, `@delete`.
-- **Ação principal**: `btn btn-primary`.
-- **Cancelar e voltar**: `btn btn-ghost`.
-- **Ação secundária**: `btn btn-secondary`.
-- **Destrutiva**: `btn btn-error`.
-- Remover `btn-action`, `btn-view`, `btn-edit`, `btn-delete`, `btn-create`, `btn-back`, `button*`, `myButton` e o CSS delas (incluindo `style.css`).
+**Padrão decidido** (outubro de 2026), detalhado no [Guia de Estilos](./styling-guide.md#botões): o papel do botão define a classe (`btn-primary` principal, `btn-ghost` cancelar, `btn-secondary` secundária, `btn-error` destrutiva, `btn-sm btn-square btn-ghost` ícone em lista). Decisões:
+
+- **Formato arredondado**: o tema passa de pílula (`--radius-field: 2rem`) para `0.5rem`, igual aos botões feitos à mão de hoje. Vale também para inputs e selects.
+- **No cabeçalho roxo**: botão branco com texto roxo (`btn bg-base-100 text-primary`). Com isso, o ajuste global do `.btn.btn-primary` em `style.css` (borda branca e crescimento no hover) pode ser apagado.
+- **Cancelar**: só texto (`btn-ghost`).
+
+**Levantamento** (antes da migração): 72 botões montados com Tailwind (`px-6 py-2 rounded-lg` com `bg-primary`, `bg-base-100` com borda ou `bg-error`), 44 com `btn` do DaisyUI, ~25 com classes próprias e ~75 só de ícone ou texto.
+
+**Execução**:
+1. Tema: `--radius-field` para `0.5rem` nos dois temas; apagar o ajuste global do `.btn.btn-primary`.
+2. Botões no `PageHeader`: trocar para o estilo branco.
+3. Botões montados com Tailwind: converter pelo papel (fundo `primary` → `btn-primary`; `base-100` com borda → `btn-ghost`; `error` → `btn-error`; `px-2/px-3 py-1` → `btn-sm`), mantendo só as classes de layout (`w-full`, `flex-1`, `ml-auto`...).
+4. Classes próprias (`btn-action`, `btn-create`, `btn-save`, `btn-cancel`, `button*`, `myButton`...): converter e apagar o CSS delas (`style.css`, `login.css` e `<style scoped>`).
+5. Componente `RowActions` (ver/editar/excluir) para as listas.
+6. Componentes: padronizar o visual interno de `JourneyToggleButton`, `AddJourneyButton` e `SelectStatusButton`; substituir `SaveButton`, `CancelButton` e `ButtonNewForm` por `btn`; apagar `CloseButton` e `LogoutButton`, que estão sem uso.
+7. Botões só de ícone ou texto (~75): revisar caso a caso. Muitos são links ou ícones dentro de campos e devem continuar assim.
 
 ## Etapa 4: Listas como tabela
 

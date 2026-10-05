@@ -9,7 +9,7 @@ O frontend usa **DaisyUI 5 + Tailwind CSS 4**. Este guia é a regra para todo te
    - Lista ou seção vazia: `EmptyState` (`components/layout/EmptyState.vue`)
    - Ativo/inativo: `StatusToggle` (`components/buttons/StatusToggle.vue`)
    - Modais: `ModalCard` (`components/modals/ModalCard.vue`)
-   - Card de seção com cabeçalho roxo (título + ícone), ex: seções do modal de oportunidade: `SectionCard` (`components/common/SectionCard.vue`)
+   - Card de seção com cabeçalho roxo (só título), ex: seções do modal de oportunidade: `SectionCard` (`components/common/SectionCard.vue`)
    - Botão de fechar: `CloseButton`
    - Status: `SelectStatusButton`
    - Campos: `components/forms/inputs/` (formulários) e `components/fields/` (campos editáveis nas telas de detalhe)
@@ -52,19 +52,39 @@ O frontend usa **DaisyUI 5 + Tailwind CSS 4**. Este guia é a regra para todo te
 
 ### Botões
 
-```vue
-<button class="btn btn-primary">Salvar</button>          <!-- ação principal -->
-<button class="btn btn-ghost">Cancelar</button>          <!-- cancelar, voltar -->
-<button class="btn btn-secondary">Fechar fatura</button> <!-- ação secundária -->
-<button class="btn btn-error">Excluir</button>           <!-- destrutiva -->
+O **papel** do botão define a classe. Formato: cantos arredondados (`--radius-field: 0.5rem` no tema).
 
-<!-- Ação de ícone (listas) -->
+| Papel | Classe | Exemplos |
+|---|---|---|
+| Principal (um por área) | `btn btn-primary` | Salvar, Criar, Registrar pagamento |
+| Cancelar, voltar, fechar | `btn btn-ghost` (só texto) | Cancelar, Fechar |
+| Secundária | `btn btn-secondary` | Editar, Fechar fatura, Clonar |
+| Destrutiva | `btn btn-error` (sempre com confirmação) | Excluir |
+| Estado ou informação | `btn btn-success`, `btn btn-info` | Finalizar tarefa, Links |
+| Ícone em lista ou tabela | `btn btn-sm btn-square btn-ghost` (+ `text-error` no excluir) | ver, editar, excluir |
+| Ação no cabeçalho roxo (`PageHeader`) | `btn bg-base-100 text-primary border-0 hover:bg-base-200` | + Nova Conta, Editar |
+
+```vue
+<button class="btn btn-primary">
+  <font-awesome-icon icon="fa-solid fa-check" /> Salvar
+</button>
+<button class="btn btn-ghost">Cancelar</button>
+
+<!-- Só ícone: sempre com title -->
 <button class="btn btn-sm btn-square btn-ghost" title="Editar">
   <font-awesome-icon icon="fa-solid fa-edit" />
 </button>
+
+<!-- Salvando -->
+<button class="btn btn-primary" :disabled="isSubmitting">
+  <span v-if="isSubmitting" class="loading loading-spinner loading-sm"></span>
+  Salvar
+</button>
 ```
 
-O `.btn.btn-primary` tem um ajuste global em `src/assets/css/style.css` (borda branca e leve aumento no hover).
+- **Tamanho**: o padrão em formulários e cabeçalhos; `btn-sm` em tabelas, cards e modais compactos.
+- **Ícone**: à esquerda do texto (o `btn` já cuida do espaçamento).
+- **Não use** botões montados com Tailwind (`px-6 py-2 bg-primary rounded-lg...`) nem classes próprias (`btn-action`, `btn-create`, `button`, `myButton`...).
 
 ### Campos de formulário
 
