@@ -1,7 +1,7 @@
 <template>
   <div class="mt-8 mb-20 px-8">
     <div
-      class="flex flex-wrap items-center gap-2 mb-4"
+      class="flex flex-wrap items-center gap-2 mb-3"
       :class="showTitle ? 'justify-between' : 'justify-end'"
     >
       <h2 v-if="showTitle" class="flex items-center gap-2 text-lg font-semibold">
@@ -19,9 +19,9 @@
       </div>
     </div>
 
-    <section class="mt-8 mb-20 px-8">
+    <section>
       <!-- Barra de busca e filtros -->
-      <div class="flex flex-col md:flex-row gap-4 items-start md:items-center mb-6">
+      <div class="flex flex-col md:flex-row gap-4 items-start md:items-center mb-3">
         <div class="flex-1 w-full md:w-auto">
           <SearchInput v-model="searchTerm" placeholder="Buscar tarefas" />
         </div>
