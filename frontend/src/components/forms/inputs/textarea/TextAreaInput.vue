@@ -1,8 +1,10 @@
 <template>
-  <div class="label-input-container">
-    <label class="text-base-content font-semibold" :for="name">{{ label }}</label>
+  <div>
+    <label v-if="label" class="block text-sm font-semibold text-base-content mb-2" :for="name">{{ label }}</label>
+    <!-- rounded-lg: mesmo raio dos demais campos dos formulários (o raio do tema ainda é pílula) -->
     <textarea
-      class="textarea w-full"
+      class="textarea w-full rounded-lg"
+      :id="name"
       :name="name"
       :value="modelValue"
       :placeholder="placeholder"

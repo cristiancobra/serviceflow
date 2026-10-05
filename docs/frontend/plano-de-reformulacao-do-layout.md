@@ -124,7 +124,7 @@ Feita por script, levando em conta a propriedade CSS: 344 cores e 181 variáveis
 **Levantamento** (antes da migração): 72 botões montados com Tailwind (`px-6 py-2 rounded-lg` com `bg-primary`, `bg-base-100` com borda ou `bg-error`), 44 com `btn` do DaisyUI, ~25 com classes próprias e ~75 só de ícone ou texto.
 
 **Execução**:
-1. Tema: `--radius-field` para `0.5rem` nos dois temas; apagar o ajuste global do `.btn.btn-primary`.
+1. Tema: `--radius-field` para `0.5rem` nos dois temas; apagar o ajuste global do `.btn.btn-primary`. Ao fazer isso, remover o `rounded-lg` provisório do `TextAreaInput` (`components/forms/inputs/textarea/`), que foi posto ali só para igualar o raio dos outros campos enquanto o tema ainda é pílula.
 2. Botões no `PageHeader`: trocar para o estilo branco.
 3. Botões montados com Tailwind: converter pelo papel (fundo `primary` → `btn-primary`; `base-100` com borda → `btn-ghost`; `error` → `btn-error`; `px-2/px-3 py-1` → `btn-sm`), mantendo só as classes de layout (`w-full`, `flex-1`, `ml-auto`...).
 4. Classes próprias (`btn-action`, `btn-create`, `btn-save`, `btn-cancel`, `button*`, `myButton`...): converter e apagar o CSS delas (`style.css`, `login.css` e `<style scoped>`).

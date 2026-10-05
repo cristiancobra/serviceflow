@@ -8,8 +8,7 @@
             <form id="transactionCreateForm" @submit.prevent="submitForm">
               <div class="mb-6">
                 <TextAreaInput
-                  class="text-start"
-                  label="Observações:"
+                  label="Observações"
                   name="observations"
                   v-model="form.observations"
                   placeholder="Detalhes do recebimento"
