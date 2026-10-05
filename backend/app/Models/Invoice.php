@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Task;
 use App\Models\Concerns\BelongsToAccount;
+use Illuminate\Support\Facades\Log;
 
 class Invoice extends Model
 {
@@ -71,6 +72,48 @@ class Invoice extends Model
     public function tasks()
     {
         return $this->hasMany(Task::class);
+    }
+
+    /**
+     * Cria a tarefa financeira ligada à fatura: "Pagar: ..." para débito,
+     * "Receber: ..." para crédito, com "(n/q)" quando é parcela.
+     * Usa account_id/user_id da própria fatura para funcionar também sem
+     * usuário logado (ex: comando agendado). Falha na tarefa não impede a fatura.
+     */
+    public function createFinancialTask($departmentId = null): bool
+    {
+        try {
+            $label = $this->name
+                ?? optional(optional($this->proposal)->opportunity)->name
+                ?? ('Fatura #' . $this->id);
+
+            if ($this->installment_quantity > 1) {
+                $label .= " ({$this->installment_number}/{$this->installment_quantity})";
+            }
+
+            $prefix = $this->type === 'credit' ? 'Receber: ' : 'Pagar: ';
+
+            Task::create([
+                'account_id'     => $this->account_id,
+                'user_id'        => $this->user_id,
+                'invoice_id'     => $this->id,
+                'opportunity_id' => optional($this->proposal)->opportunity_id,
+                'department_id'  => $departmentId,
+                'name'           => $prefix . $label,
+                'date_due'       => $this->date_due,
+                'status'         => 'to-do',
+                'priority'       => 'medium',
+            ]);
+
+            return true;
+        } catch (\Exception $taskException) {
+            Log::error('Erro ao criar tarefa para invoice', [
+                'invoice_id' => $this->id,
+                'error'      => $taskException->getMessage(),
+            ]);
+
+            return false;
+        }
     }
 
     public function department()

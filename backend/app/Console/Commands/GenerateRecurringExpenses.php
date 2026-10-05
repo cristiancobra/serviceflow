@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use App\Models\Department;
 use App\Models\RecurringExpense;
 
 class GenerateRecurringExpenses extends Command
@@ -20,7 +21,7 @@ class GenerateRecurringExpenses extends Command
      *
      * @var string
      */
-    protected $description = 'Gera faturas (invoices) de despesas recorrentes ativas com até 30 dias de antecedência';
+    protected $description = 'Gera faturas (invoices) de despesas recorrentes ativas com até 30 dias de antecedência, cada uma com sua tarefa "Pagar: ..."';
 
     /**
      * Execute the console command.
@@ -38,6 +39,7 @@ class GenerateRecurringExpenses extends Command
 
                 if ($invoice->wasRecentlyCreated) {
                     $generated++;
+                    $invoice->createFinancialTask(Department::financeiroIdFor($recurringExpense->account_id));
                     $this->info("Fatura gerada: {$recurringExpense->name} - vencimento {$dueDate->toDateString()}");
                 }
             }

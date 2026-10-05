@@ -140,6 +140,10 @@ class InvoiceController extends Controller
                 $invoice->fill($invoiceData);
                 $invoice->save();
                 $invoices[] = $invoice;
+
+                if (!empty($validated['generate_task'])) {
+                    $invoice->createFinancialTask($validated['task_department_id'] ?? null);
+                }
             }
 
             return InvoicesResource::collection($invoices);
@@ -185,28 +189,8 @@ class InvoiceController extends Controller
             $invoice = Invoice::create($invoiceData);
 
             // Geração opcional de tarefa financeira
-            $taskCreated = false;
-            if (!empty($validated['generate_task'])) {
-                try {
-                    $invoiceName = $invoice->name ?? ('Fatura #' . $invoice->id);
-                    Task::create([
-                        'account_id' => auth()->user()->account_id,
-                        'user_id'    => auth()->user()->id,
-                        'invoice_id' => $invoice->id,
-                        'department_id' => $validated['task_department_id'] ?? null,
-                        'name'       => 'Pagar: ' . $invoiceName,
-                        'date_due'   => $validated['date_due'] ?? null,
-                        'status'     => 'to-do',
-                        'priority'   => 'medium',
-                    ]);
-                    $taskCreated = true;
-                } catch (\Exception $taskException) {
-                    Log::error('Erro ao criar tarefa para invoice', [
-                        'invoice_id' => $invoice->id,
-                        'error'      => $taskException->getMessage(),
-                    ]);
-                }
-            }
+            $taskCreated = !empty($validated['generate_task'])
+                && $invoice->createFinancialTask($validated['task_department_id'] ?? null);
 
             $response = InvoicesResource::collection([$invoice->load('tasks')])->response()->getData(true);
             $response['task_created'] = $taskCreated;
@@ -259,11 +243,17 @@ class InvoiceController extends Controller
                     'balance' => $price,
                     'date_due' => date('Y-m-d', strtotime("+$index month", strtotime($dateDue))),
                     'type' => 'credit',
+                    'installment_number' => $index + 1,
+                    'installment_quantity' => count($prices),
                 ]);
                 $invoice = new Invoice;
                 $invoice->fill($invoiceData);
                 $invoice->save();
                 $invoices[] = $invoice;
+
+                if (!empty($validated['generate_task'])) {
+                    $invoice->createFinancialTask($validated['task_department_id'] ?? null);
+                }
             }
 
             return InvoicesResource::collection($invoices);

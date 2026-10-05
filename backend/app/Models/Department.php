@@ -41,4 +41,18 @@ class Department extends Model
     {
         return $this->belongsTo(Account::class);
     }
+
+    /**
+     * Departamento Financeiro da conta, que recebe as tarefas "Pagar: ...".
+     * Filtra a conta explicitamente para funcionar sem usuário logado (comandos agendados).
+     */
+    public static function financeiroIdFor($accountId)
+    {
+        return static::withoutGlobalScopes()
+            ->where('account_id', $accountId)
+            ->where(function ($query) {
+                $query->where('slug', 'financeiro')->orWhere('name', 'like', '%financeiro%');
+            })
+            ->value('id');
+    }
 }

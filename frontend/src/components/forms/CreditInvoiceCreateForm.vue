@@ -27,7 +27,7 @@
             <form id="creditInvoiceCreateForm" @submit.prevent="submitForm" class="space-y-6">
               <div class="bg-base-200 rounded-lg p-4">
                 <TextAreaInput 
-                  label="Observações:" 
+                  label="Observações" 
                   name="observations" 
                   v-model="form.observations"
                   placeholder="Detalhamento da tarefa" 
@@ -108,6 +108,27 @@
                 </div>
               </div>
 
+              <div class="bg-base-200 rounded-lg p-4">
+                <label class="flex items-center gap-3 cursor-pointer">
+                  <input v-model="form.generate_task" type="checkbox" class="checkbox checkbox-sm checkbox-success" />
+                  <div>
+                    <span class="text-sm font-semibold text-base-content">Gerar tarefas de cobrança</span>
+                    <p class="text-xs text-base-content/60">
+                      Cria uma tarefa "Receber: ..." por parcela, com o vencimento da parcela
+                    </p>
+                  </div>
+                </label>
+
+                <div v-if="form.generate_task" class="mt-3">
+                  <DepartmentsSelectInput
+                    label="Departamento Responsável"
+                    name="task_department_id"
+                    v-model="form.task_department_id"
+                    fieldNull="Selecione o departamento"
+                  />
+                </div>
+              </div>
+
               <div v-if="errorMessage" class="mt-8">
                 <div>
                   <p class="error text-base-content">
@@ -140,9 +161,10 @@
 </template>
 
 <script>
-import { submitFormCreate } from "@/utils/requests/httpUtils";
+import { index, submitFormCreate } from "@/utils/requests/httpUtils";
 // import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import DateInput from "./inputs/date/DateInput.vue";
+import DepartmentsSelectInput from "./selects/DepartmentsSelectInput.vue";
 import MoneyField from "../fields/number/MoneyField.vue";
 import MoneyEditableField from "../fields/number/MoneyEditableField.vue";
 import TextAreaInput from "./inputs/textarea/TextAreaInput.vue";
@@ -156,6 +178,7 @@ export default {
   components: {
     // AddMessage,
     DateInput,
+    DepartmentsSelectInput,
     MoneyEditableField,
     MoneyField,
     TextAreaInput,
@@ -179,6 +202,8 @@ export default {
         date_start: null,
         proposal_id: this.proposal.id,
         prices: [],
+        generate_task: true,
+        task_department_id: null,
       },
       isActiveCompany: false,
       isActiveLead: false,
@@ -286,8 +311,22 @@ export default {
 
       return prices;
     },
+    async loadFinanceiroDepartment() {
+      try {
+        const departments = (await index("departments")) || [];
+        const financeiro = departments.find(d => d.slug === 'financeiro' || d.name?.toLowerCase().includes('financeiro'));
+        if (financeiro) {
+          this.form.task_department_id = financeiro.id;
+        }
+      } catch (e) {
+        // usuário escolhe o departamento manualmente
+      }
+    },
     openModal() {
       this.isModalVisible = true;
+      if (!this.form.task_department_id) {
+        this.loadFinanceiroDepartment();
+      }
     },
     async submitForm() {
       const totalPrice = this.proposal.total_price;
@@ -299,7 +338,12 @@ export default {
         return;
       }
 
-      const { data, error } = await this.submitFormCreate("invoices", this.form);
+      const payload = {
+        ...this.form,
+        generate_task: this.form.generate_task ? 1 : 0,
+        task_department_id: this.form.generate_task ? this.form.task_department_id : null,
+      };
+      const { data, error } = await this.submitFormCreate("invoices", payload);
 
       if (data) {
         this.messageStatus = "success";
