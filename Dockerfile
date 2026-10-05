@@ -1,4 +1,4 @@
-FROM php:8.2-apache
+FROM php:8.4-apache
 
 RUN a2enmod rewrite
 
@@ -7,7 +7,7 @@ WORKDIR /usr/local/apache2/htdocs/
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
-    install-php-extensions pdo pdo_mysql gd zip exif intl
+    install-php-extensions pdo pdo_mysql gd zip exif intl soap
 
 RUN docker-php-ext-install mysqli pdo pdo_mysql exif 
 

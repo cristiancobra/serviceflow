@@ -1,0 +1,4 @@
+# O Dockerfile só copia o 000-default.conf; o código entra por volume no docker-compose.
+# Sem isto o contexto do build inclui os arquivos do MySQL (database/db), que não são legíveis.
+*
+!000-default.conf
