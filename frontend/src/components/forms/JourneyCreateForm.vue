@@ -12,11 +12,11 @@
       <div class="flex items-center gap-4">
         <div class="flex-1">
           <label for="start" class="block text-sm font-semibold text-warning mb-1">Início</label>
-          <VueDatePicker v-model="form.start" class="w-full" />
+          <VueDatePicker v-model="form.start" class="w-full" format="dd/MM/yyyy HH:mm" locale="pt-BR" select-text="Selecionar" cancel-text="Cancelar" />
         </div>
         <div class="flex-1">
           <label for="end" class="block text-sm font-semibold text-warning mb-1">Fim</label>
-          <VueDatePicker v-model="form.end" class="w-full" />
+          <VueDatePicker v-model="form.end" class="w-full" format="dd/MM/yyyy HH:mm" locale="pt-BR" select-text="Selecionar" cancel-text="Cancelar" />
         </div>
         <div class="flex-[2]">
           <label for="details" class="block text-sm font-semibold text-warning mb-1">Detalhes</label>

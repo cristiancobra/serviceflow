@@ -15,6 +15,9 @@
       v-model="localValue"
       :placeholder="placeholder"
       format="dd/MM/yyyy"
+      locale="pt-BR"
+      select-text="Selecionar"
+      cancel-text="Cancelar"
       :enable-time-picker="false"
       teleport
       teleport-center

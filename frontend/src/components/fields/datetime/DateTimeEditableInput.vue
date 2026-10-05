@@ -10,7 +10,7 @@
         {{ formatedTime }}
       </span>
     </div>
-    <VueDatePicker v-else :id="name" :name="name" :label="label" v-model="localValue"
+    <VueDatePicker v-else :id="name" :name="name" :label="label" v-model="localValue" format="dd/MM/yyyy HH:mm" locale="pt-BR" select-text="Selecionar" cancel-text="Cancelar"
       :placeholder="placeholder" @update:modelValue="emitSave" />
   </div>
 </template>

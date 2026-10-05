@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <label v-if="label" :for="label">{{ label }}</label>
-    <VueDatePicker :name="name" :label="label" v-model="localValue"
+    <VueDatePicker :name="name" :label="label" v-model="localValue" format="dd/MM/yyyy HH:mm" locale="pt-BR" select-text="Selecionar" cancel-text="Cancelar"
       :placeholder="placeholder" teleport teleport-center @update:modelValue="emitSave" />
   </div>
 </template>
