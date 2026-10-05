@@ -1,7 +1,7 @@
 <template>
-  <component
-    :is="userId ? 'router-link' : 'div'"
-    :to="userId ? { name: 'userShow', params: { id: userId } } : null"
+  <div
+    :role="userId ? 'button' : null"
+    @click="openUserModal"
     :class="[
       'flex items-center justify-center rounded-full border-2',
       sizeClasses,
@@ -35,10 +35,11 @@
       icon="fa-solid fa-user"
       class="text-sm text-base-content/60"
     />
-  </component>
+  </div>
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import { IMAGES_PATH } from "@/config/apiConfig";
 
 export default {
@@ -90,6 +91,18 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(["openModal"]),
+    openUserModal(event) {
+      if (!this.userId) return;
+      // O avatar costuma ficar dentro de cards clicáveis; não deixa o clique abrir o card também
+      event.preventDefault();
+      event.stopPropagation();
+      this.openModal({
+        component: "UserDetailModal",
+        props: { userId: this.userId },
+        id: `user-${this.userId}`,
+      });
+    },
     getInitials(name) {
       if (!name) return "??";
       const words = name.trim().split(" ").filter((word) => word.length > 0);

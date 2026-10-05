@@ -14,7 +14,7 @@
 
             <div v-else class="companies-grid">
                 <div class="company-card" v-for="company in filteredCompanies" v-bind:key="company.id">
-                    <router-link :to="{ name: 'companyShow', params: { id: company.id } }" class="card-link">
+                    <div role="button" class="card-link" @click="openCompanyModal(company)">
                         <div class="flex items-center gap-4 p-5 max-md:p-4 border-b border-base-300 bg-gradient-to-br from-primary/5 to-primary/[0.02]">
                             <div class="avatar">
                                 <font-awesome-icon icon="fa-solid fa-briefcase" class="avatar-icon" />
@@ -41,7 +41,7 @@
                                 <small>Sem informações de contato</small>
                             </div>
                         </div>
-                    </router-link>
+                    </div>
                 </div>
             </div>
         </section>
@@ -50,6 +50,7 @@
 
 
 <script>
+import { mapMutations } from "vuex";
 import { index } from "@/utils/requests/httpUtils";
 import SearchInput from "@/components/filters/SearchInput.vue";
 import EmptyState from "@/components/layout/EmptyState.vue";
@@ -83,6 +84,25 @@ export default {
     },
   },
   methods: {
+    ...mapMutations(["openModal"]),
+    openCompanyModal(company) {
+      this.openModal({
+        component: "CompanyDetailModal",
+        props: { companyId: company.id },
+        listeners: {
+          "company-updated": this.replaceCompany,
+          "company-deleted": this.removeCompany,
+        },
+        id: `company-${company.id}`,
+      });
+    },
+    replaceCompany(updated) {
+      const index = this.companies.findIndex((company) => company.id === updated.id);
+      if (index !== -1) this.companies.splice(index, 1, { ...this.companies[index], ...updated });
+    },
+    removeCompany(id) {
+      this.companies = this.companies.filter((company) => company.id !== id);
+    },
     addCompanyCreated(newCompany) {
       this.isCreateCompanyModalVisible = false;
       this.companies.unshift(newCompany);
@@ -147,6 +167,7 @@ export default {
 .card-link {
     text-decoration: none;
     color: inherit;
+    cursor: pointer;
     display: flex;
     flex-direction: column;
     height: 100%;

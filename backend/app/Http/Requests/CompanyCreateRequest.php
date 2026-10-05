@@ -30,7 +30,7 @@ class CompanyCreateRequest extends FormRequest
             'business_name' => 'nullable',
             'cnpj' => 'nullable|numeric|digits:14',
             'email' => 'email|nullable',
-            'cel_phone' => 'nullable|numeric|digits:11',
+            'cel_phone' => 'nullable|numeric|digits_between:10,11',
             'linkedin' => 'nullable',
             'facebook' => 'nullable',
             'instagram' => 'nullable',

@@ -1,14 +1,14 @@
 <template>
   <div class="relative inline-block group">
-    <component
-      :is="companyIdData && !editable ? 'router-link' : 'div'"
-      :to="companyIdData && !editable ? { name: 'companyShow', params: { id: companyIdData } } : null"
+    <div
+      :role="isClickable ? 'button' : null"
+      @click="openCompanyModal"
       :class="[
         'flex items-center justify-center rounded-full border-2',
         sizeClasses,
         overlap ? 'ml-[-10px]' : '',
         hasCompanyData ? 'border-white' : 'border-base-300 bg-base-300',
-        companyIdData && !editable ? 'cursor-pointer hover:opacity-80 transition-opacity' : '',
+        isClickable ? 'cursor-pointer hover:opacity-80 transition-opacity' : '',
         customClass
       ]"
       :title="displayTitle"
@@ -36,7 +36,7 @@
         icon="fa-solid fa-briefcase"
         class="text-sm text-base-content/60"
       />
-    </component>
+    </div>
 
     <!-- Ícone de edição (câmera) -->
     <div
@@ -65,6 +65,7 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 import { IMAGES_PATH } from "@/config/apiConfig";
 
 export default {
@@ -136,6 +137,9 @@ export default {
     companyName() {
       return this.businessNameData || this.legalNameData;
     },
+    isClickable() {
+      return !!this.companyIdData && !this.editable;
+    },
     hasCompanyData() {
       return this.photoData || this.companyName;
     },
@@ -160,6 +164,18 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(["openModal"]),
+    openCompanyModal(event) {
+      if (!this.isClickable) return;
+      // O avatar costuma ficar dentro de cards clicáveis; não deixa o clique abrir o card também
+      event.preventDefault();
+      event.stopPropagation();
+      this.openModal({
+        component: "CompanyDetailModal",
+        props: { companyId: this.companyIdData },
+        id: `company-${this.companyIdData}`,
+      });
+    },
     getInitials(name) {
       if (!name) return "??";
       const words = name.trim().split(" ").filter((word) => word.length > 0);

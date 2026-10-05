@@ -261,14 +261,14 @@
       >
         <template #error-action>
           <template v-if="isDebit">
-            <router-link
+            <button
               v-if="invoice.company_id"
-              :to="{ name: 'companyShow', params: { id: invoice.company_id } }"
+              type="button"
               class="text-primary hover:underline font-medium ml-1"
-              @click="$emit('close')"
+              @click="openCompanyModal(invoice.company_id)"
             >
               Abrir empresa fornecedora
-            </router-link>
+            </button>
             <button
               v-else-if="invoice.lead_id"
               type="button"
@@ -477,6 +477,15 @@ export default {
         listeners: {
           "new-transaction-event": this.refreshInvoice,
         },
+      });
+    },
+    openCompanyModal(companyId) {
+      // Ao salvar a chave Pix na empresa fornecedora, o QR desta fatura já é regerado
+      this.openModal({
+        component: "CompanyDetailModal",
+        props: { companyId },
+        listeners: { "company-updated": this.refreshInvoice },
+        id: `company-${companyId}`,
       });
     },
     openLeadModal(leadId) {
