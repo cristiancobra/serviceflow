@@ -15,6 +15,7 @@ class Service extends Model
 
     protected $fillable = [
         'category',
+        'nfse_service_code',
         'name',
         'labor_hours',
         'labor_hourly_rate',

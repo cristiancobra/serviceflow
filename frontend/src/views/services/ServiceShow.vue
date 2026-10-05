@@ -18,6 +18,21 @@
       </div>
     </section>
 
+    <SectionCard title="Nota fiscal (NFS-e)" class="mt-6">
+      <error-message v-if="validationErrors" :formResponse="validationErrors" />
+      <TextEditableField
+        name="nfse_service_code"
+        :modelValue="service.nfse_service_code"
+        label="Código de tributação nacional:"
+        placeholder="6 dígitos"
+        empty-text="não informado (usa o código padrão da conta)"
+        @save="updateService('nfse_service_code', $event)"
+      />
+      <p class="text-xs text-base-content/60 mt-1">
+        Código do serviço na NFS-e Nacional. Confira o seu no Emissor Nacional (nfse.gov.br).
+      </p>
+    </SectionCard>
+
     <service-profit-margin-section
       :service="service"
       @update-service="updateService"
@@ -48,16 +63,21 @@ import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 import ServiceCostsSection from "../../components/show/ServiceCostsSection.vue";
 import ServiceProfitMarginSection from "@/components/show/ServiceProfitMarginSection.vue";
 import PageHeader from "@/components/layout/PageHeader.vue";
+import SectionCard from "@/components/common/SectionCard.vue";
+import ErrorMessage from "@/components/forms/messages/ErrorMessage.vue";
 
 export default {
   data() {
     return {
       service: [],
       serviceId: "",
+      validationErrors: null,
     };
   },
   components: {
     PageHeader,
+    SectionCard,
+    ErrorMessage,
     TextEditableField,
     ServiceCostsSection,
     ServiceProfitMarginSection,
@@ -91,12 +111,20 @@ export default {
       this.serviceId = serviceId;
     },
     async updateService(fieldName, editedValue) {
-      this.service = await updateField(
-        "services",
-        this.serviceId,
-        fieldName,
-        editedValue
-      );
+      try {
+        this.validationErrors = null;
+        this.service = await updateField(
+          "services",
+          this.serviceId,
+          fieldName,
+          editedValue
+        );
+      } catch (error) {
+        console.error(`Erro ao atualizar ${fieldName}:`, error);
+        this.validationErrors = {
+          errors: error.response?.data?.errors || { [fieldName]: ["Erro ao salvar. Tente novamente."] },
+        };
+      }
     },
     updateServiceFromCost(updatedService) {
       this.service = updatedService;

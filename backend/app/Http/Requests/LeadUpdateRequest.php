@@ -2,10 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Concerns\NormalizesDigits;
+use App\Rules\Cpf;
 use Illuminate\Foundation\Http\FormRequest;
 
 class LeadUpdateRequest extends FormRequest
 {
+    use NormalizesDigits;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -31,6 +35,8 @@ class LeadUpdateRequest extends FormRequest
 
         return [
             'name' => 'sometimes|string|max:255',
+            'cpf' => ['nullable', new Cpf],
+            'ibge_city_code' => 'nullable|digits:7',
             'email' => 'nullable|email|unique:leads,email,'.$leadId.'|max:255',
             'cel_phone' => 'nullable|regex:/^\(?[0-9]{2}\)?[\s9]?[0-9]{4}-?[0-9]{4}$/',
             'pix_key' => 'nullable|string|max:77',
@@ -65,7 +71,12 @@ class LeadUpdateRequest extends FormRequest
             'facebook.url' => 'O Facebook deve ser uma URL válida.',
             'instagram.url' => 'O Instagram deve ser uma URL válida.',
             'contact_date.date' => 'A data de contato deve ser uma data válida.',
+            'ibge_city_code.digits' => 'O código IBGE do município deve ter 7 dígitos.',
         ];
     }
 
+    protected function prepareForValidation()
+    {
+        $this->normalizeDigits(['cpf', 'ibge_city_code']);
+    }
 }

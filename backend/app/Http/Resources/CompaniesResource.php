@@ -33,6 +33,7 @@ class CompaniesResource extends JsonResource
             'state' => $this->state,
             'country' => $this->country,
             'zip_code' => $this->zip_code,
+            'ibge_city_code' => $this->ibge_city_code,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

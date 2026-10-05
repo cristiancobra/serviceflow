@@ -17,6 +17,7 @@ class ServiceResource extends JsonResource
         return [
 			"id" => $this->id,
             'category' => $this->category,
+            'nfse_service_code' => $this->nfse_service_code,
 			"name" => $this->name,
             'labor_hours' => $this->labor_hours,
             'labor_hourly_rate' => $this->labor_hourly_rate,

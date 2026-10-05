@@ -226,6 +226,7 @@ import SelectEditableInput from "@/components/fields/select/SelectEditableInput.
 import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 import DateEditableInput from "@/components/fields/date/DateEditableInput.vue";
 import ErrorMessage from "@/components/forms/messages/ErrorMessage.vue";
+import { fetchAddressByCep } from "@/utils/address/viaCepUtils";
 
 const LEAD_TYPE_OPTIONS = [
   { value: "client", label: "Cliente" },
@@ -239,6 +240,7 @@ const FIELD_SECTIONS = [
   {
     title: "Informações de Contato",
     fields: [
+      { name: "cpf", label: "CPF", icon: "fas fa-id-card", placeholder: "000.000.000-00" },
       { name: "email", label: "Email", icon: "fas fa-envelope", placeholder: "email@exemplo.com" },
       { name: "cel_phone", label: "Celular", icon: "fas fa-mobile-alt", placeholder: "(00) 00000-0000" },
       { name: "pix_key", label: "Chave Pix", icon: "fab fa-pix", placeholder: "CPF, e-mail, +55DDDNUMERO ou aleatória" },
@@ -272,6 +274,7 @@ const FIELD_SECTIONS = [
       { name: "state", label: "Estado", icon: "fas fa-flag", placeholder: "UF..." },
       { name: "country", label: "País", icon: "fas fa-globe", placeholder: "País..." },
       { name: "zip_code", label: "CEP", icon: "fas fa-mail-bulk", placeholder: "00000-000" },
+      { name: "ibge_city_code", label: "Código IBGE", icon: "fas fa-hashtag", placeholder: "Preenchido pelo CEP" },
     ],
   },
 ];
@@ -362,6 +365,14 @@ export default {
         const updatedLead = await updateField("leads", this.leadId, fieldName, newValue);
         this.lead[fieldName] = updatedLead[fieldName];
         this.$emit("lead-updated", this.lead);
+
+        // O CEP preenche o código IBGE do município, exigido na NFS-e
+        if (fieldName === "zip_code") {
+          const address = await fetchAddressByCep(newValue);
+          if (address?.ibgeCityCode && address.ibgeCityCode !== this.lead.ibge_city_code) {
+            await this.updateLeadField("ibge_city_code", address.ibgeCityCode);
+          }
+        }
       } catch (error) {
         console.error(`Erro ao atualizar ${fieldName}:`, error);
         if (error.response?.status === 422) {

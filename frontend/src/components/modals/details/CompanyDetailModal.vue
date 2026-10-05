@@ -111,6 +111,7 @@ import { BACKEND_URL, COMPANY_URL, IMAGES_PATH } from "@/config/apiConfig";
 import ModalCard from "@/components/modals/ModalCard.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 import ErrorMessage from "@/components/forms/messages/ErrorMessage.vue";
+import { fetchAddressByCep } from "@/utils/address/viaCepUtils";
 
 const FIELD_SECTIONS = [
   {
@@ -140,6 +141,7 @@ const FIELD_SECTIONS = [
       { name: "state", label: "Estado", icon: "fas fa-flag", placeholder: "UF..." },
       { name: "country", label: "País", icon: "fas fa-globe", placeholder: "País..." },
       { name: "zip_code", label: "CEP", icon: "fas fa-mail-bulk", placeholder: "00000-000" },
+      { name: "ibge_city_code", label: "Código IBGE", icon: "fas fa-hashtag", placeholder: "Preenchido pelo CEP" },
     ],
   },
 ];
@@ -191,6 +193,14 @@ export default {
         const updatedCompany = await updateField("companies", this.companyId, fieldName, newValue);
         this.company[fieldName] = updatedCompany[fieldName];
         this.$emit("company-updated", this.company);
+
+        // O CEP preenche o código IBGE do município, exigido na NFS-e
+        if (fieldName === "zip_code") {
+          const address = await fetchAddressByCep(newValue);
+          if (address?.ibgeCityCode && address.ibgeCityCode !== this.company.ibge_city_code) {
+            await this.updateCompanyField("ibge_city_code", address.ibgeCityCode);
+          }
+        }
       } catch (error) {
         console.error(`Erro ao atualizar ${fieldName}:`, error);
         if (error.response?.status === 422) {

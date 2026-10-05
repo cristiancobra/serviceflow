@@ -49,6 +49,16 @@ export default {
         source: 'Origem',
         source_contact_channel: 'Canal de Contato',
         reason_for_initial_contact: 'Motivo do Contato',
+        cpf: 'CPF',
+        zip_code: 'CEP',
+        ibge_city_code: 'Código IBGE',
+        nfse_service_code: 'Código de tributação nacional',
+        nfse_default_service_code: 'Código de tributação nacional',
+        nfse_environment: 'Ambiente',
+        nfse_dps_series: 'Série da DPS',
+        nfse_next_dps_number: 'Próximo número da DPS',
+        certificate: 'Certificado',
+        password: 'Senha',
       };
       return fieldNames[field] || field.charAt(0).toUpperCase() + field.slice(1).replace(/_/g, ' ');
     },

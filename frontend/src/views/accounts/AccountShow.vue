@@ -100,6 +100,15 @@
             />
           </div>
           <div class="mb-4">
+            <TextEditableField
+              name="zip_code"
+              v-model="account.zip_code"
+              label="CEP:"
+              placeholder="00000-000"
+              @save="updateZipCode"
+            />
+          </div>
+          <div class="mb-4">
             <label for="theme_preference" class="mb-2 text-sm font-heavy block">Tema</label>
             <select
               id="theme_preference"
@@ -175,6 +184,16 @@
       </div>
     </section>
 
+    <section class="mt-8">
+      <error-message v-if="validationErrors" :formResponse="validationErrors" />
+      <AccountNfseSection
+        v-if="account.id"
+        :account="account"
+        @update-field="updateAccount"
+        @account-updated="account = $event"
+      />
+    </section>
+
     <!-- Seção de Departamentos -->
     <section class="section-container mt-8">
       <departments-manager />
@@ -196,6 +215,9 @@ import MoneyEditableField from "@/components/fields/number/MoneyEditableField.vu
 import DepartmentsManager from "@/components/lists/DepartmentsManager.vue";
 import { mapMutations } from "vuex";
 import PageHeader from "@/components/layout/PageHeader.vue";
+import AccountNfseSection from "@/components/show/AccountNfseSection.vue";
+import ErrorMessage from "@/components/forms/messages/ErrorMessage.vue";
+import { fetchAddressByCep } from "@/utils/address/viaCepUtils";
 
 export default {
   data() {
@@ -210,6 +232,7 @@ export default {
         phone: "",
         address: "",
         address_city: "",
+        zip_code: "",
         is_mei: false,
         mei_annual_limit: 0,
         theme_preference: "auto",
@@ -217,10 +240,13 @@ export default {
       messageStatus: "",
       messageText: "",
       newLogo: null,
+      validationErrors: null,
     };
   },
   components: {
     PageHeader,
+    AccountNfseSection,
+    ErrorMessage,
     AddMessage,
     TextEditableField,
     MoneyEditableField,
@@ -295,15 +321,35 @@ export default {
       }
     },
     async updateAccount(fieldName, editedValue) {
-      this.account = await updateField(
-        "accounts",
-        this.account.id,
-        fieldName,
-        editedValue
-      );
+      try {
+        this.validationErrors = null;
+        this.account = await updateField(
+          "accounts",
+          this.account.id,
+          fieldName,
+          editedValue
+        );
+      } catch (error) {
+        console.error(`Erro ao atualizar ${fieldName}:`, error);
+        this.validationErrors = {
+          errors: error.response?.data?.errors || { [fieldName]: ["Erro ao salvar. Tente novamente."] },
+        };
+        return false;
+      }
 
       if (fieldName === "theme_preference") {
         this.setThemePreference(this.account.theme_preference);
+      }
+      return true;
+    },
+    // O CEP preenche o código IBGE do município, exigido na NFS-e
+    async updateZipCode(zipCode) {
+      const saved = await this.updateAccount("zip_code", zipCode);
+      if (!saved) return;
+
+      const address = await fetchAddressByCep(zipCode);
+      if (address?.ibgeCityCode && address.ibgeCityCode !== this.account.ibge_city_code) {
+        await this.updateAccount("ibge_city_code", address.ibgeCityCode);
       }
     },
     ...mapMutations(["setThemePreference"]),

@@ -35,6 +35,7 @@ class Company extends Model
         'state',
         'country',
         'zip_code',
+        'ibge_city_code',
     ];
 
     public function leads()

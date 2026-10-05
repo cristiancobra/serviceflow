@@ -115,6 +115,13 @@ class ServiceController extends Controller
                 'final_price' => null,
             ];
 
+            // Campos descritivos não entram no cálculo de preço abaixo; são gravados como vierem
+            foreach (['name', 'category', 'observations', 'nfse_service_code'] as $field) {
+                if (array_key_exists($field, $serviceValidated)) {
+                    $serviceData[$field] = $serviceValidated[$field];
+                }
+            }
+
             $laborHours = $serviceData['labor_hours'] / 3600;
             $laborHourlyTotal = $laborHours * $serviceData['labor_hourly_rate'];
             $operationalCost = $laborHourlyTotal;

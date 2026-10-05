@@ -2,11 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Concerns\NormalizesDigits;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class CompanyUpdateRequest extends FormRequest
 {
+    use NormalizesDigits;
+
     public function authorize()
     {
         return true;
@@ -31,6 +34,7 @@ class CompanyUpdateRequest extends FormRequest
             'state' => 'nullable|string|max:255',
             'country' => 'nullable|string|max:255',
             'zip_code' => 'nullable|string|max:20',
+            'ibge_city_code' => 'nullable|digits:7',
             'instagram' => 'nullable',
             'other_social_media' => 'nullable',
             'contact_date' => 'nullable|date',
@@ -38,6 +42,18 @@ class CompanyUpdateRequest extends FormRequest
             'source_contact_channel' => 'nullable',
             'reason_for_initial_contact' => 'nullable',
             'comments' => 'nullable',
+        ];
+    }
+
+    protected function prepareForValidation()
+    {
+        $this->normalizeDigits(['ibge_city_code']);
+    }
+
+    public function messages()
+    {
+        return [
+            'ibge_city_code.digits' => 'O código IBGE do município deve ter 7 dígitos.',
         ];
     }
 }

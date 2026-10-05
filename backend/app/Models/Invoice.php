@@ -47,6 +47,11 @@ class Invoice extends Model
         return $this->belongsTo(Proposal::class);
     }
 
+    public function nfses()
+    {
+        return $this->hasMany(Nfse::class);
+    }
+
     public function lead()
     {
         return $this->belongsTo(Lead::class);

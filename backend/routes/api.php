@@ -55,6 +55,12 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::post('accounts/{account}/logo', [AccountController::class, 'uploadLogo'])
 		->name('accounts.uploadLogo');
 
+	Route::post('accounts/{account}/nfse-certificate', [AccountController::class, 'uploadNfseCertificate'])
+		->name('accounts.uploadNfseCertificate');
+
+	Route::delete('accounts/{account}/nfse-certificate', [AccountController::class, 'deleteNfseCertificate'])
+		->name('accounts.deleteNfseCertificate');
+
 	Route::apiResource('accounts', AccountController::class)
 		->names('accounts');
 

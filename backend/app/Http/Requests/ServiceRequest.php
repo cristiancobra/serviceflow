@@ -2,11 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Concerns\NormalizesDigits;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
 class ServiceRequest extends FormRequest
 {
+    use NormalizesDigits;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -26,6 +29,7 @@ class ServiceRequest extends FormRequest
     {
         return [
             'category' => 'nullable|string|max:255',
+            'nfse_service_code' => 'nullable|digits:6',
             'name' => 'sometimes|string|max:255',
             'labor_hours' => 'sometimes|numeric|min:0',
             'labor_hourly_rate' => 'sometimes|numeric|min:0',
@@ -41,8 +45,17 @@ class ServiceRequest extends FormRequest
         ];
     }
 
+    public function messages()
+    {
+        return [
+            'nfse_service_code.digits' => 'O código de tributação nacional deve ter 6 dígitos.',
+        ];
+    }
+
     protected function prepareForValidation()
     {
+        $this->normalizeDigits(['nfse_service_code']);
+
         $user = Auth::user();
         $this->merge([
             'account_id' => $user->account_id,
