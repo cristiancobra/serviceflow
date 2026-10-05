@@ -78,9 +78,13 @@
         />
       </div>
 
-      <!-- Faturas (da proposta aceita) -->
-      <div v-if="activeTab === 'invoices'">
+      <!-- Faturas de receita (da proposta aceita) -->
+      <div v-if="activeTab === 'creditInvoices'">
         <credit-invoices-section :proposal="safeAcceptedProposal" @reload-proposal="getOpportunity" />
+      </div>
+
+      <!-- Faturas de custos (da proposta aceita) -->
+      <div v-if="activeTab === 'debitInvoices'">
         <debit-invoices-section :proposal="safeAcceptedProposal" @reload-proposal="getOpportunity" />
       </div>
 
@@ -92,6 +96,7 @@
       <!-- Tarefas -->
       <div v-if="activeTab === 'tasks'">
         <tasks-list-section
+          :show-title="false"
           :tasks="opportunity.tasks || []"
           :opportunity="opportunity"
           sortOrder="asc"
@@ -137,7 +142,8 @@ import TextEditor from "@/components/forms/inputs/TextEditor.vue";
 const TABS = [
   { value: "info", label: "Informações", icon: "fas fa-info" },
   { value: "proposals", label: "Propostas", icon: "fas fa-file-contract" },
-  { value: "invoices", label: "Faturas", icon: "fas fa-file-invoice-dollar" },
+  { value: "creditInvoices", label: "Faturas de receita", icon: "fas fa-file-invoice-dollar" },
+  { value: "debitInvoices", label: "Faturas de custos", icon: "fas fa-file-invoice" },
   { value: "attachments", label: "Anexos", icon: "fas fa-link" },
   { value: "tasks", label: "Tarefas", icon: "fas fa-tasks" },
 ];

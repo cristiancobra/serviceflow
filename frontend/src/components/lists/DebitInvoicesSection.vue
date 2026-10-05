@@ -1,14 +1,7 @@
 <template>
-  <div class="section-container">
-    <div class="section-header">
-      <div class="section-title">
-        <font-awesome-icon
-          icon="fa-solid fa-arrow-down"
-          class="icon text-error"
-        />
-        <h2>Faturas de Débito</h2>
-      </div>
-      <div class="action-container flex gap-2">
+  <div class="mt-8 mb-20 px-8">
+    <div class="flex flex-wrap items-center justify-end gap-2 mb-4">
+      <div class="flex flex-wrap items-center gap-2">
         <button-new-form
           target="debit-invoice"
           title="Nova fatura de débito"
@@ -21,22 +14,22 @@
           title="Gerar fatura de custo operacional"
           @open-modal="openOperationalCostInvoiceModal"
         />
-        <div 
+        <span
           v-else-if="proposal?.total_operational_cost > 0"
-          class="px-4 py-2 bg-base-300 text-base-content/70 font-medium rounded-lg flex items-center gap-2" 
+          class="badge badge-lg badge-soft gap-2 font-medium"
           :title="`Já faturado: ${formatCurrency(totalOperationalCostInvoices)} de ${formatCurrency(proposal.total_operational_cost)}`"
         >
           <font-awesome-icon icon="fa-solid fa-lock" />
-          Custo Operacional
-        </div>
-        <div 
+          Custo operacional faturado
+        </span>
+        <span
           v-else
-          class="px-4 py-2 bg-base-300 text-base-content/60 font-medium rounded-lg flex items-center gap-2 cursor-not-allowed" 
+          class="badge badge-lg badge-soft gap-2 font-medium text-base-content/60"
           title="Adicione serviços com custo operacional à proposta primeiro"
         >
           <font-awesome-icon icon="fa-solid fa-info-circle" />
-          Custo Operacional (Sem custo definido)
-        </div>
+          Sem custo operacional definido
+        </span>
       </div>
     </div>
 
@@ -54,11 +47,11 @@
         />
       </div>
       <h3 class="text-lg font-medium text-base-content/70 mb-2">
-        Nenhuma fatura de débito
+        Nenhuma fatura de custo
       </h3>
       <p class="text-sm text-base-content/60 max-w-sm">
-        Use o botão de "Fatura de Débito" na seção de custos para criar uma nova
-        fatura.
+        Use os botões acima para lançar uma despesa ou gerar a fatura de custo
+        operacional desta proposta.
       </p>
     </div>
 
@@ -67,45 +60,46 @@
       <div
         v-for="invoice in debitInvoices"
         :key="invoice.id"
-        class="bg-base-100 rounded-lg border border-base-300 hover:border-base-300 hover:shadow-md transition-all duration-200"
+        class="bg-base-200 rounded-lg border border-base-300 hover:border-primary/40 hover:shadow-md transition-all duration-200 cursor-pointer"
+        title="Ver detalhes da fatura"
+        @click="openInvoiceModal(invoice)"
       >
-        <div
-          role="button"
-          class="flex items-center justify-between p-2 text-base-content hover:text-error transition-colors duration-200 cursor-pointer"
-          @click="openInvoiceModal(invoice)"
-        >
-          <!-- Tipo e Fornecedor -->
+        <div class="flex items-center justify-between p-2 text-base-content">
           <div class="flex items-center gap-4">
             <div
-              :class="getInvoiceBalance(invoice) === 0 ? 'bg-gray-500' : (invoice.category === 'operational' ? 'bg-warning' : 'bg-error')"
+              :class="invoiceIconClass(invoice)"
               class="flex items-center justify-center w-10 h-10 rounded-full"
+              :title="invoice.category === 'operational' ? 'Custo operacional' : 'Despesa'"
             >
               <font-awesome-icon
                 :icon="invoice.category === 'operational' ? 'fa-solid fa-briefcase' : 'fa-solid fa-receipt'"
-                class="text-white"
               />
             </div>
-            <div class="flex flex-col gap-1">
-              <span class="text-sm font-medium text-base-content/70">Fornecedor</span>
-              <span class="text-base font-semibold text-base-content">
-                {{ invoice.company?.business_name || invoice.company?.legal_name || invoice.lead?.name || "Sem fornecedor" }}
+            <div class="flex flex-col">
+              <span class="text-sm font-medium text-base-content/70"
+                >Vencimento</span
+              >
+              <!-- @click.stop: editar a data não abre o modal da fatura -->
+              <div @click.stop>
+                <date-editable-input
+                  name="date_due"
+                  :modelValue="invoice.date_due"
+                  @save="updateInvoice('date_due', $event, invoice)"
+                  class-text="text-base font-semibold"
+                />
+              </div>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-sm font-medium text-base-content/70"
+                >Fornecedor</span
+              >
+              <span class="text-base font-semibold">
+                {{ supplierName(invoice) }}
               </span>
             </div>
           </div>
 
-          <!-- Informações da Fatura -->
           <div class="flex items-center gap-6">
-            <div class="flex items-center">
-              <font-awesome-icon
-                icon="fas fa-calendar-alt"
-                class="text-base-content/50 mr-2 w-4"
-              />
-              <span class="font-medium mr-1 text-sm">Vencimento:</span>
-              <span class="text-base-content/80 font-semibold">
-                {{ formatDateBr(invoice.date_due) }}
-              </span>
-            </div>
-
             <div class="flex items-center">
               <font-awesome-icon
                 icon="fas fa-dollar-sign"
@@ -117,7 +111,10 @@
               </span>
             </div>
 
-            <div class="flex items-center">
+            <div
+              v-if="getInvoiceTotalPaid(invoice) > 0 && getInvoiceBalance(invoice) > 0"
+              class="flex items-center"
+            >
               <font-awesome-icon
                 icon="fas fa-check-circle"
                 class="text-base-content/50 mr-2 w-4"
@@ -128,44 +125,39 @@
               </span>
             </div>
 
-            <div class="flex items-center">
+            <div
+              v-if="getInvoiceTotalPaid(invoice) > 0 && getInvoiceBalance(invoice) > 0"
+              class="flex items-center"
+            >
               <font-awesome-icon
                 icon="fas fa-balance-scale"
                 class="text-base-content/50 mr-2 w-4"
               />
               <span class="font-medium mr-1 text-sm">Saldo:</span>
-              <span
-                :class="{
-                  'text-base-content/70': getInvoiceBalance(invoice) === 0,
-                  'text-error': getInvoiceBalance(invoice) > 0,
-                }"
-                class="font-bold"
-              >
+              <span class="text-warning font-bold">
                 {{ formatCurrency(getInvoiceBalance(invoice)) }}
               </span>
             </div>
 
-            <button
-              v-if="getInvoiceBalance(invoice) > 0"
-              @click.prevent.stop="openTransactionModal(invoice)"
-              class="btn btn-primary"
-              title="Adicionar Pagamento"
-            >
-              <font-awesome-icon icon="fas fa-plus" class="text-sm" />
-            </button>
-
-            <delete-icon-button
-              title="Excluir fatura"
-              confirm-message="Tem certeza que deseja excluir esta fatura? Esta ação não pode ser desfeita."
-              @click.prevent.stop
-              @confirm="deleteInvoice(invoice.id)"
-            />
-
-            <div class="w-6 h-6 flex items-center justify-center">
-              <font-awesome-icon
-                icon="fa-solid fa-chevron-right"
-                class="text-base-content/50 text-sm"
-              />
+            <div class="w-28 flex justify-end">
+              <button
+                v-if="getInvoiceBalance(invoice) > 0"
+                type="button"
+                class="btn btn-primary btn-sm"
+                title="Registrar pagamento feito"
+                @click.prevent.stop="openTransactionModal(invoice)"
+              >
+                <font-awesome-icon icon="fa-solid fa-coins" />
+                Pagar
+              </button>
+              <span
+                v-else
+                class="badge badge-lg badge-success badge-soft gap-2 font-semibold"
+                title="Fatura quitada"
+              >
+                <font-awesome-icon icon="fa-solid fa-circle-check" />
+                Pago
+              </span>
             </div>
           </div>
         </div>
@@ -173,103 +165,86 @@
         <!-- Pagamentos Realizados -->
         <div
           v-if="invoice.transactions && invoice.transactions.length > 0"
-          class="mt-0 space-y-1 rounded-xl border border-base-300 bg-base-100 p-2 px-16 border-t-4 shadow-sm"
+          class="mx-3 mb-3 space-y-1 rounded-lg bg-base-100 p-2"
         >
           <div
             v-for="transaction in invoice.transactions"
             :key="transaction.id"
-            class="group flex items-center justify-between ms-0 px-1 py-1 rounded-md bg-base-100 even:bg-info/20 hover:bg-info/20 border-l-4 border-transparent hover:border-info transition-colors"
+            class="flex items-center justify-end gap-3 px-2 py-1 rounded-md hover:bg-info/10 border-l-4 border-transparent hover:border-info transition-colors"
           >
-            <div
-              :class="invoice.category === 'operational' ? 'bg-warning' : 'bg-error'"
-              class="flex items-center justify-center w-6 h-6 me-2 rounded-full"
-            >
-              <font-awesome-icon
-                icon="fas fa-coins"
-                class="text-white text-xs"
-              />
-            </div>
-            <div class="min-w-[160px]">
-              <div
-                class="inline-flex items-center gap-2 rounded-full bg-indigo-100 px-3 py-1"
-              >
-                <span class="h-2.5 w-2.5 rounded-full bg-gray-400"></span>
-                <date-time-editable-input
-                  name="transaction_date"
-                  :modelValue="transaction.transaction_date"
-                  @save="
-                    updateTransaction(
-                      'transaction_date',
-                      $event,
-                      transaction.id
-                    )
-                  "
-                  class-text="text-sm font-semibold text-indigo-700"
-                />
-              </div>
-            </div>
-            <div class="flex-1"></div>
-            <div
-              class="text-right inline-flex items-center rounded-md  px-2 py-1 text-success"
-            >
-              <money-field
-                name="amount"
-                :modelValue="transaction.amount"
-                readonly
-              />
-            </div>
-            <delete-icon-button
-              class="ml-2"
-              title="Excluir transação"
-              confirm-message="Tem certeza que deseja excluir esta transação? Esta ação não pode ser desfeita."
-              @click.stop
-              @confirm="deleteTransaction(transaction.id, invoice.id)"
+            <font-awesome-icon
+              icon="fa-solid fa-coins"
+              class="text-primary text-sm"
             />
+            <date-time-editable-input
+              @click.stop
+              name="transaction_date"
+              :modelValue="transaction.transaction_date"
+              @save="
+                updateTransaction(
+                  'transaction_date',
+                  $event,
+                  transaction.id
+                )
+              "
+              class-text="text-sm text-base-content/70"
+            />
+            <span
+              class="min-w-28 text-right font-semibold tabular-nums text-base-content"
+            >
+              {{ formatCurrency(transaction.amount) }}
+            </span>
           </div>
         </div>
       </div>
 
       <!-- Totais das faturas de débito -->
       <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="rounded-xl border border-base-300 bg-base-100 p-4 shadow-sm">
-          <div class="text-xs font-semibold text-base-content/60">
-            Total de Débitos
+        <div class="rounded-xl border border-base-300 bg-base-300 p-4 shadow-sm">
+          <div class="text-xs font-semibold text-base-content/80">
+            Total das Faturas
           </div>
           <div class="mt-1 text-1xl font-bold text-base-content">
             <money-field name="total" :modelValue="totalDebits" readonly />
           </div>
         </div>
+
         <div
-          class="rounded-xl border border-success/30 bg-success/10 p-4 shadow-sm"
+          class="rounded-xl border p-4 shadow-sm"
+          :class="balanceDebits > 0 ? 'border-error/30 bg-error/10' : 'border-base-300 bg-base-300'"
         >
-          <div class="text-xs font-semibold text-success">Total Pago</div>
-          <div class="mt-1 text-1xl font-bold text-success">
-            <money-field name="paid" :modelValue="totalPaidDebits" readonly />
+          <div
+            class="text-xs font-semibold"
+            :class="balanceDebits > 0 ? 'text-error' : 'text-base-content/80'"
+          >
+            Saldo
           </div>
-        </div>
-        <div class="rounded-xl border border-info/30 bg-info/10 p-4 shadow-sm">
-          <div class="text-xs font-semibold text-info">Saldo</div>
           <div
             class="mt-1 text-1xl font-bold"
-            :class="balanceDebits >= 0 ? 'text-info' : 'text-error'"
+            :class="balanceDebits > 0 ? 'text-error' : 'text-base-content'"
           >
             <money-field name="balance" :modelValue="balanceDebits" readonly />
           </div>
         </div>
+
+        <div class="rounded-xl border border-info/30 bg-info/10 p-4 shadow-sm">
+          <div class="text-xs font-semibold text-info">Total Pago</div>
+          <div class="mt-1 text-1xl font-bold text-info">
+            <money-field name="paid" :modelValue="totalPaidDebits" readonly />
+          </div>
+        </div>
       </div>
     </div>
-
   </div>
 </template>
 
   <script>
 import { mapMutations } from "vuex";
-import { updateField, destroy } from "@/utils/requests/httpUtils";
-import { formatDateBr } from "@/utils/date/dateUtils";
+import { updateField } from "@/utils/requests/httpUtils";
 import ButtonNewForm from "../buttons/ButtonNewForm.vue";
 import MoneyField from "../fields/number/MoneyField.vue";
+import DateEditableInput from "../fields/date/DateEditableInput.vue";
 import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
-import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
 
 export default {
   props: {
@@ -281,8 +256,8 @@ export default {
   components: {
     ButtonNewForm,
     MoneyField,
+    DateEditableInput,
     DateTimeEditableInput,
-    DeleteIconButton,
   },
   computed: {
     debitInvoices() {
@@ -335,9 +310,6 @@ export default {
   },
   methods: {
     ...mapMutations(["openModal"]),
-    formatDateBr,
-    updateField,
-    destroy,
     openInvoiceModal(invoice) {
       this.openModal({
         component: "InvoiceDetailModal",
@@ -377,8 +349,8 @@ export default {
         currency: "BRL",
       }).format(value);
     },
-    calculateInvoiceBalance(invoice) {
-      return invoice.price - (invoice.total_paid || 0);
+    supplierName(invoice) {
+      return invoice.company?.business_name || invoice.company?.legal_name || invoice.lead?.name || "Sem fornecedor";
     },
     getInvoiceTotalPaid(invoice) {
       const transactions = invoice.transactions || [];
@@ -386,6 +358,21 @@ export default {
     },
     getInvoiceBalance(invoice) {
       return invoice.price - this.getInvoiceTotalPaid(invoice);
+    },
+    // Mesmas cores da fatura de receita: paga e parcial saem das transações;
+    // vencida e cancelada vêm do status calculado pela API.
+    invoiceIconClass(invoice) {
+      if (invoice.status === "cancelled") return "bg-base-300 text-base-content/40";
+      if (this.getInvoiceBalance(invoice) <= 0) return "bg-success text-success-content";
+      if (invoice.status === "overdue") return "bg-error text-error-content";
+      if (this.getInvoiceTotalPaid(invoice) > 0) return "bg-warning text-warning-content";
+      return "bg-info text-info-content";
+    },
+    async updateInvoice(fieldName, editedValue, invoice) {
+      const updatedInvoice = await updateField("invoices", invoice.id, fieldName, editedValue);
+      invoice[fieldName] = updatedInvoice[fieldName];
+      // Mudar o vencimento pode mudar o status (vencida ou não)
+      if (updatedInvoice.status) invoice.status = updatedInvoice.status;
     },
     openTransactionModal(invoice) {
       this.openModal({
@@ -434,47 +421,6 @@ export default {
           }
         }
       }
-    },
-    async deleteInvoice(invoiceId) {
-      try {
-        await this.destroy("invoices", invoiceId);
-        
-        // Emite evento para o pai recarregar a proposta
-        this.$emit("reload-proposal");
-      } catch (error) {
-        // Trata erros de validação do backend
-        if (error.response && error.response.status === 422) {
-          const errorData = error.response.data;
-          alert(errorData.message || 'Não foi possível excluir a fatura.');
-        } else {
-          alert('Erro ao excluir fatura. Tente novamente.');
-        }
-        console.error("Erro ao excluir fatura:", error);
-      }
-    },
-    async deleteTransaction(transactionId, invoiceId) {
-      await destroy("transactions", transactionId);
-
-      // Remover transação localmente
-      const invoice = this.debitInvoices.find((inv) => inv.id === invoiceId);
-      if (invoice && invoice.transactions) {
-        const index = invoice.transactions.findIndex(
-          (t) => t.id === transactionId
-        );
-        if (index !== -1) {
-          // Guardar o valor ANTES de remover
-          const transactionAmount = Number(invoice.transactions[index].amount);
-          
-          // Remover a transação
-          invoice.transactions.splice(index, 1);
-          
-          // Atualizar total_paid e balance
-          invoice.total_paid = (invoice.total_paid || 0) - transactionAmount;
-          invoice.balance = invoice.price - invoice.total_paid;
-        }
-      }
-      // Emite evento para o pai recarregar a proposta
-      this.$emit("reload-proposal");
     },
   },
 };

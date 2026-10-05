@@ -1,11 +1,14 @@
 <template>
-  <div class="section-container">
-    <div class="section-header">
-      <div class="section-title">
-        <font-awesome-icon icon="fa-solid fa-tasks" class="icon" />
-        <h2>TAREFAS</h2>
-      </div>
-      <div class="section-action">
+  <div class="mt-8 mb-20 px-8">
+    <div
+      class="flex flex-wrap items-center gap-2 mb-4"
+      :class="showTitle ? 'justify-between' : 'justify-end'"
+    >
+      <h2 v-if="showTitle" class="flex items-center gap-2 text-lg font-semibold">
+        <font-awesome-icon icon="fa-solid fa-tasks" class="text-primary" />
+        TAREFAS
+      </h2>
+      <div class="flex items-center gap-2">
         <button-new-form target="task" @open-modal="openTaskCreateModal" />
 
         <button @click="createOrganizationTask"
@@ -16,7 +19,7 @@
       </div>
     </div>
 
-    <section class="section-container">
+    <section class="mt-8 mb-20 px-8">
       <!-- Barra de busca e filtros -->
       <div class="flex flex-col md:flex-row gap-4 items-start md:items-center mb-6">
         <div class="flex-1 w-full md:w-auto">
@@ -262,6 +265,11 @@ export default {
   name: "TasksList",
   emits: ['filter-change', 'department-filter-change'],
   props: {
+    // Desligado onde uma aba já diz o nome da seção (modal da oportunidade)
+    showTitle: {
+      type: Boolean,
+      default: true,
+    },
     tasks: {
       type: Array,
       required: false,

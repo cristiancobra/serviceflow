@@ -1,12 +1,8 @@
 <template>
   <div>
-    <div class="section-container">
-      <div class="section-header">
-        <div class="section-title">
-          <font-awesome-icon icon="fas fa-dollar" class="icon" />
-          <h2>Faturamento</h2>
-        </div>
-        <div class="action-container">
+    <div class="mt-8 mb-20 px-8">
+      <div class="flex flex-wrap items-center justify-end gap-2 mb-4">
+        <div>
           <credit-invoice-create-form
             @new-invoice-event="addInvoiceCreated"
             :proposal="proposal"
