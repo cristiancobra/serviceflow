@@ -1,9 +1,8 @@
 <template>
   <div>
     <label v-if="label" class="block text-sm font-semibold text-base-content mb-2" :for="name">{{ label }}</label>
-    <!-- rounded-lg: mesmo raio dos demais campos dos formulários (o raio do tema ainda é pílula) -->
     <textarea
-      class="textarea w-full rounded-lg"
+      class="textarea w-full"
       :id="name"
       :name="name"
       :value="modelValue"

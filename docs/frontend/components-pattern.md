@@ -4,25 +4,15 @@
 
 ### Botões
 
-#### ButtonNewForm
-**Localização**: `frontend/src/components/buttons/ButtonNewForm.vue`
-
-**Uso**: Botão para abrir formulários de criação
+Não há componente de botão genérico: use `btn` do DaisyUI conforme o papel do botão (ver [Guia de Estilos](./styling-guide.md#botões)). Para abrir um formulário de criação:
 
 ```vue
-<button-new-form 
-  target="opportunity" 
-  @open-modal="isCreateModalVisible = true" 
-/>
+<button type="button" class="btn btn-primary" @click="isCreateModalVisible = true">
+  <font-awesome-icon icon="fa-solid fa-plus" /> Novo
+</button>
 ```
 
-**Props**:
-- `target`: String - Identificador do tipo de item (opcional)
-
-**Events**:
-- `@open-modal`: Emitido quando o botão é clicado
-
-**Observação**: Use kebab-case no template (`button-new-form`)
+O `ButtonNewForm` ainda existe em algumas telas, mas está sendo substituído por `btn` (etapa 3 do [plano de reformulação](./plano-de-reformulacao-do-layout.md#etapa-3-botões)); não use em código novo.
 
 ---
 
@@ -314,7 +304,8 @@ export default {
 - ProjectsSelectInput
 
 ### 🔘 Botões
-- ButtonNewForm
+- `btn` do DaisyUI (sem componente genérico)
+- `StatusToggle`, `SelectStatusButton`
 
 ### 💬 Mensagens
 - ErrorMessage

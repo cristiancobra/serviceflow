@@ -14,18 +14,6 @@ label {
   color: var(--color-primary);
 }
 
-/* button primary with white border */
-.btn.btn-primary {
-  border: 2px solid white;
-  transition: all 0.3s ease;
-}
-
-.btn.btn-primary:hover {
-  border-color: white;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-  transform: scale(1.1);
-}
-
 /* button */
 .button {
   display: flex;

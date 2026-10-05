@@ -2,8 +2,8 @@
   <div class="page-container">
     <PageHeader title="CONTATOS" icon="fa-solid fa-user">
       <template #actions>
-        <button type="button" class="btn-create" @click="openCreateLeadModal">
-          <font-awesome-icon icon="fa-solid fa-plus" class="me-2" />
+        <button type="button" class="btn bg-base-100 text-primary border-0 hover:bg-base-200" @click="openCreateLeadModal">
+          <font-awesome-icon icon="fa-solid fa-plus" />
           Novo Contato
         </button>
       </template>

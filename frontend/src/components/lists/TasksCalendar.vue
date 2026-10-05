@@ -2,8 +2,8 @@
   <div class="page-container">
     <PageHeader title="AGENDA" icon="fa-solid fa-tasks">
       <template #actions>
-        <button type="button" class="btn btn-primary" @click="openTaskCreateModal">
-          <font-awesome-icon icon="fa-solid fa-plus" class="text-white" />
+        <button type="button" class="btn bg-base-100 text-primary border-0 hover:bg-base-200" title="Nova tarefa" @click="openTaskCreateModal">
+          <font-awesome-icon icon="fa-solid fa-plus" />
         </button>
       </template>
     </PageHeader>

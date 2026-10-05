@@ -10,7 +10,7 @@
       <template #actions>
         <button
           type="button"
-          class="px-6 py-2 bg-primary hover:opacity-90 text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
+          class="btn bg-base-100 text-primary border-0 hover:bg-base-200"
           @click="openCreateProjectModal"
         >
           <font-awesome-icon icon="fa-solid fa-plus" />

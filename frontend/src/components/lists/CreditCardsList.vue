@@ -2,7 +2,7 @@
   <div class="page-container">
     <PageHeader title="CARTÕES DE CRÉDITO" icon="fa-solid fa-credit-card">
       <template #actions>
-        <button @click="openCreateModal" class="btn btn-primary">
+        <button type="button" class="btn bg-base-100 text-primary border-0 hover:bg-base-200" @click="openCreateModal">
           <font-awesome-icon icon="fa-solid fa-plus" />
           Novo Cartão
         </button>

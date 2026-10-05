@@ -2,8 +2,8 @@
   <div class="page-container">
     <PageHeader title="EMPRESAS" icon="fa-solid fa-briefcase">
       <template #actions>
-        <button type="button" class="btn-create" @click="openCreateCompanyModal">
-          <font-awesome-icon icon="fa-solid fa-plus" class="me-2" />
+        <button type="button" class="btn bg-base-100 text-primary border-0 hover:bg-base-200" @click="openCreateCompanyModal">
+          <font-awesome-icon icon="fa-solid fa-plus" />
           Nova Empresa
         </button>
       </template>

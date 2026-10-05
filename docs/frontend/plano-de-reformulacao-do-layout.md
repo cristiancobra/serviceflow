@@ -11,7 +11,7 @@ A regra que orienta todo código novo está no [Guia de Estilos](./styling-guide
 | 0. Remover classes do Bootstrap | ✅ Concluída |
 | 1. Cores fixas → tokens do tema | ✅ Concluída (com pendências listadas na etapa) |
 | 2. Componentes de estrutura de página | ✅ Concluída |
-| 3. Botões padronizados | 🔄 Padrão decidido; execução pendente |
+| 3. Botões padronizados | 🔄 Passos 1 e 2 feitos; 3 a 7 pendentes |
 | 4. Listas como tabela | ⏳ Pendente |
 | 5. Feedback ao usuário (confirmação, toast, loading) | ⏳ Pendente |
 | 6. Atualizar a documentação de `docs/frontend/` | 🔄 `styling-guide.md` reescrito; faltam `forms-pattern.md` e `detail-modal-template.md` |
@@ -124,8 +124,8 @@ Feita por script, levando em conta a propriedade CSS: 344 cores e 181 variáveis
 **Levantamento** (antes da migração): 72 botões montados com Tailwind (`px-6 py-2 rounded-lg` com `bg-primary`, `bg-base-100` com borda ou `bg-error`), 44 com `btn` do DaisyUI, ~25 com classes próprias e ~75 só de ícone ou texto.
 
 **Execução**:
-1. Tema: `--radius-field` para `0.5rem` nos dois temas; apagar o ajuste global do `.btn.btn-primary`. Ao fazer isso, remover o `rounded-lg` provisório do `TextAreaInput` (`components/forms/inputs/textarea/`), que foi posto ali só para igualar o raio dos outros campos enquanto o tema ainda é pílula.
-2. Botões no `PageHeader`: trocar para o estilo branco.
+1. ✅ Tema: `--radius-field` para `0.5rem` nos dois temas; apagar o ajuste global do `.btn.btn-primary`. Ao fazer isso, remover o `rounded-lg` provisório do `TextAreaInput` (`components/forms/inputs/textarea/`), que foi posto ali só para igualar o raio dos outros campos enquanto o tema ainda é pílula.
+2. ✅ Botões no `PageHeader`: trocar para o estilo branco. Em Contas a Pagar o texto é `text-error`, seguindo o ícone vermelho do cabeçalho.
 3. Botões montados com Tailwind: converter pelo papel (fundo `primary` → `btn-primary`; `base-100` com borda → `btn-ghost`; `error` → `btn-error`; `px-2/px-3 py-1` → `btn-sm`), mantendo só as classes de layout (`w-full`, `flex-1`, `ml-auto`...).
 4. Classes próprias (`btn-action`, `btn-create`, `btn-save`, `btn-cancel`, `button*`, `myButton`...): converter e apagar o CSS delas (`style.css`, `login.css` e `<style scoped>`).
 5. Componente `RowActions` (ver/editar/excluir) para as listas.

@@ -10,7 +10,7 @@ O frontend usa **DaisyUI 5 + Tailwind CSS 4**. Este guia é a regra para todo te
    - Ativo/inativo: `StatusToggle` (`components/buttons/StatusToggle.vue`)
    - Modais: `ModalCard` (`components/modals/ModalCard.vue`)
    - Card de seção com cabeçalho roxo (só título), ex: seções do modal de oportunidade: `SectionCard` (`components/common/SectionCard.vue`)
-   - Botão de fechar: `CloseButton`
+   - Botão de fechar modal: já vem no `ModalCard` (X no cabeçalho)
    - Status: `SelectStatusButton`
    - Campos: `components/forms/inputs/` (formulários) e `components/fields/` (campos editáveis nas telas de detalhe)
 2. **Componente DaisyUI** para elementos genéricos: `btn`, `input`, `select`, `textarea`, `checkbox`, `radio`, `toggle`, `badge`, `card`, `table`, `alert`, `loading`, `dropdown`, `menu`, `join`, `tabs`, `fieldset`.

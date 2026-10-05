@@ -2,7 +2,10 @@
     <div class="page-container">
         <PageHeader title="OPORTUNIDADES" icon="fa-solid fa-bullseye">
           <template #actions>
-            <button-new-form target="opportunity" @open-modal="openCreateOpportunityModal" />
+            <button type="button" class="btn bg-base-100 text-primary border-0 hover:bg-base-200" @click="openCreateOpportunityModal">
+              <font-awesome-icon icon="fa-solid fa-plus" />
+              Nova Oportunidade
+            </button>
           </template>
         </PageHeader>
 
@@ -63,7 +66,6 @@ import UserAvatar from "@/components/common/UserAvatar.vue";
 import DateTimeEditableInput from "@/components/fields/datetime/DateTimeEditableInput.vue";
 import DateTimeValue from "@/components/fields/datetime/DateTimeValue.vue";
 import SearchInput from "@/components/filters/SearchInput.vue";
-import ButtonNewForm from "@/components/buttons/ButtonNewForm.vue";
 import PageHeader from "@/components/layout/PageHeader.vue";
 
 export default {
@@ -75,7 +77,6 @@ export default {
         DateTimeEditableInput,
         DateTimeValue,
         SearchInput,
-        ButtonNewForm,
     },
     data() {
         return {

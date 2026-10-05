@@ -7,7 +7,7 @@
       @back="goBack"
     >
       <template #actions>
-        <button @click="openEditModal" class="btn btn-primary">
+        <button type="button" class="btn bg-base-100 text-primary border-0 hover:bg-base-200" @click="openEditModal">
           <font-awesome-icon icon="fa-solid fa-edit" />
           Editar
         </button>

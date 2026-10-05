@@ -7,8 +7,7 @@
       icon-class="text-error"
     >
       <template #actions>
-        <button @click="openCreateInvoiceModal"
-          class="flex items-center gap-2 px-4 py-2 bg-error text-white rounded-lg hover:bg-error transition-colors font-semibold text-sm">
+        <button type="button" class="btn bg-base-100 text-error border-0 hover:bg-base-200" @click="openCreateInvoiceModal">
           <font-awesome-icon icon="fa-solid fa-plus" />
           Nova Conta a Pagar
         </button>
