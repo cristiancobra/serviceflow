@@ -1,9 +1,6 @@
 <template>
-  <div class="section-container">
-    <div class="section-title">
-      <font-awesome-icon icon="fas fa-coins" class="icon" />
-      <h2>Descrição</h2>
-    </div>
+  <div class="mt-8 mb-20 px-8">
+    <section-header title="Descrição" icon="fas fa-coins" />
     <div v-if="description" class="table-row">
       <text-area-editable-input
         label="Descrição"
@@ -27,8 +24,9 @@
 
 <script>
 import TextAreaEditableInput from '../forms/inputs/textarea/TextAreaEditableInput.vue';
+import SectionHeader from "@/components/layout/SectionHeader.vue";
 export default {
-  components: { TextAreaEditableInput },
+  components: { SectionHeader, TextAreaEditableInput },
   props: {
     description: {
       type: String,

@@ -17,12 +17,7 @@
 
           <!-- LINKS DA TAREFA (quando aberto a partir de uma tarefa) -->
           <section v-if="taskId" class="mb-6">
-              <div class="section-header">
-                  <div class="section-title">
-                      <font-awesome-icon icon="fa-solid fa-check-circle" class="icon" />
-                      <h2>LINKS DESTA TAREFA</h2>
-                  </div>
-              </div>
+              <section-header title="LINKS DESTA TAREFA" icon="fa-solid fa-check-circle" />
               <task-links-list
                   :links="linksOfCurrentTask"
                   :show-header="false"
@@ -34,12 +29,7 @@
 
           <!-- LINKS DA OPORTUNIDADE DA TAREFA -->
           <section v-if="opportunityId" class="mb-6">
-              <div class="section-header">
-                  <div class="section-title">
-                      <font-awesome-icon icon="fa-solid fa-bullseye" class="icon" />
-                      <h2>LINKS DESTA OPORTUNIDADE</h2>
-                  </div>
-              </div>
+              <section-header title="LINKS DESTA OPORTUNIDADE" icon="fa-solid fa-bullseye" />
               <task-links-list
                   :links="linksOfCurrentOpportunity"
                   empty-message="Nenhum link desta oportunidade"
@@ -52,12 +42,7 @@
 
           <!-- LINKS SEM TAREFAS -->
           <section class="mb-6">
-              <div class="section-header">
-                  <div class="section-title">
-                      <font-awesome-icon icon="fa-solid fa-link" class="icon" />
-                      <h2>LINKS GERAIS</h2>
-                  </div>
-              </div>
+              <section-header title="LINKS GERAIS" icon="fa-solid fa-link" />
 
               <search-input v-model="searchTerm" placeholder="Digite para buscar links" />
 
@@ -135,12 +120,7 @@
 
           <!-- LINKS DE OPORTUNIDADES -->
           <section class="mb-6">
-              <div class="section-header">
-                  <div class="section-title">
-                      <font-awesome-icon icon="fa-solid fa-bullseye" class="icon" />
-                      <h2>LINKS DE OPORTUNIDADES</h2>
-                  </div>
-              </div>
+              <section-header title="LINKS DE OPORTUNIDADES" icon="fa-solid fa-bullseye" />
 
               <div v-if="linksOfOtherOpportunities.length === 0" class="p-4 text-center">
                   <p class="text-base-content/60">Nenhum link de oportunidade</p>
@@ -215,12 +195,7 @@
 
           <!-- LINKS DE PROJETOS -->
           <section class="mb-6">
-              <div class="section-header">
-                  <div class="section-title">
-                      <font-awesome-icon icon="fa-solid fa-project-diagram" class="icon" />
-                      <h2>LINKS DE PROJETOS</h2>
-                  </div>
-              </div>
+              <section-header title="LINKS DE PROJETOS" icon="fa-solid fa-project-diagram" />
 
               <div v-if="linksWithProject.length === 0" class="p-4 text-center">
                   <p class="text-base-content/60">Nenhum link de projeto</p>
@@ -303,10 +278,12 @@ import ButtonNewForm from "@/components/buttons/ButtonNewForm.vue";
 import TaskLinksList from "@/components/lists/TaskLinksList.vue";
 import ModalCard from "@/components/modals/ModalCard.vue";
 import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
+import SectionHeader from "@/components/layout/SectionHeader.vue";
 
 export default {
   name: "LinksModal",
   components: {
+    SectionHeader,
       SearchInput,
       ButtonNewForm,
       TaskLinksList,

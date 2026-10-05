@@ -10,7 +10,7 @@
       <div v-if="costs.length === 0" class="table-row">
         <p>Você ainda não possui custos cadastrados.</p>
       </div>
-      <div v-else class="section-container">
+      <div v-else class="mt-8 mb-20 px-8">
         <div class="table-row" v-for="cost in costs" :key="cost.id">
           <div class="quantity-column">
             <input

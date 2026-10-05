@@ -1,14 +1,10 @@
 <template>
   <section class="" :class="containerClass">
-      <div v-if="showHeader" class="section-header">
-          <div class="section-title">
-              <font-awesome-icon icon="fa-solid fa-tasks" class="icon" />
-              <h2>LINKS DE TAREFAS</h2>
-          </div>
-          <div class="section-action">
-              <slot name="action"></slot>
-          </div>
-      </div>
+      <section-header v-if="showHeader" title="LINKS DE TAREFAS" icon="fa-solid fa-tasks">
+        <template #actions>
+          <slot name="action"></slot>
+        </template>
+      </section-header>
 
       <div v-if="links.length === 0" class="p-4 text-center">
           <p class="text-base-content/50">{{ emptyMessage }}</p>
@@ -85,10 +81,12 @@
 
 <script>
 import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
+import SectionHeader from "@/components/layout/SectionHeader.vue";
 
 export default {
   name: 'TaskLinksList',
   components: {
+    SectionHeader,
       DeleteIconButton,
   },
   props: {

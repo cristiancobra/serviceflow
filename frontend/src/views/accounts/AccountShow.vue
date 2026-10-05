@@ -7,7 +7,7 @@
     />
     <PageHeader title="Configurações" icon="fa-solid fa-cogs" />
 
-    <section class="section-container">
+    <section class="mt-8 mb-20 px-8">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div class="space-y-6">
           <div class="mb-4">
@@ -195,7 +195,7 @@
     </section>
 
     <!-- Seção de Departamentos -->
-    <section class="section-container mt-8">
+    <section class="mt-8 mb-20 px-8">
       <departments-manager />
     </section>
   </div>

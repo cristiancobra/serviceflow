@@ -1,6 +1,6 @@
 <template>
     <div class="">
-        <section class="section-container">
+        <section class="mt-8 mb-20 rounded-xl sm:rounded-2xl bg-base-100 p-4 sm:p-5 md:p-8 shadow-xl">
             <div class="search-container">
                 <SearchInput v-model="searchTerm" placeholder="🔍 Buscar por nome, CNPJ, email ou telefone..." />
             </div>
@@ -132,12 +132,6 @@ export default {
     min-height: 100vh;
 }
 
-.section-container {
-    background: var(--color-base-100);
-    border-radius: 16px;
-    padding: 30px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-}
 
 .search-container {
     margin-bottom: 30px;
@@ -237,9 +231,6 @@ export default {
         padding: 20px;
     }
 
-    .section-container {
-        padding: 20px;
-    }
 
     .companies-grid {
         grid-template-columns: 1fr;
@@ -251,10 +242,6 @@ export default {
         padding: 15px;
     }
 
-    .section-container {
-        padding: 15px;
-        border-radius: 12px;
-    }
 
     .card-title h3 {
         font-size: 16px;

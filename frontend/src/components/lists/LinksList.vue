@@ -1,17 +1,13 @@
 <template>
-  <div class="section-container">
-    <div class="section-header">
-      <div class="section-title">
-        <font-awesome-icon icon="fa-solid fa-link" class="icon" />
-        <h2>LINKS</h2>
-      </div>
-      <div class="section-action">
+  <div class="mt-8 mb-20 px-8">
+    <section-header title="LINKS" icon="fa-solid fa-link">
+      <template #actions>
         <button-new-form
           target="link"
           @open-modal="openCreateLinkModal"
         />
-      </div>
-    </div>
+      </template>
+    </section-header>
 
     <div class="table-row">
       <input
@@ -59,10 +55,12 @@ import { mapMutations } from "vuex";
 import { destroy } from "@/utils/requests/httpUtils";
 import ButtonNewForm from "@/components/buttons/ButtonNewForm.vue";
 import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
+import SectionHeader from "@/components/layout/SectionHeader.vue";
 
 export default {
   name: "LinksList",
   components: {
+    SectionHeader,
     ButtonNewForm,
     DeleteIconButton,
   },

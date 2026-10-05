@@ -13,7 +13,7 @@
       </template>
     </PageHeader>
 
-    <section class="section-container">
+    <section class="mt-8 mb-20 px-8">
       <div class="mb-4">
         <input
           type="text"

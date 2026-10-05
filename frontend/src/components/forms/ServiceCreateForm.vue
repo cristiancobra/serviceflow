@@ -38,7 +38,7 @@
             </div>
 
             <div class="form-section">
-              <div class="section-title">Precificação:</div>
+              <div class="text-primary font-semibold mb-4">Precificação:</div>
               <div class="table-row">
                 <div class="column-25">
                   <label class="labels" for="hours">Tempo de trabalho</label>
@@ -133,7 +133,7 @@
               <p>Você ainda não possui custos cadastrados.</p>
             </div>
             <div v-else class="form-section">
-              <div class="section-title">Custos:</div>
+              <div class="text-primary font-semibold mb-4">Custos:</div>
               <div class="table-row" v-for="cost in costs" :key="cost.id">
                 <div class="column-40">
                   <label :for="cost.id">

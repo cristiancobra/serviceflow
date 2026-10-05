@@ -1,9 +1,6 @@
 <template>
-  <div class="section-container">
-    <div class="section-title">
-      <font-awesome-icon icon="fas fa-file-invoice" class="icon" />
-      <h2>Serviços</h2>
-    </div>
+  <div class="mt-8 mb-20 px-8">
+    <section-header title="Serviços" icon="fas fa-file-invoice" />
     
     <!-- Cabeçalho das colunas -->
     <div class="flex w-full text-xs text-base-content/70 font-semibold pb-2 pt-2 border-b border-base-300 bg-base-200">
@@ -86,6 +83,7 @@ import MoneyEditableField from "@/components/fields/number/MoneyEditableField.vu
 import IntegerEditableField from "../fields/number/IntegerEditableField.vue";
 import DecimalEditableField from "../fields/number/DecimalEditableField.vue";
 import HoursDecimalEditableField from "../fields/number/HoursDecimalEditableField.vue";
+import SectionHeader from "@/components/layout/SectionHeader.vue";
 
 export default {
   props: {
@@ -95,6 +93,7 @@ export default {
     },
   },
   components: {
+    SectionHeader,
     MoneyField,
     MoneyEditableField,
     IntegerEditableField,

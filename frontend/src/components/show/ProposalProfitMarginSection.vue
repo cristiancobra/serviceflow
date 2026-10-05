@@ -1,9 +1,6 @@
 <template>
-  <section class="section-container">
-    <div class="section-title">
-      <font-awesome-icon icon="fas fa-dollar" class="icon" />
-      <h2>Valores totais</h2>
-    </div>
+  <section class="mt-8 mb-20 px-8">
+    <section-header title="Valores totais" icon="fas fa-dollar" />
    
     
     <div
@@ -135,6 +132,7 @@ import IntegerEditableField from "@/components/fields/number/IntegerEditableFiel
 import HoursDecimalField from "../fields/number/HoursDecimalField.vue";
 import MoneyField from "@/components/fields/number/MoneyField.vue";
 import MoneyEditableField from "@/components/fields/number/MoneyEditableField.vue";
+import SectionHeader from "@/components/layout/SectionHeader.vue";
 
 export default {
   props: {
@@ -151,6 +149,7 @@ export default {
     };
   },
   components: {
+    SectionHeader,
     IntegerEditableField,
     HoursDecimalField,
     MoneyField,

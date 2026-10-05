@@ -1,15 +1,8 @@
 <template>
-  <div class="section-container">
+  <div class="mt-8 mb-20 px-8">
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
-    <div class="section-header">
-      <div class="section-title">
-        <font-awesome-icon icon="fa-solid fa-clock" class="icon" />
-        <h2>Jornadas</h2>
-      </div>
-      <div class="section-action">
-      </div>
-    </div>
+    <section-header title="Jornadas" icon="fa-solid fa-clock" />
 
     <div class="search-container">
       <input
@@ -119,10 +112,12 @@ import TimeEditableInput from "@/components/forms/inputs/time/TimeEditableInput.
 import PaginateNav from "@/components/layout/PaginateNav.vue";
 import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
 import JourneyToggleButton from "@/components/buttons/JourneyToggleButton.vue";
+import SectionHeader from "@/components/layout/SectionHeader.vue";
 
 export default {
   name: "JourneysList",
   components: {
+    SectionHeader,
     DateEditableInput,
     PaginateNav,
     TimeEditableInput,

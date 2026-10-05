@@ -9,7 +9,7 @@
       </template>
     </PageHeader>
 
-    <section class="section-container">
+    <section class="mt-8 mb-20 px-8">
       <div class="w-full mb-6">
         <search-input v-model="searchTerm" placeholder="Digite para buscar faturas" />
       </div>

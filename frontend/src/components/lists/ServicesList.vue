@@ -12,7 +12,7 @@
         </button>
       </template>
     </PageHeader>
-    <div class="section-container">
+    <div class="mt-8 mb-20 px-8">
       <div class="search-container">
         <input
           type="text"

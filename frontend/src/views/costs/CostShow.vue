@@ -2,9 +2,9 @@
   <div class="page-container">
     <PageHeader title="CUSTO DE PRODUÇÃO" icon="fa-solid fa-tools" />
 
-    <section class="section-container">
+    <section class="mt-8 mb-20 px-8">
     <div class="table-row">
-      <div class="section-title">
+      <div class="flex flex-1 text-primary mb-4">
         <TextEditableField name="name" v-model="cost.name" placeholder="descrição detalhada do serviço"
           @save="updateService('name', $event)" class="title"/>
       </div>

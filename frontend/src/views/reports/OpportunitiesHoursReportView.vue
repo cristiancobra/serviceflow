@@ -10,7 +10,7 @@
     <YearFilter @year-change="handleYearChange" />
 
     <!-- Summary Cards -->
-    <section class="section-container">
+    <section class="mt-8 mb-20 px-8">
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <div class="rounded-xl border border-info/30 bg-info/10 p-4 shadow-sm">
           <div class="text-xs font-semibold text-info uppercase tracking-wide">Valor Previsto</div>
@@ -45,7 +45,7 @@
     </section>
 
     <!-- Table -->
-    <section class="section-container">
+    <section class="mt-8 mb-20 px-8">
       <div v-if="!isLoading && opportunities.length > 0" class="flex flex-wrap gap-2 mb-3">
         <button
           @click="sortMode = 'date'"

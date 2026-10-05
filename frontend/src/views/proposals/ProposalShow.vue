@@ -9,7 +9,7 @@
       </template>
     </PageHeader>
 
-    <div class="section-container">
+    <div class="mt-8 mb-20 px-8">
       <div class="w-1/2">
         <div class="row-simple">
           <opportunities-select-editable-field

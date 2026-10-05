@@ -2,20 +2,15 @@
   <div class="page-container">
     <PageHeader title="SERVIÇO" icon="fa-solid fa-tools" />
 
-    <section class="section-container">
-      <div class="section-header">
-        <div class="section-title">
-          <h1>
-            <TextEditableField
-              name="name"
-              class=""
-              v-model="service.name"
-              placeholder="descrição detalhada do serviço"
-              @save="updateService('name', $event)"
-            />
-          </h1>
-        </div>
-      </div>
+    <section class="mt-8 mb-20 px-8">
+      <h1 class="flex items-center mb-8 text-primary">
+        <TextEditableField
+          name="name"
+          v-model="service.name"
+          placeholder="descrição detalhada do serviço"
+          @save="updateService('name', $event)"
+        />
+      </h1>
     </section>
 
     <SectionCard title="Nota fiscal (NFS-e)" class="mt-6">

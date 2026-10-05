@@ -1,9 +1,6 @@
 <template>
-  <section class="section-container">
-    <div class="section-title">
-      <font-awesome-icon icon="fas fa-dollar" class="icon" />
-      <h2>Custos e margem de lucro</h2>
-    </div>
+  <section class="mt-8 mb-20 px-8">
+    <section-header title="Custos e margem de lucro" icon="fas fa-dollar" />
 
     <div class="table-row">
       <div class="column-5 column-icon">
@@ -110,6 +107,7 @@ import DecimalEditableField from "@/components/fields/number/DecimalEditableFiel
 import HoursDecimalEditableField from "../../components/fields/number/HoursDecimalEditableField.vue";
 import MoneyField from "@/components/fields/number/MoneyField.vue";
 import MoneyEditableField from "@/components/fields/number/MoneyEditableField.vue";
+import SectionHeader from "@/components/layout/SectionHeader.vue";
 
 export default {
   props: {
@@ -125,6 +123,7 @@ export default {
     };
   },
   components: {
+    SectionHeader,
     DecimalEditableField,
     // IntegerEditableField,
     HoursDecimalEditableField,

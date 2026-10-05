@@ -16,11 +16,8 @@
       </template>
     </PageHeader>
 
-    <div class="section-container">
-      <div class="section-title">
-        <font-awesome-icon icon="fas fa-file-invoice" class="icon" />
-        <h2>Informações</h2>
-      </div>
+    <div class="mt-8 mb-20 px-8">
+      <section-header title="Informações" icon="fas fa-file-invoice" />
       <div class="table-row">
         <div class="column-70">
           <div class="table-row">
@@ -114,10 +111,12 @@ import TasksListSection from "@/components/lists/TasksListSection.vue";
 import TextEditableField from "@/components/fields/text/TextEditableField.vue";
 import TextEditor from "@/components/forms/inputs/TextEditor.vue";
 import PageHeader from "@/components/layout/PageHeader.vue";
+import SectionHeader from "@/components/layout/SectionHeader.vue";
 
 export default {
   name: "ProjectShow",
   components: {
+    SectionHeader,
     PageHeader,
     DateEditableInput,
     OpportunitiesSelectEditableField,

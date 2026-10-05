@@ -1,15 +1,11 @@
 <template>
-  <div class="section-container">
-    <div class="section-header">
-      <div class="section-title">
-        <font-awesome-icon icon="fas fa-coins" class="icon" />
-        <h2>Custos de propdução</h2>
-      </div>
-      <div class="action-container flex items-center gap-2">
+  <div class="mt-8 mb-20 px-8">
+    <section-header title="Custos de produção" icon="fas fa-coins">
+      <template #actions>
         <button
           type="button"
           title="Novo Custo"
-          class="flex items-center justify-center w-10 h-10 rounded-full bg-primary hover:opacity-90 text-white transition-all duration-200"
+          class="btn btn-primary btn-circle"
           @click="openCreateCostModal"
         >
           <font-awesome-icon icon="fa-solid fa-plus" class="text-lg" />
@@ -17,13 +13,13 @@
         <button
           type="button"
           title="Adicionar Custos"
-          class="flex items-center justify-center w-10 h-10 rounded-full bg-primary hover:opacity-90 text-white transition-all duration-200"
+          class="btn btn-primary btn-circle"
           @click="openAddServiceCostsModal"
         >
           <font-awesome-icon icon="fa-solid fa-coins" class="text-lg" />
         </button>
-      </div>
-    </div>
+      </template>
+    </section-header>
     <div
       class="table-row"
       v-for="localCost in localCosts"
@@ -76,6 +72,7 @@ import { mapMutations } from "vuex";
 import { destroyRelationship } from "@/utils/requests/httpUtils";
 import IntegerEditableField from "@/components/fields/number/IntegerEditableField.vue";
 import MoneyField from "@/components/fields/number/MoneyField.vue";
+import SectionHeader from "@/components/layout/SectionHeader.vue";
 
 export default {
   props: {
@@ -91,6 +88,7 @@ export default {
     };
   },
   components: {
+    SectionHeader,
     MoneyField,
     IntegerEditableField,
   },
