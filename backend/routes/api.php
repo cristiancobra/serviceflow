@@ -143,6 +143,9 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::get('invoices/{invoice}/pix', [InvoiceController::class, 'pix'])
 		->name('invoices.pix');
 
+	Route::post('invoices/{invoice}/start-task', [InvoiceController::class, 'startTask'])
+		->name('invoices.start-task');
+
 	Route::get('invoices/{invoice}/pdf', [InvoiceController::class, 'exportPdf'])
 		->name('invoices.exportPdf');
 

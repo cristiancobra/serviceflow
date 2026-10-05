@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Task;
 use App\Models\Concerns\BelongsToAccount;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class Invoice extends Model
@@ -80,35 +81,63 @@ class Invoice extends Model
     }
 
     /**
-     * Cria a tarefa financeira ligada à fatura: "Pagar: ..." para débito,
-     * "Receber: ..." para crédito, com "(n/q)" quando é parcela.
+     * Nome padrão da tarefa financeira: "Pagar: ..." para débito, "Receber: ..."
+     * para crédito, com "(n/q)" quando é parcela.
+     */
+    public function financialTaskName(): string
+    {
+        $label = $this->name
+            ?? optional(optional($this->proposal)->opportunity)->name
+            ?? ('Fatura #' . $this->id);
+
+        if ($this->installment_quantity > 1) {
+            $label .= " ({$this->installment_number}/{$this->installment_quantity})";
+        }
+
+        return ($this->type === 'credit' ? 'Receber: ' : 'Pagar: ') . $label;
+    }
+
+    /**
+     * Prazo padrão da tarefa financeira em UTC: fim do dia de vencimento no fuso do
+     * responsável. date_due da fatura é só data; gravá-la crua (00:00 UTC) faria a
+     * tarefa aparecer às 21:00 do dia anterior em São Paulo.
+     */
+    public function financialTaskDueDate(?string $timezone = null): Carbon
+    {
+        $timezone = $timezone ?? optional($this->user)->timezone ?? 'America/Sao_Paulo';
+
+        return Carbon::parse(Carbon::parse($this->date_due)->toDateString() . ' 23:59:00', $timezone)
+            ->utc();
+    }
+
+    /**
+     * Atributos padrão da tarefa financeira ligada a esta fatura.
      * Usa account_id/user_id da própria fatura para funcionar também sem
-     * usuário logado (ex: comando agendado). Falha na tarefa não impede a fatura.
+     * usuário logado (ex: comando agendado).
+     */
+    public function financialTaskAttributes($departmentId = null): array
+    {
+        return [
+            'account_id'     => $this->account_id,
+            'user_id'        => $this->user_id,
+            'invoice_id'     => $this->id,
+            'opportunity_id' => optional($this->proposal)->opportunity_id,
+            'department_id'  => $departmentId,
+            'name'           => $this->financialTaskName(),
+            'date_due'       => $this->financialTaskDueDate()->toDateTimeString(),
+            'status'         => 'to-do',
+            'priority'       => 'medium',
+        ];
+    }
+
+    /**
+     * Cria a tarefa financeira ligada à fatura com os atributos padrão.
+     * Falha na tarefa não impede a criação da fatura.
      */
     public function createFinancialTask($departmentId = null): bool
     {
         try {
-            $label = $this->name
-                ?? optional(optional($this->proposal)->opportunity)->name
-                ?? ('Fatura #' . $this->id);
-
-            if ($this->installment_quantity > 1) {
-                $label .= " ({$this->installment_number}/{$this->installment_quantity})";
-            }
-
-            $prefix = $this->type === 'credit' ? 'Receber: ' : 'Pagar: ';
-
-            Task::create([
-                'account_id'     => $this->account_id,
-                'user_id'        => $this->user_id,
-                'invoice_id'     => $this->id,
-                'opportunity_id' => optional($this->proposal)->opportunity_id,
-                'department_id'  => $departmentId,
-                'name'           => $prefix . $label,
-                'date_due'       => $this->date_due,
-                'status'         => 'to-do',
-                'priority'       => 'medium',
-            ]);
+            Task::create($this->financialTaskAttributes($departmentId));
 
             return true;
         } catch (\Exception $taskException) {

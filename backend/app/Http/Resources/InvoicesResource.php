@@ -63,6 +63,9 @@ class InvoicesResource extends JsonResource
                 ];
             }),
             'tasks' => TasksResource::collection($this->whenLoaded('tasks')),
+            // Pré-preenchimento do form "Gerar tarefa" (prazo em ISO UTC, como o front envia)
+            'financial_task_name' => $this->financialTaskName(),
+            'financial_task_date_due' => $this->financialTaskDueDate($timezone)->format('Y-m-d\\TH:i:s.v\\Z'),
         ];
     }
 }

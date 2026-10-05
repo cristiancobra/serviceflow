@@ -6,14 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Concerns\ConvertsImagesToBase64;
 use App\Http\Requests\InvoiceRequest;
 use App\Models\Account;
+use App\Models\Department;
 use App\Models\Invoice;
+use App\Models\Journey;
 use App\Models\Proposal;
 use App\Models\Task;
 use App\Http\Resources\InvoicesResource;
+use App\Http\Resources\TasksResource;
 use App\Services\PixService;
 use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class InvoiceController extends Controller
@@ -36,7 +40,7 @@ class InvoiceController extends Controller
             'company',
             'department',
             'transactions',
-            'tasks',
+            'tasks.department',
         ])->orderBy('date_due', 'desc');
 
         if ($request->filled('type')) {
@@ -288,12 +292,52 @@ class InvoiceController extends Controller
                 'department',
                 'user',
                 'transactions',
-                'tasks',
+                'tasks.department',
             ]));
         }
         return response()->json([
             'message' => 'Fatura não encontrada',
         ], 404);
+    }
+
+    /**
+     * "Iniciar tarefa": cria a tarefa financeira da fatura para o usuário logado,
+     * com prazo hoje, e já abre uma jornada nela. Recusa se o usuário já tem
+     * jornada aberta, para não contar horas em dobro.
+     */
+    public function startTask(Request $request, Invoice $invoice)
+    {
+        $user = $request->user();
+
+        $openJourney = Journey::getOpenJourney($user->id);
+        if ($openJourney) {
+            return response()->json([
+                'message' => 'Você já tem uma jornada aberta em "' . optional($openJourney->task)->name . '". Encerre-a antes de iniciar outra.',
+            ], 409);
+        }
+
+        $timezone = $user->timezone ?? 'America/Sao_Paulo';
+
+        $task = DB::transaction(function () use ($invoice, $user, $timezone) {
+            $task = Task::create(array_merge(
+                $invoice->financialTaskAttributes(Department::financeiroIdFor($invoice->account_id)),
+                [
+                    'user_id'    => $user->id,
+                    'date_start' => now()->utc()->toDateTimeString(),
+                    'date_due'   => now($timezone)->setTime(23, 59)->utc()->toDateTimeString(),
+                ]
+            ));
+
+            Journey::create([
+                'user_id' => $user->id,
+                'task_id' => $task->id,
+                'start'   => now()->utc()->toDateTimeString(),
+            ]);
+
+            return $task;
+        });
+
+        return TasksResource::make($task->load('department', 'journeys'));
     }
 
     /**

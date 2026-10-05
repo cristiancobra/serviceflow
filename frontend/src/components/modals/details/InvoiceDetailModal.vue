@@ -136,32 +136,56 @@
 
       <!-- Tarefas vinculadas -->
       <div
-        v-if="invoice.tasks && invoice.tasks.length > 0"
-        class="rounded-lg border border-success/30 bg-success/10 p-6 mb-6"
+        class="rounded-lg border p-6 mb-6"
+        :class="invoice.tasks?.length ? 'border-success/30 bg-success/10' : 'border-base-300 bg-base-200'"
       >
-        <h3 class="text-lg font-bold text-success mb-3 flex items-center gap-2">
-          <font-awesome-icon icon="fa-solid fa-check-circle" class="text-success" />
-          Tarefas Vinculadas
-        </h3>
-        <div class="space-y-2">
-          <button
+        <div class="flex items-center justify-between gap-2 mb-3">
+          <h3
+            class="text-lg font-bold flex items-center gap-2"
+            :class="invoice.tasks?.length ? 'text-success' : 'text-base-content'"
+          >
+            <font-awesome-icon :icon="invoice.tasks?.length ? 'fa-solid fa-check-circle' : 'fa-solid fa-tasks'" />
+            Tarefas Vinculadas
+          </h3>
+          <div class="flex gap-2">
+            <button type="button" class="btn btn-success btn-sm" :disabled="isStartingTask" @click="startTask">
+              <span v-if="isStartingTask" class="loading loading-spinner loading-xs"></span>
+              <font-awesome-icon v-else icon="fa-solid fa-play" />
+              Iniciar tarefa
+            </button>
+            <button type="button" class="btn btn-primary btn-sm" @click="openTaskCreateModal">
+              <font-awesome-icon icon="fa-solid fa-plus" />
+              Gerar tarefa
+            </button>
+          </div>
+        </div>
+        <p v-if="!invoice.tasks?.length" class="text-sm text-base-content/60">
+          Nenhuma tarefa ligada a esta fatura.
+        </p>
+        <div v-else class="space-y-2">
+          <div
             v-for="task in invoice.tasks"
             :key="task.id"
-            type="button"
-            class="w-full flex items-center justify-between p-3 bg-base-100 rounded-lg border border-success/30 hover:border-success transition-colors text-left"
+            class="w-full flex items-center justify-between p-3 bg-base-100 rounded-lg border border-success/30 hover:border-success transition-colors cursor-pointer"
             @click="openTaskModal(task.id)"
           >
             <div class="flex items-center gap-3">
-              <span
-                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold"
-                :class="task.status === 'done' ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'"
-              >
-                {{ task.status === "done" ? "Concluída" : "Pendente" }}
-              </span>
+              <div class="flex flex-col items-center gap-1">
+                <span
+                  class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold"
+                  :class="task.status === 'done' ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'"
+                >
+                  {{ task.status === "done" ? "Concluída" : "Pendente" }}
+                </span>
+                <!-- .stop: clicar no badge edita o departamento em vez de abrir a tarefa -->
+                <div @click.stop>
+                  <DepartmentBadge :task="task" />
+                </div>
+              </div>
               <span class="text-sm font-medium text-base-content">{{ task.name }}</span>
             </div>
-            <span v-if="task.date_due" class="text-xs text-base-content/60">{{ formatDateBr(task.date_due) }}</span>
-          </button>
+            <span v-if="task.date_due" class="text-xs text-base-content/60">{{ displayDate(task.date_due) }}</span>
+          </div>
         </div>
       </div>
 
@@ -315,16 +339,17 @@
 
 <script>
 import axios from "axios";
-import { mapMutations } from "vuex";
+import { mapActions, mapMutations } from "vuex";
 import { BACKEND_URL } from "@/config/apiConfig";
-import { destroy, show, updateField } from "@/utils/requests/httpUtils";
-import { formatDateBr } from "@/utils/date/dateUtils";
+import { destroy, post, show, updateField } from "@/utils/requests/httpUtils";
+import { displayDate, formatDateBr } from "@/utils/date/dateUtils";
 import ModalCard from "@/components/modals/ModalCard.vue";
 import MoneyField from "@/components/fields/number/MoneyField.vue";
 import MoneyEditableField from "@/components/fields/number/MoneyEditableField.vue";
 import SelectStatusButton from "@/components/buttons/SelectStatusButton.vue";
 import TextAreaEditableInput from "@/components/forms/inputs/textarea/TextAreaEditableInput.vue";
 import CompanyAvatar from "@/components/common/CompanyAvatar.vue";
+import DepartmentBadge from "@/components/badges/DepartmentBadge.vue";
 import CompaniesSelectEditableField from "@/components/fields/selects/CompaniesSelectEditableField.vue";
 import LeadAvatar from "@/components/common/LeadAvatar.vue";
 import LeadsSelectEditableField from "@/components/fields/selects/LeadsSelectEditableField.vue";
@@ -348,6 +373,7 @@ export default {
     SelectStatusButton,
     TextAreaEditableInput,
     CompanyAvatar,
+    DepartmentBadge,
     CompaniesSelectEditableField,
     LeadAvatar,
     LeadsSelectEditableField,
@@ -373,6 +399,7 @@ export default {
       invoice: null,
       isVisibleQuantity: false,
       errorMessage: null,
+      isStartingTask: false,
       pix: null,
       pixError: null,
       pixLoading: false,
@@ -407,6 +434,8 @@ export default {
   },
   methods: {
     ...mapMutations(["openModal"]),
+    ...mapActions(["checkOpenJourneys"]),
+    displayDate,
     formatDateBr,
     getCategoryLabel(category) {
       return CATEGORY_LABELS[category] || category;
@@ -506,6 +535,29 @@ export default {
           "opportunity-updated": this.getInvoice,
         },
         id: `opportunity-${opportunityId}`,
+      });
+    },
+    // Cria a tarefa com prazo hoje, já com jornada aberta, e abre a tarefa (timer)
+    async startTask() {
+      this.isStartingTask = true;
+      this.errorMessage = null;
+      try {
+        const { data: task } = await post(`invoices/${this.invoice.id}/start-task`);
+        this.checkOpenJourneys();
+        await this.refreshInvoice();
+        this.openTaskModal(task.id);
+      } catch (error) {
+        this.errorMessage = error.response?.data?.message || "Erro ao iniciar tarefa. Tente novamente.";
+      } finally {
+        this.isStartingTask = false;
+      }
+    },
+    openTaskCreateModal() {
+      this.openModal({
+        component: "TaskCreateForm",
+        props: { invoice: this.invoice, opportunity: this.invoice.proposal?.opportunity || null },
+        listeners: { "new-task-event": this.refreshInvoice },
+        id: `invoice-task-create-${this.invoice.id}`,
       });
     },
     openTaskModal(taskId) {

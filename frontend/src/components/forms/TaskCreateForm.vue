@@ -1,6 +1,6 @@
 <template>
   <ModalCard
-    :title="cloneFrom ? 'Clonar Tarefa' : 'Nova Tarefa'"
+    :title="cloneFrom ? 'Clonar Tarefa' : invoice ? 'Tarefa da Fatura' : 'Nova Tarefa'"
     icon="fa-solid fa-tasks"
     :compact="compact"
     @close="closeModal"
@@ -109,7 +109,7 @@
                   label="Responsável"
                   v-model="form.user_id"
                   fieldsToDisplay="name"
-                  autoSelect="true"
+                  :autoSelect="!form.user_id"
                 />
               </div>
             </div>
@@ -160,7 +160,7 @@
 </template>
 
 <script>
-import { submitFormCreate } from "@/utils/requests/httpUtils";
+import { index, submitFormCreate } from "@/utils/requests/httpUtils";
 // import { inject } from "vue";
 // import AddMessage from "@/components/forms/messages/AddMessage.vue";
 import DateInput from "./inputs/date/DateInput.vue";
@@ -203,6 +203,12 @@ export default {
       type: Object,
       default: null,
     },
+    // Fatura de origem: pré-preenche nome, responsável, prazo e departamento Financeiro
+    // (a oportunidade da proposta vem pela prop opportunity)
+    invoice: {
+      type: Object,
+      default: null,
+    },
     compact: {
       type: Boolean,
       default: false,
@@ -225,7 +231,8 @@ export default {
         opportunity_id: null,
         project_id: null,
         status: "to-do",
-        user_id: null,
+        user_id: this.invoice?.user_id || null,
+        invoice_id: this.invoice?.id || null,
       },
       isActiveFormCompany: false,
       isActiveFormLead: false,
@@ -260,6 +267,17 @@ export default {
     },
     closeModal() {
       this.$emit("close");
+    },
+    async loadFinanceiroDepartment() {
+      try {
+        const departments = (await index("departments")) || [];
+        const financeiro = departments.find(d => d.slug === 'financeiro' || d.name?.toLowerCase().includes('financeiro'));
+        if (financeiro && !this.form.department_id) {
+          this.form.department_id = financeiro.id;
+        }
+      } catch (e) {
+        // usuário escolhe o departamento manualmente
+      }
     },
     async submitForm() {
       const { data, error } = await this.submitFormCreate("tasks", this.form);
@@ -316,6 +334,12 @@ export default {
       this.form.date_start = this.cloneFrom.date_start;
       this.form.opportunity_id = this.cloneFrom.opportunity_id;
       this.form.project_id = this.cloneFrom.project_id;
+    }
+
+    if (this.invoice) {
+      this.form.name = this.invoice.financial_task_name;
+      this.form.date_due = this.invoice.financial_task_date_due;
+      this.loadFinanceiroDepartment();
     }
 
     // Inicializar IDs se as props existirem
