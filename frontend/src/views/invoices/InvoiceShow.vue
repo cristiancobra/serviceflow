@@ -1,7 +1,7 @@
 <template>
   <!-- Rota mantida só para links diretos (/invoices/:id); a tela em si é o InvoiceDetailModal,
        que no resto da aplicação é aberto via openModal. -->
-  <div class="flex justify-center py-8">
+  <div class="flex justify-center pt-4 pb-8">
     <invoice-detail-modal
       :invoice-id="$route.params.id"
       @close="goBack"

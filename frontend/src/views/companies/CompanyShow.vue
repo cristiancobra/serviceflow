@@ -1,7 +1,7 @@
 <template>
   <!-- Rota mantida só para links diretos (/companies/:id); a tela em si é o CompanyDetailModal,
        que no resto da aplicação é aberto via openModal. -->
-  <div class="flex justify-center py-8">
+  <div class="flex justify-center pt-4 pb-8">
     <company-detail-modal
       :company-id="$route.params.id"
       @close="goBack"

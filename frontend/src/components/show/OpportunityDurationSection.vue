@@ -1,5 +1,5 @@
 <template>
-  <SectionCard title="Duração" icon="fas fa-hourglass-half">
+  <SectionCard title="Duração">
 
     <div class="space-y-2">
       <div class="flex items-center justify-between">

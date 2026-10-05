@@ -59,7 +59,7 @@
           <opportunity-duration-section :opportunity="opportunity" />
         </div>
 
-        <section-card title="Descrição" icon="fas fa-align-left">
+        <section-card title="Descrição">
           <text-editor
             name="description"
             :modelValue="opportunity.description"

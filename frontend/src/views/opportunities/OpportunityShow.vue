@@ -1,7 +1,7 @@
 <template>
   <!-- Rota mantida só para links diretos (/opportunities/:id); a tela em si é o OpportunityDetailModal,
        que no resto da aplicação é aberto via openModal. -->
-  <div class="flex justify-center py-8">
+  <div class="flex justify-center pt-4 pb-8">
     <opportunity-detail-modal
       :opportunity-id="$route.params.id"
       :initial-tab="$route.query.tab || 'info'"

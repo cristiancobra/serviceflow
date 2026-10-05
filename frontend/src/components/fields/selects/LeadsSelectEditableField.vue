@@ -18,7 +18,9 @@
     :fieldNull="fieldNullValue" 
     avatarType="lead" 
     :allow-create-new="true"
-    @update:modelValue="updateInput" 
+    @update:modelValue="updateInput"
+    @cancel="editing = false"
+    auto-open 
     @create-new="createNewLead"
   />
 </template>

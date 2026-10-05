@@ -1,5 +1,5 @@
 <template>
-  <SectionCard title="Datas" icon="fas fa-calendar">
+  <SectionCard title="Datas">
     <div>
       <DateEditableInput
         name="date_start"

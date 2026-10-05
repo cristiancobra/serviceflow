@@ -9,7 +9,9 @@
     </p>
   </div>
   <CustomSelectInput v-else :label="label" :name="name" v-model="localValue" :items="users" :fieldsToDisplay="fieldsToDisplay"
-    :fieldNull="fieldNullValue" avatarType="user" @update:modelValue="updateInput" />
+    :fieldNull="fieldNullValue" avatarType="user" @update:modelValue="updateInput"
+    @cancel="editing = false"
+    auto-open />
 </template>
 
 <script>
@@ -68,6 +70,7 @@ export default {
     },
     updateInput(newValue) {
       this.$emit('update:modelValue', newValue);
+      this.editing = false;
     },
   },
   watch: {

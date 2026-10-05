@@ -1,12 +1,12 @@
 <template>
-  <div class="flex items-center whitespace-nowrap">
+  <div class="flex items-center whitespace-nowrap text-sm">
     <label v-if="label" class="font-black text-primary me-3" :for="name">{{ label }}</label>
     <div v-if="!editing" @click="startEditing">
-      <span class="default-text" :class="classText">
+      <span :class="classText">
         {{ formatedDate }}
       </span>
       <font-awesome-icon icon="fa-solid fa-clock" class="ms-2 me-1 text-base-content/50" />
-      <span class="default-text" :class="classText">
+      <span :class="classText">
         {{ formatedTime }}
       </span>
     </div>

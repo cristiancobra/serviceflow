@@ -1,7 +1,7 @@
 <template>
   <!-- Rota mantida só para links diretos (/leads/:id); a tela em si é o LeadDetailModal,
        que no resto da aplicação é aberto via openModal. -->
-  <div class="flex justify-center py-8">
+  <div class="flex justify-center pt-4 pb-8">
     <lead-detail-modal
       :lead-id="$route.params.id"
       @close="goBack"

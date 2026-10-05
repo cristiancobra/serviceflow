@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-4 relative" v-click-outside="closeDropdown">
+  <div class="mb-4 relative" v-click-outside="cancel" @keydown.esc.stop="cancel">
     <label class="block text-sm font-semibold text-base-content mb-2" :for="name">{{ label }}</label>
     
     <!-- Selected value display -->
@@ -133,8 +133,15 @@ export default {
     allowCreateNew: {
       type: Boolean,
       default: false
+    },
+    // Abre a lista já ao montar (usado pelos campos editáveis, que só montam o select ao clicar)
+    autoOpen: {
+      type: Boolean,
+      default: false
     }
   },
+  // cancel: clique fora ou Esc sem escolher nada (os campos editáveis voltam ao modo leitura)
+  emits: ["update:modelValue", "create-new", "cancel"],
   data() {
     return {
       localValue: this.modelValue,
@@ -170,16 +177,23 @@ export default {
   methods: {
     toggleDropdown() {
       if (!this.disabled) {
-        this.isOpen = !this.isOpen;
         if (this.isOpen) {
-          this.$nextTick(() => {
-            const input = this.$el.querySelector('input[placeholder="Buscar..."]');
-            if (input) input.focus();
-          });
+          this.closeDropdown();
         } else {
-          this.searchQuery = "";
+          this.openDropdown();
         }
       }
+    },
+    openDropdown() {
+      this.isOpen = true;
+      this.$nextTick(() => {
+        const input = this.$el.querySelector('input[placeholder="Buscar..."]');
+        if (input) input.focus();
+      });
+    },
+    cancel() {
+      this.closeDropdown();
+      this.$emit("cancel");
     },
     closeDropdown() {
       this.isOpen = false;
@@ -251,6 +265,9 @@ export default {
     },
   },
   mounted() {
+    if (this.autoOpen && !this.disabled) {
+      this.openDropdown();
+    }
     if (this.modelValue !== undefined) {
       this.localValue = this.modelValue;
     } else if (this.fieldNull) {
@@ -265,9 +282,14 @@ export default {
             binding.value();
           }
         };
-        document.addEventListener('click', el.clickOutsideEvent);
+        // Registra só depois do clique atual: quando o select é montado por um clique (campos
+        // editáveis), esse mesmo clique ainda chegaria ao document e contaria como "fora"
+        el.clickOutsideTimer = setTimeout(() => {
+          document.addEventListener('click', el.clickOutsideEvent);
+        });
       },
       unmounted(el) {
+        clearTimeout(el.clickOutsideTimer);
         document.removeEventListener('click', el.clickOutsideEvent);
       }
     }

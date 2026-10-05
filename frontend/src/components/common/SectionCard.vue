@@ -1,13 +1,14 @@
 <template>
-  <section class="rounded-lg border border-base-300 overflow-hidden">
-    <div class="flex items-center gap-2 bg-primary text-primary-content px-6 py-1.5">
-      <font-awesome-icon v-if="icon" :icon="icon" class="text-base" />
-      <h2 class="text-lg font-semibold">{{ title }}</h2>
+  <!-- Sem overflow-hidden: dropdowns e popovers dos campos (position absolute) precisam vazar do card;
+       por isso o arredondamento fica no próprio cabeçalho -->
+  <section class="rounded-lg border border-base-300">
+    <div class="flex items-center gap-2 rounded-t-[calc(var(--radius-lg)-1px)] bg-primary text-primary-content px-4 py-1">
+      <h2 class="text-base font-semibold">{{ title }}</h2>
       <div v-if="$slots.actions" class="ml-auto">
         <slot name="actions" />
       </div>
     </div>
-    <div class="p-6">
+    <div class="p-4">
       <slot />
     </div>
   </section>
@@ -21,10 +22,6 @@ export default {
     title: {
       type: String,
       required: true,
-    },
-    icon: {
-      type: String,
-      default: "",
     },
   },
 };
