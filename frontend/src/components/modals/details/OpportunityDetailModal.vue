@@ -41,10 +41,15 @@
           role="tab"
           class="tab gap-2"
           :class="{ 'tab-active': activeTab === tab.value }"
-          :title="tab.label"
+          :title="tabStatus[tab.value] ? `${tab.label}: ${tabStatus[tab.value].title}` : tab.label"
           @click="activeTab = tab.value"
         >
-          <font-awesome-icon :icon="tab.icon" />
+          <span
+            class="inline-flex items-center justify-center size-6 rounded-full text-xs"
+            :class="tabIconClass(tab.value)"
+          >
+            <font-awesome-icon :icon="tab.icon" />
+          </span>
           <span v-if="!compact">{{ tab.label }}</span>
         </button>
       </div>
@@ -139,12 +144,15 @@ import ProposalsListSection from "@/components/lists/ProposalsListSection.vue";
 import TasksListSection from "@/components/lists/TasksListSection.vue";
 import TextEditor from "@/components/forms/inputs/TextEditor.vue";
 
+// Datas "zeradas" (epoch) chegam do backend no lugar de null em tarefas antigas
+const isValidDate = (date) => !!date && !/^(1969-12-31|1970-01-01)/.test(date);
+
 const TABS = [
   { value: "info", label: "Informações", icon: "fas fa-info" },
+  { value: "attachments", label: "Anexos", icon: "fas fa-link" },
   { value: "proposals", label: "Propostas", icon: "fas fa-file-contract" },
   { value: "creditInvoices", label: "Faturas de receita", icon: "fas fa-file-invoice-dollar" },
   { value: "debitInvoices", label: "Faturas de custos", icon: "fas fa-file-invoice" },
-  { value: "attachments", label: "Anexos", icon: "fas fa-link" },
   { value: "tasks", label: "Tarefas", icon: "fas fa-tasks" },
 ];
 
@@ -203,8 +211,73 @@ export default {
     safeAcceptedProposal() {
       return this.acceptedProposal || { invoices: [] };
     },
+    // Faturas da proposta aceita (as mesmas que as abas de faturas mostram) e tarefas,
+    // ignorando canceladas
+    statusCounts() {
+      const invoices = (this.safeAcceptedProposal.invoices || []).filter(
+        (invoice) => invoice.status !== "cancelled"
+      );
+      const invoiceCounts = (type) => {
+        const ofType = invoices.filter((invoice) => invoice.type === type);
+        return {
+          done: ofType.filter((invoice) => invoice.status === "paid").length,
+          total: ofType.length,
+          overdue: ofType.filter((invoice) => invoice.status === "overdue").length,
+        };
+      };
+      const tasks = (this.opportunity?.tasks || []).filter((task) => !isValidDate(task.date_canceled));
+      return {
+        creditInvoices: invoiceCounts("credit"),
+        debitInvoices: invoiceCounts("debit"),
+        tasks: {
+          done: tasks.filter((task) => isValidDate(task.date_conclusion)).length,
+          total: tasks.length,
+        },
+      };
+    },
+    // Estado de cada aba que tem marcador: { level, title }. Abas fora daqui ficam neutras.
+    tabStatus() {
+      const result = {
+        proposals: this.proposalsStatus(),
+      };
+      const titles = {
+        creditInvoices: "faturas de receita recebidas",
+        debitInvoices: "faturas de custo pagas",
+        tasks: "tarefas concluídas",
+      };
+      Object.entries(this.statusCounts).forEach(([tab, counts]) => {
+        // Sem itens (total 0) fica neutro: "nada a pagar" não é o mesmo que "tudo pago"
+        if (!counts.total) return;
+        result[tab] = this.progressStatus(counts, titles[tab]);
+      });
+      return result;
+    },
   },
   methods: {
+    tabIconClass(tab) {
+      const classes = {
+        success: "bg-success text-success-content",
+        warning: "bg-warning text-warning-content",
+        info: "bg-info text-info-content",
+        error: "bg-error text-error-content",
+      };
+      return classes[this.tabStatus[tab]?.level] || "bg-base-300 text-base-content/70";
+    },
+    proposalsStatus() {
+      const proposals = this.opportunity?.proposals || [];
+      if (!proposals.length) return { level: "error", title: "nenhuma proposta" };
+      if (this.acceptedProposal) return { level: "success", title: "proposta aceita" };
+      return { level: "warning", title: "nenhuma proposta aceita" };
+    },
+    // Mesmas cores do ícone da fatura (invoiceIconClass): concluído, vencido, parcial, nada feito
+    progressStatus({ done, total, overdue = 0 }, label) {
+      let title = `${done} de ${total} ${label}`;
+      if (overdue) title += ` (${overdue} ${overdue === 1 ? "vencida" : "vencidas"})`;
+      if (done >= total) return { level: "success", title };
+      if (overdue > 0) return { level: "error", title };
+      if (done > 0) return { level: "warning", title };
+      return { level: "info", title };
+    },
     formatDuration,
     async getOpportunity() {
       try {
