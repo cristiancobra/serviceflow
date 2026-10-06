@@ -1,6 +1,6 @@
 <template>
   <ModalCard
-    title="Novo Recebimento"
+    :title="isDebit ? 'Novo Pagamento' : 'Novo Recebimento'"
     icon="fa-solid fa-money-bill-wave"
     :compact="compact"
     @close="closeModal"
@@ -11,7 +11,7 @@
                   label="Observações"
                   name="observations"
                   v-model="form.observations"
-                  placeholder="Detalhes do recebimento"
+                  :placeholder="isDebit ? 'Detalhes do pagamento' : 'Detalhes do recebimento'"
                   :rows="4"
                 />
               </div>
@@ -124,9 +124,8 @@
                   <DateInput
                     class="text-start"
                     v-model="form.transaction_date"
-                    label="Data de recebimento"
+                    label="Data"
                     name="transaction_date"
-                    placeholder="data do recebimento"
                     :autoFillNow="true"
                     @update="updateForm"
                   />
@@ -144,20 +143,11 @@
             </form>
 
     <template #footer>
-      <button
-        type="button"
-        class="px-6 py-2 text-base-content bg-base-100 border border-base-300 rounded-lg font-semibold hover:bg-base-200 transition-colors"
-        @click="closeModal"
-      >
+      <button type="button" class="btn btn-ghost" @click="closeModal">
         Cancelar
       </button>
-      <button
-        type="submit"
-        form="transactionCreateForm"
-        class="px-6 py-2 bg-primary hover:opacity-90 text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
-      >
-        <font-awesome-icon icon="fa-solid fa-plus" />
-        Criar Recebimento
+      <button type="submit" form="transactionCreateForm" class="btn btn-primary">
+        {{ isDebit ? "Pagar" : "Receber" }}
       </button>
     </template>
   </ModalCard>
@@ -212,6 +202,9 @@ export default {
     };
   },
   computed: {
+    isDebit() {
+      return this.form.type === "debit";
+    },
     invoiceDisplay() {
       return `Fatura #${this.invoice?.id || "..."}`;
     },
