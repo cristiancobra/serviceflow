@@ -156,17 +156,13 @@
                 <!-- Coluna Nome da Oportunidade/Projeto -->
                 <div v-if="showOpportunityColumn" class="flex items-center justify-start overflow-hidden">
                   <template v-if="localTask.opportunity">
-                    <router-link class="flex no-underline text-inherit items-center gap-1" :to="{
-                      name: 'opportunityShow',
-                      params: { id: localTask.opportunity.id },
-                      query: { tab: 'tasks' },
-                      hash: '#task-' + localTask.id
-                    }">
+                    <button type="button" class="flex items-center gap-1 cursor-pointer text-left"
+                      title="Ver oportunidade" @click="openOpportunityModal(localTask.opportunity.id)">
                       <div class="flex items-center gap-1 font-medium text-xs">
                         <font-awesome-icon icon="fa-solid fa-bullseye" class="text-xs" />
                         {{ trimName(localTask.opportunity.name) }}
                       </div>
-                    </router-link>
+                    </button>
                   </template>
 
                   <template v-else-if="localTask.project">
@@ -669,6 +665,13 @@ export default {
     },
     openTaskModal(taskId) {
       this.openModal({ component: 'TaskDetailModal', props: { taskId }, id: `task-${taskId}` });
+    },
+    openOpportunityModal(opportunityId) {
+      this.openModal({
+        component: 'OpportunityDetailModal',
+        props: { opportunityId, initialTab: 'tasks' },
+        id: `opportunity-${opportunityId}`,
+      });
     },
     handleTaskUpdated(updatedTask) {
       this.updateTasksList(updatedTask, updatedTask.id);
