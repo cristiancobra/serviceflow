@@ -1,16 +1,8 @@
 <template>
   <div class="mb-20 mt-8 px-8">
-    <div class="flex justify-center items-center mb-8">
-      <div class="flex-1 flex justify-start text-primary mb-4">
-        <font-awesome-icon
-          icon="fa-solid fa-money-bill"
-          class="text-sm font-extrabold text-white bg-primary rounded-full mr-4 p-3"
-        />
-        <h2 class="text-xl font-extrabold text-left mt-1">PROPOSTAS</h2>
-      </div>
-      <div class="flex-[2] flex justify-center">
-        <button-new-form target="proposal" @open-modal="openCreateProposalModal" />
-      </div>
+    <!-- Sem título: a aba "Propostas" do modal da oportunidade já diz o nome da seção -->
+    <div class="flex justify-end items-center mb-3">
+      <button-new-form target="proposal" @open-modal="openCreateProposalModal" />
     </div>
 
     <div
