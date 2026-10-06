@@ -225,6 +225,9 @@
         />
       </div>
 
+      <!-- Nota fiscal: só nas contas a receber, que são as que a conta emite -->
+      <invoice-nfse-section v-if="!isDebit" :invoice="invoice" class="mb-6" @nfse-changed="refreshInvoice" />
+
       <!-- Pagamentos -->
       <div class="flex items-center justify-between mb-2">
         <h3 class="text-lg font-bold text-base-content flex items-center gap-2">
@@ -355,6 +358,7 @@ import LeadAvatar from "@/components/common/LeadAvatar.vue";
 import LeadsSelectEditableField from "@/components/fields/selects/LeadsSelectEditableField.vue";
 import TransactionsListSection from "@/components/show/TransactionsListSection.vue";
 import PixPaymentCard from "@/components/common/PixPaymentCard.vue";
+import InvoiceNfseSection from "@/components/show/InvoiceNfseSection.vue";
 
 const CATEGORY_LABELS = {
   fixed_cost: "Custo Fixo",
@@ -379,6 +383,7 @@ export default {
     LeadsSelectEditableField,
     TransactionsListSection,
     PixPaymentCard,
+    InvoiceNfseSection,
   },
   props: {
     invoiceId: {

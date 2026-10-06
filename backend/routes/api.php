@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\JourneyController;
 use App\Http\Controllers\Api\LeadController;
 use App\Http\Controllers\Api\LinkController;
+use App\Http\Controllers\Api\NfseController;
 use App\Http\Controllers\Api\OpportunityController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\ProposalController;
@@ -148,6 +149,16 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	Route::get('invoices/{invoice}/pdf', [InvoiceController::class, 'exportPdf'])
 		->name('invoices.exportPdf');
+
+	// NFS-e (notas fiscais de serviço das faturas)
+	Route::post('invoices/{invoice}/nfses/manual', [NfseController::class, 'storeManual'])
+		->name('nfses.storeManual');
+
+	Route::get('nfses/{nfse}/pdf', [NfseController::class, 'pdf'])
+		->name('nfses.pdf');
+
+	Route::delete('nfses/{nfse}', [NfseController::class, 'destroy'])
+		->name('nfses.destroy');
 
 	Route::apiResource('invoices', InvoiceController::class)
 		->names('invoices');

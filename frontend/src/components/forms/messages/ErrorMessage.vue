@@ -58,6 +58,11 @@ export default {
         nfse_dps_series: 'Série da DPS',
         nfse_next_dps_number: 'Próximo número da DPS',
         certificate: 'Certificado',
+        nfse: 'Nota fiscal',
+        nfse_number: 'Número da nota',
+        access_key: 'Chave de acesso',
+        issued_date: 'Data de emissão',
+        pdf: 'PDF da nota',
         password: 'Senha',
       };
       return fieldNames[field] || field.charAt(0).toUpperCase() + field.slice(1).replace(/_/g, ' ');

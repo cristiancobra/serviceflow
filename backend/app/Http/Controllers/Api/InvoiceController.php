@@ -293,6 +293,7 @@ class InvoiceController extends Controller
                 'user',
                 'transactions',
                 'tasks.department',
+                'nfses' => fn ($query) => $query->latest(),
             ]));
         }
         return response()->json([
@@ -723,7 +724,14 @@ class InvoiceController extends Controller
                     'errors' => ['invoice' => ['Exclua primeiro as transações antes de excluir a fatura']]
                 ], 422);
             }
-            
+
+            if ($invoice->nfses()->exists()) {
+                return response()->json([
+                    'message' => 'Não é possível excluir uma fatura que possui nota fiscal registrada.',
+                    'errors' => ['invoice' => ['Remova ou cancele a nota fiscal antes de excluir a fatura']]
+                ], 422);
+            }
+
             $invoice->delete();
             
             return response()->json([

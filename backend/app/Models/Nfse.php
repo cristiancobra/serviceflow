@@ -20,6 +20,7 @@ class Nfse extends Model
         'account_id',
         'invoice_id',
         'user_id',
+        'is_manual',
         'environment',
         'dps_series',
         'dps_number',
@@ -44,6 +45,7 @@ class Nfse extends Model
     ];
 
     protected $casts = [
+        'is_manual' => 'boolean',
         'amount' => 'decimal:2',
         'competence_date' => 'date',
         'issued_at' => 'datetime',

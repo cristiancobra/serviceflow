@@ -9,6 +9,7 @@ use App\Http\Resources\UsersResource;
 use App\Http\Resources\LeadsResource;
 use App\Http\Resources\CompaniesResource;
 use App\Http\Resources\TasksResource;
+use App\Http\Resources\NfseResource;
 use App\Services\DateTimeConversionService;
 
 class InvoicesResource extends JsonResource
@@ -63,6 +64,7 @@ class InvoicesResource extends JsonResource
                 ];
             }),
             'tasks' => TasksResource::collection($this->whenLoaded('tasks')),
+            'nfses' => NfseResource::collection($this->whenLoaded('nfses')),
             // Pré-preenchimento do form "Gerar tarefa" (prazo em ISO UTC, como o front envia)
             'financial_task_name' => $this->financialTaskName(),
             'financial_task_date_due' => $this->financialTaskDueDate($timezone)->format('Y-m-d\\TH:i:s.v\\Z'),
