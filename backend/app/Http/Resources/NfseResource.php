@@ -37,6 +37,20 @@ class NfseResource extends JsonResource
             'cancellation_reason' => $this->cancellation_reason,
             'has_pdf' => (bool) $this->pdf_path,
             'created_at' => $this->created_at,
+            'invoice' => $this->whenLoaded('invoice', function () {
+                if (!$this->invoice) {
+                    return null;
+                }
+
+                return [
+                    'id' => $this->invoice->id,
+                    'name' => $this->invoice->name,
+                    'client_name' => $this->invoice->company?->business_name
+                        ?? $this->invoice->company?->legal_name
+                        ?? $this->invoice->lead?->name
+                        ?? null,
+                ];
+            }),
         ];
     }
 }

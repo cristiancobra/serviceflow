@@ -124,13 +124,7 @@ import { formatCurrencySymbol } from "@/utils/number/moneyUtils";
 import SectionCard from "@/components/common/SectionCard.vue";
 import MoneyInput from "@/components/forms/inputs/money/MoneyInput.vue";
 import ErrorMessage from "@/components/forms/messages/ErrorMessage.vue";
-
-const STATUS_BADGES = {
-  pending: { label: "processando", class: "badge-warning" },
-  authorized: { label: "emitida", class: "badge-success" },
-  rejected: { label: "rejeitada", class: "badge-error" },
-  cancelled: { label: "cancelada", class: "badge-neutral" },
-};
+import { nfseStatusBadge } from "@/utils/nfse/nfseStatus";
 
 function today() {
   const now = new Date();
@@ -181,9 +175,7 @@ export default {
         pdf: null,
       };
     },
-    statusBadge(status) {
-      return STATUS_BADGES[status] || { label: status, class: "badge-ghost" };
-    },
+    statusBadge: nfseStatusBadge,
     openForm() {
       this.form = this.emptyForm();
       this.validationErrors = null;

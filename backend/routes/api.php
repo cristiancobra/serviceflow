@@ -154,6 +154,9 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::post('invoices/{invoice}/nfses/manual', [NfseController::class, 'storeManual'])
 		->name('nfses.storeManual');
 
+	Route::get('nfses', [NfseController::class, 'index'])
+		->name('nfses.index');
+
 	Route::get('nfses/{nfse}/pdf', [NfseController::class, 'pdf'])
 		->name('nfses.pdf');
 

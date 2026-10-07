@@ -23,6 +23,36 @@ class NfseController extends Controller
     private const PDF_DIRECTORY = 'nfse/pdfs';
 
     /**
+     * Lista as notas da conta, mais recentes primeiro.
+     * Filtro opcional por mês de emissão (?month=YYYY-MM, no fuso do usuário).
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function index(Request $request)
+    {
+        $request->validate([
+            'month' => 'nullable|date_format:Y-m',
+        ]);
+
+        // withTrashed: a nota continua listada mesmo se a fatura tiver sido excluída antes da regra que impede isso
+        $query = Nfse::with(['invoice' => fn ($q) => $q->withTrashed(), 'invoice.company', 'invoice.lead'])
+            ->orderByDesc('issued_at')
+            ->orderByDesc('id');
+
+        if ($request->filled('month')) {
+            $timezone = auth()->user()->timezone ?? 'America/Sao_Paulo';
+            $start = $request->query('month') . '-01 00:00:00';
+            $end = date('Y-m-d H:i:s', strtotime($start . ' +1 month'));
+
+            $query->where('issued_at', '>=', DateTimeConversionService::convertToUtc($start, $timezone))
+                ->where('issued_at', '<', DateTimeConversionService::convertToUtc($end, $timezone));
+        }
+
+        return NfseResource::collection($query->limit(1000)->get());
+    }
+
+    /**
      * Registra na fatura uma nota emitida fora do sistema
      *
      * @param  \Illuminate\Http\Request  $request

@@ -78,6 +78,11 @@ const routes = [
     component: () => import('@/views/invoices/InvoicesIndex.vue')
   },
   {
+    path: '/nfses',
+    name: 'nfsesIndex',
+    component: () => import('@/views/nfses/NfsesIndex.vue')
+  },
+  {
     path: '/contas-a-pagar',
     name: 'accountsPayable',
     component: () => import('@/views/invoices/AccountsPayableIndex.vue')

@@ -112,6 +112,16 @@
                   <span class="text-white ps-2">FATURAS</span>
                 </li>
               </router-link>
+              <router-link to="/nfses">
+                <li
+                  class="relative flex m-0 px-4 py-2 whitespace-nowrap text-white text-[0.8rem] hover:bg-white/10"
+                  @mouseover="toggleActive('nfses')"
+                  :class="{ 'border border-primary rounded-[30px]': activeItem === 'nfses' }"
+                >
+                  <font-awesome-icon icon="fas fa-file-invoice" />
+                  <span class="text-white ps-2">NOTAS FISCAIS</span>
+                </li>
+              </router-link>
               <router-link to="/contas-a-pagar">
                 <li
                   class="relative flex m-0 px-4 py-2 whitespace-nowrap text-white text-[0.8rem] hover:bg-white/10"
