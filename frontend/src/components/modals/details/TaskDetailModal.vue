@@ -16,6 +16,15 @@
     </div>
 
     <template v-else>
+      <!-- Erro ao salvar um campo (ex: concluir tarefa sem jornada registrada) -->
+      <div v-if="errorMessage" role="alert" class="alert alert-error alert-soft mb-6">
+        <font-awesome-icon icon="fa-solid fa-circle-exclamation" />
+        <span>{{ errorMessage }}</span>
+        <button type="button" class="btn btn-ghost btn-sm btn-circle" title="Fechar" @click="errorMessage = null">
+          <font-awesome-icon icon="fa-solid fa-times" />
+        </button>
+      </div>
+
       <!-- Status e oportunidade/projeto (o nome da tarefa fica editável no cabeçalho) -->
       <div class="flex items-center gap-4 mb-6 pb-6 border-b border-base-300">
         <font-awesome-icon v-if="task.date_canceled" icon="fas fa-times-circle" class="text-3xl text-error"
@@ -260,6 +269,7 @@ export default {
     return {
       task: null,
       loading: false,
+      errorMessage: null,
       showCancelArea: false,
       showJourneyForm: false,
       showOpportunitySelect: false,
@@ -312,10 +322,17 @@ export default {
           `${BACKEND_URL}${TASK_URL_PARAMETER}${this.taskId}`,
           updatedField
         );
+        this.errorMessage = null;
         this.task = response.data.data;
         this.$emit('task-updated', this.task);
       } catch (error) {
         console.error("Erro ao atualizar a tarefa:", error);
+        const errors = error.response?.data?.errors;
+        this.errorMessage = errors?.[fieldName]?.[0]
+          || error.response?.data?.message
+          || "Erro ao atualizar a tarefa. Tente novamente.";
+        // O v-model já alterou o campo localmente; recarrega para voltar ao valor salvo
+        await this.loadTask();
       }
     },
 
