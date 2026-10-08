@@ -267,7 +267,8 @@ export default {
 
 ## 📦 Componentes Comuns
 
-- `DateTimeEditableInput`: Campos de data/hora editáveis
+- `DateTimeEditableInput`: Campos de data/hora editáveis (`date-only` para coluna `date`, sem hora)
+- `DueDateEditableInput`: Prazo (`date_due`) com motivo obrigatório ao adiar e histórico de alterações (ver [Tratamento de Datas](../backend/date-handling.md#-prazos-date_due-de-tarefas-e-oportunidades))
 - `TextAreaEditableInput`: Áreas de texto editáveis
 - `TextEditableField`: Campos de texto simples editáveis
 - `[Entity]SelectInput`: Selects para relacionamentos

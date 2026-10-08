@@ -33,22 +33,26 @@ public static function convertJavascriptDate($javascriptDate)
 
 ## 📝 Como Usar no Backend
 
+### Colunas `datetime` x `date`
+
+Antes de converter, veja o tipo da coluna no banco. Os dois casos são tratados de forma diferente:
+
+| Coluna | Exemplos | Ao salvar (Request) | Ao exibir (Resource) |
+|---|---|---|---|
+| `datetime` (data **e hora**) | `tasks.date_due`, `tasks.date_start` | `convertJavascriptDate()`: guarda em UTC | `convertFromUtc($valor, $timezone)` |
+| `date` (só **data**) | `opportunities.date_start/date_due/date_conclusion/date_canceled` | `toLocalDate($valor, $timezone)`: guarda o dia no fuso do usuário | valor puro (`Y-m-d`), **sem** conversão |
+
+Por que a diferença: uma coluna `date` não tem hora. Se ela passar por `convertFromUtc`, `2026-07-17` é lida como meia-noite UTC e aparece como **16/07 21:00** em São Paulo. E se o dia for tirado do horário em UTC, escolher 18/07 às 23:30 grava **19/07**.
+
 ### Em FormRequests
 
-Sempre use o `prepareForValidation()` para converter datas antes da validação:
+Sempre use o `prepareForValidation()` para converter datas antes da validação.
+
+**Coluna `datetime`** (ex: `TaskRequest.php`):
 
 ```php
-// Exemplo: OpportunityRequest.php
 protected function prepareForValidation()
 {
-    if ($this->filled('date_start')) {
-        $this->merge([
-            'date_start' => \App\Services\DateTimeConversionService::convertJavascriptDate(
-                $this->input('date_start')
-            ),
-        ]);
-    }
-
     if ($this->filled('date_due')) {
         $this->merge([
             'date_due' => \App\Services\DateTimeConversionService::convertJavascriptDate(
@@ -58,6 +62,25 @@ protected function prepareForValidation()
     }
 }
 ```
+
+**Coluna `date`** (ex: `OpportunityRequest.php`):
+
+```php
+protected function prepareForValidation()
+{
+    $timezone = Auth::user()->timezone ?? 'America/Sao_Paulo';
+
+    foreach (['date_start', 'date_due', 'date_conclusion', 'date_canceled'] as $field) {
+        if ($this->filled($field)) {
+            $this->merge([
+                $field => \App\Services\DateTimeConversionService::toLocalDate($this->input($field), $timezone),
+            ]);
+        }
+    }
+}
+```
+
+`toLocalDate()` aceita tanto `"2026-07-17"` (passa direto) quanto um ISO em UTC (`"2026-07-19T02:30:00.000Z"` → `"2026-07-18"` em São Paulo).
 
 ### Validação de Datas
 
@@ -87,12 +110,32 @@ public function rules()
 />
 ```
 
+### Campo editável de coluna `date`: `date-only`
+
+O `DateTimeEditableInput` (`components/fields/datetime/`) mostra data e hora por padrão. Para coluna `date`, use `date-only`: ele esconde a hora e o seletor de hora, e lê e emite `"YYYY-MM-DD"` sem passar por `Date` (que interpretaria como UTC).
+
+```vue
+<DateTimeEditableInput date-only label="Início:" :modelValue="opportunity.date_start"
+  @save="$emit('update-field', 'date_start', $event)" />
+```
+
+Para exibir uma data só leitura, use `displayDate()` de `utils/date/dateUtils.js`, que já trata `"YYYY-MM-DD"` sem conversão. Não use `displayTime()`/`DateTimeValue` em coluna `date`.
+
 ### Props do DateInput
 - `v-model`: Vincula com a variável do formulário
 - `label`: Texto do rótulo
 - `name`: Nome do campo
 - `placeholder`: Texto placeholder
 - `autoFillNow`: Se `true`, preenche automaticamente com a data atual
+
+## ⏰ Prazos (`date_due`) de tarefas e oportunidades
+
+Mudanças de prazo não são uma edição simples: cada alteração de um prazo já definido fica registrada em `due_date_changes` (prazo anterior, novo, motivo, observação, usuário).
+
+- **Backend**: o trait `TracksDueDateChanges` (nos models `Task` e `Opportunity`) grava o histórico no `updated`. O controller passa o motivo com `$model->withDueDateChangeReason($reason, $note)` antes do `save()`. O trait `ValidatesDueDateChange` dos Requests **exige motivo ao adiar** (nova data depois da atual); `other` exige observação. Antecipar não exige motivo; definir o primeiro prazo não gera registro.
+- **Motivos**: `DueDateChange::REASONS`, expostos em `GET due-date-change-reasons`.
+- **Frontend**: use o `DueDateEditableInput` para editar prazo. Ele pede o motivo ao adiar, mostra "Prazo original · adiado Nx" com o histórico e emite o payload pronto para o PUT (`{ date_due, date_due_change_reason?, date_due_change_note? }`). Passe `:changes="entidade.due_date_changes"` (o `show`/`update` carregam `dueDateChanges.user`) e `date-only` para oportunidade.
+- Para colocar o rastreio em outra entidade: use os dois traits, sobrescreva `dueDateHasTime()` se a coluna for `date`, e carregue `dueDateChanges.user` no resource.
 
 ## 📋 Padrão de Nomenclatura
 
@@ -135,8 +178,8 @@ form: {
 ## 🔍 Exemplos no Projeto
 
 ### FormRequests com Datas
-- ✅ `OpportunityRequest.php` - Converte 4 campos de data
-- ✅ `TaskRequest.php` - Converte date_start e date_due
+- ✅ `OpportunityRequest.php` - 4 campos `date` com `toLocalDate()`
+- ✅ `TaskRequest.php` - Campos `datetime` com `convertJavascriptDate()`
 - ✅ `ProposalRequest.php` - Converte date_due
 
 ### Formulários com DateInput
@@ -158,6 +201,10 @@ form: {
 **Problema**: Timezone não foi considerado
 **Solução**: O `DateTimeConversionService` já trata timezone, verifique se está sendo usado
 
+### Data aparece um dia antes (ex: 17/07 vira 16/07 21:00)
+**Problema**: Coluna `date` passando por `convertFromUtc` no Resource ou por `new Date()` no frontend
+**Solução**: Devolva o valor puro no Resource e use `date-only` / `displayDate()` no frontend (veja "Colunas `datetime` x `date`")
+
 ## 📚 Referências
 
 - Service: `backend/app/Services/DateTimeConversionService.php`
@@ -166,4 +213,4 @@ form: {
 
 ---
 
-**Regra de Ouro**: TODA data que vem do frontend DEVE passar pelo `DateTimeConversionService` antes de ir para o banco!
+**Regra de Ouro**: TODA data que vem do frontend DEVE passar pelo `DateTimeConversionService` antes de ir para o banco, com o método certo para o tipo da coluna (`convertJavascriptDate` para `datetime`, `toLocalDate` para `date`)!

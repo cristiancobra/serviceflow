@@ -84,6 +84,11 @@ O `ButtonNewForm` ainda existe em algumas telas, mas está sendo substituído po
 
 **Importante**: Veja [Tratamento de Datas](../backend/date-handling.md) para mais detalhes
 
+#### DateTimeEditableInput / DueDateEditableInput
+**Localização**: `frontend/src/components/fields/datetime/`
+
+Campos de data editáveis no clique, usados em telas de detalhe. `DateTimeEditableInput` aceita `date-only` para colunas `date` (sem hora, valor `"YYYY-MM-DD"`). Para prazo (`date_due`) de tarefa/oportunidade use `DueDateEditableInput`, que pede o motivo ao adiar e mostra o histórico. Detalhes em [Tratamento de Datas](../backend/date-handling.md).
+
 ---
 
 ### Componentes de Seleção (Selects)
@@ -298,6 +303,7 @@ export default {
 - TextInput
 - TextAreaInput
 - DateInput
+- DateTimeEditableInput / DueDateEditableInput
 - LeadsSelectInput
 - CompaniesSelectInput
 - UsersSelectInput
