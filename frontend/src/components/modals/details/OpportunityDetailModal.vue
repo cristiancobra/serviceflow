@@ -120,11 +120,67 @@
           <font-awesome-icon icon="fa-solid fa-trash" :class="{ 'me-2': !compact }" />
           <span v-if="!compact">Excluir</span>
         </button>
-        <button type="button" class="btn" title="Fechar" @click="$emit('close')">
-          <font-awesome-icon v-if="compact" icon="fa-solid fa-times" />
-          <template v-else>Fechar</template>
-        </button>
+        <div class="flex gap-2">
+          <div
+            v-if="!isValidDate(opportunity.date_conclusion) && !isValidDate(opportunity.date_canceled)"
+            class="tooltip tooltip-left"
+            :data-tip="finishBlockedMessage || null"
+          >
+            <button
+              type="button"
+              class="btn btn-success"
+              title="Finalizar oportunidade"
+              :disabled="!!finishBlockedMessage"
+              @click="showFinishConfirm = true"
+            >
+              <font-awesome-icon icon="fa-solid fa-check" :class="{ 'me-2': !compact }" />
+              <span v-if="!compact">Finalizar</span>
+            </button>
+          </div>
+          <button type="button" class="btn" title="Fechar" @click="$emit('close')">
+            <font-awesome-icon v-if="compact" icon="fa-solid fa-times" />
+            <template v-else>Fechar</template>
+          </button>
+        </div>
       </div>
+
+      <teleport to="body">
+        <!-- z-[1000]: fica acima dos modais abertos via store (z-50) -->
+        <div
+          v-if="showFinishConfirm"
+          class="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm"
+          @click.self="showFinishConfirm = false"
+        >
+          <ModalCard
+            title="Finalizar Oportunidade"
+            :icon="finishPendencies.length ? 'fa-solid fa-triangle-exclamation' : 'fa-solid fa-check'"
+            size="sm"
+            @close="showFinishConfirm = false"
+          >
+            <p class="text-base-content">
+              A oportunidade será finalizada em <b>{{ formatLocalDate(lastJourneyEnd) }}</b>,
+              data do término da última jornada.
+            </p>
+
+            <div v-if="finishPendencies.length" role="alert" class="alert alert-warning alert-soft mt-4 items-start">
+              <font-awesome-icon icon="fa-solid fa-triangle-exclamation" class="mt-0.5" />
+              <div>
+                <p class="font-semibold">Esta oportunidade ainda tem pendências:</p>
+                <ul class="list-disc ms-5 mt-1">
+                  <li v-for="pendency in finishPendencies" :key="pendency">{{ pendency }}</li>
+                </ul>
+              </div>
+            </div>
+
+            <p v-if="finishPendencies.length" class="mt-4 text-sm text-base-content/60">Deseja finalizar mesmo assim?</p>
+
+            <template #footer>
+              <button type="button" class="btn btn-ghost" @click="showFinishConfirm = false">Cancelar</button>
+              <button type="button" class="btn btn-success" @click="finishOpportunity">Finalizar</button>
+            </template>
+          </ModalCard>
+        </div>
+      </teleport>
     </template>
   </ModalCard>
 </template>
@@ -202,6 +258,7 @@ export default {
       activeTab: TABS.some((tab) => tab.value === this.initialTab) ? this.initialTab : "info",
       message: null,
       tabs: TABS,
+      showFinishConfirm: false,
     };
   },
   computed: {
@@ -235,6 +292,32 @@ export default {
           total: tasks.length,
         },
       };
+    },
+    // Jornadas de todas as tarefas (end vem do backend no fuso do usuário, "Y-m-d H:i:s")
+    journeys() {
+      return (this.opportunity?.tasks || []).flatMap((task) => task.journeys || []);
+    },
+    lastJourneyEnd() {
+      return this.journeys.reduce((latest, journey) => (journey.end > latest ? journey.end : latest), "") || null;
+    },
+    finishBlockedMessage() {
+      if (!this.journeys.length) return "A oportunidade não pode ser finalizada sem nenhuma jornada registrada.";
+      if (this.journeys.some((journey) => !journey.end))
+        return "A oportunidade não pode ser finalizada enquanto houver jornada em aberto.";
+      return "";
+    },
+    // Avisos do modal de finalização: tarefas abertas e faturas a receber/a pagar
+    finishPendencies() {
+      const pendencies = [];
+      const plural = (count, singular, pluralForm) => `${count} ${count === 1 ? singular : pluralForm}`;
+      const { tasks, creditInvoices, debitInvoices } = this.statusCounts;
+      const openTasks = tasks.total - tasks.done;
+      const toReceive = creditInvoices.total - creditInvoices.done;
+      const toPay = debitInvoices.total - debitInvoices.done;
+      if (openTasks) pendencies.push(plural(openTasks, "tarefa aberta", "tarefas abertas"));
+      if (toReceive) pendencies.push(plural(toReceive, "fatura a receber", "faturas a receber"));
+      if (toPay) pendencies.push(plural(toPay, "fatura a pagar", "faturas a pagar"));
+      return pendencies;
     },
     // Estado de cada aba que tem marcador: { level, title }. Abas fora daqui ficam neutras.
     tabStatus() {
@@ -280,6 +363,20 @@ export default {
       return { level: "info", title };
     },
     formatDuration,
+    isValidDate,
+    // "2026-10-08 18:30:00" → "08/10/2026", sem passar por Date (evita deslocar o dia pelo fuso)
+    formatLocalDate(dateTime) {
+      if (!dateTime) return "";
+      const [year, month, day] = dateTime.slice(0, 10).split("-");
+      return `${day}/${month}/${year}`;
+    },
+    // date_conclusion da oportunidade é só data: envia o dia local do término da última jornada
+    async finishOpportunity() {
+      this.showFinishConfirm = false;
+      if (this.finishBlockedMessage) return;
+      await this.updateOpportunityFields({ date_conclusion: this.lastJourneyEnd.slice(0, 10) });
+      if (isValidDate(this.opportunity?.date_conclusion)) this.$emit("close");
+    },
     async getOpportunity() {
       try {
         this.opportunity = await show("opportunities", this.opportunityId);
