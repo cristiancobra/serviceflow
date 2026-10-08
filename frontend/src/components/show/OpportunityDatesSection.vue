@@ -2,24 +2,28 @@
   <SectionCard title="Datas">
     <div>
       <DateEditableInput
+        date-only
         name="date_start"
         label="Início:"
         :modelValue="opportunity.date_start"
         @save="$emit('update-field', 'date_start', $event)"
       />
-      <DateEditableInput
-        name="date_due"
+      <DueDateEditableInput
         label="Prazo:"
         :modelValue="opportunity.date_due"
-        @save="$emit('update-field', 'date_due', $event)"
+        :changes="opportunity.due_date_changes || []"
+        date-only
+        @save="$emit('update-fields', $event)"
       />
       <DateEditableInput
+        date-only
         name="date_conclusion"
         label="Conclusão:"
         :modelValue="opportunity.date_conclusion"
         @save="$emit('update-field', 'date_conclusion', $event)"
       />
       <DateEditableInput
+        date-only
         name="date_canceled"
         label="Cancelado:"
         :modelValue="opportunity.date_canceled"
@@ -32,12 +36,14 @@
 <script>
 import SectionCard from "@/components/common/SectionCard.vue";
 import DateEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
+import DueDateEditableInput from "../fields/datetime/DueDateEditableInput.vue";
 
 export default {
   name: "OpportunityDatesSection",
   components: {
     SectionCard,
     DateEditableInput,
+    DueDateEditableInput,
   },
   props: {
     opportunity: {
@@ -45,6 +51,7 @@ export default {
       required: true,
     },
   },
-  emits: ['update-field'],
+  // update-fields: vários campos de uma vez (prazo + motivo do adiamento)
+  emits: ['update-field', 'update-fields'],
 };
 </script>

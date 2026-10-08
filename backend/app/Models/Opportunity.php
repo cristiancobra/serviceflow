@@ -11,10 +11,11 @@ use App\Models\Link;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\Concerns\BelongsToAccount;
+use App\Models\Concerns\TracksDueDateChanges;
 
 class Opportunity extends Model
 {
-    use HasFactory, SoftDeletes, BelongsToAccount;
+    use HasFactory, SoftDeletes, BelongsToAccount, TracksDueDateChanges;
 
     protected $fillable = [
         'account_id',
@@ -65,6 +66,12 @@ class Opportunity extends Model
     public function proposals()
     {
         return $this->hasMany(Proposal::class);
+    }
+
+    // date_due de oportunidade é coluna date (sem hora)
+    public function dueDateHasTime(): bool
+    {
+        return false;
     }
 
     // Update the Opportunity duration time duration_time

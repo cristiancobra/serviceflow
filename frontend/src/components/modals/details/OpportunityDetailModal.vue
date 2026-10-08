@@ -58,7 +58,8 @@
       <div v-if="activeTab === 'info'">
         <div class="grid grid-cols-1 gap-6 mb-6" :class="compact ? '' : 'md:grid-cols-2'">
           <div class="flex flex-col gap-6">
-            <opportunity-dates-section :opportunity="opportunity" @update-field="updateOpportunity" />
+            <opportunity-dates-section :opportunity="opportunity" @update-field="updateOpportunity"
+              @update-fields="updateOpportunityFields" />
             <opportunity-info-section :opportunity="opportunity" @update-field="updateOpportunity" />
           </div>
           <opportunity-duration-section :opportunity="opportunity" />
@@ -130,7 +131,7 @@
 
 <script>
 import { mapState } from "vuex";
-import { show, destroy, updateField } from "@/utils/requests/httpUtils";
+import { show, destroy, update, updateField } from "@/utils/requests/httpUtils";
 import { formatDuration } from "@/utils/date/dateUtils";
 import ModalCard from "@/components/modals/ModalCard.vue";
 import SectionCard from "@/components/common/SectionCard.vue";
@@ -294,6 +295,22 @@ export default {
       } catch (error) {
         console.error(`Erro ao atualizar ${fieldName}:`, error);
         this.message = { status: "error", text: "Erro ao atualizar a oportunidade. Tente novamente." };
+      }
+    },
+    // Vários campos de uma vez (ex: prazo + motivo do adiamento)
+    async updateOpportunityFields(fields) {
+      try {
+        this.opportunity = await update("opportunities", this.opportunityId, fields);
+        this.$emit("opportunity-updated", this.opportunity);
+      } catch (error) {
+        const errors = error.response?.data?.errors;
+        this.message = {
+          status: "error",
+          text: errors?.[Object.keys(fields)[0]]?.[0]
+            || error.response?.data?.message
+            || "Erro ao atualizar a oportunidade. Tente novamente.",
+        };
+        await this.getOpportunity();
       }
     },
     // Tarefa da oportunidade (ou que acabou de sair dela) teve jornada criada, editada ou excluída

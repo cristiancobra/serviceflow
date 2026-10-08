@@ -71,7 +71,8 @@ class TaskController extends Controller
             'project.company',
             'opportunity.lead',
             'opportunity.company',
-            'department'
+            'department',
+            'dueDateChanges.user',
         ])
             ->find($task->id));
     }
@@ -108,6 +109,7 @@ class TaskController extends Controller
             }
 
             $task->fill($request->validated());
+            $task->withDueDateChangeReason($request->date_due_change_reason, $request->date_due_change_note);
 
             if (
                 $request->date_conclusion ||
@@ -124,7 +126,8 @@ class TaskController extends Controller
                 'project.company',
                 'opportunity.lead',
                 'opportunity.company',
-                'department'
+                'department',
+                'dueDateChanges.user',
             ])->find($task->id);
 
             return TasksResource::make($updatedTask);

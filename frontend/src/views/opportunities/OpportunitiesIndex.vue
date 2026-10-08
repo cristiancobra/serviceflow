@@ -43,13 +43,15 @@
                     </router-link>
                 </div>
                 <div class="flex items-center justify-end w-48 shrink-0">
-                    <DateTimeValue v-if="opportunity.date_conclusion" v-model="opportunity.date_conclusion"
-                        classText="done" classIcon='done'
-                        @save="updateProject('date_conclusion', $event, opportunity.id)" />
-                    <DateTimeEditableInput v-else v-model="opportunity.date_due"
-                        :classText="getDeadlineClass(opportunity.date_due)"
-                        :classIcon='getDeadlineClass(opportunity.date_due)'
-                        @save="updateProject('date_due', $event, opportunity.id)" />
+                    <span v-if="opportunity.date_conclusion" class="text-sm text-success" title="Concluída em">
+                        <font-awesome-icon icon="fa-solid fa-check" class="me-1" />
+                        {{ displayDate(opportunity.date_conclusion) }}
+                    </span>
+                    <span v-else-if="opportunity.date_due" class="text-sm" :class="getDeadlineClass(opportunity.date_due)"
+                        title="Prazo">
+                        <font-awesome-icon icon="fa-solid fa-calendar" class="me-1" />
+                        {{ displayDate(opportunity.date_due) }}
+                    </span>
                 </div>
             </div>
         </section>
@@ -63,8 +65,7 @@ import { getDeadlineClass } from "@/utils/card/cardUtils";
 import CompanyAvatar from "@/components/common/CompanyAvatar.vue";
 import LeadAvatar from "@/components/common/LeadAvatar.vue";
 import UserAvatar from "@/components/common/UserAvatar.vue";
-import DateTimeEditableInput from "@/components/fields/datetime/DateTimeEditableInput.vue";
-import DateTimeValue from "@/components/fields/datetime/DateTimeValue.vue";
+import { displayDate } from "@/utils/date/dateUtils";
 import SearchInput from "@/components/filters/SearchInput.vue";
 import PageHeader from "@/components/layout/PageHeader.vue";
 
@@ -74,8 +75,6 @@ export default {
         CompanyAvatar,
         LeadAvatar,
         UserAvatar,
-        DateTimeEditableInput,
-        DateTimeValue,
         SearchInput,
     },
     data() {
@@ -98,6 +97,7 @@ export default {
     methods: {
         ...mapMutations(["openModal"]),
         getDeadlineClass,
+        displayDate,
         openCreateOpportunityModal() {
             this.openModal({
                 component: "OpportunityCreateForm",

@@ -53,6 +53,7 @@ class TasksResource extends JsonResource
 			 "project" => new ProjectResource($this->whenLoaded('project')),
 			"opportunity" => new OpportunitiesResource($this->whenLoaded('opportunity')),
 			"invoice" => new InvoicesResource($this->whenLoaded('invoice')),
+			"due_date_changes" => DueDateChangeResource::collection($this->whenLoaded('dueDateChanges')),
 			"department" => $this->whenLoaded('department', function () {
 				return [
 					'id' => $this->department->id,

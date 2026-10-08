@@ -91,6 +91,7 @@ class OpportunityController extends Controller
             'proposals.invoices.transactions',
             'proposals.invoices.lead',
             'proposals.invoices.company',
+            'dueDateChanges.user',
         ])->find($opportunity->id));
     }
 
@@ -105,6 +106,7 @@ class OpportunityController extends Controller
     {
         try {
             $opportunity->fill($request->validated());
+            $opportunity->withDueDateChangeReason($request->date_due_change_reason, $request->date_due_change_note);
             $opportunity->save();
 
             return OpportunitiesResource::make(Opportunity::with([
@@ -125,6 +127,7 @@ class OpportunityController extends Controller
                 'proposals.invoices.transactions',
                 'proposals.invoices.lead',
                 'proposals.invoices.company',
+                'dueDateChanges.user',
             ])->find($opportunity->id));
         } catch (ValidationException $validationException) {
             return response()->json([

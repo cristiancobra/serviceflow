@@ -74,8 +74,8 @@
             <font-awesome-icon icon="fa-solid fa-exclamation-circle" class="text-error" />
             <label class="text-sm font-semibold text-base-content/80">Data de Vencimento</label>
           </div>
-          <date-time-editable-input v-model="task.date_due" :classText="getDeadlineClass(task.date_due)"
-            @save="updateTask('date_due', $event)" />
+          <due-date-editable-input :modelValue="task.date_due" :classText="getDeadlineClass(task.date_due)"
+            :changes="task.due_date_changes || []" @save="updateTaskFields" />
         </div>
 
         <div class="bg-base-200 rounded-lg p-4">
@@ -213,6 +213,7 @@ import { formatDuration } from "@/utils/date/dateUtils";
 import { getDeadlineClass } from "@/utils/card/cardUtils";
 import { BACKEND_URL, TASK_URL_PARAMETER, JOURNEY_URL_PARAMETER } from "@/config/apiConfig";
 import DateTimeEditableInput from "@/components/fields/datetime/DateTimeEditableInput.vue";
+import DueDateEditableInput from "@/components/fields/datetime/DueDateEditableInput.vue";
 import TextAreaEditableInput from "@/components/forms/inputs/textarea/TextAreaEditableInput.vue";
 import CancellationReasonSelectInput from "@/components/forms/selects/CancellationReasonSelectInput.vue";
 import JourneyCreateForm from "@/components/forms/JourneyCreateForm.vue";
@@ -225,6 +226,7 @@ export default {
   name: "TaskDetailModal",
   components: {
     DateTimeEditableInput,
+    DueDateEditableInput,
     TextAreaEditableInput,
     CancellationReasonSelectInput,
     JourneyCreateForm,
@@ -314,13 +316,16 @@ export default {
     },
 
     async updateTask(fieldName, editedValue) {
-      const updatedField = {};
-      updatedField[fieldName] = editedValue;
+      await this.updateTaskFields({ [fieldName]: editedValue });
+    },
+
+    async updateTaskFields(fields) {
+      const fieldName = Object.keys(fields)[0];
 
       try {
         const response = await axios.put(
           `${BACKEND_URL}${TASK_URL_PARAMETER}${this.taskId}`,
-          updatedField
+          fields
         );
         this.errorMessage = null;
         this.task = response.data.data;

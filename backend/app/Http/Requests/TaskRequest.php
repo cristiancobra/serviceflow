@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Concerns\ValidatesDueDateChange;
 use App\Services\DateConversionService;
 use HTMLPurifier;
 use HTMLPurifier_Config;
@@ -10,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 
 class TaskRequest extends FormRequest
 {
+    use ValidatesDueDateChange;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -27,7 +30,7 @@ class TaskRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        return array_merge([
             'account_id' => 'required|exists:accounts,id',
             'user_id' => 'sometimes|exists:users,id',
             'project_id' => 'nullable',
@@ -45,8 +48,12 @@ class TaskRequest extends FormRequest
             'cancellation_reason' => 'nullable|string|max:255',
             'duration_days' => 'nullable|integer|min:0',
             'duration_time' => 'nullable|integer|min:0',
-        ];
+        ], $this->dueDateChangeRules());
+    }
 
+    public function withValidator($validator)
+    {
+        $this->validateDueDatePostponement($validator, 'task');
     }
 
     protected function prepareForValidation()

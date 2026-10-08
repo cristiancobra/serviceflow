@@ -7,7 +7,6 @@ use App\Http\Resources\CompanyResource;
 use App\Http\Resources\LeadsResource;
 use App\Http\Resources\LinksResource;
 use App\Http\Resources\UsersResource;
-use App\Services\DateTimeConversionService;
 
 class OpportunitiesResource extends JsonResource
 {
@@ -19,8 +18,6 @@ class OpportunitiesResource extends JsonResource
      */
     public function toArray($request)
     {
-        $timezone = auth()->user()->timezone ?? 'America/Sao_Paulo';
-
         return [
             'id' => $this->id,
             'account_id' => $this->account_id,
@@ -29,10 +26,11 @@ class OpportunitiesResource extends JsonResource
             'company_id' => $this->company_id,
             'name' => $this->name,
             'category' => $this->category,
-            'date_start' => DateTimeConversionService::convertFromUtc($this->date_start, $timezone),
-            'date_due' => DateTimeConversionService::convertFromUtc($this->date_due, $timezone),
-            'date_conclusion' => DateTimeConversionService::convertFromUtc($this->date_conclusion, $timezone),
-            'date_canceled' => DateTimeConversionService::convertFromUtc($this->date_canceled, $timezone),
+            // Colunas date (sem hora): vão como Y-m-d, sem conversão de fuso
+            'date_start' => $this->date_start,
+            'date_due' => $this->date_due,
+            'date_conclusion' => $this->date_conclusion,
+            'date_canceled' => $this->date_canceled,
             'description' => $this->description,
             'duration_time' => $this->duration_time,
             'contracted_hours' => $this->whenLoaded('proposals', fn () => $this->contractedHours()),
@@ -50,6 +48,7 @@ class OpportunitiesResource extends JsonResource
             'links' => LinksResource::collection($this->whenLoaded('links')),
             'tasks' => TasksResource::collection($this->whenLoaded('tasks')),
             'proposals' => ProposalsResource::collection($this->whenLoaded('proposals')),
+            'due_date_changes' => DueDateChangeResource::collection($this->whenLoaded('dueDateChanges')),
 		];
     }
 

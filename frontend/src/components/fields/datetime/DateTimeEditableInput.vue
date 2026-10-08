@@ -5,13 +5,16 @@
       <span :class="classText">
         {{ formatedDate }}
       </span>
-      <font-awesome-icon icon="fa-solid fa-clock" class="ms-2 me-1 text-base-content/50" />
-      <span :class="classText">
-        {{ formatedTime }}
-      </span>
+      <template v-if="!dateOnly">
+        <font-awesome-icon icon="fa-solid fa-clock" class="ms-2 me-1 text-base-content/50" />
+        <span :class="classText">
+          {{ formatedTime }}
+        </span>
+      </template>
     </div>
-    <DatePicker v-else :id="name" :name="name" :label="label" v-model="localValue" format="dd/MM/yyyy HH:mm"
-      :placeholder="placeholder" @update:modelValue="emitSave" />
+    <DatePicker v-else :id="name" :name="name" :label="label" v-model="localValue"
+      :format="dateOnly ? 'dd/MM/yyyy' : 'dd/MM/yyyy HH:mm'" :enable-time-picker="!dateOnly"
+      :model-type="dateOnly ? 'yyyy-MM-dd' : undefined" :placeholder="placeholder" @update:modelValue="emitSave" />
   </div>
 </template>
 
@@ -38,6 +41,11 @@ export default {
     name: String,
     modelValue: [String, Number],
     placeholder: String,
+    // Coluna só de data (ex: datas da oportunidade): sem hora, valor "YYYY-MM-DD" sem conversão de fuso
+    dateOnly: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     startEditing() {
@@ -48,6 +56,10 @@ export default {
         // Se a data local for vazia, emita um valor null ou uma string vazia
         this.$emit("save", null);
         console.log('Emitindo save com valor nulo');
+      } else if (this.dateOnly) {
+        if (this.modelValue !== this.localValue) {
+          this.$emit("save", this.localValue);
+        }
       } else if (this.modelValue !== this.localValue) {
         // Converte para ISO (JavaScript padrão) - o backend converterá com convertJavascriptDate
         const isoValue = this.localValue instanceof Date 

@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\CostController;
 use App\Http\Controllers\Api\CreditCardController;
 use App\Http\Controllers\Api\CreditCardChargeController;
 use App\Http\Controllers\Api\CreditCardInvoiceController;
+use App\Http\Controllers\Api\DueDateChangeController;
 use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\JourneyController;
 use App\Http\Controllers\Api\LeadController;
@@ -254,6 +255,10 @@ Route::middleware('auth:sanctum')->group(function () {
 	
 	Route::apiResource('services', ServiceController::class)
 		->names('services');
+
+	// DUE DATE CHANGES (motivos de adiamento de prazo de tarefas e oportunidades)
+	Route::get('due-date-change-reasons', [DueDateChangeController::class, 'reasons'])
+		->name('due-date-change-reasons');
 
 	//TASKS
 	Route::get('/tasks/cancellation-reasons', [TaskController::class, 'getCancellationReasons']);

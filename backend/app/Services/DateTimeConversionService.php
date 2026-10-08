@@ -27,6 +27,29 @@ class DateTimeConversionService
         }
     }
     
+    // Converte o valor recebido do frontend para a data (Y-m-d) no fuso do usuário, para colunas
+    // só de data (sem hora). "2026-07-17" passa direto; um ISO em UTC (ex: "2026-07-17T02:30:00.000Z",
+    // que é 16/07 23:30 em São Paulo) vira o dia local, e não o dia em UTC.
+    public static function toLocalDate(?string $value, string $timezone = 'America/Sao_Paulo'): ?string
+    {
+        if (!$value) {
+            return null;
+        }
+
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+            return $value;
+        }
+
+        try {
+            $dt = new \DateTime($value, new \DateTimeZone('UTC'));
+            $dt->setTimezone(new \DateTimeZone($timezone));
+
+            return $dt->format('Y-m-d');
+        } catch (\Exception $e) {
+            return $value;
+        }
+    }
+
     // Converte uma data/hora de um fuso horário específico para UTC para salvar no banco de dados
     public static function convertToUtc(string $dateTime, string $timezone = 'America/Sao_Paulo'): string
     {

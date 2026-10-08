@@ -3,10 +3,13 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Concerns\ValidatesDueDateChange;
 use Illuminate\Support\Facades\Auth;
 
 class OpportunityRequest extends FormRequest
 {
+    use ValidatesDueDateChange;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -24,7 +27,7 @@ class OpportunityRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        return array_merge([
             'account_id' => 'required|exists:accounts,id',
             'lead_id' => 'nullable|exists:leads,id',
             'user_id' => 'sometimes|exists:users,id',
@@ -38,7 +41,12 @@ class OpportunityRequest extends FormRequest
             'description' => 'nullable|string',
             'duration_time' => 'nullable|integer',
             'source' => 'nullable|string|max:255',
-        ];
+        ], $this->dueDateChangeRules());
+    }
+
+    public function withValidator($validator)
+    {
+        $this->validateDueDatePostponement($validator, 'opportunity');
     }
 
     protected function prepareForValidation()
@@ -48,28 +56,15 @@ class OpportunityRequest extends FormRequest
             'account_id' => $user->account_id,
         ]);
 
-        if ($this->filled('date_start')) {
-            $this->merge([
-                'date_start' => \App\Services\DateTimeConversionService::convertJavascriptDate($this->input('date_start')),
-            ]);
-        }
+        // Colunas date (sem hora): guarda o dia escolhido no fuso do usuário
+        $timezone = $user->timezone ?? 'America/Sao_Paulo';
 
-        if ($this->filled('date_due')) {
-            $this->merge([
-                'date_due' => \App\Services\DateTimeConversionService::convertJavascriptDate($this->input('date_due')),
-            ]);
-        }
-
-        if ($this->filled('date_conclusion')) {
-            $this->merge([
-                'date_conclusion' => \App\Services\DateTimeConversionService::convertJavascriptDate($this->input('date_conclusion')),
-            ]);
-        }
-
-        if ($this->filled('date_canceled')) {
-            $this->merge([
-                'date_canceled' => \App\Services\DateTimeConversionService::convertJavascriptDate($this->input('date_canceled')),
-            ]);
+        foreach (['date_start', 'date_due', 'date_conclusion', 'date_canceled'] as $field) {
+            if ($this->filled($field)) {
+                $this->merge([
+                    $field => \App\Services\DateTimeConversionService::toLocalDate($this->input($field), $timezone),
+                ]);
+            }
         }
     }
 }
