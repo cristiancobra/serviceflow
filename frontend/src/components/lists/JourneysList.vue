@@ -1,10 +1,10 @@
 <template>
-  <div class="mt-8 mb-20 px-8">
+  <div class="@container" :class="{ 'mt-8 mb-20 px-8': !taskId }">
     <AddMessage v-if="messageStatus" :messageStatus="messageStatus" :messageText="messageText">
     </AddMessage>
-    <section-header title="Jornadas" icon="fa-solid fa-clock" />
+    <section-header v-if="!taskId" title="Jornadas" icon="fa-solid fa-clock" />
 
-    <div class="search-container">
+    <div v-if="!taskId" class="search-container">
       <input
         type="text"
         class="search-input"
@@ -26,7 +26,8 @@
         Nenhuma jornada encontrada com os critérios de busca
       </div>
       
-      <div v-else class="list-line" v-for="journey in filteredJourneys" v-bind:key="journey.id"
+      <!-- Em containers estreitos (ex: modal ao lado de outro) tarefa e oportunidade descem para uma segunda linha e os botões para uma terceira (sem as colunas de tarefa, tudo cabe numa linha) -->
+      <div v-else class="list-line flex-wrap items-center py-1 @4xl:flex-nowrap @4xl:py-0" v-for="journey in filteredJourneys" v-bind:key="journey.id"
         :class="{ 'highlight': journey.id === newJourneyId }">
         <div class="flex flex-[2] items-center justify-start mr-4">
           <date-editable-input name="start" v-model="journey.start" @save="updateJourney('start', $event, journey.id)" />
@@ -40,46 +41,49 @@
             {{ formatDuration(journey.duration) }}
           </p>
         </div>
-        <div v-if="journey.task" class="flex flex-[6] items-center justify-start">
-          <router-link v-if="getTaskLink(journey.task)" :to="getTaskLink(journey.task)" class="text-base-content text-sm">
-            {{ journey.task.name }}
-          </router-link>
-          <span v-else class="text-base-content text-sm">{{ journey.task.name }}</span>
-        </div>
-        <div v-if="journey.task" class="flex flex-[4] items-center justify-start mr-4">
-          <router-link :class="getColorClassForName(journey.task.opportunity.name)" class="flex items-center"
-            v-if="journey.task.opportunity"
-            :to="{ 
-              name: 'opportunityShow', 
-              params: { id: journey.task.opportunity.id },
-              query: { tab: 'tasks' },
-              hash: '#task-' + journey.task.id
-            }">
-            <font-awesome-icon icon="fa-solid fa-bullseye"
-              :class="getColorClassForName(journey.task.opportunity.name)" />
-            <p class="text-sm font-semibold ps-2" :class="getColorClassForName(journey.task.opportunity.name)">
-              {{ trimName(journey.task.opportunity.name) }}
-            </p>
-          </router-link>
-          <router-link class="flex items-center" v-else-if="journey.task.project"
-            :to="{ 
-              name: 'projectShow', 
-              params: { id: journey.task.project.id },
-              hash: '#task-' + journey.task.id
-            }">
-            <font-awesome-icon icon="fa-solid fa-folder-open"
-              :class="getColorClassForName(journey.task.project.name)" />
-            <p class="text-sm font-semibold ps-2" :class="getColorClassForName(journey.task.project.name)">
-              {{ trimName(journey.task.project.name) }}
-            </p>
-          </router-link>
-          <div v-else>
-            <p class="text-sm text-base-content/50">
-              ----
-            </p>
+        <div v-if="journey.task && !taskId" class="order-1 flex basis-full gap-4 pb-1 @4xl:order-none @4xl:flex-[10] @4xl:basis-0 @4xl:gap-0 @4xl:pb-0">
+          <div class="flex flex-[6] min-w-0 items-center justify-start">
+            <router-link v-if="getTaskLink(journey.task)" :to="getTaskLink(journey.task)" class="text-base-content text-sm">
+              {{ journey.task.name }}
+            </router-link>
+            <span v-else class="text-base-content text-sm">{{ journey.task.name }}</span>
+          </div>
+          <div class="flex flex-[4] min-w-0 items-center justify-start @4xl:mr-4">
+            <router-link :class="getColorClassForName(journey.task.opportunity.name)" class="flex items-center"
+              v-if="journey.task.opportunity"
+              :to="{ 
+                name: 'opportunityShow', 
+                params: { id: journey.task.opportunity.id },
+                query: { tab: 'tasks' },
+                hash: '#task-' + journey.task.id
+              }">
+              <font-awesome-icon icon="fa-solid fa-bullseye"
+                :class="getColorClassForName(journey.task.opportunity.name)" />
+              <p class="text-sm font-semibold ps-2" :class="getColorClassForName(journey.task.opportunity.name)">
+                {{ trimName(journey.task.opportunity.name) }}
+              </p>
+            </router-link>
+            <router-link class="flex items-center" v-else-if="journey.task.project"
+              :to="{ 
+                name: 'projectShow', 
+                params: { id: journey.task.project.id },
+                hash: '#task-' + journey.task.id
+              }">
+              <font-awesome-icon icon="fa-solid fa-folder-open"
+                :class="getColorClassForName(journey.task.project.name)" />
+              <p class="text-sm font-semibold ps-2" :class="getColorClassForName(journey.task.project.name)">
+                {{ trimName(journey.task.project.name) }}
+              </p>
+            </router-link>
+            <div v-else>
+              <p class="text-sm text-base-content/50">
+                ----
+              </p>
+            </div>
           </div>
         </div>
-        <div class="flex flex-1 items-center justify-start gap-2">
+        <div class="flex flex-1 items-center justify-start gap-2"
+          :class="{ 'order-2 basis-full pb-1 @4xl:order-none @4xl:basis-0 @4xl:pb-0': !taskId }">
           <journey-toggle-button
             v-if="!journey.end"
             running
@@ -134,6 +138,12 @@ export default {
     },
     paginationData: {
       type: Object,
+      default: null,
+    },
+    // Quando a lista mostra as jornadas de uma tarefa só (ex: TaskJourneysModal), esconde
+    // cabeçalho, busca e as colunas de tarefa/oportunidade, que seriam iguais em todas as linhas
+    taskId: {
+      type: [Number, String],
       default: null,
     },
   },

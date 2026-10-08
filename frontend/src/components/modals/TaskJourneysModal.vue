@@ -15,6 +15,7 @@
       v-else
       :journeys="journeys"
       :paginationData="paginationData"
+      :task-id="taskId"
       @journey-updated="emitTaskUpdated"
       @journey-deleted="emitTaskUpdated"
     />
