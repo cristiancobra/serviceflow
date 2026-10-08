@@ -7,20 +7,15 @@
       </span>
       <font-awesome-icon icon="fa-solid fa-calendar" class="ms-2 me-1 text-base-content/50" />
     </div>
-    <VueDatePicker 
-      v-else 
-      :id="name" 
-      :name="name" 
-      :label="label" 
+    <DatePicker
+      v-else
+      :id="name"
+      :name="name"
+      :label="label"
       v-model="localValue"
       :placeholder="placeholder"
       format="dd/MM/yyyy"
-      locale="pt-BR"
-      select-text="Selecionar"
-      cancel-text="Cancelar"
       :enable-time-picker="false"
-      teleport
-      teleport-center
       @update:modelValue="handleDateChange"
     />
   </div>
@@ -28,12 +23,11 @@
 
 <script>
 import { displayDate } from "@/utils/date/dateUtils";
-import VueDatePicker from "@vuepic/vue-datepicker";
-import "@vuepic/vue-datepicker/dist/main.css";
+import DatePicker from "@/components/forms/inputs/date/DatePicker.vue";
 
 export default {
   components: {
-    VueDatePicker,
+    DatePicker,
   },
   data() {
     return {

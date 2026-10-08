@@ -1,18 +1,17 @@
 <template>
   <div>
     <label v-if="label" :for="label">{{ label }}</label>
-    <VueDatePicker :name="name" :label="label" v-model="localValue" :placeholder="placeholder" format="dd/MM/yyyy HH:mm" locale="pt-BR" select-text="Selecionar" cancel-text="Cancelar"
+    <DatePicker :name="name" :label="label" v-model="localValue" :placeholder="placeholder" format="dd/MM/yyyy HH:mm"
       @update:modelValue="emitSave" />
   </div>
 </template>
 
 <script>
-import VueDatePicker from "@vuepic/vue-datepicker";
-import "@vuepic/vue-datepicker/dist/main.css";
+import DatePicker from "@/components/forms/inputs/date/DatePicker.vue";
 
 export default {
   components: {
-    VueDatePicker,
+    DatePicker,
   },
   data() {
     return {

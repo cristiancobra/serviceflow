@@ -10,19 +10,18 @@
         {{ formatedTime }}
       </span>
     </div>
-    <VueDatePicker v-else :id="name" :name="name" :label="label" v-model="localValue" format="dd/MM/yyyy HH:mm" locale="pt-BR" select-text="Selecionar" cancel-text="Cancelar"
+    <DatePicker v-else :id="name" :name="name" :label="label" v-model="localValue" format="dd/MM/yyyy HH:mm"
       :placeholder="placeholder" @update:modelValue="emitSave" />
   </div>
 </template>
 
 <script>
 import { displayDate, displayTime } from "@/utils/date/dateUtils";
-import VueDatePicker from "@vuepic/vue-datepicker";
-import "@vuepic/vue-datepicker/dist/main.css";
+import DatePicker from "@/components/forms/inputs/date/DatePicker.vue";
 
 export default {
   components: {
-    VueDatePicker,
+    DatePicker,
   },
   data() {
     return {
