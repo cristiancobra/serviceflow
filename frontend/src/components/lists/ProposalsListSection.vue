@@ -23,34 +23,10 @@
         <div class="text-base-content flex flex-[2] items-center justify-start mr-4">
           {{ formatDateBr(proposal.date) }}
         </div>
-        <div class="flex flex-[6] items-center justify-start flex-row m-0">
-          <p
-            class="text-base-content text-left text-sm font-medium p-0 m-0"
-            v-if="!proposal.opportunity"
-          >
-            sem oportunidade associada
-          </p>
-          <p
-            class="text-base-content text-sm font-semibold"
-            v-else-if="proposal.opportunity?.company?.business_name"
-          >
-            {{ proposal.opportunity.company.business_name }}
-          </p>
-          <p
-            class="text-base-content text-sm font-semibold"
-            v-else-if="proposal.opportunity?.company?.legal_name"
-          >
-            {{ proposal.opportunity.company.legal_name }}
-          </p>
-          <p
-            class="text-base-content text-sm font-semibold"
-            v-else-if="proposal.opportunity?.lead?.name"
-          >
-            {{ proposal.opportunity.lead.name }}
-          </p>
-          <p class="text-base-content text-left text-sm font-medium p-0 m-0" v-else>
-            sem associação
-          </p>
+        <!-- Lista usada só dentro da oportunidade: o cliente já é o dela, então mostra as horas orçadas -->
+        <div class="flex flex-[3] items-center justify-start text-sm text-base-content/80" title="Horas orçadas">
+          <font-awesome-icon icon="fa-solid fa-clock" class="me-2 text-base-content/50" />
+          {{ formatDuration(proposal.total_hours || 0) }}
         </div>
         <div class="flex flex-[6] items-center justify-start flex-row m-0">
           <p
@@ -69,7 +45,7 @@
 <script>
 import { mapMutations } from "vuex";
 import { updateField } from "@/utils/requests/httpUtils";
-import { formatDateBr } from "@/utils/date/dateUtils";
+import { formatDateBr, formatDuration } from "@/utils/date/dateUtils";
 import { getDeadlineClass } from "@/utils/card/cardUtils";
 import ButtonNewForm from "../buttons/ButtonNewForm.vue";
 import MoneyField from "../fields/number/MoneyField.vue";
@@ -118,6 +94,7 @@ export default {
       });
     },
     formatDateBr,
+    formatDuration,
     getDeadlineClass,
     addProposalCreated(newProposal) {
       this.localProposals.push(newProposal);
