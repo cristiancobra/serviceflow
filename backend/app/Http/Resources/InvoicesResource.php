@@ -10,7 +10,6 @@ use App\Http\Resources\LeadsResource;
 use App\Http\Resources\CompaniesResource;
 use App\Http\Resources\TasksResource;
 use App\Http\Resources\NfseResource;
-use App\Services\DateTimeConversionService;
 
 class InvoicesResource extends JsonResource
 {
@@ -32,7 +31,9 @@ class InvoicesResource extends JsonResource
             'lead_id' => $this->lead_id,
             'company_id' => $this->company_id,
             'department_id' => $this->department_id,
-            'date_due' => DateTimeConversionService::convertFromUtc($this->date_due, $timezone),
+            // Coluna DATE (só data): vai como Y-m-d, sem conversão de fuso. Tratá-la como
+            // 00:00 UTC e converter para o fuso do usuário recuava um dia (02 → 01 21:00).
+            'date_due' => $this->date_due,
             'price' => $this->price,
             'total_paid' => $this->total_paid,
             'balance' => $this->balance,
