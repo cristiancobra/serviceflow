@@ -47,6 +47,13 @@ class InvoiceController extends Controller
             $query->where('type', $request->query('type'));
         }
 
+        // Só faturas em aberto (ex: seletor para vincular fatura a uma tarefa). Usa o
+        // saldo em vez da coluna 'status', que pode estar desatualizada.
+        if ($request->boolean('open')) {
+            $query->where('status', '!=', Invoice::STATUS_CANCELLED)
+                  ->whereRaw('COALESCE(total_paid, 0) < COALESCE(price, 0)');
+        }
+
         $filter = $request->query('filter');
 
         if ($filter === 'overdue_debit') {

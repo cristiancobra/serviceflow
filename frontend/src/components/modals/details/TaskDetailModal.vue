@@ -25,8 +25,8 @@
         </button>
       </div>
 
-      <!-- Status e oportunidade/projeto (o nome da tarefa fica editável no cabeçalho) -->
-      <div class="flex items-center gap-4 mb-6 pb-6 border-b border-base-300">
+      <!-- Status, oportunidade/projeto e fatura (o nome da tarefa fica editável no cabeçalho) -->
+      <div class="flex flex-wrap items-center gap-4 mb-6 pb-6 border-b border-base-300">
         <font-awesome-icon v-if="task.date_canceled" icon="fas fa-times-circle" class="text-3xl text-error"
           title="Tarefa cancelada" />
         <font-awesome-icon v-else icon="fas fa-check-circle" class="text-3xl"
@@ -61,6 +61,38 @@
               fieldNull="Nenhuma" v-model="selectedOpportunity" @update:modelValue="onOpportunitySelected" />
             <button type="button" class="text-base-content/50 hover:text-error ml-1 transition-colors" title="Cancelar"
               @click="showOpportunitySelect = false">
+              <font-awesome-icon icon="fa-solid fa-times" />
+            </button>
+          </template>
+        </div>
+
+        <!-- Fatura vinculada: atalho para registrar o pagamento -->
+        <div v-if="task.invoice" class="flex items-center gap-2 text-sm">
+          <font-awesome-icon icon="fa-solid fa-file-invoice-dollar" class="text-primary" />
+          <button type="button" class="text-primary hover:underline font-medium" title="Abrir fatura"
+            @click="openInvoiceModal">
+            {{ invoiceLabel }}
+          </button>
+          <span class="badge badge-sm" :class="invoiceStatusClass">{{ formatCurrencySymbol(task.invoice.balance ?? task.invoice.price) }}</span>
+          <button type="button" class="text-base-content/50 hover:text-error ml-1 transition-colors"
+            title="Desvincular fatura" @click="updateTask('invoice_id', null)">
+            <font-awesome-icon icon="fa-solid fa-times" />
+          </button>
+        </div>
+
+        <div v-else-if="isFinancialTask" class="flex items-center gap-2 text-sm">
+          <template v-if="!showInvoiceSelect">
+            <font-awesome-icon icon="fa-solid fa-file-invoice-dollar" class="text-base-content/50" />
+            <button type="button" class="text-base-content/50 hover:text-primary font-medium transition-colors"
+              @click="showInvoiceSelect = true">
+              Vincular fatura
+            </button>
+          </template>
+          <template v-else>
+            <invoices-select-input name="invoice_id" label="Fatura" fieldNull="Nenhuma" :type="financialInvoiceType"
+              v-model="selectedInvoice" @update:modelValue="onInvoiceSelected" />
+            <button type="button" class="text-base-content/50 hover:text-error ml-1 transition-colors" title="Cancelar"
+              @click="showInvoiceSelect = false">
               <font-awesome-icon icon="fa-solid fa-times" />
             </button>
           </template>
@@ -211,6 +243,7 @@ import axios from "axios";
 import { mapMutations, mapActions, mapState } from "vuex";
 import { formatDuration } from "@/utils/date/dateUtils";
 import { getDeadlineClass } from "@/utils/card/cardUtils";
+import { formatCurrencySymbol } from "@/utils/number/moneyUtils";
 import { BACKEND_URL, TASK_URL_PARAMETER, JOURNEY_URL_PARAMETER } from "@/config/apiConfig";
 import DateTimeEditableInput from "@/components/fields/datetime/DateTimeEditableInput.vue";
 import DueDateEditableInput from "@/components/fields/datetime/DueDateEditableInput.vue";
@@ -220,6 +253,7 @@ import JourneyCreateForm from "@/components/forms/JourneyCreateForm.vue";
 import ModalCard from "@/components/modals/ModalCard.vue";
 import AddJourneyButton from "@/components/buttons/AddJourneyButton.vue";
 import OpportunitiesSelectInput from "@/components/forms/selects/OpportunitiesSelectInput.vue";
+import InvoicesSelectInput from "@/components/forms/selects/InvoicesSelectInput.vue";
 import JourneyTimer from "@/components/journeys/JourneyTimer.vue";
 
 export default {
@@ -233,6 +267,7 @@ export default {
     ModalCard,
     AddJourneyButton,
     OpportunitiesSelectInput,
+    InvoicesSelectInput,
     JourneyTimer,
   },
   props: {
@@ -257,6 +292,36 @@ export default {
       if (journeys.length === 0) return false;
       return journeys.every(j => j.end);
     },
+    // Tarefa de pagamento/recebimento: criada a partir de uma fatura ("Pagar: ..."/"Receber: ...")
+    // ou do departamento financeiro. Só nelas aparece a opção de vincular fatura.
+    isFinancialTask() {
+      if (!this.task) return false;
+      if (/^(Pagar|Receber):/i.test(this.task.name || '')) return true;
+      const department = this.task.department;
+      return !!department && (department.slug === 'financeiro' || /financeiro/i.test(department.name || ''));
+    },
+    // Pré-filtra o seletor: "Receber:" só faturas a receber, "Pagar:" só a pagar
+    financialInvoiceType() {
+      if (/^Receber:/i.test(this.task?.name || '')) return 'credit';
+      if (/^Pagar:/i.test(this.task?.name || '')) return 'debit';
+      return null;
+    },
+    invoiceLabel() {
+      const invoice = this.task?.invoice;
+      if (!invoice) return '';
+      const name = invoice.name || `Fatura #${invoice.id}`;
+      return invoice.installment_quantity > 1
+        ? `${name} (${invoice.installment_number}/${invoice.installment_quantity})`
+        : name;
+    },
+    invoiceStatusClass() {
+      return {
+        paid: 'badge-success',
+        partial: 'badge-warning',
+        overdue: 'badge-error',
+        cancelled: 'badge-ghost',
+      }[this.task?.invoice?.status] || 'badge-info';
+    },
     canFinishTaskMessage() {
       if (!this.task) return '';
       const journeys = this.task.journeys || [];
@@ -276,11 +341,14 @@ export default {
       showJourneyForm: false,
       showOpportunitySelect: false,
       selectedOpportunity: null,
+      showInvoiceSelect: false,
+      selectedInvoice: null,
     };
   },
   methods: {
     formatDuration,
     getDeadlineClass,
+    formatCurrencySymbol,
     ...mapMutations(["openModal"]),
     ...mapActions(["checkOpenJourneys"]),
 
@@ -425,6 +493,25 @@ export default {
       if (this.task.opportunity?.id !== opportunity.id) return;
       this.task.opportunity = { ...this.task.opportunity, name: opportunity.name };
       this.$emit('task-updated', this.task);
+    },
+
+    openInvoiceModal() {
+      this.openModal({
+        component: "InvoiceDetailModal",
+        props: { invoiceId: this.task.invoice.id },
+        listeners: {
+          "invoice-updated": this.refreshTask,
+          "invoice-deleted": this.refreshTask,
+        },
+        id: `invoice-${this.task.invoice.id}`,
+      });
+    },
+
+    async onInvoiceSelected(invoiceId) {
+      if (!invoiceId) return;
+      await this.updateTask('invoice_id', invoiceId);
+      this.showInvoiceSelect = false;
+      this.selectedInvoice = null;
     },
 
     openLinksModal() {

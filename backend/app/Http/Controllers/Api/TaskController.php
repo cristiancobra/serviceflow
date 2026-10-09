@@ -71,6 +71,7 @@ class TaskController extends Controller
             'project.company',
             'opportunity.lead',
             'opportunity.company',
+            'invoice',
             'department',
             'dueDateChanges.user',
         ])
@@ -126,6 +127,7 @@ class TaskController extends Controller
                 'project.company',
                 'opportunity.lead',
                 'opportunity.company',
+                'invoice',
                 'department',
                 'dueDateChanges.user',
             ])->find($task->id);
