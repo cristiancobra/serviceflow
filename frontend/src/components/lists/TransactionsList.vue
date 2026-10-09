@@ -135,12 +135,19 @@
                     </span>
                   </td>
                   <td class="w-[14%] px-3 py-1 text-left max-w-0">
-                    <div class="flex items-center gap-2 min-w-0">
-                      <font-awesome-icon icon="fa-solid fa-university" class="text-base-content/50 text-sm flex-shrink-0" />
-                      <span class="text-sm font-medium text-base-content truncate">
-                        {{ row.batch.bank_account?.name || row.batch.bank_account?.bank_name || '-' }}
+                    <router-link
+                      v-if="row.batch.bank_account"
+                      :to="accountRoute(row.batch)"
+                      class="flex items-center gap-2 min-w-0 text-info hover:text-info"
+                      title="Ver movimentações desta conta"
+                      @click.stop
+                    >
+                      <font-awesome-icon icon="fa-solid fa-university" class="text-sm flex-shrink-0" />
+                      <span class="text-sm font-medium truncate">
+                        {{ row.batch.bank_account.name || row.batch.bank_account.bank_name }}
                       </span>
-                    </div>
+                    </router-link>
+                    <span v-else class="text-base-content/50 text-sm italic">-</span>
                   </td>
                   <td class="w-[9%] px-3 py-1 text-right">
                     <span class="text-sm font-bold" :class="row.batch.type === 'credit' ? 'text-success' : 'text-error'">
@@ -248,7 +255,16 @@
                   
                   <!-- Conta -->
                   <td class="w-[14%] px-3 py-1 text-left max-w-0">
-                    <div class="flex items-center gap-2 min-w-0">
+                    <router-link
+                      v-if="accountRoute(row.transaction)"
+                      :to="accountRoute(row.transaction)"
+                      class="flex items-center gap-2 min-w-0 text-info hover:text-info"
+                      :title="row.transaction.credit_card ? 'Abrir fatura do cartão' : 'Ver movimentações desta conta'"
+                    >
+                      <font-awesome-icon :icon="row.transaction.credit_card ? 'fa-solid fa-credit-card' : 'fa-solid fa-university'" class="text-sm flex-shrink-0" />
+                      <span class="text-sm font-medium truncate">{{ accountLabel(row.transaction) }}</span>
+                    </router-link>
+                    <div v-else class="flex items-center gap-2 min-w-0">
                       <font-awesome-icon :icon="row.transaction.credit_card ? 'fa-solid fa-credit-card' : 'fa-solid fa-university'" class="text-base-content/50 text-sm flex-shrink-0" />
                       <span class="text-sm font-medium text-base-content truncate" :title="accountLabel(row.transaction)">
                         {{ accountLabel(row.transaction) }}
@@ -333,7 +349,7 @@ export default {
   data() {
     return {
       searchTerm: "",
-      selectedBankAccount: "",
+      selectedBankAccount: this.$route.query.bank_account || "",
       transactions: [],
       filteredTransactions: [],
       // Lotes de pagamento abertos para mostrar as faturas que quitaram
@@ -430,6 +446,12 @@ export default {
     }
   },
   watch: {
+    // O filtro de conta fica na URL (?bank_account=ID) para que o link da
+    // coluna Conta funcione e o voltar do navegador desfaça o filtro.
+    '$route.query.bank_account'(value) {
+      this.selectedBankAccount = value || "";
+      this.applyFilters();
+    },
     searchTerm() {
       this.applyFilters();
     },
@@ -550,7 +572,23 @@ export default {
       }
       return transaction.bank_account?.name || transaction.bank_account?.bank_name || '-';
     },
+    // Conta bancária → esta lista filtrada pela conta; cartão → fatura do
+    // cartão em que o pagamento foi lançado.
+    accountRoute(item) {
+      if (item.credit_card) {
+        return item.credit_card.invoice_id
+          ? { name: 'credit-card-invoices-show', params: { id: item.credit_card.invoice_id } }
+          : null;
+      }
+      if (item.bank_account) {
+        return { name: 'transactionsIndex', query: { ...this.$route.query, bank_account: String(item.bank_account.id) } };
+      }
+      return null;
+    },
     filterByBankAccount() {
+      this.$router.push({
+        query: { ...this.$route.query, bank_account: this.selectedBankAccount || undefined },
+      });
       this.applyFilters();
     },
     

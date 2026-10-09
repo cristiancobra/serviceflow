@@ -57,6 +57,8 @@ class TransactionsResource extends JsonResource
                     'id' => $this->creditCardCharge->creditCard->id,
                     'name' => $this->creditCardCharge->creditCard->name,
                     'last_digits' => $this->creditCardCharge->creditCard->last_digits,
+                    // Fatura do cartão em que este pagamento foi lançado
+                    'invoice_id' => $this->creditCardCharge->credit_card_invoice_id,
                 ]
             ),
         ];
