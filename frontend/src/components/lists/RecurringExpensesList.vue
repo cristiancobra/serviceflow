@@ -94,36 +94,14 @@
         </div>
 
         <div class="w-1/10 text-center">
-          <div class="action-buttons">
-            <button
-              @click="openInvoicesModal(recurringExpense)"
-              class="btn-action btn-view"
-              title="Ver faturas"
-            >
-              <font-awesome-icon icon="fa-solid fa-receipt" />
-            </button>
-            <button
-              v-if="needsBackfill(recurringExpense)"
-              @click="openBackfillModal(recurringExpense)"
-              class="btn-action btn-backfill"
-              title="Gerar faturas retroativas"
-            >
-              <font-awesome-icon icon="fa-solid fa-history" />
-            </button>
-            <button
-              @click="editRecurringExpense(recurringExpense)"
-              class="btn-action btn-edit"
-              title="Editar"
-            >
-              <font-awesome-icon icon="fa-solid fa-edit" />
-            </button>
-            <button
-              @click="confirmDelete(recurringExpense)"
-              class="btn-action btn-delete"
-              title="Excluir"
-            >
-              <font-awesome-icon icon="fa-solid fa-trash" />
-            </button>
+          <div class="flex justify-center gap-2">
+            <IconButton icon="fa-solid fa-receipt" color="info" title="Ver faturas" @click="openInvoicesModal(recurringExpense)" />
+            <IconButton v-if="needsBackfill(recurringExpense)" icon="fa-solid fa-history" color="info" title="Gerar faturas retroativas" @click="openBackfillModal(recurringExpense)" />
+            <EditIconButton @click="editRecurringExpense(recurringExpense)" />
+            <DeleteIconButton
+              :confirm-message="`Tem certeza que deseja excluir a despesa recorrente ${recurringExpense.name}?`"
+              @confirm="deleteRecurringExpense(recurringExpense)"
+            />
           </div>
         </div>
       </div>
@@ -186,26 +164,6 @@
       </ModalCard>
     </div>
 
-    <!-- Modal de Confirmação de Exclusão -->
-    <div
-      v-if="showDeleteModal"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm"
-      @click.self="closeDeleteModal"
-    >
-      <ModalCard title="Confirmar Exclusão" icon="fa-solid fa-trash" size="sm" @close="closeDeleteModal">
-        <p>Tem certeza que deseja excluir a despesa recorrente <strong>{{ recurringExpenseToDelete?.name }}</strong>?</p>
-        <p class="text-sm text-base-content/60 mt-2">As faturas já geradas não serão excluídas, apenas deixará de gerar novas faturas.</p>
-
-        <template #footer>
-          <button @click="closeDeleteModal" class="btn btn-ghost">
-            Cancelar
-          </button>
-          <button @click="deleteRecurringExpense" class="btn btn-error">
-            Excluir
-          </button>
-        </template>
-      </ModalCard>
-    </div>
   </div>
 </template>
 
@@ -218,10 +176,16 @@ import ModalCard from "@/components/modals/ModalCard.vue";
 import PageHeader from "@/components/layout/PageHeader.vue";
 import EmptyState from "@/components/layout/EmptyState.vue";
 import StatusToggle from "@/components/buttons/StatusToggle.vue";
+import EditIconButton from "@/components/buttons/EditIconButton.vue";
+import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
+import IconButton from "@/components/buttons/IconButton.vue";
 
 export default {
   name: "RecurringExpensesList",
   components: {
+    EditIconButton,
+    DeleteIconButton,
+    IconButton,
     StatusToggle,
     EmptyState,
     PageHeader,
@@ -236,12 +200,10 @@ export default {
       recurringExpenses: [],
       filteredRecurringExpenses: [],
       showModal: false,
-      showDeleteModal: false,
       showBackfillModal: false,
       isEditing: false,
       isBackfilling: false,
       selectedRecurringExpense: null,
-      recurringExpenseToDelete: null,
       recurringExpenseToBackfill: null,
       backfillEndDate: "",
       backfillError: "",
@@ -311,20 +273,9 @@ export default {
       });
     },
 
-    confirmDelete(recurringExpense) {
-      this.recurringExpenseToDelete = recurringExpense;
-      this.showDeleteModal = true;
-    },
-
-    closeDeleteModal() {
-      this.showDeleteModal = false;
-      this.recurringExpenseToDelete = null;
-    },
-
-    async deleteRecurringExpense() {
+    async deleteRecurringExpense(recurringExpense) {
       try {
-        await destroy("recurring_expenses", this.recurringExpenseToDelete.id);
-        this.closeDeleteModal();
+        await destroy("recurring_expenses", recurringExpense.id);
         this.getRecurringExpenses();
         this.$emit("success", { message: "Despesa recorrente excluída com sucesso!" });
       } catch (error) {
@@ -332,7 +283,6 @@ export default {
         this.$emit("error", {
           message: error.response?.data?.message || "Erro ao excluir despesa recorrente"
         });
-        this.closeDeleteModal();
       }
     },
 
@@ -473,62 +423,6 @@ export default {
 
 .list-line:hover {
   background-color: var(--color-base-200);
-}
-
-.action-buttons {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: center;
-}
-
-.btn-action {
-  padding: 0.5rem;
-  border: none;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-view {
-  background-color: color-mix(in oklab, var(--color-info) 15%, var(--color-base-100));
-  color: var(--color-info);
-  text-decoration: none;
-}
-
-.btn-view:hover {
-  background-color: color-mix(in oklab, var(--color-info) 15%, var(--color-base-100));
-}
-
-.btn-backfill {
-  background-color: color-mix(in oklab, var(--color-info) 15%, var(--color-base-100));
-  color: var(--color-info);
-}
-
-.btn-backfill:hover {
-  background-color: color-mix(in oklab, var(--color-info) 15%, var(--color-base-100));
-}
-
-.btn-edit {
-  background-color: color-mix(in oklab, var(--color-warning) 15%, var(--color-base-100));
-  color: var(--color-warning);
-}
-
-.btn-edit:hover {
-  background-color: color-mix(in oklab, var(--color-warning) 15%, var(--color-base-100));
-}
-
-.btn-delete {
-  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
-  color: var(--color-error);
-}
-
-.btn-delete:hover {
-  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
 }
 
 </style>

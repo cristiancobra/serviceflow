@@ -11,6 +11,7 @@ use App\Models\Transaction;
 use App\Http\Resources\TransactionsResource;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class TransactionController extends Controller
@@ -105,7 +106,9 @@ class TransactionController extends Controller
      */
     public function show($id)
     {
-        //
+        $transaction = Transaction::with('invoice', 'bankAccount', 'creditCardCharge')->findOrFail($id);
+
+        return TransactionsResource::make($transaction);
     }
 
     /**
@@ -118,28 +121,63 @@ class TransactionController extends Controller
     public function update(TransactionRequest $request, $id)
     {
         $validated = $request->validated();
+        $creditCardId = $validated['credit_card_id'] ?? null;
         unset($validated['credit_card_id']);
 
         $transaction = Transaction::findOrFail($id);
+        $charge = $transaction->creditCardCharge;
 
-        $transaction->fill($validated);
-        $transaction->save();
+        $method = $validated['method'] ?? $transaction->method;
+        $isCreditCard = $method === 'credit_card';
 
-        // Atualiza o total_paid e status da invoice
-        if ($transaction->invoice) {
-            $transaction->invoice->updateTotalPaid();
-            $transaction->invoice->updateStatus();
+        // A compra no cartão precisa ser removida se o pagamento deixou de ser no
+        // cartão, ou trocou de cartão. Só é possível enquanto a fatura do cartão
+        // estiver aberta.
+        $removeCharge = $charge && (!$isCreditCard || ($creditCardId && $creditCardId != $charge->credit_card_id));
+
+        if ($removeCharge && $charge->creditCardInvoice->status !== CreditCardInvoice::STATUS_OPEN) {
+            return response()->json([
+                'message' => 'Não é possível alterar a forma de pagamento: o lançamento no cartão já está em uma fatura fechada.'
+            ], 422);
         }
 
-        // Mantém a compra lançada no cartão (se houver) com o mesmo valor/data do pagamento
-        if ($transaction->creditCardCharge) {
-            $transaction->creditCardCharge->update([
-                'amount' => $transaction->amount,
-                'purchase_date' => $transaction->transaction_date,
-            ]);
+        // Pagamento no cartão não sai de conta bancária
+        if ($isCreditCard) {
+            $validated['bank_account_id'] = null;
         }
 
-        return TransactionsResource::make($transaction->load('invoice', 'bankAccount'));
+        DB::transaction(function () use ($transaction, $validated, $charge, $removeCharge, $isCreditCard, $creditCardId) {
+            $transaction->fill($validated);
+
+            if ($removeCharge) {
+                $transaction->credit_card_charge_id = null;
+            }
+
+            $transaction->save();
+
+            // Atualiza o total_paid e status da invoice
+            if ($transaction->invoice) {
+                $transaction->invoice->updateTotalPaid();
+                $transaction->invoice->updateStatus();
+            }
+
+            if ($removeCharge) {
+                $charge->delete();
+            }
+
+            if ($isCreditCard && !$transaction->credit_card_charge_id && $creditCardId) {
+                // Passou a ser (ou trocou de) cartão: lança a compra na fatura do cartão
+                $this->attachCreditCardCharge($transaction, $creditCardId);
+            } elseif ($charge && !$removeCharge) {
+                // Mantém a compra lançada no cartão com o mesmo valor/data do pagamento
+                $charge->update([
+                    'amount' => $transaction->amount,
+                    'purchase_date' => $transaction->transaction_date,
+                ]);
+            }
+        });
+
+        return TransactionsResource::make($transaction->fresh()->load('invoice', 'bankAccount', 'creditCardCharge'));
     }
 
     /**

@@ -1,64 +1,46 @@
 <template>
-  <div
+  <EmptyState
     v-if="!transactions || transactions.length === 0"
-    class="w-full rounded-xl border border-dashed border-indigo-200 bg-gradient-to-r from-indigo-50 to-info/10 py-8 text-center text-indigo-700 shadow-sm"
-  >
-    <p class="text-sm font-medium">{{ isDebit ? 'Nenhum pagamento feito' : 'Nenhum pagamento recebido' }}</p>
-  </div>
+    :text="isDebit ? 'Nenhum pagamento feito' : 'Nenhum pagamento recebido'"
+    icon="fa-solid fa-coins"
+  />
 
-  <div
-    v-else
-    class="mt-4 space-y-2 rounded-xl border border-base-300 bg-base-100 p-2 border-t-4 border-t-indigo-500 shadow-sm"
-  >
+  <!-- Mesmo formato das linhas de pagamento das faturas na oportunidade -->
+  <div v-else class="space-y-1 rounded-lg bg-base-200 p-2">
     <div
       v-for="transaction in transactions"
       :key="transaction.id"
-      class="group flex items-center justify-between px-4 py-3 rounded-md bg-base-100 even:bg-info/20 hover:bg-info/20 border-l-4 border-transparent hover:border-info transition-colors"
+      class="flex items-center gap-3 px-2 py-1 rounded-md hover:bg-info/10 border-l-4 border-transparent hover:border-info transition-colors"
     >
-      <div class="min-w-[160px]">
-        <div
-          class="inline-flex items-center gap-2 rounded-full bg-indigo-100 px-3 py-1"
-        >
-          <span class="h-2.5 w-2.5 rounded-full bg-info"></span>
-          <date-editable-input
-            name="transaction_date"
-            :modelValue="transaction.transaction_date"
-            @save="emitUpdateTransaction('transaction_date', transaction.id, $event)"
-            class-text="text-sm font-semibold text-indigo-700"
-          />
-        </div>
-      </div>
+      <font-awesome-icon icon="fa-solid fa-coins" class="text-primary text-sm" />
+      <span class="text-sm text-base-content/70 whitespace-nowrap">
+        {{ displayDate(transaction.transaction_date) }}
+        <font-awesome-icon icon="fa-solid fa-clock" class="ms-2 me-1 text-base-content/50" />
+        {{ displayTime(transaction.transaction_date) }}
+      </span>
       <div class="flex-1"></div>
-      <div
-        class="text-right inline-flex items-center rounded-md bg-success/10 px-2 py-1 ring-1 ring-success/30 text-success"
-      >
-        <money-editable-field
-          name="amount"
-          :modelValue="transaction.amount"
-          @save="emitUpdateTransaction('amount', transaction.id, $event)"
-        />
-      </div>
-      <delete-icon-button
-        class="ml-2"
-        title="Excluir transação"
-        confirm-message="Tem certeza que deseja excluir esta transação? Esta ação não pode ser desfeita."
-        @confirm="$emit('delete-transaction', transaction.id)"
+      <span class="min-w-28 text-right font-semibold tabular-nums text-base-content">
+        {{ formatCurrencySymbol(transaction.amount || 0) }}
+      </span>
+      <edit-icon-button
+        title="Editar pagamento"
+        @click="$emit('edit-transaction', transaction.id)"
       />
     </div>
   </div>
 </template>
 
 <script>
-import DateEditableInput from "@/components/fields/date/DateEditableInput.vue";
-import MoneyEditableField from "@/components/fields/number/MoneyEditableField.vue";
-import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
+import { displayDate, displayTime } from "@/utils/date/dateUtils";
+import { formatCurrencySymbol } from "@/utils/number/moneyUtils";
+import EmptyState from "@/components/layout/EmptyState.vue";
+import EditIconButton from "@/components/buttons/EditIconButton.vue";
 
 export default {
   name: "TransactionsListSection",
   components: {
-    DateEditableInput,
-    MoneyEditableField,
-    DeleteIconButton,
+    EmptyState,
+    EditIconButton,
   },
   props: {
     transactions: {
@@ -72,11 +54,11 @@ export default {
       default: false,
     },
   },
-  emits: ["update-transaction", "delete-transaction"],
+  emits: ["edit-transaction"],
   methods: {
-    emitUpdateTransaction(fieldName, transactionId, editedValue) {
-      this.$emit("update-transaction", fieldName, transactionId, editedValue);
-    },
+    displayDate,
+    displayTime,
+    formatCurrencySymbol,
   },
 };
 </script>

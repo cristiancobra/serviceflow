@@ -101,28 +101,13 @@
         </div>
         
         <div class="w-1/10 text-center">
-          <div class="action-buttons">
-            <button 
-              @click="viewBankAccount(bankAccount)" 
-              class="btn-action btn-view"
-              title="Visualizar"
-            >
-              <font-awesome-icon icon="fa-solid fa-eye" />
-            </button>
-            <button 
-              @click="editBankAccount(bankAccount)" 
-              class="btn-action btn-edit"
-              title="Editar"
-            >
-              <font-awesome-icon icon="fa-solid fa-edit" />
-            </button>
-            <button 
-              @click="confirmDelete(bankAccount)" 
-              class="btn-action btn-delete"
-              title="Excluir"
-            >
-              <font-awesome-icon icon="fa-solid fa-trash" />
-            </button>
+          <div class="flex justify-center gap-2">
+            <IconButton icon="fa-solid fa-eye" color="info" title="Visualizar" @click="viewBankAccount(bankAccount)" />
+            <EditIconButton @click="editBankAccount(bankAccount)" />
+            <DeleteIconButton
+              :confirm-message="`Tem certeza que deseja excluir a conta bancária ${bankAccount.account_name}?`"
+              @confirm="deleteBankAccount(bankAccount)"
+            />
           </div>
         </div>
       </div>
@@ -150,26 +135,6 @@
       </ModalCard>
     </div>
 
-    <!-- Modal de Confirmação de Exclusão -->
-    <div
-      v-if="showDeleteModal"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm"
-      @click.self="closeDeleteModal"
-    >
-      <ModalCard title="Confirmar Exclusão" icon="fa-solid fa-trash" size="sm" @close="closeDeleteModal">
-        <p>Tem certeza que deseja excluir a conta bancária <strong>{{ bankAccountToDelete?.account_name }}</strong>?</p>
-        <p class="text-sm text-base-content/60 mt-2">Esta ação não poderá ser desfeita.</p>
-
-        <template #footer>
-          <button @click="closeDeleteModal" class="btn btn-ghost">
-            Cancelar
-          </button>
-          <button @click="deleteBankAccount" class="btn btn-error">
-            Excluir
-          </button>
-        </template>
-      </ModalCard>
-    </div>
   </div>
 </template>
 
@@ -180,10 +145,16 @@ import ModalCard from "@/components/modals/ModalCard.vue";
 import PageHeader from "@/components/layout/PageHeader.vue";
 import EmptyState from "@/components/layout/EmptyState.vue";
 import StatusToggle from "@/components/buttons/StatusToggle.vue";
+import EditIconButton from "@/components/buttons/EditIconButton.vue";
+import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
+import IconButton from "@/components/buttons/IconButton.vue";
 
 export default {
   name: "BankAccountsList",
   components: {
+    EditIconButton,
+    DeleteIconButton,
+    IconButton,
     StatusToggle,
     EmptyState,
     PageHeader,
@@ -199,10 +170,8 @@ export default {
       filteredBankAccounts: [],
       typeOptions: {},
       showModal: false,
-      showDeleteModal: false,
       isEditing: false,
       selectedBankAccount: null,
-      bankAccountToDelete: null,
     };
   },
   watch: {
@@ -291,20 +260,9 @@ export default {
       });
     },
 
-    confirmDelete(bankAccount) {
-      this.bankAccountToDelete = bankAccount;
-      this.showDeleteModal = true;
-    },
-
-    closeDeleteModal() {
-      this.showDeleteModal = false;
-      this.bankAccountToDelete = null;
-    },
-
-    async deleteBankAccount() {
+    async deleteBankAccount(bankAccount) {
       try {
-        await destroy("bank_accounts", this.bankAccountToDelete.id);
-        this.closeDeleteModal();
+        await destroy("bank_accounts", bankAccount.id);
         this.getBankAccounts();
         this.$emit("success", { message: "Conta bancária excluída com sucesso!" });
       } catch (error) {
@@ -312,7 +270,6 @@ export default {
         this.$emit("error", { 
           message: error.response?.data?.message || "Erro ao excluir conta bancária" 
         });
-        this.closeDeleteModal();
       }
     },
 
@@ -404,52 +361,6 @@ export default {
   font-weight: 600;
   background-color: color-mix(in oklab, var(--color-info) 15%, var(--color-base-100));
   color: var(--color-info);
-}
-
-.action-buttons {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: center;
-}
-
-.btn-action {
-  padding: 0.5rem;
-  border: none;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-view {
-  background-color: color-mix(in oklab, var(--color-info) 15%, var(--color-base-100));
-  color: var(--color-info);
-}
-
-.btn-view:hover {
-  background-color: color-mix(in oklab, var(--color-info) 15%, var(--color-base-100));
-}
-
-.btn-edit {
-  background-color: color-mix(in oklab, var(--color-warning) 15%, var(--color-base-100));
-  color: var(--color-warning);
-}
-
-.btn-edit:hover {
-  background-color: color-mix(in oklab, var(--color-warning) 15%, var(--color-base-100));
-}
-
-.btn-delete {
-  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
-  color: var(--color-error);
-}
-
-.btn-delete:hover {
-  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
 }
 
 </style>

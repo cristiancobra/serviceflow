@@ -80,28 +80,13 @@
         </div>
 
         <div class="w-1/10 text-center">
-          <div class="action-buttons">
-            <button
-              @click="viewCreditCard(creditCard)"
-              class="btn-action btn-view"
-              title="Visualizar"
-            >
-              <font-awesome-icon icon="fa-solid fa-eye" />
-            </button>
-            <button
-              @click="editCreditCard(creditCard)"
-              class="btn-action btn-edit"
-              title="Editar"
-            >
-              <font-awesome-icon icon="fa-solid fa-edit" />
-            </button>
-            <button
-              @click="confirmDelete(creditCard)"
-              class="btn-action btn-delete"
-              title="Excluir"
-            >
-              <font-awesome-icon icon="fa-solid fa-trash" />
-            </button>
+          <div class="flex justify-center gap-2">
+            <IconButton icon="fa-solid fa-eye" color="info" title="Visualizar" @click="viewCreditCard(creditCard)" />
+            <EditIconButton @click="editCreditCard(creditCard)" />
+            <DeleteIconButton
+              :confirm-message="`Tem certeza que deseja excluir o cartão ${creditCard.name}?`"
+              @confirm="deleteCreditCard(creditCard)"
+            />
           </div>
         </div>
       </div>
@@ -129,26 +114,6 @@
       </ModalCard>
     </div>
 
-    <!-- Modal de Confirmação de Exclusão -->
-    <div
-      v-if="showDeleteModal"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm"
-      @click.self="closeDeleteModal"
-    >
-      <ModalCard title="Confirmar Exclusão" icon="fa-solid fa-trash" size="sm" @close="closeDeleteModal">
-        <p>Tem certeza que deseja excluir o cartão <strong>{{ creditCardToDelete?.name }}</strong>?</p>
-        <p class="text-sm text-base-content/60 mt-2">Esta ação não poderá ser desfeita.</p>
-
-        <template #footer>
-          <button @click="closeDeleteModal" class="btn btn-ghost">
-            Cancelar
-          </button>
-          <button @click="deleteCreditCard" class="btn btn-error">
-            Excluir
-          </button>
-        </template>
-      </ModalCard>
-    </div>
   </div>
 </template>
 
@@ -159,10 +124,16 @@ import ModalCard from "@/components/modals/ModalCard.vue";
 import PageHeader from "@/components/layout/PageHeader.vue";
 import EmptyState from "@/components/layout/EmptyState.vue";
 import StatusToggle from "@/components/buttons/StatusToggle.vue";
+import EditIconButton from "@/components/buttons/EditIconButton.vue";
+import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
+import IconButton from "@/components/buttons/IconButton.vue";
 
 export default {
   name: "CreditCardsList",
   components: {
+    EditIconButton,
+    DeleteIconButton,
+    IconButton,
     StatusToggle,
     EmptyState,
     PageHeader,
@@ -176,10 +147,8 @@ export default {
       creditCards: [],
       filteredCreditCards: [],
       showModal: false,
-      showDeleteModal: false,
       isEditing: false,
       selectedCreditCard: null,
-      creditCardToDelete: null,
     };
   },
   watch: {
@@ -248,20 +217,9 @@ export default {
       });
     },
 
-    confirmDelete(creditCard) {
-      this.creditCardToDelete = creditCard;
-      this.showDeleteModal = true;
-    },
-
-    closeDeleteModal() {
-      this.showDeleteModal = false;
-      this.creditCardToDelete = null;
-    },
-
-    async deleteCreditCard() {
+    async deleteCreditCard(creditCard) {
       try {
-        await destroy("credit_cards", this.creditCardToDelete.id);
-        this.closeDeleteModal();
+        await destroy("credit_cards", creditCard.id);
         this.getCreditCards();
         this.$emit("success", { message: "Cartão excluído com sucesso!" });
       } catch (error) {
@@ -269,7 +227,6 @@ export default {
         this.$emit("error", {
           message: error.response?.data?.message || "Erro ao excluir cartão"
         });
-        this.closeDeleteModal();
       }
     },
 
@@ -351,52 +308,6 @@ export default {
 
 .list-line:hover {
   background-color: var(--color-base-200);
-}
-
-.action-buttons {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: center;
-}
-
-.btn-action {
-  padding: 0.5rem;
-  border: none;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-view {
-  background-color: color-mix(in oklab, var(--color-info) 15%, var(--color-base-100));
-  color: var(--color-info);
-}
-
-.btn-view:hover {
-  background-color: color-mix(in oklab, var(--color-info) 15%, var(--color-base-100));
-}
-
-.btn-edit {
-  background-color: color-mix(in oklab, var(--color-warning) 15%, var(--color-base-100));
-  color: var(--color-warning);
-}
-
-.btn-edit:hover {
-  background-color: color-mix(in oklab, var(--color-warning) 15%, var(--color-base-100));
-}
-
-.btn-delete {
-  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
-  color: var(--color-error);
-}
-
-.btn-delete:hover {
-  background-color: color-mix(in oklab, var(--color-error) 15%, var(--color-base-100));
 }
 
 </style>

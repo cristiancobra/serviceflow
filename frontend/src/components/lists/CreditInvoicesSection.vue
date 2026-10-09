@@ -41,11 +41,11 @@
           title="Ver detalhes da fatura"
           @click="openInvoiceModal(invoice)"
         >
-          <div class="flex items-center justify-between p-2 text-base-content">
-            <div class="flex items-center gap-4">
+          <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 p-2 text-base-content">
+            <div class="flex items-center gap-4 min-w-0">
               <div
                 :class="invoiceIconClass(invoice)"
-                class="flex items-center justify-center w-10 h-10 rounded-full"
+                class="flex shrink-0 items-center justify-center w-10 h-10 rounded-full"
               >
                 <font-awesome-icon icon="fa fa-receipt" />
               </div>
@@ -65,8 +65,8 @@
               </div>
             </div>
 
-            <div class="flex items-center gap-6">
-              <div class="flex items-center">
+            <div class="flex flex-wrap items-center justify-end gap-x-6 gap-y-1 ms-auto">
+              <div class="flex items-center whitespace-nowrap">
                 <font-awesome-icon
                   icon="fas fa-dollar-sign"
                   class="text-base-content/50 mr-2 w-4"
@@ -79,7 +79,7 @@
 
               <div
                 v-if="invoice.total_paid > 0 && calculateInvoiceBalance(invoice) > 0"
-                class="flex items-center"
+                class="flex items-center whitespace-nowrap"
               >
                 <font-awesome-icon
                   icon="fas fa-check-circle"
@@ -93,7 +93,7 @@
 
               <div
                 v-if="calculateInvoiceBalance(invoice) > 0 && calculateInvoiceBalance(invoice) !== Number(invoice.price)"
-                class="flex items-center"
+                class="flex items-center whitespace-nowrap"
               >
                 <font-awesome-icon
                   icon="fas fa-balance-scale"
@@ -105,7 +105,7 @@
                 </span>
               </div>
 
-              <div class="w-28 flex justify-end">
+              <div class="w-28 shrink-0 flex justify-end">
                 <button
                   v-if="invoice.balance > 0"
                   type="button"
@@ -136,29 +136,25 @@
             <div
               v-for="transaction in invoice.transactions"
               :key="transaction.id"
-              class="flex items-center justify-end gap-3 px-2 py-1 rounded-md hover:bg-info/10 border-l-4 border-transparent hover:border-info transition-colors"
+              class="flex flex-wrap items-center justify-end gap-x-3 gap-y-1 px-2 py-1 rounded-md hover:bg-info/10 border-l-4 border-transparent hover:border-info transition-colors"
             >
               <font-awesome-icon
                 icon="fa-solid fa-coins"
                 class="text-primary text-sm"
               />
-              <date-time-editable-input
-                @click.stop
-                name="transaction_date"
-                :modelValue="transaction.transaction_date"
-                @save="
-                  updateTransaction(
-                    'transaction_date',
-                    $event,
-                    transaction.id
-                  )
-                "
-                class-text="text-sm text-base-content/70"
-              />
+              <span class="text-sm text-base-content/70 whitespace-nowrap">
+                {{ displayDate(transaction.transaction_date) }}
+                <font-awesome-icon icon="fa-solid fa-clock" class="ms-2 me-1 text-base-content/50" />
+                {{ displayTime(transaction.transaction_date) }}
+              </span>
               <span
                 class="min-w-28 text-right font-semibold tabular-nums text-base-content"
               >
                 {{ formatCurrency(transaction.amount) }}
+              </span>
+              <!-- @click.stop: não abre o modal da fatura -->
+              <span @click.stop>
+                <EditIconButton title="Editar pagamento" @click="openTransactionEditModal(invoice, transaction.id)" />
               </span>
             </div>
           </div>
@@ -223,9 +219,9 @@
   <script>
 import { mapMutations } from "vuex";
 import { updateField } from "@/utils/requests/httpUtils";
-import { formatDateBr } from "@/utils/date/dateUtils";
+import { formatDateBr, displayDate, displayTime } from "@/utils/date/dateUtils";
 import DateEditableInput from "../fields/date/DateEditableInput.vue";
-import DateTimeEditableInput from "../fields/datetime/DateTimeEditableInput.vue";
+import EditIconButton from "@/components/buttons/EditIconButton.vue";
 import CreditInvoiceCreateForm from "@/components/forms/CreditInvoiceCreateForm.vue";
 import MoneyField from "../fields/number/MoneyField.vue";
 
@@ -243,7 +239,7 @@ export default {
   },
   components: {
     DateEditableInput,
-    DateTimeEditableInput,
+    EditIconButton,
     CreditInvoiceCreateForm,
     MoneyField,
   },
@@ -277,6 +273,8 @@ export default {
   methods: {
     ...mapMutations(["openModal"]),
     formatDateBr,
+    displayDate,
+    displayTime,
     addInvoiceCreated(newInvoices) {
       // Adiciona as novas faturas aos dados locais
       if (Array.isArray(newInvoices)) {
@@ -297,6 +295,17 @@ export default {
           "invoice-deleted": () => this.$emit("reload-proposal"),
         },
         id: `invoice-${invoice.id}`,
+      });
+    },
+    openTransactionEditModal(invoice, transactionId) {
+      this.openModal({
+        component: "TransactionCreateForm",
+        props: { invoice, transactionId },
+        listeners: {
+          "transaction-updated": () => this.$emit("reload-proposal"),
+          "transaction-deleted": () => this.$emit("reload-proposal"),
+        },
+        id: `transaction-edit-${transactionId}`,
       });
     },
     openTransactionModal(invoice) {
@@ -342,38 +351,6 @@ export default {
       if (invoice.status === "overdue") return "bg-error text-error-content";
       if (invoice.total_paid > 0) return "bg-warning text-warning-content";
       return "bg-info text-info-content";
-    },
-    async updateTransaction(fieldName, editedValue, transactionId) {
-      const updatedTransaction = await updateField(
-        "transactions",
-        transactionId,
-        fieldName,
-        editedValue
-      );
-
-      // Encontrar a invoice que contém esta transação
-      for (const invoice of this.localInvoices) {
-        if (!invoice.transactions) continue;
-
-        const transactionIndex = invoice.transactions.findIndex(
-          (t) => t.id === transactionId
-        );
-
-        if (transactionIndex !== -1) {
-          // Atualizar a transação
-          invoice.transactions[transactionIndex] = updatedTransaction;
-
-          // Recalcular o total_paid da invoice
-          invoice.total_paid = invoice.transactions.reduce(
-            (sum, t) => sum + Number(t.amount || 0),
-            0
-          );
-          break;
-        }
-      }
-
-      // Emitir evento para atualizar o componente pai
-      this.$emit("invoices-updated", this.localInvoices);
     },
     async updateInvoice(fieldName, editedValue, invoiceId) {
       const updatedInvoice = await updateField(

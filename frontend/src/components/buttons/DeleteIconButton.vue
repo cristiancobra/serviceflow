@@ -1,12 +1,24 @@
 <template>
+  <!-- button/label: botão DaisyUI (ex: rodapé de modal); senão: ícone redondo de linha -->
   <button
+    v-if="button || label"
     type="button"
-    :class="['flex items-center justify-center rounded-full bg-error text-white transition hover:scale-110 hover:bg-error', size]"
+    class="btn btn-error"
     :title="title"
     @click="openModal"
   >
-    <font-awesome-icon icon="fa-solid fa-trash-alt" fixed-width :class="iconSize" />
+    <font-awesome-icon icon="fa-solid fa-trash" />
+    <span v-if="label">{{ label }}</span>
   </button>
+  <IconButton
+    v-else
+    icon="fa-solid fa-trash-alt"
+    color="error"
+    :title="title"
+    :size="size"
+    :icon-size="iconSize"
+    @click="openModal"
+  />
 
   <teleport to="body">
     <!-- z-[1000]: este botão também é usado dentro de outros modais (z-50) -->
@@ -31,8 +43,19 @@
 <script setup>
 import { ref } from "vue";
 import ModalCard from "@/components/modals/ModalCard.vue";
+import IconButton from "@/components/buttons/IconButton.vue";
 
 defineProps({
+  // Texto do botão; implica o formato de botão
+  label: {
+    type: String,
+    default: "",
+  },
+  // Formato de botão (btn btn-error) mesmo sem texto
+  button: {
+    type: Boolean,
+    default: false,
+  },
   title: {
     type: String,
     default: "Excluir",

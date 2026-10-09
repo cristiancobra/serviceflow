@@ -138,13 +138,7 @@
             </div>
           </div>
           <div class="flex gap-2">
-            <button
-              @click="startEdit(department)"
-              class="px-3 py-2 bg-primary hover:opacity-90 text-white rounded-lg transition-all duration-200"
-              title="Editar"
-            >
-              <font-awesome-icon icon="fa-solid fa-edit" />
-            </button>
+            <EditIconButton @click="startEdit(department)" />
             <button
               @click="toggleActive(department)"
               :class="department.active 
@@ -247,10 +241,12 @@
 import { index, submitFormCreate, submitFormUpdate } from "@/utils/requests/httpUtils";
 import CancelButton from "@/components/buttons/CancelButton.vue";
 import SaveButton from "@/components/buttons/SaveButton.vue";
+import EditIconButton from "@/components/buttons/EditIconButton.vue";
 
 export default {
   name: "DepartmentsManager",
   components: {
+    EditIconButton,
     CancelButton,
     SaveButton,
   },

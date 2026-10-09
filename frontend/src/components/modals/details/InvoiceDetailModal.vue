@@ -134,61 +134,6 @@
         </div>
       </div>
 
-      <!-- Tarefas vinculadas -->
-      <div
-        class="rounded-lg border p-6 mb-6"
-        :class="invoice.tasks?.length ? 'border-success/30 bg-success/10' : 'border-base-300 bg-base-200'"
-      >
-        <div class="flex items-center justify-between gap-2 mb-3">
-          <h3
-            class="text-lg font-bold flex items-center gap-2"
-            :class="invoice.tasks?.length ? 'text-success' : 'text-base-content'"
-          >
-            <font-awesome-icon :icon="invoice.tasks?.length ? 'fa-solid fa-check-circle' : 'fa-solid fa-tasks'" />
-            Tarefas Vinculadas
-          </h3>
-          <div class="flex gap-2">
-            <button type="button" class="btn btn-success btn-sm" :disabled="isStartingTask" @click="startTask">
-              <span v-if="isStartingTask" class="loading loading-spinner loading-xs"></span>
-              <font-awesome-icon v-else icon="fa-solid fa-play" />
-              Iniciar tarefa
-            </button>
-            <button type="button" class="btn btn-primary btn-sm" @click="openTaskCreateModal">
-              <font-awesome-icon icon="fa-solid fa-plus" />
-              Gerar tarefa
-            </button>
-          </div>
-        </div>
-        <p v-if="!invoice.tasks?.length" class="text-sm text-base-content/60">
-          Nenhuma tarefa ligada a esta fatura.
-        </p>
-        <div v-else class="space-y-2">
-          <div
-            v-for="task in invoice.tasks"
-            :key="task.id"
-            class="w-full flex items-center justify-between p-3 bg-base-100 rounded-lg border border-success/30 hover:border-success transition-colors cursor-pointer"
-            @click="openTaskModal(task.id)"
-          >
-            <div class="flex items-center gap-3">
-              <div class="flex flex-col items-center gap-1">
-                <span
-                  class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold"
-                  :class="task.status === 'done' ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'"
-                >
-                  {{ task.status === "done" ? "Concluída" : "Pendente" }}
-                </span>
-                <!-- .stop: clicar no badge edita o departamento em vez de abrir a tarefa -->
-                <div @click.stop>
-                  <DepartmentBadge :task="task" />
-                </div>
-              </div>
-              <span class="text-sm font-medium text-base-content">{{ task.name }}</span>
-            </div>
-            <span v-if="task.date_due" class="text-xs text-base-content/60">{{ displayDate(task.date_due) }}</span>
-          </div>
-        </div>
-      </div>
-
       <!-- Datas -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div class="bg-base-200 rounded-lg p-4">
@@ -229,52 +174,42 @@
       <invoice-nfse-section v-if="!isDebit" :invoice="invoice" class="mb-6" @nfse-changed="refreshInvoice" />
 
       <!-- Pagamentos -->
-      <div class="flex items-center justify-between mb-2">
-        <h3 class="text-lg font-bold text-base-content flex items-center gap-2">
-          <font-awesome-icon icon="fas fa-coins" class="text-primary" />
-          {{ isDebit ? "Pagamentos realizados" : "Pagamentos recebidos" }}
-        </h3>
-        <button type="button" class="btn btn-primary btn-sm" title="Adicionar pagamento" @click="openTransactionModal">
-          <font-awesome-icon icon="fa-solid fa-plus" class="text-white" />
-        </button>
-      </div>
+      <section class="my-8">
+        <section-header :title="isDebit ? 'Pagamentos realizados' : 'Pagamentos recebidos'">
+          <template #actions>
+            <button type="button" class="btn btn-primary btn-sm" title="Adicionar pagamento" @click="openTransactionModal">
+              <font-awesome-icon icon="fa-solid fa-plus" />
+            </button>
+          </template>
+        </section-header>
 
-      <transactions-list-section
-        :transactions="invoice.transactions"
-        :is-debit="isDebit"
-        @update-transaction="
-          (fieldName, transactionId, editedValue) =>
-            updateTransaction(fieldName, editedValue, transactionId)
-        "
-        @delete-transaction="deleteTransaction"
-      />
+        <transactions-list-section
+          :transactions="invoice.transactions"
+          :is-debit="isDebit"
+          @edit-transaction="openTransactionEditModal"
+        />
 
-      <!-- Totais -->
-      <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="rounded-xl border border-base-300 bg-base-100 p-4 shadow-sm">
-          <div class="text-xs font-semibold text-base-content/60">Total da Fatura</div>
-          <div class="mt-1 font-bold text-base-content">
-            <money-field name="total" :modelValue="invoiceTotal" readonly />
+        <!-- Totais -->
+        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div
+            class="rounded-xl border p-4 shadow-sm"
+            :class="isDebit ? 'border-error/30 bg-error/10' : 'border-success/30 bg-success/10'"
+          >
+            <div class="text-xs font-semibold" :class="isDebit ? 'text-error' : 'text-success'">
+              {{ isDebit ? "Total Pago" : "Total Recebido" }}
+            </div>
+            <div class="mt-1 font-bold" :class="isDebit ? 'text-error' : 'text-success'">
+              <money-field name="paid" :modelValue="transactionsTotal" readonly />
+            </div>
+          </div>
+          <div class="rounded-xl border border-info/30 bg-info/10 p-4 shadow-sm">
+            <div class="text-xs font-semibold text-info">Saldo</div>
+            <div class="mt-1 font-bold" :class="balance >= 0 ? 'text-info' : 'text-error'">
+              <money-field name="balance" :modelValue="balance" readonly />
+            </div>
           </div>
         </div>
-        <div
-          class="rounded-xl border p-4 shadow-sm"
-          :class="isDebit ? 'border-error/30 bg-error/10' : 'border-success/30 bg-success/10'"
-        >
-          <div class="text-xs font-semibold" :class="isDebit ? 'text-error' : 'text-success'">
-            {{ isDebit ? "Total Pago" : "Total Recebido" }}
-          </div>
-          <div class="mt-1 font-bold" :class="isDebit ? 'text-error' : 'text-success'">
-            <money-field name="paid" :modelValue="transactionsTotal" readonly />
-          </div>
-        </div>
-        <div class="rounded-xl border border-info/30 bg-info/10 p-4 shadow-sm">
-          <div class="text-xs font-semibold text-info">Saldo</div>
-          <div class="mt-1 font-bold" :class="balance >= 0 ? 'text-info' : 'text-error'">
-            <money-field name="balance" :modelValue="balance" readonly />
-          </div>
-        </div>
-      </div>
+      </section>
 
       <!-- Pix do saldo em aberto: a receber usa a chave da conta, a pagar usa a do fornecedor -->
       <pix-payment-card
@@ -318,11 +253,36 @@
     </template>
 
     <template v-if="invoice" #footer>
-      <div class="flex w-full items-center justify-between gap-2">
-        <button type="button" class="btn btn-error" title="Excluir fatura" @click="deleteInvoice">
-          <font-awesome-icon icon="fa-solid fa-trash" :class="{ 'me-2': !compact }" />
-          <span v-if="!compact">Excluir</span>
-        </button>
+      <div class="flex w-full flex-wrap items-center justify-between gap-2">
+        <!-- Ações rápidas: tarefas da fatura -->
+        <div class="flex flex-wrap" :class="compact ? 'gap-2' : 'gap-3'">
+          <button type="button" class="btn btn-primary" title="Ver tarefas da fatura" @click="openTasksModal">
+            <font-awesome-icon icon="fa-solid fa-tasks" :class="{ 'me-2': !compact }" />
+            <span v-if="!compact">Tarefas</span>
+            <span v-if="invoice.tasks?.length">({{ invoice.tasks.length }})</span>
+          </button>
+
+          <button type="button" class="btn btn-success" :disabled="isStartingTask"
+            title="Criar tarefa com prazo hoje e já iniciar a jornada" @click="startTask">
+            <span v-if="isStartingTask" class="loading loading-spinner loading-xs"></span>
+            <font-awesome-icon v-else icon="fa-solid fa-bolt" :class="{ 'me-2': !compact }" />
+            <span v-if="!compact">Iniciar tarefa</span>
+          </button>
+
+          <button type="button" class="btn btn-primary btn-outline" title="Gerar tarefa para esta fatura"
+            @click="openTaskCreateModal">
+            <font-awesome-icon icon="fa-solid fa-plus" :class="{ 'me-2': !compact }" />
+            <span v-if="!compact">Gerar tarefa</span>
+          </button>
+
+          <DeleteIconButton
+            button
+            :label="compact ? '' : 'Excluir'"
+            title="Excluir fatura"
+            confirm-message="Tem certeza que deseja excluir esta fatura?"
+            @confirm="deleteInvoice"
+          />
+        </div>
 
         <div class="flex items-center gap-4">
           <label class="flex items-center gap-2 cursor-pointer" title="Mostrar quantidades no PDF">
@@ -345,18 +305,19 @@ import axios from "axios";
 import { mapActions, mapMutations } from "vuex";
 import { BACKEND_URL } from "@/config/apiConfig";
 import { destroy, post, show, updateField } from "@/utils/requests/httpUtils";
-import { displayDate, formatDateBr } from "@/utils/date/dateUtils";
+import { formatDateBr } from "@/utils/date/dateUtils";
 import ModalCard from "@/components/modals/ModalCard.vue";
 import MoneyField from "@/components/fields/number/MoneyField.vue";
 import MoneyEditableField from "@/components/fields/number/MoneyEditableField.vue";
 import SelectStatusButton from "@/components/buttons/SelectStatusButton.vue";
 import TextAreaEditableInput from "@/components/forms/inputs/textarea/TextAreaEditableInput.vue";
 import CompanyAvatar from "@/components/common/CompanyAvatar.vue";
-import DepartmentBadge from "@/components/badges/DepartmentBadge.vue";
 import CompaniesSelectEditableField from "@/components/fields/selects/CompaniesSelectEditableField.vue";
 import LeadAvatar from "@/components/common/LeadAvatar.vue";
 import LeadsSelectEditableField from "@/components/fields/selects/LeadsSelectEditableField.vue";
 import TransactionsListSection from "@/components/show/TransactionsListSection.vue";
+import SectionHeader from "@/components/layout/SectionHeader.vue";
+import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
 import PixPaymentCard from "@/components/common/PixPaymentCard.vue";
 import InvoiceNfseSection from "@/components/show/InvoiceNfseSection.vue";
 
@@ -377,11 +338,12 @@ export default {
     SelectStatusButton,
     TextAreaEditableInput,
     CompanyAvatar,
-    DepartmentBadge,
     CompaniesSelectEditableField,
     LeadAvatar,
     LeadsSelectEditableField,
     TransactionsListSection,
+    SectionHeader,
+    DeleteIconButton,
     PixPaymentCard,
     InvoiceNfseSection,
   },
@@ -440,7 +402,6 @@ export default {
   methods: {
     ...mapMutations(["openModal"]),
     ...mapActions(["checkOpenJourneys"]),
-    displayDate,
     formatDateBr,
     getCategoryLabel(category) {
       return CATEGORY_LABELS[category] || category;
@@ -487,9 +448,6 @@ export default {
       await this.refreshInvoice();
     },
     async deleteInvoice() {
-      if (!confirm("Tem certeza que deseja excluir esta fatura? Esta ação não pode ser desfeita.")) {
-        return;
-      }
       try {
         this.errorMessage = null;
         await destroy("invoices", this.invoiceId);
@@ -511,6 +469,17 @@ export default {
         listeners: {
           "new-transaction-event": this.refreshInvoice,
         },
+      });
+    },
+    openTransactionEditModal(transactionId) {
+      this.openModal({
+        component: "TransactionCreateForm",
+        props: { invoice: this.invoice, transactionId },
+        listeners: {
+          "transaction-updated": this.refreshInvoice,
+          "transaction-deleted": this.refreshInvoice,
+        },
+        id: `transaction-edit-${transactionId}`,
       });
     },
     openCompanyModal(companyId) {
@@ -565,27 +534,16 @@ export default {
         id: `invoice-task-create-${this.invoice.id}`,
       });
     },
+    openTasksModal() {
+      this.openModal({
+        component: "InvoiceTasksModal",
+        props: { invoiceId: this.invoice.id, invoiceName: this.invoice.name || `Fatura #${this.invoice.id}` },
+        listeners: { "tasks-changed": this.refreshInvoice },
+        id: `invoice-tasks-${this.invoice.id}`,
+      });
+    },
     openTaskModal(taskId) {
       this.openModal({ component: "TaskDetailModal", props: { taskId }, id: `task-${taskId}` });
-    },
-    async updateTransaction(fieldName, editedValue, transactionId) {
-      try {
-        await updateField("transactions", transactionId, fieldName, editedValue);
-      } catch (error) {
-        this.errorMessage = "Erro ao atualizar pagamento. Tente novamente.";
-        console.error("Erro ao atualizar pagamento:", error);
-      }
-      await this.refreshInvoice();
-    },
-    async deleteTransaction(transactionId) {
-      try {
-        this.errorMessage = null;
-        await destroy("transactions", transactionId);
-      } catch (error) {
-        this.errorMessage = "Erro ao excluir pagamento. Tente novamente.";
-        console.error("Erro ao excluir pagamento:", error);
-      }
-      await this.refreshInvoice();
     },
     exportPDF() {
       const url = `${BACKEND_URL}invoices/${this.invoice.id}/pdf?isVisibleQuantity=${this.isVisibleQuantity}`;

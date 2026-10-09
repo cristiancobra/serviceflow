@@ -29,6 +29,11 @@ class TransactionsResource extends JsonResource
             ),
             'type' => $this->type,
             'method' => $this->method,
+            // Cartão em que o pagamento foi lançado (quando method = credit_card)
+            'credit_card_id' => $this->when(
+                $this->relationLoaded('creditCardCharge'),
+                fn () => $this->creditCardCharge?->credit_card_id
+            ),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'invoice' => new InvoicesResource($this->whenLoaded('invoice')),

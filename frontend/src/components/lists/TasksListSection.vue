@@ -11,7 +11,7 @@
       <div class="flex items-center gap-2">
         <button-new-form target="task" @open-modal="openTaskCreateModal" />
 
-        <button @click="createOrganizationTask"
+        <button v-if="!invoice" @click="createOrganizationTask"
           class="w-9 h-9 flex items-center justify-center rounded-full bg-success text-white hover:bg-success transition shadow-md"
           title="Criar tarefa de organização (30min)">
           <font-awesome-icon icon="fa-solid fa-calendar-check" />
@@ -259,7 +259,7 @@ const FADE_OUT_DURATION_MS = 2500;
 
 export default {
   name: "TasksList",
-  emits: ['filter-change', 'department-filter-change'],
+  emits: ['filter-change', 'department-filter-change', 'task-created'],
   props: {
     // Desligado onde uma aba já diz o nome da seção (modal da oportunidade)
     showTitle: {
@@ -279,6 +279,11 @@ export default {
       default: null,
     },
     project: {
+      type: Object,
+      default: null,
+    },
+    // Lista das tarefas de uma fatura: filtra localmente e cria a tarefa já vinculada a ela
+    invoice: {
       type: Object,
       default: null,
     },
@@ -354,13 +359,18 @@ export default {
     openTaskCreateModal() {
       this.openModal({
         component: 'TaskCreateForm',
-        props: { opportunity: this.opportunity, project: this.project },
+        props: {
+          opportunity: this.opportunity || this.invoice?.proposal?.opportunity || null,
+          project: this.project,
+          invoice: this.invoice,
+        },
         id: 'task-create',
         listeners: { 'new-task-event': this.addTaskCreated },
       });
     },
     addTaskCreated(newTask) {
       this.localTasks.unshift(newTask);
+      this.$emit('task-created', newTask);
     },
     formatTaskDate(date) {
       // Trata o caso de sem data
@@ -682,9 +692,9 @@ export default {
     async handleFilterClick(status) {
       this.activeFilter = status;
 
-      // Se há um opportunity ou project, significa que estamos em uma página de detalhes
+      // Se há um opportunity, project ou invoice, significa que estamos em uma página de detalhes
       // Neste caso, filtramos localmente
-      if (this.opportunity || this.project) {
+      if (this.opportunity || this.project || this.invoice) {
         // Filtro local - filtra as tasks já carregadas
         if (!status) {
           this.localTasks = this.tasks;
@@ -729,9 +739,9 @@ export default {
       this.handleDepartmentFilterClick(departmentId);
     },
     async handleDepartmentFilterClick(departmentId) {
-      // Se há um opportunity ou project, significa que estamos em uma página de detalhes
+      // Se há um opportunity, project ou invoice, significa que estamos em uma página de detalhes
       // Neste caso, filtramos localmente
-      if (this.opportunity || this.project) {
+      if (this.opportunity || this.project || this.invoice) {
         // Filtro local
         if (!departmentId) {
           this.localTasks = this.tasks;

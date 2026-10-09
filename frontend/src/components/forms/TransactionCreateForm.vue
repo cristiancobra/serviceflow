@@ -1,12 +1,12 @@
 <template>
   <ModalCard
-    :title="isDebit ? 'Novo Pagamento' : 'Novo Recebimento'"
+    :title="modalTitle"
     icon="fa-solid fa-money-bill-wave"
     :compact="compact"
     @close="closeModal"
   >
             <form id="transactionCreateForm" @submit.prevent="submitForm">
-              <div class="mb-6">
+              <div v-if="!isEdit" class="mb-6">
                 <TextAreaInput
                   label="Observações"
                   name="observations"
@@ -110,7 +110,24 @@
                 </div>
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div v-if="isEdit" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                  <label
+                    for="transaction_date"
+                    class="block text-sm font-semibold text-base-content mb-2"
+                    >Data</label
+                  >
+                  <DatePicker
+                    id="transaction_date"
+                    v-model="editDate"
+                    format="dd/MM/yyyy"
+                    :enable-time-picker="false"
+                    :clearable="false"
+                  />
+                </div>
+              </div>
+
+              <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div>
                   <UsersSelectInput
                     class="text-start"
@@ -143,40 +160,57 @@
             </form>
 
     <template #footer>
+      <DeleteIconButton
+        v-if="isEdit"
+        class="me-auto"
+        label="Excluir"
+        :title="isDebit ? 'Excluir pagamento' : 'Excluir recebimento'"
+        :confirm-message="isDebit ? 'Tem certeza que deseja excluir este pagamento?' : 'Tem certeza que deseja excluir este recebimento?'"
+        @confirm="deleteTransaction"
+      />
       <button type="button" class="btn btn-ghost" @click="closeModal">
         Cancelar
       </button>
       <button type="submit" form="transactionCreateForm" class="btn btn-primary">
-        {{ isDebit ? "Pagar" : "Receber" }}
+        {{ isEdit ? "Salvar" : isDebit ? "Pagar" : "Receber" }}
       </button>
     </template>
   </ModalCard>
 </template>
 
 <script>
-import { submitFormCreate, index } from "@/utils/requests/httpUtils";
+import { submitFormCreate, index, show, update, destroy } from "@/utils/requests/httpUtils";
 import DateInput from "./inputs/date/DateInput.vue";
+import DatePicker from "./inputs/date/DatePicker.vue";
 import TextAreaInput from "./inputs/textarea/TextAreaInput.vue";
 import TextValue from "../fields/text/TextValue.vue";
 import UsersSelectInput from "./selects/UsersSelectInput.vue";
 import MoneyInput from "./inputs/money/MoneyInput.vue";
 import ModalCard from "@/components/modals/ModalCard.vue";
+import DeleteIconButton from "@/components/buttons/DeleteIconButton.vue";
 
 export default {
   name: "TransactionCreateForm",
-  emits: ["new-transaction-event", "close"],
+  emits: ["new-transaction-event", "transaction-updated", "transaction-deleted", "close"],
   components: {
     DateInput,
+    DatePicker,
     TextAreaInput,
     TextValue,
     UsersSelectInput,
     MoneyInput,
     ModalCard,
+    DeleteIconButton,
   },
   props: {
     invoice: {
       type: Object,
       required: true,
+    },
+    // Quando informado, o formulário edita esse pagamento (forma, conta/cartão e valor)
+    transactionId: {
+      type: Number,
+      default: null,
     },
     // Passado automaticamente pelo App.vue quando há mais de um modal aberto ao mesmo tempo
     compact: {
@@ -197,6 +231,9 @@ export default {
         observations: null,
       },
       errorMessage: null,
+      // Modo edição: data do pagamento (só o dia) e a data original, para só enviar se mudar
+      editDate: null,
+      originalDate: null,
       bankAccounts: [],
       creditCards: [],
     };
@@ -204,6 +241,15 @@ export default {
   computed: {
     isDebit() {
       return this.form.type === "debit";
+    },
+    isEdit() {
+      return !!this.transactionId;
+    },
+    modalTitle() {
+      if (this.isEdit) {
+        return this.isDebit ? "Editar Pagamento" : "Editar Recebimento";
+      }
+      return this.isDebit ? "Novo Pagamento" : "Novo Recebimento";
     },
     invoiceDisplay() {
       return `Fatura #${this.invoice?.id || "..."}`;
@@ -221,7 +267,9 @@ export default {
             calculado: newInvoice.price - (newInvoice.total_paid || 0)
           });
           this.form.invoice_id = newInvoice.id;
-          this.form.amount = newInvoice.balance || 0;
+          if (!this.isEdit) {
+            this.form.amount = newInvoice.balance || 0;
+          }
           // Atualiza o tipo de transação baseado no tipo da fatura
           this.form.type = newInvoice.type === 'debit' ? 'debit' : 'credit';
         }
@@ -243,6 +291,21 @@ export default {
   methods: {
     submitFormCreate,
     index,
+    async getTransaction() {
+      try {
+        const transaction = await show("transactions", this.transactionId);
+        // Cartão/conta antes do método, para o watcher de method não sobrescrever
+        this.form.credit_card_id = transaction.credit_card_id ?? null;
+        this.form.bank_account_id = transaction.bank_account_id;
+        this.form.amount = transaction.amount;
+        this.form.type = transaction.type;
+        this.form.method = transaction.method;
+        this.editDate = this.parseLocalDate(transaction.transaction_date);
+        this.originalDate = this.toDateString(this.editDate);
+      } catch (error) {
+        this.errorMessage = "Erro ao carregar o pagamento.";
+      }
+    },
     async getBankAccounts() {
       try {
         this.bankAccounts = await this.index("bank_accounts");
@@ -271,6 +334,10 @@ export default {
       this.errorMessage = null;
     },
     async submitForm() {
+      if (this.isEdit) {
+        return this.submitUpdate();
+      }
+
       // Adicionar timezone do navegador
       const formWithTimezone = {
         ...this.form,
@@ -291,11 +358,58 @@ export default {
         console.error("Erro:", error);
       }
     },
+    async submitUpdate() {
+      try {
+        const payload = {
+          method: this.form.method,
+          bank_account_id: this.form.method === "credit_card" ? null : this.form.bank_account_id,
+          credit_card_id: this.form.method === "credit_card" ? this.form.credit_card_id : null,
+          amount: this.form.amount,
+        };
+        // Data só vai se mudou, para não perder o horário original do pagamento
+        const newDate = this.toDateString(this.editDate);
+        if (newDate && newDate !== this.originalDate) {
+          payload.transaction_date = newDate;
+        }
+        const data = await update("transactions", this.transactionId, payload);
+        this.$emit("close");
+        this.$emit("transaction-updated", data);
+      } catch (error) {
+        this.errorMessage =
+          error.response?.data?.message || "Erro ao salvar o pagamento. Tente novamente.";
+      }
+    },
+    async deleteTransaction() {
+      try {
+        this.errorMessage = null;
+        await destroy("transactions", this.transactionId);
+        this.$emit("close");
+        this.$emit("transaction-deleted", this.transactionId);
+      } catch (error) {
+        // 422: lançamento no cartão já está em fatura fechada
+        this.errorMessage =
+          error.response?.data?.message || "Erro ao excluir o pagamento. Tente novamente.";
+      }
+    },
+    // "YYYY-MM-DD HH:mm:ss" (horário local do usuário) -> Date local, só o dia
+    parseLocalDate(value) {
+      if (!value) return null;
+      const [year, month, day] = value.toString().slice(0, 10).split("-").map(Number);
+      return new Date(year, month - 1, day);
+    },
+    toDateString(date) {
+      if (!(date instanceof Date)) return null;
+      const pad = (n) => n.toString().padStart(2, "0");
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+    },
     updateForm(field, value) {
       this.form[field] = value;
     },
   },
   mounted() {
+    if (this.isEdit) {
+      this.getTransaction();
+    }
     this.getBankAccounts();
     this.getCreditCards();
   },

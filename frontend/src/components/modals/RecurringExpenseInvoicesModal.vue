@@ -53,26 +53,22 @@
                 </span>
               </td>
               <td>
-                <div class="action-buttons">
-                  <button
+                <div class="flex justify-end gap-2">
+                  <IconButton
                     v-if="invoice.transactions && invoice.transactions.length > 0"
-                    @click="toggleInvoiceTransactions(invoice.id)"
-                    class="btn-action btn-view"
+                    icon="fa-solid fa-coins"
+                    color="info"
                     title="Ver transações"
-                  >
-                    <font-awesome-icon icon="fa-solid fa-coins" />
-                  </button>
-                  <button
+                    @click="toggleInvoiceTransactions(invoice.id)"
+                  />
+                  <IconButton
                     v-if="invoice.balance > 0"
-                    @click="openTransactionModal(invoice)"
-                    class="btn-action btn-add-payment"
+                    icon="fa-solid fa-plus"
+                    color="success"
                     title="Adicionar Pagamento"
-                  >
-                    <font-awesome-icon icon="fa-solid fa-plus" />
-                  </button>
-                  <button @click="openInvoiceModal(invoice)" class="btn-action btn-view" title="Abrir fatura">
-                    <font-awesome-icon icon="fa-solid fa-eye" />
-                  </button>
+                    @click="openTransactionModal(invoice)"
+                  />
+                  <IconButton icon="fa-solid fa-eye" color="info" title="Abrir fatura" @click="openInvoiceModal(invoice)" />
                 </div>
               </td>
             </tr>
@@ -81,11 +77,7 @@
                 <transactions-list-section
                   :transactions="invoice.transactions"
                   :is-debit="true"
-                  @update-transaction="
-                    (fieldName, transactionId, editedValue) =>
-                      updateModalTransaction(fieldName, transactionId, editedValue, invoice.id)
-                  "
-                  @delete-transaction="(transactionId) => deleteModalTransaction(transactionId, invoice.id)"
+                  @edit-transaction="(transactionId) => openTransactionEditModal(invoice, transactionId)"
                 />
               </td>
             </tr>
@@ -104,11 +96,12 @@
 
 <script>
 import { mapMutations } from "vuex";
-import { destroy, show, updateField } from "@/utils/requests/httpUtils";
+import { show, updateField } from "@/utils/requests/httpUtils";
 import ModalCard from "@/components/modals/ModalCard.vue";
 import DateEditableInput from "@/components/fields/date/DateEditableInput.vue";
 import MoneyEditableField from "@/components/fields/number/MoneyEditableField.vue";
 import TransactionsListSection from "@/components/show/TransactionsListSection.vue";
+import IconButton from "@/components/buttons/IconButton.vue";
 import EmptyState from "@/components/layout/EmptyState.vue";
 
 export default {
@@ -119,6 +112,7 @@ export default {
     DateEditableInput,
     MoneyEditableField,
     TransactionsListSection,
+    IconButton,
   },
   props: {
     recurringExpense: {
@@ -236,35 +230,11 @@ export default {
       invoice.status = updatedInvoice.status;
     },
 
-    async updateModalTransaction(fieldName, transactionId, editedValue, invoiceId) {
-      try {
-        const updatedTransaction = await updateField("transactions", transactionId, fieldName, editedValue);
-        const invoice = this.invoicesForModal.find((inv) => inv.id === invoiceId);
-        if (invoice && invoice.transactions) {
-          const index = invoice.transactions.findIndex((t) => t.id === transactionId);
-          if (index !== -1) {
-            invoice.transactions[index] = updatedTransaction;
-          }
-          this.applyInvoiceUpdate(invoice, updatedTransaction.invoice);
-        }
-      } catch (error) {
-        console.error("Erro ao atualizar transação:", error);
-      }
-    },
-
-    async deleteModalTransaction(transactionId, invoiceId) {
-      try {
-        await destroy("transactions", transactionId);
-        const invoice = this.invoicesForModal.find((inv) => inv.id === invoiceId);
-        if (invoice && invoice.transactions) {
-          invoice.transactions = invoice.transactions.filter((t) => t.id !== transactionId);
-          invoice.total_paid = invoice.transactions.reduce((sum, t) => sum + Number(t.amount || 0), 0);
-          invoice.balance = invoice.price - invoice.total_paid;
-          this.recalcInvoiceStatus(invoice);
-        }
-      } catch (error) {
-        console.error("Erro ao excluir transação:", error);
-      }
+    removeTransaction(invoice, transactionId) {
+      invoice.transactions = invoice.transactions.filter((t) => t.id !== transactionId);
+      invoice.total_paid = invoice.transactions.reduce((sum, t) => sum + Number(t.amount || 0), 0);
+      invoice.balance = invoice.price - invoice.total_paid;
+      this.recalcInvoiceStatus(invoice);
     },
 
     openTransactionModal(invoice) {
@@ -274,6 +244,24 @@ export default {
         listeners: {
           "new-transaction-event": this.handleNewTransaction,
         },
+      });
+    },
+
+    openTransactionEditModal(invoice, transactionId) {
+      this.openModal({
+        component: "TransactionCreateForm",
+        props: { invoice, transactionId },
+        listeners: {
+          "transaction-updated": (updatedTransaction) => {
+            const index = invoice.transactions.findIndex((t) => t.id === updatedTransaction.id);
+            if (index !== -1) {
+              invoice.transactions[index] = updatedTransaction;
+            }
+            this.applyInvoiceUpdate(invoice, updatedTransaction.invoice);
+          },
+          "transaction-deleted": (transactionId) => this.removeTransaction(invoice, transactionId),
+        },
+        id: `transaction-edit-${transactionId}`,
       });
     },
 
@@ -320,48 +308,6 @@ export default {
   background-color: var(--color-base-200);
   font-weight: 600;
   color: color-mix(in oklab, var(--color-base-content) 80%, transparent);
-}
-
-.invoices-table .action-buttons {
-  justify-content: flex-end;
-}
-
-.action-buttons {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: center;
-}
-
-.btn-action {
-  padding: 0.5rem;
-  border: none;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-view {
-  background-color: color-mix(in oklab, var(--color-info) 15%, var(--color-base-100));
-  color: var(--color-info);
-  text-decoration: none;
-}
-
-.btn-view:hover {
-  background-color: color-mix(in oklab, var(--color-info) 15%, var(--color-base-100));
-}
-
-.btn-add-payment {
-  background-color: color-mix(in oklab, var(--color-success) 15%, var(--color-base-100));
-  color: var(--color-success);
-}
-
-.btn-add-payment:hover {
-  background-color: color-mix(in oklab, var(--color-success) 15%, var(--color-base-100));
 }
 
 .invoice-status {
