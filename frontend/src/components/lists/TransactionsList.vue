@@ -249,9 +249,9 @@
                   <!-- Conta -->
                   <td class="w-[14%] px-3 py-1 text-left max-w-0">
                     <div class="flex items-center gap-2 min-w-0">
-                      <font-awesome-icon icon="fa-solid fa-university" class="text-base-content/50 text-sm flex-shrink-0" />
-                      <span class="text-sm font-medium text-base-content truncate" :title="row.transaction.bank_account?.name || row.transaction.bank_account?.bank_name || '-'">
-                        {{ row.transaction.bank_account?.name || row.transaction.bank_account?.bank_name || '-' }}
+                      <font-awesome-icon :icon="row.transaction.credit_card ? 'fa-solid fa-credit-card' : 'fa-solid fa-university'" class="text-base-content/50 text-sm flex-shrink-0" />
+                      <span class="text-sm font-medium text-base-content truncate" :title="accountLabel(row.transaction)">
+                        {{ accountLabel(row.transaction) }}
                       </span>
                     </div>
                   </td>
@@ -369,11 +369,8 @@ export default {
           return true;
         }
         
-        if (transaction.bank_account) {
-          const accountName = (transaction.bank_account.name || transaction.bank_account.bank_name || '').toLowerCase();
-          if (accountName.includes(term)) {
-            return true;
-          }
+        if (this.accountLabel(transaction).toLowerCase().includes(term)) {
+          return true;
         }
         
         return false;
@@ -546,6 +543,13 @@ export default {
       }
     },
     
+    accountLabel(transaction) {
+      if (transaction.credit_card) {
+        const { name, last_digits } = transaction.credit_card;
+        return last_digits ? `${name} •••• ${last_digits}` : name;
+      }
+      return transaction.bank_account?.name || transaction.bank_account?.bank_name || '-';
+    },
     filterByBankAccount() {
       this.applyFilters();
     },

@@ -29,6 +29,7 @@ class TransactionController extends Controller
             'invoice.company',
             'invoice.lead',
             'bankAccount',
+            'creditCardCharge.creditCard',
             'paymentBatch'
         ])
             ->orderBy('transaction_date', 'desc')

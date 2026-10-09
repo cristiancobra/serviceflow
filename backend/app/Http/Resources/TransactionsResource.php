@@ -51,6 +51,14 @@ class TransactionsResource extends JsonResource
                     'account_name' => $this->bankAccount->account_name ?? 'N/A',
                 ];
             }),
+            'credit_card' => $this->when(
+                $this->relationLoaded('creditCardCharge') && $this->creditCardCharge?->relationLoaded('creditCard') && $this->creditCardCharge->creditCard,
+                fn () => [
+                    'id' => $this->creditCardCharge->creditCard->id,
+                    'name' => $this->creditCardCharge->creditCard->name,
+                    'last_digits' => $this->creditCardCharge->creditCard->last_digits,
+                ]
+            ),
         ];
     }
 }
